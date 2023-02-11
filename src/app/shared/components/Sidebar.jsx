@@ -1,20 +1,20 @@
 import React, { useContext } from "react";
-import { AppContext } from "../context/appContext";
+import { AppContext } from "../context/AppContext";
 
-const SidebarWithPanel = () => {
+const Sidebar = () => {
   const { appContext, setAppContext } = useContext(AppContext);
 
   const mainSidebarClassNames = `main-sidebar ${
-    appContext?.isPushedFull ? "is-bordered" : ""
+    appContext?.css?.isPushedFull ? "is-bordered" : ""
   }`;
 
   const sidebarPanelClassNames = `sidebar-panel is-generic ${
-    appContext?.isPushedFull ? "is-active" : ""
+    appContext?.css?.isPushedFull ? "is-active" : ""
   }`;
 
   const toggleSidebar = () => {
     setAppContext({
-      isPushedFull: !appContext.isPushedFull,
+      isPushedFull: !appContext?.css.isPushedFull,
     });
   };
 
@@ -133,4 +133,4 @@ const SidebarWithPanel = () => {
   );
 };
 
-export default SidebarWithPanel;
+export default Sidebar;

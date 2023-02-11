@@ -1,17 +1,19 @@
 import React, { useContext } from "react";
-import { AppContext } from "../../context/appContext";
+import { AppContext } from "../../context/AppContext";
 
 const PageContent = ({ title, children }) => {
   const { appContext, setAppContext } = useContext(AppContext);
 
   const toggleSidebar = () => {
     setAppContext({
-      isPushedFull: !appContext.isPushedFull,
+      css: {
+        isPushedFull: !appContext?.css?.isPushedFull,
+      },
     });
   };
 
   const viewWrapperClassNames = `view-wrapper ${
-    appContext?.isPushedFull ? "is-pushed-full" : ""
+    appContext?.css?.isPushedFull ? "is-pushed-full" : ""
   }`;
 
   console.log(appContext);
@@ -28,7 +30,7 @@ const PageContent = ({ title, children }) => {
               <span className="menu-toggle has-chevron">
                 <span
                   className={`icon-box-toggle ${
-                    appContext?.isPushedFull ? "active" : ""
+                    appContext?.css?.isPushedFull ? "active" : ""
                   }`}
                 >
                   <span className="rotate">

@@ -1,24 +1,22 @@
 import "./assets/scss/main.scss";
 import "./App.css";
-import Home from "./pages/home/Home";
-import SidebarWithPanel from "./components/SidebarWithPanel";
-import PageContent from "./components/pageContent/PageContent";
-import PageNotFound from "./pages/pageNotFound/PageNotFound";
-import { AppContext } from "./context/appContext";
-import { useState } from "react";
+import Home from "./app/views/home/Home";
+import Sidebar from "./app/shared/components/Sidebar";
+import PageContent from "./app/shared/components/pageContent/PageContent";
+import PageNotFound from "./app/views/pageNotFound/PageNotFound";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import SharedLayout from "./app/shared/sharedLayout/SharedLayout";
 
 function App() {
-  const [appContext, setAppContext] = useState({
-    isPushedFull: true,
-  });
-
   return (
-    <AppContext.Provider value={{ appContext, setAppContext }}>
-      <SidebarWithPanel />
-      <PageContent title={"My title"}>
-        <Home />
-      </PageContent>
-    </AppContext.Provider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<SharedLayout />}>
+          <Route index element={<Home />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
