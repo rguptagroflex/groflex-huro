@@ -2,14 +2,13 @@ import { useState } from "react";
 import { AppContext } from "./AppContext";
 
 const AppContextProvider = ({ children }) => {
-  const [appContext, setAppContext] = useState({
-    css: {
-      isPushedFull: false,
-    },
+  const [cssContext, setCssContext] = useState({
+    isPushedFull: false,
+    theme: "light",
   });
 
   return (
-    <AppContext.Provider value={{ appContext, setAppContext }}>
+    <AppContext.Provider value={{ cssContext, setCssContext }}>
       {children}
     </AppContext.Provider>
   );

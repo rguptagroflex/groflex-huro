@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "gulp": "^4.0.2",
+    "jquery": "^3.6.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
