@@ -3,6 +3,7 @@ import { AppContext } from "../context/AppContext";
 import lightLogo from "../../../assets/img/logos/logo/logo.svg";
 import darkLogo from "../../../assets/img/logos/logo/logo-light.svg";
 import useThemeSwitch from "../../helpers/hooks/useThemeSwitch";
+import { FeatherIcon } from "../featherIcons/FeatherIcon";
 
 const Sidebar = () => {
   const { cssContext, setCssContext } = useContext(AppContext);
@@ -18,26 +19,7 @@ const Sidebar = () => {
     cssContext.theme === "light" ? "light-image" : "dark-image";
 
   const MenuIcon = () => {
-    return (
-      // <svg
-      //   xmlns="http://www.w3.org/2000/svg"
-      //   width="24"
-      //   height="24"
-      //   viewBox="0 0 24 24"
-      //   fill="none"
-      //   stroke="currentColor"
-      //   strokeWidth="2"
-      //   strokeLinecap="round"
-      //   strokeLinejoin="round"
-      //   className="feather feather-grid"
-      // >
-      //   <rect x="3" y="3" width="7" height="7"></rect>
-      //   <rect x="14" y="3" width="7" height="7"></rect>
-      //   <rect x="14" y="14" width="7" height="7"></rect>
-      //   <rect x="3" y="14" width="7" height="7"></rect>
-      // </svg>
-      <i data-feather="grid"></i>
-    );
+    return <FeatherIcon name={"Grid"} />;
   };
 
   return (
@@ -112,7 +94,7 @@ const Sidebar = () => {
                       <div className="collapse-wrap">
                         <a className="parent-link">
                           <div className="icon">
-                            <svg
+                            {/* <svg
                               xmlns="http://www.w3.org/2000/svg"
                               width="24"
                               height="24"
@@ -133,7 +115,8 @@ const Sidebar = () => {
                                 ry="2"
                               ></rect>
                               <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                            </svg>
+                            </svg> */}
+                            <FeatherIcon name="Briefcase" />
                           </div>
                           Reports
                           <svg
