@@ -161,7 +161,7 @@ const Sidebar = () => {
                             className="is-submenu"
                             href="/admin-dashboards-personal-1.html"
                           >
-                            <i className="lnil lnil-analytics-alt-1"></i>
+                            <i className="lnil lnil-air-flow"></i>
                             <span>Financial report</span>
                           </a>
                         </li>
