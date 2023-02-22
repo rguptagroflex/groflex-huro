@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
-import { AppContext } from "../context/AppContext";
-import lightLogo from "../../../assets/img/logos/logo/logo.svg";
-import darkLogo from "../../../assets/img/logos/logo/logo-light.svg";
-import useThemeSwitch from "../../helpers/hooks/useThemeSwitch";
-import { FeatherIcon } from "../featherIcons/FeatherIcon";
+import { AppContext } from "../../context/AppContext";
+import lightLogo from "../../../../assets/img/logos/logo/logo.svg";
+import darkLogo from "../../../../assets/img/logos/logo/logo-light.svg";
+import useThemeSwitch from "../../../helpers/hooks/useThemeSwitch";
+import { FeatherIcon } from "../../featherIcon/FeatherIcon";
 
 const Sidebar = () => {
   const { cssContext, setCssContext } = useContext(AppContext);

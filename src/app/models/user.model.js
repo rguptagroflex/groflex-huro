@@ -1,14 +1,14 @@
-import moment from "moment";
+// import moment from "moment";
 import { isEmpty } from "lodash";
-import config from "config";
-import { request } from "helpers/request";
-import history from "helpers/history";
-import PendoService from "services/pendo.service";
-import WebStorageService from "services/webstorage.service";
-import WebStorageKey from "enums/web-storage-key.enum";
-import { checkAchievementNotification } from "helpers/checkAchievementNotification";
-import { updateUserPermissions } from "helpers/updateUserPermissions";
-import { updatePlanPermissions } from "helpers/updatePlanPermissions";
+import config from "../config";
+import { request } from "../helpers/request";
+// import history from "../helpers/history";
+import PendoService from "../services/pendo.service";
+import WebStorageService from "../services/webstorage.service";
+import WebStorageKey from "../enums/web-storage-key.enum";
+// import { checkAchievementNotification } from "helpers/checkAchievementNotification";
+import { updateUserPermissions } from "../helpers/updateUserPermissions";
+import { updatePlanPermissions } from "../helpers/updatePlanPermissions";
 const TOKEN_REFRESH_TIME = 15 * 1000 * 60;
 
 class User {
@@ -314,7 +314,7 @@ class User {
 		WebStorageService.setItem(WebStorageKey.CANCELLATION_LIST_SETTINGS, cancellationListSettings, true);
 		WebStorageService.setItem(WebStorageKey.PURCHASEORDER_LIST_SETTINGS, purchaseOrderListSettings, true);
 		WebStorageService.setItem(WebStorageKey.DEBIT_CANCELLATION_LIST_SETTINGS, debitCancellationListSettings, true);
-		history.push("/");
+		location.assign("/");
 	}
 
 	setTenantInfo(response) {

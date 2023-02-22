@@ -1,7 +1,7 @@
 import _ from "lodash";
-import lang from "lang";
-import WebStorageService from "services/webstorage.service";
-import WebStorageKey from "enums/web-storage-key.enum";
+import lang from "../lang";
+import WebStorageService from "./services/webstorage.service";
+import WebStorageKey from "./enums/web-storage-key.enum";
 
 const apiServers = {
 	// local: "http://localhost:3000",

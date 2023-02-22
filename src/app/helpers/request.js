@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import qs from 'qs';
-import invoiz from 'services/invoiz.service';
-import config from 'config';
+// import qs from 'qs';
+import invoiz from '../services/invoiz.service';
+import config from '../config';
 
 
  const blobTypes=['pdf','csv']
@@ -56,7 +56,7 @@ export const request = (endpoint, options) => {
 			{}
 		);
 
-		endpoint = `${fetchOptions.url}?${qs.stringify(forXDataOptimizedParams)}`;
+		endpoint = `${fetchOptions.url}?${JSON.stringify(forXDataOptimizedParams)}`;
 	} else if (fetchOptions.method !== 'GET' && options.data) {
 		fetchOptions.body = JSON.stringify(options.data);
 	}

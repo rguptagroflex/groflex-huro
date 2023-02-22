@@ -1,78 +1,106 @@
-import invoiz from 'services/invoiz.service';
+import InvoizService from "./invoiz.service";
 
 const getKey = (key, usePlainKey) => {
-	let newKey = key;
+  let newKey = key;
 
-	if (invoiz && invoiz.user && invoiz.user.loggedIn && invoiz.user.tenantId && invoiz.user.userId && !usePlainKey) {
-		const { tenantId, userId } = invoiz.user;
-		newKey = `${tenantId}_${userId}_${key}`;
-	}
+  if (
+    InvoizService &&
+    InvoizService.user &&
+    InvoizService.user.loggedIn &&
+    InvoizService.user.tenantId &&
+    InvoizService.user.userId &&
+    !usePlainKey
+  ) {
+    const { tenantId, userId } = InvoizService.user;
+    newKey = `${tenantId}_${userId}_${key}`;
+  }
 
-	return newKey;
+  return newKey;
 };
 
 class WebStorageService {
-	constructor() {
-		this._storageType = 'localStorage';
-		this._fallbackStorage = {};
+  constructor() {
+    this._storageType = "localStorage";
+    this._fallbackStorage = {};
 
-		if (!navigator.cookieEnabled || !window.localStorage) {
-			this._storageType = 'webStorageFallback';
-			this._createFallbackStorage();
-		}
-	}
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      this._storageType = "webStorageFallback";
+      this._createFallbackStorage();
+    }
+  }
 
-	setItem(key, value, usePlainKey) {
-		const newKey = getKey(key, usePlainKey);
-		window[this._storageType].setItem(newKey, typeof value === 'string' ? value : JSON.stringify(value));
-	}
+  getKey(key, usePlainKey) {
+    let newKey = key;
 
-	getItem(key, usePlainKey) {
-		const newKey = getKey(key, usePlainKey);
-		let value = null;
+    if (
+      InvoizService &&
+      InvoizService.user &&
+      InvoizService.user.loggedIn &&
+      InvoizService.user.tenantId &&
+      InvoizService.user.userId &&
+      !usePlainKey
+    ) {
+      const { tenantId, userId } = InvoizService.user;
+      newKey = `${tenantId}_${userId}_${key}`;
+    }
 
-		try {
-			value = JSON.parse(window[this._storageType].getItem(newKey));
-		} catch (err) {
-			value = window[this._storageType].getItem(newKey);
-		}
+    return newKey;
+  }
 
-		return value;
-	}
+  setItem(key, value, usePlainKey) {
+    const newKey = this.getKey(key, usePlainKey);
+    window[this._storageType].setItem(
+      newKey,
+      typeof value === "string" ? value : JSON.stringify(value)
+    );
+  }
 
-	removeItem(key, usePlainKey) {
-		const newKey = getKey(key, usePlainKey);
-		window[this._storageType].removeItem(newKey);
-	}
+  getItem(key, usePlainKey) {
+    const newKey = this.getKey(key, usePlainKey);
+    let value = null;
 
-	clear() {
-		window[this._storageType].clear();
-	}
+    try {
+      value = JSON.parse(window[this._storageType].getItem(newKey));
+    } catch (err) {
+      value = window[this._storageType].getItem(newKey);
+    }
 
-	_createFallbackStorage() {
-		const self = this;
+    return value;
+  }
 
-		window[this._storageType] = {
-			clear: () => {
-				self._fallbackStorage = {};
-			},
+  removeItem(key, usePlainKey) {
+    const newKey = this.getKey(key, usePlainKey);
+    window[this._storageType].removeItem(newKey);
+  }
 
-			getItem: (key, usePlainKey) => {
-				const newKey = getKey(key, usePlainKey);
-				return self._fallbackStorage[newKey];
-			},
+  clear() {
+    window[this._storageType].clear();
+  }
 
-			removeItem: (key, usePlainKey) => {
-				const newKey = getKey(key, usePlainKey);
-				delete self._fallbackStorage[newKey];
-			},
+  _createFallbackStorage() {
+    const self = this;
 
-			setItem: (key, value, usePlainKey) => {
-				const newKey = getKey(key, usePlainKey);
-				self._fallbackStorage[newKey] = value;
-			},
-		};
-	}
+    window[this._storageType] = {
+      clear: () => {
+        self._fallbackStorage = {};
+      },
+
+      getItem: (key, usePlainKey) => {
+        const newKey = this.getKey(key, usePlainKey);
+        return self._fallbackStorage[newKey];
+      },
+
+      removeItem: (key, usePlainKey) => {
+        const newKey = this.getKey(key, usePlainKey);
+        delete self._fallbackStorage[newKey];
+      },
+
+      setItem: (key, value, usePlainKey) => {
+        const newKey = this.getKey(key, usePlainKey);
+        self._fallbackStorage[newKey] = value;
+      },
+    };
+  }
 }
 
 export default new WebStorageService();

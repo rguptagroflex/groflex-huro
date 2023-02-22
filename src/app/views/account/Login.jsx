@@ -5,6 +5,8 @@ import { AppContext } from "../../shared/context/AppContext";
 import lightLogo from "../../../assets/img/logos/logo/logo.svg";
 import darkLogo from "../../../assets/img/logos/logo/logo-light.svg";
 import { useNavigate } from "react-router-dom";
+import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
+// import invoiz from "../../services/invoiz.service";
 
 const Login = () => {
   const { cssContext } = useContext(AppContext);
@@ -14,10 +16,57 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const themeSwitch = useThemeSwitch();
 
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value.trim());
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value.trim());
+  };
+
+  const handleLogin = () => {
+    // const { resources } = this.props;
+
+    // if (email.length === 0 || password.length === 0) {
+    //   this.setState({
+    //     emailError: email.length === 0 ? resources.requiredFieldValidation : "",
+    //     passwordError:
+    //       password.length === 0 ? resources.requiredFieldValidation : "",
+    //   });
+    // } else if (!config.emailCheck.test(email)) {
+    //   this.setState({
+    //     emailError: resources.invalidEmailError,
+    //   });
+    // } else {
+    //   const loginUser = (response) => {
+    //     invoiz.user.userEmail = email;
+    //     return invoiz.user.login(response).then((redirectTo) => {
+    //       invoiz.router.navigate(redirectTo);
+    //     });
+    //   };
+
+    //   this.setState({ isLogginIn: true }, () => {
+    //     invoiz
+    //       .request(config.account.endpoints.login, {
+    //         method: "POST",
+    //         data: {
+    //           email,
+    //           password,
+    //         },
+    //       })
+    //       .then(loginUser)
+    //       .catch(this.handleSubmitFailure);
+    //   });
+    // }
+    navigate("/");
+  };
+
   // Class dependent stuff
   const logo = cssContext.theme === "light" ? lightLogo : darkLogo;
   const logoClassnames =
     cssContext.theme === "light" ? "light-image" : "dark-image";
+
+  // console.log(email, password);
   return (
     <div className="auth-wrapper is-dark">
       <div className="modern-login">
@@ -42,7 +91,7 @@ const Login = () => {
               <img src={logo} alt="logo" className={logoClassnames} />
             </a>
             <label className="dark-mode ml-auto">
-              <input onClick={themeSwitch} type="checkbox" checked="" />
+              <input onClick={themeSwitch} type="checkbox" defaultChecked />
               <span></span>
             </label>
             <div className="is-form">
@@ -55,15 +104,26 @@ const Login = () => {
                   <h2>Recover Account</h2>
                   <p>Reset your account password.</p>
                 </div>
-                <form id="login-form" className="login-wrapper" action="/">
+                <form
+                  onSubmit={handleLogin}
+                  id="login-form"
+                  className="login-wrapper"
+                  action="/"
+                >
                   <div className="control has-validation">
-                    <input type="text" className="input" placeholder="" />
+                    <input
+                      value={email}
+                      onChange={handleEmailChange}
+                      type="email"
+                      className="input"
+                      placeholder=""
+                    />
                     <small className="error-text">
                       This is a required field
                     </small>
                     <div className="auth-label">Email Address</div>
                     <div className="auth-icon">
-                      <i className="lnil lnil-envelope"></i>
+                      <FeatherIcon name={"Mail"} />
                     </div>
                     <div className="validation-icon is-success">
                       <div className="icon-wrapper">
@@ -104,16 +164,26 @@ const Login = () => {
                     </div>
                   </div>
                   <div className="control has-validation">
-                    <input type="password" className="input" />
+                    <input
+                      onChange={handlePasswordChange}
+                      type="password"
+                      className="input"
+                    />
                     <div className="auth-label">Password</div>
                     <div className="auth-icon">
-                      <i className="lnil lnil-lock-alt"></i>
+                      <FeatherIcon name={"Lock"} />
                     </div>
                   </div>
 
                   <div className="control is-flex">
                     <label className="remember-toggle">
-                      <input type="checkbox" />
+                      <input
+                        value={rememberMe}
+                        type="checkbox"
+                        onChange={() => {
+                          setRememberMe(!setRememberMe);
+                        }}
+                      />
                       <span className="toggler">
                         <span className="active">
                           <svg
@@ -154,9 +224,7 @@ const Login = () => {
                   </div>
                   <div className="button-wrap has-help">
                     <button
-                      onClick={() => {
-                        navigate("/");
-                      }}
+                      onClick={handleLogin}
                       id="login-submit"
                       type="button"
                       className="button h-button is-big is-rounded is-primary is-bold is-raised"
@@ -164,12 +232,16 @@ const Login = () => {
                       Login Now
                     </button>
                     <span>
-                      Or <a href="/auth-signup.html">Create</a> an account.
+                      Or <a href="/signup">Create</a> an account.
                     </span>
                   </div>
                 </form>
 
-                <form id="recover-form" className="login-wrapper is-hidden">
+                <form
+                  onSubmit={handleLogin}
+                  id="recover-form"
+                  className="login-wrapper is-hidden"
+                >
                   <p className="recover-text">
                     Enter your email and click on the confirm button to reset
                     your password. We'll send you an email detailing the steps

@@ -9,9 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "ampersand-events": "^2.0.2",
     "feather-icons": "^4.29.0",
     "gulp": "^4.0.2",
     "jquery": "^3.6.3",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-feather": "^2.0.10",
