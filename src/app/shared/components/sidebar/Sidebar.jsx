@@ -1,124 +1,206 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContext";
 import lightLogo from "../../../../assets/img/logos/logo/logo.svg";
 import darkLogo from "../../../../assets/img/logos/logo/logo-light.svg";
 import useThemeSwitch from "../../../helpers/hooks/useThemeSwitch";
 import { FeatherIcon } from "../../featherIcon/FeatherIcon";
+import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
+  // const currentLocation = window.location.pathname;
   const { cssContext, setCssContext } = useContext(AppContext);
-  const [reportSubmenuOpen, setReportSubmenuOpen] = useState(false);
-  const themeSwitch = useThemeSwitch();
+  const [profileMenuIsActive, setProfileMenuIsActive] = useState(false);
+  const [naverMarginTop, setNaverMarginTop] = useState(150);
 
-  const sideBarClassNames = `sidebar-block ${
-    cssContext.isPushedFull ? "is-active is-bordered" : ""
-  }`;
+  useEffect(() => {
+    if (window.location.pathname === "/") {
+      setNaverMarginTop(150);
+    } else if (window.location.pathname === "/page2") {
+      setNaverMarginTop(214);
+    } else if (window.location.pathname === "/page3") {
+      setNaverMarginTop(278);
+    }
+  }, []);
 
-  const logo = cssContext.theme === "light" ? lightLogo : darkLogo;
-  const logoClassnames =
-    cssContext.theme === "light" ? "light-image" : "dark-image";
-
-  const MenuIcon = () => {
-    return <FeatherIcon name={"Grid"} />;
+  const handleProfileDropdown = () => {
+    setProfileMenuIsActive(!profileMenuIsActive);
   };
 
+  const mainSidebarClassNames = `main-sidebar ${
+    cssContext?.isPushedFull ? "is-bordered" : ""
+  }`;
+  const mainSidebarBrandClassNames = `sidebar-brand ${
+    cssContext?.isPushedFull ? "is-bordered" : ""
+  }`;
+  const sidebarPanelClassNames = `sidebar-panel is-generic ${
+    cssContext?.isPushedFull ? "is-active" : ""
+  }`;
+  const profileDropDownClassNames = `dropdown profile-dropdown dropdown-trigger is-spaced is-up ${
+    profileMenuIsActive ? "is-active" : ""
+  }`;
+  console.log(window.location.pathname, naverMarginTop);
   return (
-    <div id="sidebar-block" className={sideBarClassNames}>
-      <div className="sidebar-block-header">
-        <a href="/" className="sidebar-block-logo">
-          <img src={logo} alt="logo" className={logoClassnames} />
-        </a>
-        <h3 onClick={themeSwitch}>Huro</h3>
-      </div>
-      <div className="sidebar-block-inner" data-simplebar="init">
-        <div className="simplebar-wrapper" style={{ margin: 0 }}>
-          <div className="simplebar-height-auto-observer-wrapper">
-            <div className="simplebar-height-auto-observer" />
-          </div>
-          <div className="simplebar-mask">
-            <div className="simplebar-offset" style={{ right: 0, bottom: 0 }}>
-              <div
-                className="simplebar-content-wrapper"
-                style={{ height: "100%", overflow: "hidden scroll" }}
+    <>
+      {/* The main sidebar (thin one) */}
+      <div className={mainSidebarClassNames}>
+        <div className={mainSidebarBrandClassNames}>
+          <a href="/">
+            <img className="light-image" src={lightLogo} alt="" />
+            <img className="dark-image" src={darkLogo} alt="" />
+          </a>
+        </div>
+        <div className="sidebar-inner">
+          {/* Quote type active */}
+          <div
+            className="naver from-top"
+            style={{ marginTop: `${naverMarginTop}px` }}
+          />
+          <ul className="icon-menu">
+            <li>
+              <a href="/" data-content="Dashboards">
+                <FeatherIcon name={"Activity"} />
+              </a>
+            </li>
+            <li>
+              <a href="/page2" data-content="Dashboards">
+                <FeatherIcon name={"Grid"} />
+              </a>
+            </li>
+            <li>
+              <a href="/page3" data-content="Dashboards">
+                <FeatherIcon name={"Box"} />
+              </a>
+            </li>
+          </ul>
+
+          {/* Commented the search button because of confusion */}
+          <ul className="bottom-menu">
+            {/* <li className="right-panel-trigger" data-panel="search-panel">
+              <a href="/" id="open-search" data-content="Search">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  className="feather feather-search sidebar-svg"
+                >
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </a>
+              <a href="/" id="close-search" className="is-hidden is-inactive">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  className="feather feather-x sidebar-svg"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </a>
+            </li> */}
+
+            <li>
+              <a
+                className="is-selected is-active"
+                href="/"
+                id="open-settings"
+                data-content="Settings"
               >
-                <div className="simplebar-content" style={{ padding: 0 }}>
-                  <ul>
-                    <li>
-                      <a href="/" className="single-link">
-                        <span className="icon">
-                          <MenuIcon />
-                          Dashboard
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/" className="single-link">
-                        <span className="icon">
-                          <MenuIcon />
-                          Dashboard
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/" className="single-link">
-                        <span className="icon">
-                          <MenuIcon />
-                          Dashboard
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/" className="single-link">
-                        <span className="icon">
-                          <MenuIcon />
-                          Dashboard
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/" className="single-link">
-                        <span className="icon">
-                          <MenuIcon />
-                          Dashboard
-                        </span>
-                      </a>
-                    </li>
-                    <li
-                      onClick={() => {
-                        setReportSubmenuOpen(!reportSubmenuOpen);
-                      }}
-                      className={`has-children ${
-                        reportSubmenuOpen ? "active" : ""
-                      }`}
+                <FeatherIcon name={"Settings"} />
+              </a>
+            </li>
+            {/* Profile menu */}
+            <li id="user-menu" onClick={handleProfileDropdown}>
+              <div id="profile-menu" className={profileDropDownClassNames}>
+                <img
+                  src="https://via.placeholder.com/150x150"
+                  data-demo-src="assets/img/avatars/photos/8.jpg"
+                  alt=""
+                />
+                <span className="status-indicator"></span>
+                <div className="dropdown-menu" role="menu">
+                  <div className="dropdown-content">
+                    <div className="dropdown-head">
+                      <div className="h-avatar is-large">
+                        <img
+                          className="avatar"
+                          src="https://via.placeholder.com/150x150"
+                          data-demo-src="assets/img/avatars/photos/8.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div className="meta">
+                        <span>Erik Kovalsky</span>
+                        <span>Product Manager</span>
+                      </div>
+                    </div>
+                    <a
+                      href="/admin-profile-view.html"
+                      className="dropdown-item is-media"
                     >
-                      <div className="collapse-wrap">
-                        <a className="parent-link">
-                          <div className="icon">
-                            {/* <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="feather feather-briefcase"
-                            >
-                              <rect
-                                x="2"
-                                y="7"
-                                width="20"
-                                height="14"
-                                rx="2"
-                                ry="2"
-                              ></rect>
-                              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                            </svg> */}
-                            <FeatherIcon name="Briefcase" />
-                          </div>
-                          Reports
+                      <div className="icon">
+                        <i className="lnil lnil-user-alt"></i>
+                      </div>
+                      <div className="meta">
+                        <span>Profile</span>
+                        <span>View your profile</span>
+                      </div>
+                    </a>
+                    <a className="dropdown-item is-media layout-switcher">
+                      <div className="icon">
+                        <i className="lnil lnil-layout"></i>
+                      </div>
+                      <div className="meta">
+                        <span>Layout</span>
+                        <span>Switch to admin/webapp</span>
+                      </div>
+                    </a>
+                    <hr className="dropdown-divider" />
+                    <a href="#" className="dropdown-item is-media">
+                      <div className="icon">
+                        <i className="lnil lnil-briefcase"></i>
+                      </div>
+                      <div className="meta">
+                        <span>Projects</span>
+                        <span>All my projects</span>
+                      </div>
+                    </a>
+                    <a href="#" className="dropdown-item is-media">
+                      <div className="icon">
+                        <i className="lnil lnil-users-alt"></i>
+                      </div>
+                      <div className="meta">
+                        <span>Team</span>
+                        <span>Manage your team</span>
+                      </div>
+                    </a>
+                    <hr className="dropdown-divider" />
+                    <a href="#" className="dropdown-item is-media">
+                      <div className="icon">
+                        <i className="lnil lnil-cog"></i>
+                      </div>
+                      <div className="meta">
+                        <span>Settings</span>
+                        <span>Account settings</span>
+                      </div>
+                    </a>
+                    <hr className="dropdown-divider" />
+                    <div className="dropdown-item is-button">
+                      <button className="button h-button is-primary is-raised is-fullwidth logout-button">
+                        <span className="icon is-small">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"
@@ -129,54 +211,51 @@ const Sidebar = () => {
                             strokeWidth="2"
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            className="feather feather-chevron-right"
+                            className="feather feather-log-out"
                           >
-                            <polyline points="9 18 15 12 9 6"></polyline>
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
                           </svg>
-                        </a>
-                      </div>
-                      <ul
-                        style={{
-                          display: reportSubmenuOpen ? "block" : "none",
-                        }}
-                      >
-                        <li>
-                          <a
-                            className="is-submenu"
-                            href="/admin-dashboards-personal-1.html"
-                          >
-                            <i className="lnil lnil-air-flow"></i>
-                            <span>Financial report</span>
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            className="is-submenu"
-                            href="/admin-dashboards-personal-2.html"
-                          >
-                            <i className="lnil lnil-pie-chart"></i>
-                            <span>Social report</span>
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            className="is-submenu"
-                            href="/admin-dashboards-personal-3.html"
-                          >
-                            <i className="lnil lnil-stats-up"></i>
-                            <span>Growth report</span>
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
+                        </span>
+                        <span>Logout</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      {/* Sidebar panel starts here */}
+      <div className={sidebarPanelClassNames}>
+        <div className="subpanel-header">
+          <h3 className="no-mb">Heading 101</h3>
+        </div>
+        <div className="inner">
+          <div className="simplebar-wrapper">
+            <div className="simplebar-mask">
+              <div className="simplebar-offset" style={{ right: 0, bottom: 0 }}>
+                <div
+                  className="simplebar-content-wrapper"
+                  style={{ height: "100%", overflow: "hidden scroll" }}
+                >
+                  <div className="simplebar-content" style={{ padding: 0 }}>
+                    <ul>
+                      <li>Link 1</li>
+                      <li>Link 2</li>
+                      <li>Link 3</li>
+                      <li>Link 4</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

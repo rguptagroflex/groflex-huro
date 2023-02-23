@@ -7,8 +7,8 @@ const PageContent = ({ title, children }) => {
 
   const toggleSidebar = useToggleSidebar();
 
-  const viewWrapperClassNames = `view-wrapper view-wrapper-full ${
-    cssContext.isPushedFull ? "is-pushed-block" : ""
+  const viewWrapperClassNames = `view-wrapper ${
+    cssContext.isPushedFull ? "is-pushed-full" : ""
   }`;
 
   return (
