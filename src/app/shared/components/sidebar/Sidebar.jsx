@@ -8,17 +8,19 @@ import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
   // const currentLocation = window.location.pathname;
-  const { cssContext, setCssContext } = useContext(AppContext);
+  const { cssContext } = useContext(AppContext);
   const [profileMenuIsActive, setProfileMenuIsActive] = useState(false);
   const [naverMarginTop, setNaverMarginTop] = useState(150);
 
   useEffect(() => {
     if (window.location.pathname === "/") {
       setNaverMarginTop(150);
-    } else if (window.location.pathname === "/page2") {
+    } else if (window.location.pathname === "/page1") {
       setNaverMarginTop(214);
-    } else if (window.location.pathname === "/page3") {
+    } else if (window.location.pathname === "/page2") {
       setNaverMarginTop(278);
+    } else if (window.location.pathname === "/page3") {
+      setNaverMarginTop(342);
     }
   }, []);
 
@@ -57,18 +59,47 @@ const Sidebar = () => {
           />
           <ul className="icon-menu">
             <li>
-              <a href="/" data-content="Dashboards">
+              <a
+                href="/"
+                data-content="Dashboards"
+                className={`${
+                  window.location.pathname === "/" ? "is-active" : ""
+                }`}
+              >
                 <FeatherIcon name={"Activity"} />
               </a>
             </li>
             <li>
-              <a href="/page2" data-content="Dashboards">
+              <a
+                className={`${
+                  window.location.pathname === "/page1" ? "is-active" : ""
+                }`}
+                href="/page1"
+                data-content="Dashboards"
+              >
                 <FeatherIcon name={"Grid"} />
               </a>
             </li>
             <li>
-              <a href="/page3" data-content="Dashboards">
+              <a
+                className={`${
+                  window.location.pathname === "/page2" ? "is-active" : ""
+                }`}
+                href="/page2"
+                data-content="Dashboards"
+              >
                 <FeatherIcon name={"Box"} />
+              </a>
+            </li>
+            <li>
+              <a
+                className={`${
+                  window.location.pathname === "/page3" ? "is-active" : ""
+                }`}
+                href="/page3"
+                data-content="Dashboards"
+              >
+                <FeatherIcon name={"Cpu"} />
               </a>
             </li>
           </ul>
