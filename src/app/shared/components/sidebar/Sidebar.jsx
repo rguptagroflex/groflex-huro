@@ -113,12 +113,7 @@ const Sidebar = () => {
             </li> */}
 
             <li>
-              <a
-                className="is-selected is-active"
-                href="/"
-                id="open-settings"
-                data-content="Settings"
-              >
+              <a href="/" id="open-settings" data-content="Settings">
                 <FeatherIcon name={"Settings"} />
               </a>
             </li>
