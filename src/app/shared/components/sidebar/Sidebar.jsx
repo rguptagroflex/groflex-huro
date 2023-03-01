@@ -7,22 +7,23 @@ import { FeatherIcon } from "../../featherIcon/FeatherIcon";
 import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
-  // const currentLocation = window.location.pathname;
   const { cssContext } = useContext(AppContext);
   const [profileMenuIsActive, setProfileMenuIsActive] = useState(false);
-  const [naverMarginTop, setNaverMarginTop] = useState(150);
+  const [currentLocation, setCurrentLocation] = useState(
+    window.location.pathname
+  );
 
-  useEffect(() => {
-    if (window.location.pathname === "/") {
-      setNaverMarginTop(150);
-    } else if (window.location.pathname === "/page1") {
-      setNaverMarginTop(214);
-    } else if (window.location.pathname === "/page2") {
-      setNaverMarginTop(278);
-    } else if (window.location.pathname === "/page3") {
-      setNaverMarginTop(342);
+  const getNaverMarginTop = () => {
+    if (currentLocation === "/") {
+      return 150;
+    } else if (currentLocation === "/page1") {
+      return 214;
+    } else if (currentLocation === "/page2") {
+      return 278;
+    } else if (currentLocation === "/page3") {
+      return 342;
     }
-  }, []);
+  };
 
   const handleProfileDropdown = () => {
     setProfileMenuIsActive(!profileMenuIsActive);
@@ -40,7 +41,6 @@ const Sidebar = () => {
   const profileDropDownClassNames = `dropdown profile-dropdown dropdown-trigger is-spaced is-up ${
     profileMenuIsActive ? "is-active" : ""
   }`;
-  console.log(window.location.pathname, naverMarginTop);
   return (
     <>
       {/* The main sidebar (thin one) */}
@@ -55,94 +55,56 @@ const Sidebar = () => {
           {/* Quote type active */}
           <div
             className="naver from-top"
-            style={{ marginTop: `${naverMarginTop}px` }}
+            style={{ marginTop: `${getNaverMarginTop()}px` }}
           />
           <ul className="icon-menu">
             <li>
-              <a
-                href="/"
-                data-content="Dashboards"
-                className={`${
-                  window.location.pathname === "/" ? "is-active" : ""
-                }`}
+              <NavLink
+                to="/"
+                className={({ isActive }) => (isActive ? "is-active" : "")}
+                onClick={() => {
+                  setCurrentLocation("/");
+                }}
               >
                 <FeatherIcon name={"Activity"} />
-              </a>
+              </NavLink>
             </li>
             <li>
-              <a
-                className={`${
-                  window.location.pathname === "/page1" ? "is-active" : ""
-                }`}
-                href="/page1"
-                data-content="Dashboards"
+              <NavLink
+                to="/page1"
+                className={({ isActive }) => (isActive ? "is-active" : "")}
+                onClick={() => {
+                  setCurrentLocation("/page1");
+                }}
               >
                 <FeatherIcon name={"Grid"} />
-              </a>
+              </NavLink>
             </li>
             <li>
-              <a
-                className={`${
-                  window.location.pathname === "/page2" ? "is-active" : ""
-                }`}
-                href="/page2"
-                data-content="Dashboards"
+              <NavLink
+                to="/page2"
+                className={({ isActive }) => (isActive ? "is-active" : "")}
+                onClick={() => {
+                  setCurrentLocation("/page2");
+                }}
               >
                 <FeatherIcon name={"Box"} />
-              </a>
+              </NavLink>
             </li>
             <li>
-              <a
-                className={`${
-                  window.location.pathname === "/page3" ? "is-active" : ""
-                }`}
-                href="/page3"
-                data-content="Dashboards"
+              <NavLink
+                to="/page3"
+                className={({ isActive }) => (isActive ? "is-active" : "")}
+                onClick={() => {
+                  setCurrentLocation("/page3");
+                }}
               >
                 <FeatherIcon name={"Cpu"} />
-              </a>
+              </NavLink>
             </li>
           </ul>
 
-          {/* Commented the search button because of confusion */}
           <ul className="bottom-menu">
-            {/* <li className="right-panel-trigger" data-panel="search-panel">
-              <a href="/" id="open-search" data-content="Search">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  className="feather feather-search sidebar-svg"
-                >
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-              </a>
-              <a href="/" id="close-search" className="is-hidden is-inactive">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  className="feather feather-x sidebar-svg"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </a>
-            </li> */}
-
             <li>
               <a href="/" id="open-settings" data-content="Settings">
                 <FeatherIcon name={"Settings"} />
