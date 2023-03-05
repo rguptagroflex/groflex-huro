@@ -7,6 +7,8 @@ import { SignUp } from "./app/views/account/Signup";
 import Page2 from "./app/views/page2/Page2";
 import Page3 from "./app/views/page3/Page3";
 import Page1 from "./app/views/page1/Page1";
+import AccountSettings from "./app/views/accountSettings/AccountSettings";
+import Preferences from "./app/views/preferences/Preferences";
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
           <Route path="page1" element={<Page1 />} />
           <Route path="page2" element={<Page2 />} />
           <Route path="page3" element={<Page3 />} />
+          <Route path="account-settings" element={<AccountSettings />} />
+          <Route path="preferences" element={<Preferences />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />

@@ -1,6 +1,6 @@
 import React from "react";
 
-export const Button = ({
+export const IconButton = ({
   children,
   isBold,
   isPrimary,
@@ -20,9 +20,6 @@ export const Button = ({
   isRaised,
   icon,
   iconSmall,
-  isWhite,
-  isDisabled,
-  isFullWidth,
   iconType,
   onClick,
   ...rest
@@ -33,13 +30,11 @@ export const Button = ({
     isCircle && classes.push("is-circle");
     isRounded && classes.push("is-rounded");
 
-    // Color Options
     isPrimary && classes.push("is-primary");
     isSuccess && classes.push("is-success");
     isInfo && classes.push("is-info");
     isWarning && classes.push("is-warning");
     isDanger && classes.push("is-danger");
-    isWhite && classes.push("is-white");
     isLight && classes.push("is-light");
 
     isRaised && classes.push("is-raised");
@@ -55,10 +50,6 @@ export const Button = ({
 
     isLoading && classes.push("is-loading");
 
-    isDisabled && classes.push("is-disabled");
-
-    isFullWidth && classes.push("is-fullwidth");
-
     return classes.join(" ");
   };
 
@@ -67,15 +58,13 @@ export const Button = ({
       <button
         onClick={onClick}
         {...rest}
-        className={`button h-button ${getButtonClasses()}`}
+        className={`button ${getButtonClasses()}`}
       >
         {icon && (
           <span className={`icon ${iconSmall && "is-small"}`}>
             <i className={`fas fa-${iconType}`}></i>
           </span>
         )}
-
-        <span>{children}</span>
       </button>
     </>
   );
