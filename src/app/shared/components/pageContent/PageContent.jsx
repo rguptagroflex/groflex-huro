@@ -48,7 +48,7 @@ const PageContent = ({
                 >
                   <ul>
                     {breadCrumbData.map((breadCrumb) => (
-                      <li>
+                      <li key={breadCrumb}>
                         <a href="#">
                           <span>{breadCrumb}</span>
                         </a>

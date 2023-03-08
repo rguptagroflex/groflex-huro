@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "../../shared/components/button/Button";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
 import { FileInput } from "../../shared/components/fileInput/FileInput";
@@ -9,13 +9,21 @@ import { TextArea } from "../../shared/components/textArea/TextArea";
 import ApexChart from "../../shared/components/apexChart/ApexChart";
 import PageContent from "../../shared/components/pageContent/PageContent";
 import { Link } from "react-router-dom";
+import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
+import ChangeEmailModal from "./ChangeEmailModal";
 
 const AccountSettings = () => {
+  const [changeEmailModalActive, setChangeEmailModalActive] = useState(false);
+
   return (
     <PageContent
       titleIsBreadCrumb
       breadCrumbData={["Home", "Account Settings", "Account details"]}
     >
+      <ChangeEmailModal
+        isActive={changeEmailModalActive}
+        setIsActive={setChangeEmailModalActive}
+      />
       <div className="page-content-inner">
         <div className="tabs-wrapper">
           <div className="tabs-inner">
@@ -40,7 +48,7 @@ const AccountSettings = () => {
                   footer
                   footerContentRight={<Button isSuccess>Save</Button>}
                 >
-                  <h2 className="title is-6 is-bold">Profile Info</h2>
+                  <h2 className="title is-5 is-bold">Profile Info</h2>
 
                   <>
                     <div className="columns is-multiline m-b-5">
@@ -50,10 +58,13 @@ const AccountSettings = () => {
                           <InputAddons
                             placeholder={"Enter Details"}
                             right={
-                              <i
-                                className="fas fa-pen"
-                                style={{ color: "#06d6a0" }}
-                              ></i>
+                              <FeatherIcon
+                                color="#06d6a0"
+                                name="Edit"
+                                onClick={() => {
+                                  setChangeEmailModalActive(true);
+                                }}
+                              />
                             }
                           />
                         </div>
@@ -96,7 +107,7 @@ const AccountSettings = () => {
                   footer
                   footerContentRight={<Button isSuccess>Save</Button>}
                 >
-                  <h2 className="title is-6  is-bold">Company Info</h2>
+                  <h2 className="title is-5  is-bold">Company Info</h2>
                   <p className="subtitle is-6">
                     This details will appear in your invoices and expenses
                   </p>
@@ -204,7 +215,7 @@ const AccountSettings = () => {
                 >
                   <div className="columns is-multiline">
                     <div className="column is-8">
-                      <h2 className="title is-6 is-bold">KYC Form</h2>
+                      <h2 className="title is-5 is-bold">KYC Form</h2>
 
                       <p>
                         Complete your KYC documentation and start accepting
@@ -231,7 +242,7 @@ const AccountSettings = () => {
                   }
                 >
                   <div>
-                    <h2 className="title is-6 is-bold">Your Plan</h2>
+                    <h2 className="title is-5 is-bold">Your Plan</h2>
 
                     <p>
                       Current Plan -{" "}

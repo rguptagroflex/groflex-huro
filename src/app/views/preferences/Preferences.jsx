@@ -22,7 +22,7 @@ function Preferences() {
           footer
           footerContentRight={<Button isLight>Save</Button>}
         >
-          <h2 className="title is-4 is-bold">Personal Information</h2>
+          <h2 className="title is-5 is-bold">Personal Information</h2>
           <>
             <div className="columns is-multiline m-b-5">
               <div className="column is-6">
@@ -77,7 +77,7 @@ function Preferences() {
           footer
           footerContentRight={<Button isLight>Delete</Button>}
         >
-          <h3 className="title is-4 is-bold">Delete Account</h3>
+          <h3 className="title is-5 is-bold">Delete Account</h3>
           <p className="title is-6 is-narrow is-thin m-1 m-b-2">
             If you delete your groflex account all your data will be lost,
           </p>
@@ -140,7 +140,7 @@ function Preferences() {
         <AdvancedCard type={"s-card"}>
           <div className="columns is-multiline">
             <div className="column is-8">
-              <h3 className="title is-4 is-bold">Your Notifications</h3>
+              <h3 className="title is-5 is-bold">Your Notifications</h3>
               <p>Receive your notifications</p>
             </div>
             <div className="column is-4 m-t-35">
@@ -163,7 +163,7 @@ function Preferences() {
               </Button>
             }
           >
-            <h3 className="title is-4 is-bold">Send Email Preferences</h3>
+            <h3 className="title is-5 is-bold">Send Email Preferences</h3>
             <p className="title is-6 is-thin">
               Your customer emails will be sent under this name and email
               address

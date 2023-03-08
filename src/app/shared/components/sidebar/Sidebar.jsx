@@ -2,7 +2,6 @@ import React, { useContext, useState } from "react";
 import { AppContext } from "../../context/AppContext";
 import lightLogo from "../../../../assets/img/logos/logo/logo.svg";
 import darkLogo from "../../../../assets/img/logos/logo/logo-light.svg";
-import useThemeSwitch from "../../../helpers/hooks/useThemeSwitch";
 import { FeatherIcon } from "../../featherIcon/FeatherIcon";
 import { NavLink } from "react-router-dom";
 import SidebarPanel from "./SidebarPanel";
@@ -10,7 +9,6 @@ import ProfileMenu from "./ProfileMenu";
 
 const Sidebar = () => {
   const { cssContext } = useContext(AppContext);
-  const [profileMenuIsActive, setProfileMenuIsActive] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(
     window.location.pathname
   );
@@ -27,10 +25,6 @@ const Sidebar = () => {
     }
   };
 
-  const handleProfileDropdown = () => {
-    setProfileMenuIsActive(!profileMenuIsActive);
-  };
-
   const mainSidebarClassNames = `main-sidebar ${
     cssContext?.isPushedFull ? "is-bordered" : ""
   }`;
@@ -39,9 +33,6 @@ const Sidebar = () => {
   }`;
   const sidebarPanelClassNames = `sidebar-panel is-generic ${
     cssContext?.isPushedFull ? "is-active" : ""
-  }`;
-  const profileDropDownClassNames = `dropdown profile-dropdown dropdown-trigger is-spaced is-up ${
-    profileMenuIsActive ? "is-active" : ""
   }`;
 
   const sidebarRoutesIsActive = ({ isActive }) => (isActive ? "is-active" : "");
@@ -100,16 +91,14 @@ const Sidebar = () => {
           </ul>
 
           <ul className="bottom-menu">
-            <li>
+            <li style={{ cursor: "auto" }}>
               <NavLink to="/account-settings">
                 <FeatherIcon name={"Settings"} />
               </NavLink>
             </li>
             {/* Profile menu */}
-            <li id="user-menu" onClick={handleProfileDropdown}>
-              <ProfileMenu
-                profileDropDownClassNames={profileDropDownClassNames}
-              />
+            <li style={{ cursor: "auto" }} id="user-menu">
+              <ProfileMenu />
             </li>
           </ul>
         </div>
