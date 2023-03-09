@@ -48,10 +48,10 @@ function Preferences() {
               </div>
             </div>
             <div className="columns is-multiline m-b-10">
-              <div class="column is-12">
-                <div class="field">
+              <div className="column is-12">
+                <div className="field">
                   <label>New password *</label>
-                  <div class="control">
+                  <div className="control">
                     <Input
                       type="password"
                       className="input"
@@ -106,10 +106,10 @@ function Preferences() {
               </div>
             </div>
             <div className="columns is-multiline">
-              <div class="column is-12">
-                <div class="field">
+              <div className="column is-12">
+                <div className="field">
                   <label>Reason</label>
-                  <div class="control">
+                  <div className="control">
                     <TextArea
                       rows={3}
                       placeholder={
@@ -121,7 +121,7 @@ function Preferences() {
               </div>
             </div>
             <div className="columns is-multiline m-b-10">
-              <div class="column is-12">
+              <div className="column is-12">
                 <p className="title is-6 is-thin">
                   Please confirm "Delete Account" by clicking confirmation link
                   sent to your email address.
@@ -169,11 +169,11 @@ function Preferences() {
               address
             </p>
             <div className="columns is-multiline">
-              <div class="column is-8">
-                <div class="field">
+              <div className="column is-8">
+                <div className="field">
                   <label>Sender Name*</label>
 
-                  <div class="control">
+                  <div className="control">
                     <Input
                       type={"text"}
                       className="input"
@@ -184,10 +184,10 @@ function Preferences() {
                   </div>
                 </div>
               </div>
-              <div class="column is-8 m-b-10">
-                <div class="field">
+              <div className="column is-8 m-b-10">
+                <div className="field">
                   <label>Recipient Email Address *</label>
-                  <div class="control">
+                  <div className="control">
                     <Input
                       type="email"
                       className="input"

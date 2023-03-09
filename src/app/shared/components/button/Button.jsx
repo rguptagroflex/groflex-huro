@@ -63,20 +63,18 @@ export const Button = ({
   };
 
   return (
-    <>
-      <button
-        onClick={onClick}
-        {...rest}
-        className={`button h-button ${getButtonClasses()}`}
-      >
-        {icon && (
-          <span className={`icon ${iconSmall && "is-small"}`}>
-            <i className={`fas fa-${iconType}`}></i>
-          </span>
-        )}
+    <button
+      onClick={onClick}
+      {...rest}
+      className={`button h-button ${getButtonClasses()}`}
+    >
+      {icon && (
+        <span className={`icon ${iconSmall && "is-small"}`}>
+          <i className={`fas fa-${iconType}`}></i>
+        </span>
+      )}
 
-        <span>{children}</span>
-      </button>
-    </>
+      <span>{children}</span>
+    </button>
   );
 };

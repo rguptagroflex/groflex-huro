@@ -56,6 +56,8 @@ const AccountSettings = () => {
                         <div className="field">
                           <label>Registered E-mail Address</label>
                           <InputAddons
+                            value={"example@gmail.com"}
+                            disabled  
                             placeholder={"Enter Details"}
                             right={
                               <FeatherIcon

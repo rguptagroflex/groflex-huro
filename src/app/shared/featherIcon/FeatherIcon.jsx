@@ -12,7 +12,6 @@ export function FeatherIcon({
   ...rest
 }) {
   const IconComponent = icons[name];
-  <icons.X />;
   return (
     <IconComponent
       style={style}

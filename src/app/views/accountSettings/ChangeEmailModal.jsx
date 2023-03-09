@@ -52,8 +52,10 @@ const ChangeEmailModal = ({ isActive = false, setIsActive }) => {
           />
         </span>
         <span>
-          Please confirm your new mail by clicking confirmation link sent to
-          your new email adress
+          <p>
+            Please confirm your new mail by clicking confirmation link sent to
+            your new email adress
+          </p>
         </span>
       </div>
     </Modal>
