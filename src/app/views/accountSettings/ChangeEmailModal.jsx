@@ -33,13 +33,17 @@ const ChangeEmailModal = ({ isActive = false, setIsActive }) => {
         <div className="columns">
           <div className="field column is-9">
             <label>New Email Address</label>
-            <Input type="email" onChange={handleEmailChange} />
+            <Input value={newEmail} type="email" onChange={handleEmailChange} />
           </div>
         </div>
         <div className="columns">
           <div className="field column is-9">
             <label>Current Password</label>
-            <Input type="password" onChange={handlePasswordChange} />
+            <Input
+              value={currentPassword}
+              type="password"
+              onChange={handlePasswordChange}
+            />
           </div>
         </div>
       </form>
