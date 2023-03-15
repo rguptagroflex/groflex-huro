@@ -6,6 +6,7 @@ export const InputAddons = ({
   right,
   placeholder,
   value,
+  onRightAdornmentClick,
   onChange,
   ...rest
 }) => {
@@ -30,7 +31,7 @@ export const InputAddons = ({
       </div>
 
       {right && (
-        <div className="control">
+        <div onClick={onRightAdornmentClick} className="control">
           <a className="button">{right}</a>
         </div>
       )}

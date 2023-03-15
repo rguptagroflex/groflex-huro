@@ -57,17 +57,12 @@ const AccountSettings = () => {
                           <label>Registered E-mail Address</label>
                           <InputAddons
                             value={"example@gmail.com"}
-                            disabled  
+                            disabled
                             placeholder={"Enter Details"}
-                            right={
-                              <FeatherIcon
-                                color="#06d6a0"
-                                name="Edit"
-                                onClick={() => {
-                                  setChangeEmailModalActive(true);
-                                }}
-                              />
-                            }
+                            right={<FeatherIcon color="#06d6a0" name="Edit" />}
+                            onRightAdornmentClick={() => {
+                              setChangeEmailModalActive(true);
+                            }}
                           />
                         </div>
                       </div>
