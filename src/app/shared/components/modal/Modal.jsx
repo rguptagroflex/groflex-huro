@@ -16,6 +16,8 @@ const Modal = ({
   isLarge,
   isBig,
   children,
+  ModalHeaderButton,
+  otherHeaderChildren,
 }) => {
   function getActionPositionClass() {
     if (leftActions) {
@@ -56,13 +58,26 @@ const Modal = ({
         <div className="modal-card">
           <header className="modal-card-head">
             <h3>{title}</h3>
-            <button
-              onClick={closeModal}
-              className="h-modal-close ml-auto"
-              aria-label="close"
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
             >
-              <FeatherIcon name="X" />
-            </button>
+              {otherHeaderChildren}
+              {ModalHeaderButton ? (
+                ModalHeaderButton
+              ) : (
+                <button
+                  onClick={closeModal}
+                  className="h-modal-close ml-auto"
+                  aria-label="close"
+                >
+                  <FeatherIcon name="X" />
+                </button>
+              )}
+            </div>
           </header>
           <div className="modal-card-body">
             <div className="inner-content">
