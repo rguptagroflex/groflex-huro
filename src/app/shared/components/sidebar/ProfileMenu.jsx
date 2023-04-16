@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import OnClickOutside from "../onClickOutside/OnClickOutside";
+import { FeatherIcon } from "../../featherIcon/FeatherIcon";
 
-const ProfileMenu = () => {
-  const [profileMenuIsActive, setProfileMenuIsActive] = useState(false);
-  const handleProfileDropdown = () => {
+const ProfileMenu = ({ profileMenuIsActive, setProfileMenuIsActive }) => {
+  // const [profileMenuIsActive, setProfileMenuIsActive] = useState(false);
+  const toggleProfileDropdown = () => {
     setProfileMenuIsActive(!profileMenuIsActive);
   };
   const closeProfileMenu = () => {
@@ -13,19 +14,25 @@ const ProfileMenu = () => {
   return (
     <OnClickOutside onClickOutside={closeProfileMenu}>
       <div
-        onClick={handleProfileDropdown}
         id="profile-menu"
         className={`dropdown profile-dropdown dropdown-trigger is-spaced is-up ${
           profileMenuIsActive ? "is-active" : ""
         }`}
       >
-        <img
-          style={{ cursor: "pointer" }}
-          src="https://via.placeholder.com/150x150"
-          data-demo-src="assets/img/avatars/photos/8.jpg"
-          alt=""
-        />
-        <span className="status-indicator"></span>
+        <div
+          onClick={toggleProfileDropdown}
+          style={{
+            margin: "auto",
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+        >
+          <FeatherIcon name={"User"} />
+        </div>
         <div className="dropdown-menu" role="menu">
           <div className="dropdown-content">
             <div className="dropdown-head">

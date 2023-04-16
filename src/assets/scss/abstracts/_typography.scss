@@ -1,5 +1,5 @@
 /*! _typography.scss | Huro | Css ninja 2020-2021 */
-
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 /*
     1. Titles
     2. Titles Dark mode
@@ -10,8 +10,10 @@
 1. Titles
 ========================================================================== */
 
-$font: "Roboto", sans-serif;
-$font-alt: "Montserrat", sans-serif;
+// $font: "Roboto", sans-serif;
+// $font-alt: "Montserrat", sans-serif;
+$font: "Inter", sans-serif;
+$font-alt: "Inter", sans-serif;
 
 .title {
   font-family: $font-alt;

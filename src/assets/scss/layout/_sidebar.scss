@@ -15,10 +15,12 @@
   left: 0;
   height: 100vh;
   width: 80px;
-  background-color: #f9f9f9;
+  // background-color: #f9f9f9;
+  background-color: #f2f2f2;
   box-shadow: none;
   z-index: 35;
   transition: border-radius 0.3s;
+  border-right: 1px solid #c6c6c6;
 
   &.is-bordered {
     border-right: 1px solid $fade-grey !important;

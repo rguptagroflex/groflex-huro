@@ -1,14 +1,17 @@
 import Home from "./app/views/home/Home";
-import PageNotFound from "./app/views/pageNotFound/PageNotFound";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SharedLayout from "./app/shared/sharedLayout/SharedLayout";
 import Login from "./app/views/account/Login";
 import { SignUp } from "./app/views/account/Signup";
-import Page2 from "./app/views/page2/Page2";
-import Page3 from "./app/views/page3/Page3";
-import Page1 from "./app/views/page1/Page1";
+import Estimates from "./app/views/estimates/Estimates";
+import Articles from "./app/views/articles/Articles";
+import Dashboard from "./app/views/dashboard/Dashboard";
 import AccountSettings from "./app/views/accountSettings/AccountSettings";
 import Preferences from "./app/views/preferences/Preferences";
+import Notifications from "./app/views/notifications/Notifications";
+import Contacts from "./app/views/contacts/Contacts";
+import Expenses from "./app/views/expenses/Expenses";
+import CashAndBank from "./app/views/cashAndBank/CashAndBank";
 
 function App() {
   return (
@@ -16,15 +19,19 @@ function App() {
       <Routes>
         <Route path="/" element={<SharedLayout />}>
           <Route index element={<Home />} />
-          <Route path="page1" element={<Page1 />} />
-          <Route path="page2" element={<Page2 />} />
-          <Route path="page3" element={<Page3 />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="estimates" element={<Estimates />} />
+          <Route path="articles" element={<Articles />} />
+          <Route path="contacts" element={<Contacts />} />
+          <Route path="expenses" element={<Expenses />} />
+          <Route path="cash-and-bank" element={<CashAndBank />} />
           <Route path="account-settings" element={<AccountSettings />} />
           <Route path="preferences" element={<Preferences />} />
+          <Route path="notifications" element={<Notifications />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="*" element={<PageNotFound />} />
+        <Route path="*" element={<Home />} />
       </Routes>
     </BrowserRouter>
   );

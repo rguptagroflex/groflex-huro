@@ -59,7 +59,7 @@ const AccountSettings = () => {
                             value={"example@gmail.com"}
                             disabled
                             placeholder={"Enter Details"}
-                            right={<FeatherIcon color="#06d6a0" name="Edit" />}
+                            right={<FeatherIcon color="#00a353" name="Edit" />}
                             onRightAdornmentClick={() => {
                               setChangeEmailModalActive(true);
                             }}
