@@ -1,193 +1,241 @@
-import React, { useState } from "react";
-import bankingImgLight from "../../../assets/img/illustrations/apps/huro-banking-light.png";
-import bankingImgDark from "../../../assets/img/illustrations/apps/huro-banking-dark.png";
-import logoLight from "../../../assets/img/logos/logo/logo.svg";
-import logoDark from "../../../assets/img/logos/logo/logo-light.svg";
-import { Link, useNavigate } from "react-router-dom";
-import { Input } from "../../shared/components/input/Input";
-import { Button } from "../../shared/components/button/Button";
-import { Switch } from "../../shared/components/switch/Switch";
-import useThemeSwitch from "../../helpers/hooks/useThemeSwitch";
+import React, { useMemo, useState } from 'react';
+import signupImage from '../../../assets/img/signup_image.jpg';
+import groflexLogo from '../../../assets/img/groflex_logo.svg';
+import { Link, useNavigate } from 'react-router-dom';
+import { Input } from '../../shared/components/input/Input';
+import { Button } from '../../shared/components/button/Button';
+import useThemeSwitch from '../../helpers/hooks/useThemeSwitch';
+import { Checkbox } from '../../shared/components/checkbox/Checkbox';
 
 export const SignUp = () => {
-  const themeSwitch = useThemeSwitch();
-  const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [repeatPassword, setRepeatPassword] = useState("");
-  const [receivePromotionalOffers, setReceivePromotionalOffers] =
-    useState(false);
+	const themeSwitch = useThemeSwitch();
+	const navigate = useNavigate();
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+	const [formSubmitted, setFormSubmitted] = useState(false);
+	const [receivePromotionalOffers, setReceivePromotionalOffers] =
+		useState(false);
+	const checkboxLabelStyle = {
+		display: 'flex',
+		justifyContent: 'space-between',
+		padding: '0.5rem',
+	};
+	const checkboxValidationSuccess = {
+		isSolid: true,
+		isSuccess: true,
+		checked: true,
+	};
+	const emailInvalidFormatCheck = email &&
+		formSubmitted &&
+		!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && {
+			hasValidation: true,
+			isError: true,
+			helpText: 'Invalid Email Format',
+		};
+	const validateForm = formSubmitted &&
+		!email &&
+		!password && {
+			email: {
+				hasValidation: true,
+				isError: true,
+				helpText: 'Email Required',
+			},
+			password: {
+				hasValidation: true,
+				isError: true,
+				helpText: 'Password Required',
+			},
+		};
 
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value.trim());
-  };
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value.trim());
-  };
-  const handleRepeatPasswordChange = (event) => {
-    setRepeatPassword(event.target.value.trim());
-  };
+	const checkPasswordRequirements = useMemo(() => {
+		return {
+			hasSpecialChars:
+				/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password) &&
+				checkboxValidationSuccess,
+			hasCase:
+				/[A-Z]/.test(password) &&
+				/[a-z]/.test(password) &&
+				checkboxValidationSuccess,
+			hasLength: password.length >= 8 && checkboxValidationSuccess,
+		};
+	}, [password]);
+	const handleEmailChange = (event) => {
+		setEmail(event.target.value.trim());
+	};
+	const handlePasswordChange = (event) => {
+		setPassword(event.target.value.trim());
+	};
+	const handleReceivePromotionalOffers = () => {
+		setReceivePromotionalOffers(!receivePromotionalOffers);
+	};
+	const handleSignup = (event) => {
+		event.preventDefault();
+		setFormSubmitted(true);
+	};
 
-  const handleUserNameChange = (event) => {
-    setUsername(event.target.value.trim());
-  };
-  const handleReceivePromotionalOffers = () => {
-    setReceivePromotionalOffers(!receivePromotionalOffers);
-  };
+	return (
+		<div className="app-wrapper">
+			<div className="pageloader is-full"></div>
+			<div className="infraloader is-full"></div>
 
-  const handleSignup = () => {
-    navigate("/");
-  };
-  console.log(
-    username,
-    email,
-    password,
-    repeatPassword,
-    receivePromotionalOffers
-  );
+			<div className="auth-wrapper">
+				{/* Page Body */}
+				{/* Wrapper */}
+				<div className="auth-wrapper-inner columns is-gapless">
+					{/* Image Section (hidden on mobile) */}
+					<div
+						className="column login-column is-6 is-hidden-mobile h-hidden-tablet-p"
+						style={{ backgroundColor: 'white' }}
+					>
+						<div className="hero login-hero is-fullheight">
+							<Link
+								to={'/'}
+								style={{ position: 'fixed', top: '20px', left: '5%' }}
+							>
+								<img
+									src={groflexLogo}
+									alt="Groflex Logo"
+									style={{ width: '158px', height: 'auto' }}
+								/>
+							</Link>
 
-  return (
-    <div className="app-wrapper">
-      <div className="pageloader is-full"></div>
-      <div className="infraloader is-full"></div>
+							<div className="hero-body">
+								<div className="columns">
+									<div className="column is-9 is-offset-2">
+										<img src={signupImage} alt="Signup Image" />
+									</div>
+								</div>
+							</div>
 
-      <div className="auth-wrapper">
-        {/* Page Body */}
-        {/* Wrapper */}
-        <div className="auth-wrapper-inner columns is-gapless">
-          {/* Form Section */}
-          <div className="column is-5">
-            <div className="hero is-fullheight is-white">
-              <div className="hero-heading">
-                <label className="dark-mode ml-auto">
-                  <input
-                    type="checkbox"
-                    defaultChecked
-                    onChange={themeSwitch}
-                  />
-                  <span></span>
-                </label>
+							<div
+								style={{
+									display: 'flex',
+									flexDirection: 'column',
+									alignItems: 'center',
+								}}
+							>
+								<div
+									className="hero-footer"
+									style={{
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'space-between',
+										width: '80%',
+										borderTop: '0.1rem solid lightgray',
+										paddingBottom: '0.8rem',
+										paddingTop: '0.8rem',
+										fontSize: '1.1rem',
+									}}
+								>
+									<h2>
+										For more details visit <Link to={'/'}>www.groflex.in</Link>
+									</h2>
 
-                <div className="auth-logo">
-                  <a href="/">
-                    <img
-                      className="top-logo light-image"
-                      src={logoLight}
-                      alt="Logo"
-                    />
-                    <img
-                      className="top-logo dark-image"
-                      src={logoDark}
-                      alt="Logo"
-                    />
-                  </a>
-                </div>
-              </div>
+									<Link to={'/'}>Terms & Conditions</Link>
+								</div>
+							</div>
+						</div>
+					</div>
 
-              <div className="hero-body">
-                <div className="container">
-                  <div className="columns">
-                    <div className="column is-12">
-                      <div className="auth-content">
-                        <h2>Join Us Now.</h2>
-                        <p>Start by creating your account</p>
-                        <Link to={"/login"}>I already have an account</Link>
-                      </div>
+					{/* Form Section */}
+					<div
+						className="column is-6"
+						style={{ backgroundColor: '#E3EFF9', minHeight: '100vh' }}
+					>
+						<div className="single-form-wrap">
+							<div className="inner-wrap" style={{ maxWidth: '500px' }}>
+								<div
+									className="form-card has-light-shadow"
+									style={{
+										borderColor: 'white',
+									}}
+								>
+									<div style={{ paddingBottom: '3rem' }}>
+										<h2 style={{ fontSize: '1.8rem', fontWeight: '700' }}>
+											Create your Groflex account
+										</h2>
+										<p>Please input your details</p>
+									</div>
 
-                      <div className="auth-form-wrapper">
-                        {/* Login Form */}
-                        <form onSubmit={handleSignup}>
-                          <div className="login-form">
-                            <Input
-                              value={username}
-                              onChange={handleUserNameChange}
-                              placeholder={"Username"}
-                              hasIcon
-                              iconType={"user"}
-                            />
-                            <Input
-                              value={email}
-                              onChange={handleEmailChange}
-                              placeholder={"Email Address"}
-                              hasIcon
-                              iconType={"envelope"}
-                            />
-                            <Input
-                              value={password}
-                              onChange={handlePasswordChange}
-                              placeholder={"Password"}
-                              hasIcon
-                              iconType={"lock"}
-                            />
-                            <Input
-                              value={repeatPassword}
-                              onChange={handleRepeatPasswordChange}
-                              placeholder={"Repeat Password"}
-                              hasIcon
-                              iconType={"lock"}
-                            />
+									<form onSubmit={handleSignup}>
+										<div className="login-form">
+											<Input
+												type="email"
+												value={email}
+												onChange={handleEmailChange}
+												placeholder={'Email Address'}
+												hasIcon
+												iconType={'envelope'}
+												{...(email && emailInvalidFormatCheck)}
+												{...validateForm.email}
+											/>
 
-                            <div className="setting-item">
-                              <Switch
-                                value={receivePromotionalOffers}
-                                onChange={handleReceivePromotionalOffers}
-                                isPrimary
-                              />
-                              <div className="setting-meta">
-                                <span>Receive promotional offers</span>
-                              </div>
-                            </div>
+											<Input
+												type="password"
+												value={password}
+												onChange={handlePasswordChange}
+												placeholder={'Password'}
+												hasIcon
+												iconType={'lock'}
+												{...validateForm.password}
+											/>
 
-                            <div className="control login">
-                              <Button
-                                onClick={handleSignup}
-                                isPrimary
-                                isBold
-                                isRaised
-                                isFullWidth
-                              >
-                                Sign Up
-                              </Button>
-                            </div>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+											<div
+												style={{
+													paddingBottom: '1.3rem',
+													paddingTop: '1.3rem',
+												}}
+											>
+												<Checkbox
+													label={'At least 8 characters'}
+													isCircle
+													labelStyle={checkboxLabelStyle}
+													{...checkPasswordRequirements.hasLength}
+												/>
 
-          {/* Image Section (hidden on mobile) */}
-          <div className="column login-column is-7 is-hidden-mobile h-hidden-tablet-p hero-banner">
-            <div className="hero login-hero is-fullheight is-app-grey">
-              <div className="hero-body">
-                <div className="columns">
-                  <div className="column is-10 is-offset-1">
-                    <img
-                      className="light-image has-light-shadow has-light-border"
-                      src={bankingImgLight}
-                      alt="Banking Image"
-                    />
+												<Checkbox
+													label={'At least 1 upper and lower case letter'}
+													isCircle
+													labelStyle={checkboxLabelStyle}
+													{...checkPasswordRequirements.hasCase}
+												/>
 
-                    <img
-                      className="dark-image has-light-shadow"
-                      src={bankingImgDark}
-                      alt="Banking Image"
-                    />
-                  </div>
-                </div>
-              </div>
+												<Checkbox
+													label={'At least 1 number or special character'}
+													isCircle
+													labelStyle={checkboxLabelStyle}
+													{...checkPasswordRequirements.hasSpecialChars}
+												/>
+											</div>
 
-              <div className="hero-footer">
-                <p className="has-text-centered"></p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+											<div className="control login">
+												<Button
+													onClick={handleSignup}
+													isPrimary
+													isBold
+													isRaised
+													isFullWidth
+												>
+													Register
+												</Button>
+											</div>
+
+											<div
+												className="p-t-15"
+												style={{ display: 'flex', justifyContent: 'center' }}
+											>
+												<h2>
+													Already registered? <Link to={'/login'}>SIGN IN</Link>
+												</h2>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
 };
