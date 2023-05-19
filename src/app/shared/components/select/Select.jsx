@@ -1,17 +1,34 @@
 import React from 'react';
 import { useState } from 'react';
 
-export const Select = ({ options }) => {
+export const Select = ({
+	options,
+	boxStyle,
+	iconStyle,
+	showDropdownUpwards,
+	handleClick,
+}) => {
 	const [active, setActive] = useState(false);
+	const [selectedOption, setSelectedOption] = useState(options[0]);
+
+	const displayDropdownUpwards = showDropdownUpwards && {
+		top: 'auto',
+		bottom: '40px',
+	};
+
+	const handleOptionClick = (option) => {
+		setSelectedOption(option);
+		handleClick(option);
+	};
 
 	return (
 		<div className="control" onClick={() => setActive(!active)}>
 			<div className={`h-select ${active ? 'is-active' : ''}`}>
-				<div className="select-box">
-					<span>{options[0]}</span>
+				<div className="select-box" style={boxStyle}>
+					<span>{selectedOption}</span>
 				</div>
 
-				<div className="select-icon">
+				<div className="select-icon" style={iconStyle}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						width="24"
@@ -28,10 +45,17 @@ export const Select = ({ options }) => {
 					</svg>
 				</div>
 
-				<div className="select-drop has-slimscroll-sm">
+				<div
+					className="select-drop has-slimscroll-sm"
+					style={displayDropdownUpwards}
+				>
 					<div className="drop-inner">
 						{options?.map((option) => (
-							<div className="option-row" key={option}>
+							<div
+								className="option-row"
+								key={option}
+								onClick={() => handleOptionClick(option)}
+							>
 								<input type="radio" />
 								<div className="option-meta">
 									<span>{option}</span>
