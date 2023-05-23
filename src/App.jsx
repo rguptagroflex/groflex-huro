@@ -1,5 +1,5 @@
 import Home from "./app/views/home/Home";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import SharedLayout from "./app/shared/sharedLayout/SharedLayout";
 import Login from "./app/views/account/Login";
 import { SignUp } from "./app/views/account/Signup";
@@ -31,7 +31,7 @@ function App() {
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="*" element={<Home />} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
   );
