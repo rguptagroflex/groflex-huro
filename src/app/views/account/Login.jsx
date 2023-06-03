@@ -1,72 +1,63 @@
-import React, { useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import station from "../../../assets/img/illustrations/login/station.svg";
 import useThemeSwitch from "../../helpers/hooks/useThemeSwitch";
-import { AppContext } from "../../shared/context/AppContext";
-import lightLogo from "../../../assets/img/logos/logo/logo.svg";
-import darkLogo from "../../../assets/img/logos/logo/logo-light.svg";
 import { useNavigate } from "react-router-dom";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
-// import invoiz from "../../services/invoiz.service";
+import groflexShortLogo from "../../../assets/img/logos/logo/groflex_short_icon.svg";
+import { useDispatch, useSelector } from "react-redux";
+import config from "../../../../config";
+import _ from "lodash";
+import groflexService from "../../services/groflex.service";
+import * as actionTypes from "../../redux/actions/actions.types";
+import store from "../../redux/store";
+import webStorageKeyEnum from "../../enums/web-storage-key.enum";
+import webstorageService from "../../services/webstorage.service";
+
+store.subscribe(() => {
+  console.log(store.getState());
+});
 
 const Login = () => {
-  const { cssContext } = useContext(AppContext);
-  const navigate = useNavigate();
   const [rememberMe, setRememberMe] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const themeSwitch = useThemeSwitch();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const themeSwitcher = useThemeSwitch();
+  const { theme } = useSelector((state) => state.themeData);
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value.trim());
   };
-
   const handlePasswordChange = (event) => {
     setPassword(event.target.value.trim());
   };
 
+  useEffect(() => {
+    if (config.checkLoginTokenIsValid()) {
+      navigate("/");
+    }
+  });
+
   const handleLogin = () => {
-    // const { resources } = this.props;
-
-    // if (email.length === 0 || password.length === 0) {
-    //   this.setState({
-    //     emailError: email.length === 0 ? resources.requiredFieldValidation : "",
-    //     passwordError:
-    //       password.length === 0 ? resources.requiredFieldValidation : "",
-    //   });
-    // } else if (!config.emailCheck.test(email)) {
-    //   this.setState({
-    //     emailError: resources.invalidEmailError,
-    //   });
-    // } else {
-    //   const loginUser = (response) => {
-    //     invoiz.user.userEmail = email;
-    //     return invoiz.user.login(response).then((redirectTo) => {
-    //       invoiz.router.navigate(redirectTo);
-    //     });
-    //   };
-
-    //   this.setState({ isLogginIn: true }, () => {
-    //     invoiz
-    //       .request(config.account.endpoints.login, {
-    //         method: "POST",
-    //         data: {
-    //           email,
-    //           password,
-    //         },
-    //       })
-    //       .then(loginUser)
-    //       .catch(this.handleSubmitFailure);
-    //   });
-    // }
-    navigate("/");
+    groflexService.login(email, password).then((res) => {
+      console.log(res.data, " :Response for login");
+      dispatch({ type: actionTypes.SET_LOGIN_TOKEN, payload: res.data.token });
+      webstorageService.setItem(
+        webStorageKeyEnum.LOGIN_TOKEN_KEY,
+        res.data.token
+      );
+      webstorageService.setItem(
+        webStorageKeyEnum.LOGIN_TOKEN_START_TIME,
+        new Date().getTime()
+      );
+      navigate("/");
+    });
   };
 
-  // Class dependent stuff
-  const logo = cssContext.theme === "light" ? lightLogo : darkLogo;
-  const logoClassnames =
-    cssContext.theme === "light" ? "light-image" : "dark-image";
+  const logoClassnames = theme === "light" ? "light-image" : "dark-image";
 
-  // console.log(email, password);
+  console.log(email, password);
   return (
     <div className="auth-wrapper is-dark">
       <div className="modern-login">
@@ -87,11 +78,15 @@ const Login = () => {
             </div>
           </div>
           <div className="column is-4 is-relative">
-            <a className="top-logo" href="/">
-              <img src={logo} alt="logo" className={logoClassnames} />
+            <a style={{ width: "55%" }} className="top-logo" href="/">
+              <img
+                src={groflexShortLogo}
+                alt="logo"
+                className={logoClassnames}
+              />
             </a>
             <label className="dark-mode ml-auto">
-              <input onClick={themeSwitch} type="checkbox" defaultChecked />
+              <input onClick={themeSwitcher} type="checkbox" defaultChecked />
               <span></span>
             </label>
             <div className="is-form">
@@ -168,6 +163,7 @@ const Login = () => {
                       onChange={handlePasswordChange}
                       type="password"
                       className="input"
+                      value={password}
                     />
                     <div className="auth-label">Password</div>
                     <div className="auth-icon">

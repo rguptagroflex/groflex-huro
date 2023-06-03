@@ -1,12 +1,10 @@
-import React, { useContext, useState } from "react";
-import { AppContext } from "../../context/AppContext";
-import lightLogo from "../../../../assets/img/logos/logo/logo.svg";
-import darkLogo from "../../../../assets/img/logos/logo/logo-light.svg";
+import React, { useState } from "react";
 import groflexShortLogo from "../../../../assets/img/logos/logo/groflex_short_icon.svg";
 import { FeatherIcon } from "../../featherIcon/FeatherIcon";
 import { NavLink } from "react-router-dom";
 import SidebarPanel from "./SidebarPanel";
 import ProfileMenu from "./ProfileMenu";
+import { useSelector } from "react-redux";
 
 const sidebarRoutes = [
   {
@@ -40,9 +38,9 @@ const sidebarRoutes = [
 ];
 
 const Sidebar = () => {
-  const [profileMenuIsActive, setProfileMenuIsActive] = useState(false);
+  const { sidebarIsActive } = useSelector((state) => state.themeData);
   const [currentPanelLinks, setCurrentPanelLinks] = useState([]);
-  const { cssContext } = useContext(AppContext);
+  const [profileMenuIsActive, setProfileMenuIsActive] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(
     window.location.pathname
   );
@@ -68,13 +66,13 @@ const Sidebar = () => {
   };
 
   const mainSidebarClassNames = `main-sidebar ${
-    cssContext?.isPushedFull ? "is-bordered" : ""
+    sidebarIsActive ? "is-bordered" : ""
   }`;
   const mainSidebarBrandClassNames = `sidebar-brand ${
-    cssContext?.isPushedFull ? "is-bordered" : ""
+    sidebarIsActive ? "is-bordered" : ""
   }`;
   const sidebarPanelClassNames = `sidebar-panel is-generic ${
-    cssContext?.isPushedFull ? "is-active" : ""
+    sidebarIsActive ? "is-active" : ""
   }`;
 
   const sidebarRoutesIsActiveClass = ({ isActive }) => {
@@ -118,16 +116,14 @@ const Sidebar = () => {
                 <li key={linkItem.route}>
                   <NavLink
                     style={({ isActive }) => {
-                      if (isActive) {
-                        return {
-                          backgroundColor: "white",
-                          width: "100%",
-                          height: "100%",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        };
-                      }
+                      return {
+                        backgroundColor: isActive ? "white" : "",
+                        width: isActive ? "100%" : "98%",
+                        height: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      };
                     }}
                     to={linkItem.route}
                     className={sidebarRoutesIsActiveClass}
@@ -142,20 +138,18 @@ const Sidebar = () => {
             })}
           </ul>
 
-          <ul className="bottom-menu">
+          <ul className="bottom-menu icon-menu">
             <li style={{ cursor: "auto" }}>
               <NavLink
                 style={({ isActive }) => {
-                  if (isActive) {
-                    return {
-                      backgroundColor: "white",
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    };
-                  }
+                  return {
+                    backgroundColor: isActive ? "white" : "",
+                    width: isActive ? "100%" : "98%",
+                    height: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  };
                 }}
                 onClick={() => setCurrentLocation("/notifications")}
                 to="/notifications"
@@ -167,8 +161,8 @@ const Sidebar = () => {
             {/* Profile menu */}
             <li
               style={{
-                cursor: "auto",
                 backgroundColor: profileMenuIsActive ? "white" : "",
+                width: profileMenuIsActive ? "100%" : "98%",
               }}
               id="user-menu"
             >

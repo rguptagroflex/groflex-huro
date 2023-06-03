@@ -1,6 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import useToggleSidebar from "../../../helpers/hooks/useToggleSidebar";
-import { AppContext } from "../../context/AppContext";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const PageContent = ({
   title,
@@ -8,14 +9,14 @@ const PageContent = ({
   titleIsBreadCrumb = false,
   breadCrumbData = [],
 }) => {
-  const { cssContext } = useContext(AppContext);
-
+  const { sidebarIsActive } = useSelector((state) => state.themeData);
   const toggleSidebar = useToggleSidebar();
+  const navigate = useNavigate();
 
   const viewWrapperClassNames = `view-wrapper ${
-    cssContext.isPushedFull ? "is-pushed-full" : ""
+    sidebarIsActive ? "is-pushed-full" : ""
   }`;
-
+  // console.log(sidebarIsActive, "sidebarIsActive from redux store");
   return (
     <div className={viewWrapperClassNames}>
       <div className="page-content-wrapper">
@@ -29,7 +30,7 @@ const PageContent = ({
               <span className="menu-toggle has-chevron">
                 <span
                   className={`icon-box-toggle ${
-                    cssContext.isPushedFull ? "active" : ""
+                    sidebarIsActive ? "active" : ""
                   }`}
                 >
                   <span className="rotate">

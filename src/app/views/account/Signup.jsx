@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import bankingImgLight from "../../../assets/img/illustrations/apps/huro-banking-light.png";
 import bankingImgDark from "../../../assets/img/illustrations/apps/huro-banking-dark.png";
 import logoLight from "../../../assets/img/logos/logo/logo.svg";
@@ -8,6 +8,7 @@ import { Input } from "../../shared/components/input/Input";
 import { Button } from "../../shared/components/button/Button";
 import { Switch } from "../../shared/components/switch/Switch";
 import useThemeSwitch from "../../helpers/hooks/useThemeSwitch";
+import config from "../../../../config";
 
 export const SignUp = () => {
   const themeSwitch = useThemeSwitch();
@@ -18,6 +19,11 @@ export const SignUp = () => {
   const [repeatPassword, setRepeatPassword] = useState("");
   const [receivePromotionalOffers, setReceivePromotionalOffers] =
     useState(false);
+  useEffect(() => {
+    if (config.checkLoginTokenIsValid()) {
+      navigate("/");
+    }
+  });
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value.trim());

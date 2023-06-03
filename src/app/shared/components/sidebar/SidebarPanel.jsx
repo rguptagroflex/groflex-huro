@@ -1,12 +1,11 @@
-import React, { useContext, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { FeatherIcon } from "../../featherIcon/FeatherIcon";
-import { AppContext } from "../../context/AppContext";
+import React from "react";
+import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const SidebarPanel = ({ heading, panelLinks }) => {
-  const { cssContext } = useContext(AppContext);
+  const { sidebarIsActive } = useSelector((state) => state.themeData);
   const sidebarPanelClassNames = `sidebar-panel is-generic ${
-    cssContext?.isPushedFull ? "is-active" : ""
+    sidebarIsActive ? "is-active" : ""
   }`;
 
   return (
