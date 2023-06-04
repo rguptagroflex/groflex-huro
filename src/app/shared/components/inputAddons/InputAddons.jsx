@@ -3,6 +3,8 @@ import React from "react";
 export const InputAddons = ({
   disabled = false,
   left,
+  type,
+  maxlength,
   right,
   placeholder,
   value,
@@ -18,11 +20,12 @@ export const InputAddons = ({
         </div>
       )}
 
-      <div className="control is-expanded">
+      <div className="control is-expanded ">
         <input
           disabled={disabled}
           className="input"
-          type="text"
+          type={type}
+          maxlength={maxlength}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
