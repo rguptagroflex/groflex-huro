@@ -34,8 +34,73 @@ const ProfileMenu = ({ profileMenuIsActive, setProfileMenuIsActive }) => {
           <FeatherIcon name={"User"} />
         </div>
         <div className="dropdown-menu" role="menu">
-          <div className="dropdown-content">
-            <div className="dropdown-head">
+          <div
+            className="dropdown-content"
+            style={{
+              padding: "10px",
+            }}
+          >
+            <div
+              className="file is-boxed is-default"
+              style={{
+                padding: "10px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <img
+                alt="Not found"
+                style={{
+                  width: "170px",
+                  height: "48px",
+                  objectFit: "contain",
+                }}
+                src={"https://picsum.photos/200"}
+              />
+            </div>
+            <div
+              className="meta"
+              style={{
+                padding: "0px 10px",
+                fontFamily: "Inter",
+                fontWeight: "600",
+                fontSize: "12px",
+                color: "#888787",
+                textAlign: "center",
+                textTransform: "uppercase",
+              }}
+            >
+              <span style={{ margin: "10px 0" }}>Groflex Solutions</span>
+            </div>
+            <hr style={{ margin: "10px 0" }} />
+            <a href="#" className="dropdown-item is-media">
+              <FeatherIcon name={"Settings"} size={15} />
+              <span style={{ marginLeft: "8px" }}>Account Settings </span>
+            </a>
+            <a href="#" className="dropdown-item is-media">
+              <FeatherIcon name={"Users"} size={15} />
+              <span style={{ marginLeft: "8px" }}>Team </span>
+            </a>
+            <hr style={{ margin: "10px 0" }} />
+            <a href="#" className="dropdown-item is-media">
+              <FeatherIcon name={"HelpCircle"} size={15} />
+              <span style={{ marginLeft: "8px" }}>Help </span>
+            </a>
+            <a href="#" className="dropdown-item is-media">
+              <FeatherIcon name={"Book"} size={15} />
+              <span style={{ marginLeft: "8px" }}>Privacy Policy </span>
+            </a>
+            <hr style={{ margin: "10px 0" }} />
+            <a href="#" className="dropdown-item is-media">
+              <FeatherIcon
+                size={15}
+                name={"LogOut"}
+                style={{ transform: "rotate(180deg)" }}
+              />
+              <span style={{ marginLeft: "8px" }}>Logout </span>
+            </a>
+            {/* <div className="dropdown-head">
               <div className="h-avatar is-large">
                 <img
                   className="avatar"
@@ -122,7 +187,7 @@ const ProfileMenu = ({ profileMenuIsActive, setProfileMenuIsActive }) => {
                 </span>
                 <span>Logout</span>
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
