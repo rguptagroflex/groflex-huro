@@ -8,7 +8,7 @@ import { Select } from "../../shared/components/select/Select";
 import { TextArea } from "../../shared/components/textArea/TextArea";
 import ApexChart from "../../shared/components/apexChart/ApexChart";
 import PageContent from "../../shared/components/pageContent/PageContent";
-import { Link } from "react-router-dom";
+import { Link, parsePath } from "react-router-dom";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import ChangeEmailModal from "./ChangeEmailModal";
 import ErrorText from "../../shared/components/errorText/ErrorText";
@@ -16,21 +16,24 @@ import ErrorText from "../../shared/components/errorText/ErrorText";
 const AccountSettings = () => {
   const [changeEmailModalActive, setChangeEmailModalActive] = useState(false);
 
+  //states for error handling in profile section
   const [profileError, setProfileError] = useState({
-    firstName: "",
-    lastName: "",
-    phoneNo: "",
-    profileEmail: "",
+    firstNameError: "",
+    lastNameError: "",
+    phoneNoError: "",
+    profileEmailError: "",
   });
 
+  //states for error handling in company section
   const [companyError, setCompanyError] = useState({
-    companyName: "",
-    phoneNo: "",
-    companyEmail: "",
-    cin: "",
-    gst: "",
+    companyNameError: "",
+    companyPhoneNoError: "",
+    companyEmailError: "",
+    cinError: "",
+    gstError: "",
   });
 
+  //states to store/update data in profile section
   const [profileInfo, setProfileInfo] = useState({
     registerEmail: "example@gmail.com",
     newEmail: "",
@@ -40,6 +43,7 @@ const AccountSettings = () => {
     lastName: "",
   });
 
+  //states to store/update data in company section
   const [companyInfo, setCompanyInfo] = useState({
     companyName: "",
     companyPhoneNo: "",
@@ -58,27 +62,45 @@ const AccountSettings = () => {
 
   //error handling for profile section
 
-  const handleProfileNameCheck = (e) => {
-    if (!e.target.value) {
-      setProfileError({ ...profileError, firstName: true });
+  const handleProfileFirstnameChange = (e) => {
+    const firstName = e.target.value.replace(/[^a-z]/gi, "");
+
+    setProfileInfo({ ...profileInfo, firstName: firstName });
+    setProfileError({
+      ...profileError,
+      firstNameError: "",
+    });
+
+    //check for empty field
+    if (!firstName) {
+      setProfileInfo({ ...profileInfo, firstName: "" });
+      setProfileError({
+        ...profileError,
+        firstNameError: "This should not be empty",
+      });
       return;
     }
-    setProfileError({ ...profileError, firstName: false });
-    setProfileInfo({ ...profileInfo, firstName: e.target.value });
   };
 
-  const handleProfileLastname = (e) => {
-    if (!e.target.value) {
-      setProfileError({ ...profileError, lastName: true });
+  //error handling for profile section last name
+  const handleProfileLastnameChange = (e) => {
+    const lastName = e.target.value.replace(/[^a-zA-Z]/gi, "");
+    setProfileInfo({ ...profileInfo, lastName: lastName });
+    setProfileError({ ...profileError, lastNameError: "" });
+
+    //check for empty field
+    if (!lastName) {
+      setProfileInfo({ ...profileInfo, lastName: "" });
+      setProfileError({
+        ...profileError,
+        lastNameError: "This should not be empty",
+      });
       return;
     }
-    setProfileError({ ...profileError, lastName: false });
-    setProfileInfo({ ...profileInfo, lastName: e.target.value });
   };
 
   const handleProfilePhoneChange = (e) => {
     const phoneNumber = parseInt(e.target.value);
-    console.log(phoneNumber.toString().length);
 
     // Handle more than 10 digit warning
     if (phoneNumber.toString().length > 10) {
@@ -88,7 +110,7 @@ const AccountSettings = () => {
     // Handle equal to 10 digit warning
     if (phoneNumber.toString().length === 10) {
       setProfileInfo({ ...profileInfo, phoneNo: phoneNumber });
-      setProfileError({ ...profileError, phoneNo: "" });
+      setProfileError({ ...profileError, phoneNoError: "" });
       return;
     }
 
@@ -97,7 +119,7 @@ const AccountSettings = () => {
       setProfileInfo({ ...profileInfo, phoneNo: null });
       setProfileError({
         ...profileError,
-        phoneNo: "This is a mandatory field",
+        phoneNoError: "This should not be empty",
       });
       return;
     }
@@ -107,91 +129,162 @@ const AccountSettings = () => {
       setProfileInfo({ ...profileInfo, phoneNo: phoneNumber });
       setProfileError({
         ...profileError,
-        phoneNo: "Phone number should be 10 digits",
+        phoneNoError: "Phone number should be 10 digits",
       });
       return;
     }
   };
 
   const profileSaveBtn = () => {
-    if (profileError.phoneNo || !profileInfo.phoneNo) {
-      console.log("clear the errors");
-      return;
+    if (profileError.firstNameError) {
+      return console.log("resolve the error");
+    } else if (profileError.lastNameError) {
+      return console.log("resolve the error");
+    } else if (profileError.phoneNoError) {
+      return console.log("resolve the error");
+    } else {
+      console.log(profileInfo);
     }
-    if (profileError.lastName || !profileInfo.lastName) {
-      console.log("clear the errors");
-      return;
-    }
-    if (profileError.firstName || !profileInfo.firstName) {
-      console.log("clear the errors");
-      return;
-    }
-    console.log(profileInfo);
   };
 
   //error handling for company section
 
-  const handleCompanyNameCheck = (e) => {
-    if (!e.target.value) {
-      setCompanyError({ ...companyError, companyName: true });
+  const handleCompanyNameChange = (e) => {
+    const companyName = e.target.value.replace(/[^a-z]/gi, "");
+    setCompanyError({ ...companyError, companyNameError: "" });
+    setCompanyInfo({ ...companyInfo, companyName: companyName });
+
+    //check for empty field
+    if (!companyName) {
+      setCompanyInfo({ ...companyInfo, companyName: "" });
+      setCompanyError({
+        ...companyError,
+        companyNameError: "This should not be empty",
+      });
+
       return;
     }
-    setCompanyError({ ...companyError, companyName: false });
-    setCompanyInfo({ ...companyInfo, companyName: e.target.value });
   };
 
-  const handleCompanyPhoneNoCheck = (e) => {
-    if (e.target.value.length == 0) {
-      setCompanyError({ ...companyError, phoneNo: true });
+  const handleCompanyPhoneNoChange = (e) => {
+    const companyPhoneNumber = parseInt(e.target.value);
+
+    // Handle more than 10 digit warning
+    if (companyPhoneNumber.toString().length > 10) {
       return;
     }
-    if (e.target.value.length > 10 || e.target.value.length < 10) {
-      setCompanyError({ ...companyError, phoneNo: true });
+
+    // Handle equal to 10 digit warning
+    if (companyPhoneNumber.toString().length === 10) {
+      setCompanyInfo({ ...companyInfo, companyPhoneNo: companyPhoneNumber });
+      setCompanyError({ ...companyError, companyPhoneNoError: "" });
       return;
     }
-    if (!companyError.phoneNo) {
-      setCompanyInfo({ ...companyInfo, companyPhoneNo: e.target.value });
+
+    // Check for empty field
+    if (!companyPhoneNumber) {
+      setCompanyInfo({ ...companyInfo, companyPhoneNo: null });
+      setCompanyError({
+        ...companyError,
+        companyPhoneNoError: "This should not be empty",
+      });
+      return;
     }
-    setCompanyError({ ...companyError, phoneNo: false });
+
+    // Handle less than 10 digit warning
+    if (companyPhoneNumber.toString().length < 10) {
+      setCompanyInfo({ ...companyInfo, companyPhoneNo: companyPhoneNumber });
+      setCompanyError({
+        ...companyError,
+        companyPhoneNoError: "Phone number should be 10 digits",
+      });
+      return;
+    }
   };
 
-  const handleCinNumber = (e) => {
-    if (e.target.value.length == 0) {
-      setCompanyError({ ...companyError, cin: true });
+  //check email id error handling in company section
+  const handleCompanyEmailChange = (e) => {
+    const companyEmail = e.target.value;
+    if (isEmail(companyEmail)) {
+      setCompanyInfo({ ...companyInfo, companyEmail: companyEmail });
+      setCompanyError({ ...companyError, companyEmailError: "" });
       return;
     }
-    if (e.target.value.length > 21 || e.target.value.length < 21) {
-      setCompanyError({ ...companyError, cin: true });
-      return;
-    }
-    if (!companyError.cin) {
-      setCompanyInfo({ ...companyInfo, cin: e.target.value });
-    }
-    setCompanyError({ ...companyError, cin: false });
+    setCompanyInfo({ ...companyInfo, companyEmail: "" });
+    setCompanyError({ ...companyError, companyEmailError: "Invalid Email ID" });
   };
 
-  const handleGstNumber = (e) => {
-    if (e.target.value.length == 0) {
-      setCompanyError({ ...companyError, gst: true });
+  //cin number error handling
+  const handleCinNumberChange = (e) => {
+    const cinNumber = e.target.value;
+
+    // Handle more than 21 digit warning
+    if (cinNumber.length > 21) {
       return;
     }
-    if (e.target.value.length > 15 || e.target.value.length < 15) {
-      setCompanyError({ ...companyError, gst: true });
+
+    // Handle equal to 21 digit warning
+    if (cinNumber.length === 21) {
+      setCompanyInfo({ ...companyInfo, cin: cinNumber });
+      setCompanyError({ ...companyError, cinError: "" });
       return;
     }
-    if (!companyError.cin) {
-      setCompanyInfo({ ...companyInfo, gstNo: e.target.value });
+
+    // Check for empty field
+    if (!cinNumber) {
+      setCompanyInfo({ ...companyInfo, cin: null });
+      setCompanyError({
+        ...companyError,
+        cinError: "CIN  number should be of 21 digits",
+      });
+      return;
     }
-    setCompanyError({ ...companyError, gst: false });
+
+    // Handle less than 21 digit warning
+    if (cinNumber.length < 21) {
+      setCompanyInfo({ ...companyInfo, cin: cinNumber });
+      setCompanyError({
+        ...companyError,
+        cinError: "CIN  number should be of 21 digits",
+      });
+      return;
+    }
   };
 
-  const handleCompanyEmailCheck = (e) => {
-    if (!isEmail(e.target.value)) {
-      setCompanyError({ ...companyError, companyEmail: true });
+  const handleGstNumberChange = (e) => {
+    const gstNumber = e.target.value;
+
+    // Handle more than 15 digit warning
+    if (gstNumber.length > 15) {
       return;
     }
-    setCompanyInfo({ ...companyInfo, companyEmail: e.target.value });
-    setCompanyError({ ...companyError, companyEmail: false });
+
+    // Handle equal to 15 digit warning
+    if (gstNumber.length === 15) {
+      setCompanyInfo({ ...companyInfo, gstNo: gstNumber });
+      setCompanyError({ ...companyError, gstError: "" });
+      return;
+    }
+
+    // Check for empty field
+    if (!gstNumber) {
+      setCompanyInfo({ ...companyInfo, gstNo: null });
+      setCompanyError({
+        ...companyError,
+        gstError: "GST  number should be of 15 digits",
+      });
+      return;
+    }
+
+    // Handle less than 15 digit warning
+    if (gstNumber.length < 15) {
+      setCompanyInfo({ ...companyInfo, gstNo: gstNumber });
+      setCompanyError({
+        ...companyError,
+        gstError: "GST  number should be of 15 digits",
+      });
+      return;
+    }
   };
 
   const handleCompanySaveBtn = () => {
@@ -291,8 +384,8 @@ const AccountSettings = () => {
                           />
 
                           <ErrorText
-                            visible={profileError.phoneNo}
-                            text={profileError.phoneNo}
+                            visible={profileError.phoneNoError}
+                            text={profileError.phoneNoError}
                           />
                         </div>
                       </div>
@@ -305,11 +398,11 @@ const AccountSettings = () => {
                           <Input
                             placeholder={"Enter Detials"}
                             value={profileInfo.firstName}
-                            onChange={(e) => handleProfileNameCheck(e)}
+                            onChange={handleProfileFirstnameChange}
                           />
                           <ErrorText
-                            visible={profileError.firstName}
-                            text={"This should not be empty"}
+                            visible={profileError.firstNameError}
+                            text={profileError.firstNameError}
                           />
                         </div>
                       </div>
@@ -320,11 +413,11 @@ const AccountSettings = () => {
                           <Input
                             placeholder={"Enter Detials"}
                             value={profileInfo.lastName}
-                            onChange={(e) => handleProfileLastname(e)}
+                            onChange={handleProfileLastnameChange}
                           />
                           <ErrorText
-                            visible={profileError.lastName}
-                            text={"This should not be empty"}
+                            visible={profileError.lastNameError}
+                            text={profileError.lastNameError}
                           />
                         </div>
                       </div>
@@ -356,11 +449,12 @@ const AccountSettings = () => {
                           <label>Company Name *</label>
                           <Input
                             placeholder="Enter Details"
-                            onChange={(e) => handleCompanyNameCheck(e)}
+                            onChange={handleCompanyNameChange}
+                            value={companyInfo.companyName}
                           />
                           <ErrorText
-                            visible={companyError.companyName}
-                            text={"This should not be empty"}
+                            visible={companyError.companyNameError}
+                            text={companyError.companyNameError}
                           />
                         </div>
                       </div>
@@ -371,12 +465,17 @@ const AccountSettings = () => {
                           <InputAddons
                             left={"+91"}
                             type="number"
-                            onChange={(e) => handleCompanyPhoneNoCheck(e)}
+                            onChange={handleCompanyPhoneNoChange}
+                            value={
+                              companyInfo.companyPhoneNo
+                                ? companyInfo.companyPhoneNo
+                                : ""
+                            }
                             placeholder={"Enter Details"}
                           />
                           <ErrorText
-                            visible={companyError.phoneNo}
-                            text={"Phone number should be of 10 digits"}
+                            visible={companyError.companyPhoneNoError}
+                            text={companyError.companyPhoneNoError}
                           />
                         </div>
                       </div>
@@ -453,11 +552,11 @@ const AccountSettings = () => {
                           <Input
                             placeholder={"Enter Detials"}
                             type="email"
-                            onChange={(e) => handleCompanyEmailCheck(e)}
+                            onChange={handleCompanyEmailChange}
                           />
                           <ErrorText
-                            visible={companyError.companyEmail}
-                            text={"Invalid email address"}
+                            visible={companyError.companyEmailError}
+                            text={companyError.companyEmailError}
                           />
                         </div>
                       </div>
@@ -465,13 +564,14 @@ const AccountSettings = () => {
                         <div className="field">
                           <label>CIN</label>
                           <Input
-                            type="number"
+                            type="text"
                             placeholder={"E.g.,U 31909 WB 2020 PTC 247113"}
-                            onChange={(e) => handleCinNumber(e)}
+                            onChange={handleCinNumberChange}
+                            value={companyInfo.cin ? companyInfo.cin : ""}
                           />
                           <ErrorText
-                            visible={companyError.cin}
-                            text={"CIN  number should be of 21 digits"}
+                            visible={companyError.cinError}
+                            text={companyError.cinError}
                           />
                         </div>
                       </div>
@@ -495,12 +595,13 @@ const AccountSettings = () => {
                           <label>GST</label>
                           <Input
                             placeholder={"E.g.,07AAAA0000AZ6"}
-                            type="number"
-                            onChange={(e) => handleGstNumber(e)}
+                            type="text"
+                            onChange={handleGstNumberChange}
+                            value={companyInfo.gstNo ? companyInfo.gstNo : ""}
                           />
                           <ErrorText
-                            visible={companyError.gst}
-                            text={"GST number should be of 15 digits"}
+                            visible={companyError.gstError}
+                            text={companyError.gstError}
                           />
                         </div>
                       </div>
