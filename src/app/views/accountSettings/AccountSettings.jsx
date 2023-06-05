@@ -17,18 +17,18 @@ const AccountSettings = () => {
   const [changeEmailModalActive, setChangeEmailModalActive] = useState(false);
 
   const [profileError, setProfileError] = useState({
-    firstName: false,
-    lastName: false,
-    phoneNo: false,
-    profileEmail: false,
+    firstName: "",
+    lastName: "",
+    phoneNo: "",
+    profileEmail: "",
   });
 
   const [companyError, setCompanyError] = useState({
-    companyName: false,
-    phoneNo: false,
-    companyEmail: false,
-    cin: false,
-    gst: false,
+    companyName: "",
+    phoneNo: "",
+    companyEmail: "",
+    cin: "",
+    gst: "",
   });
 
   const [profileInfo, setProfileInfo] = useState({
@@ -76,19 +76,41 @@ const AccountSettings = () => {
     setProfileInfo({ ...profileInfo, lastName: e.target.value });
   };
 
-  const handleProfilePhoneNoCheck = (e) => {
-    if (e.target.value.length == 0) {
-      setProfileError({ ...profileError, phoneNo: true });
+  const handleProfilePhoneChange = (e) => {
+    const phoneNumber = parseInt(e.target.value);
+    console.log(phoneNumber.toString().length);
+
+    // Handle more than 10 digit warning
+    if (phoneNumber.toString().length > 10) {
       return;
     }
-    if (e.target.value.length > 10 || e.target.value.length < 10) {
-      setProfileError({ ...profileError, phoneNo: true });
+
+    // Handle equal to 10 digit warning
+    if (phoneNumber.toString().length === 10) {
+      setProfileInfo({ ...profileInfo, phoneNo: phoneNumber });
+      setProfileError({ ...profileError, phoneNo: "" });
       return;
     }
-    if (!profileError.phoneNo) {
-      setProfileInfo({ ...profileInfo, phoneNo: e.target.value });
+
+    // Check for empty field
+    if (!phoneNumber) {
+      setProfileInfo({ ...profileInfo, phoneNo: null });
+      setProfileError({
+        ...profileError,
+        phoneNo: "This is a mandatory field",
+      });
+      return;
     }
-    setProfileError({ ...profileError, phoneNo: false });
+
+    // Handle less than 10 digit warning
+    if (phoneNumber.toString().length < 10) {
+      setProfileInfo({ ...profileInfo, phoneNo: phoneNumber });
+      setProfileError({
+        ...profileError,
+        phoneNo: "Phone number should be 10 digits",
+      });
+      return;
+    }
   };
 
   const profileSaveBtn = () => {
@@ -262,13 +284,15 @@ const AccountSettings = () => {
                             left={"+91"}
                             type="number"
                             placeholder={"Enter Details"}
-                            value={profileInfo.phoneNo}
-                            onChange={(e) => handleProfilePhoneNoCheck(e)}
+                            value={
+                              profileInfo.phoneNo ? profileInfo.phoneNo : ""
+                            }
+                            onChange={handleProfilePhoneChange}
                           />
 
                           <ErrorText
                             visible={profileError.phoneNo}
-                            text={"Phone number should be of 10 digits"}
+                            text={profileError.phoneNo}
                           />
                         </div>
                       </div>
@@ -379,7 +403,7 @@ const AccountSettings = () => {
                           <TextArea
                             rows={2}
                             placeholder="Enter Details"
-                            onchange={(e) =>
+                            onChange={(e) =>
                               setCompanyInfo({
                                 ...companyInfo,
                                 companyAddress: e.target.value,

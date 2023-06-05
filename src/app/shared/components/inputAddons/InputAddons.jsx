@@ -4,7 +4,7 @@ export const InputAddons = ({
   disabled = false,
   left,
   type,
-  maxlength,
+  maxLength,
   right,
   placeholder,
   value,
@@ -25,7 +25,7 @@ export const InputAddons = ({
           disabled={disabled}
           className="input"
           type={type}
-          maxlength={maxlength}
+          maxLength={maxLength}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
