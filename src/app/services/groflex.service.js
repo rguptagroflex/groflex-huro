@@ -1,6 +1,6 @@
-import { login, request } from "../helpers/request";
+import { login, request, logout } from "../helpers/request";
 
-class groflexService {
+class GroflexService {
   constructor() {
     this.router = {
       navigate: (path) => {
@@ -10,6 +10,7 @@ class groflexService {
 
     this.request = request;
     this.login = login;
+    this.logout = logout;
   }
 }
-export default new groflexService();
+export default new GroflexService();

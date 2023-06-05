@@ -1,5 +1,5 @@
 import webStorageKeyEnum from "./src/app/enums/web-storage-key.enum";
-import webstorageService from "./src/app/services/webstorage.service";
+import WebStorageService from "./src/app/services/webstorage.service";
 
 const apiServers = {
   // local: "http://localhost:3000",
@@ -21,14 +21,14 @@ const resourceHost = setResourceHost();
 const login = `${resourceHost}session/create?type=bearer`;
 
 const checkLoginTokenIsValid = () => {
-  const loginToken = webstorageService.getItem(
+  const loginToken = WebStorageService.getItem(
     webStorageKeyEnum.LOGIN_TOKEN_KEY
   );
-  const loginTokenStartTime = webstorageService.getItem(
+  const loginTokenStartTime = WebStorageService.getItem(
     webStorageKeyEnum.LOGIN_TOKEN_START_TIME
   );
 
-  if (loginTokenStartTime && loginToken !== "undefined") {
+  if (loginTokenStartTime && loginToken) {
     const difference = Math.abs(
       new Date().getTime() - parseInt(loginTokenStartTime)
     );
@@ -37,7 +37,9 @@ const checkLoginTokenIsValid = () => {
       return true;
     }
   }
-  localStorage.clear();
+  // localStorage.clear();
+  WebStorageService.removeItem(webStorageKeyEnum.LOGIN_TOKEN_KEY);
+  WebStorageService.removeItem(webStorageKeyEnum.LOGIN_TOKEN_START_TIME);
   return false;
 };
 

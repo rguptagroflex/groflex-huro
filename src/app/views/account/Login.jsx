@@ -7,7 +7,7 @@ import groflexShortLogo from "../../../assets/img/logos/logo/groflex_short_icon.
 import { useDispatch, useSelector } from "react-redux";
 import config from "../../../../config";
 import _ from "lodash";
-import groflexService from "../../services/groflex.service";
+import GroflexService from "../../services/groflex.service";
 import * as actionTypes from "../../redux/actions/actions.types";
 import store from "../../redux/store";
 import webStorageKeyEnum from "../../enums/web-storage-key.enum";
@@ -40,8 +40,8 @@ const Login = () => {
   });
 
   const handleLogin = () => {
-    groflexService.login(email, password).then((res) => {
-      console.log(res.data, " :Response for login");
+    GroflexService.login(email, password).then((res) => {
+      // console.log(res.data, " :Response for login");
       dispatch({ type: actionTypes.SET_LOGIN_TOKEN, payload: res.data.token });
       webstorageService.setItem(
         webStorageKeyEnum.LOGIN_TOKEN_KEY,

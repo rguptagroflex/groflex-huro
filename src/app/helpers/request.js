@@ -1,4 +1,6 @@
 import config from "../../../config";
+import webStorageKeyEnum from "../enums/web-storage-key.enum";
+import WebStorageService from "../services/webstorage.service";
 import store from "../redux/store";
 
 const environment = "local";
@@ -113,4 +115,10 @@ export const login = (email, password) => {
       });
     });
   }
+};
+
+export const logout = () => {
+  WebStorageService.removeItem(webStorageKeyEnum.LOGIN_TOKEN_KEY);
+  WebStorageService.removeItem(webStorageKeyEnum.LOGIN_TOKEN_START_TIME);
+  location.assign("/login");
 };
