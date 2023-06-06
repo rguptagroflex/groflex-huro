@@ -41,7 +41,7 @@ const Login = () => {
 
   const handleLogin = () => {
     GroflexService.login(email, password).then((res) => {
-      // console.log(res.data, " :Response for login");
+      console.log(res.data, " :Response for login");
       dispatch({ type: actionTypes.SET_LOGIN_TOKEN, payload: res.data.token });
       webstorageService.setItem(
         webStorageKeyEnum.LOGIN_TOKEN_KEY,

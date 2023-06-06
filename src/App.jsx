@@ -12,6 +12,7 @@ import Notifications from "./app/views/notifications/Notifications";
 import Contacts from "./app/views/contacts/Contacts";
 import Expenses from "./app/views/expenses/Expenses";
 import CashAndBank from "./app/views/cashAndBank/CashAndBank";
+import CreateContact from "./app/views/contacts/CreateContact";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="estimates" element={<Estimates />} />
           <Route path="articles" element={<Articles />} />
           <Route path="contacts" element={<Contacts />} />
+          <Route path="contacts-create" element={<CreateContact />} />
           <Route path="expenses" element={<Expenses />} />
           <Route path="cash-and-bank" element={<CashAndBank />} />
           <Route path="account-settings" element={<AccountSettings />} />
