@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../../shared/components/button/Button";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
 import { FileInput } from "../../shared/components/fileInput/FileInput";
@@ -12,9 +12,24 @@ import { Link, parsePath } from "react-router-dom";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import ChangeEmailModal from "./ChangeEmailModal";
 import ErrorText from "../../shared/components/errorText/ErrorText";
+import ChangePhoneNoModal from "./ChangePhoneNoModal";
+import groflexService from "../../services/groflex.service";
+import config from "../../../../config";
+import { getCountries } from "../../helpers/getCountries";
 
 const AccountSettings = () => {
   const [changeEmailModalActive, setChangeEmailModalActive] = useState(false);
+  const [changePhoneNoModalActive, setChangePhoneNoModalActive] =
+    useState(false);
+
+  //${config.resourceHost}india/states
+  useEffect(() => {
+    groflexService
+      .request(`${config.resourceHost}india/states`, { auth: true })
+      .then((res) => {
+        console.log(res.json());
+      });
+  }, []);
 
   //states for error handling in profile section
   const [profileError, setProfileError] = useState({
@@ -38,7 +53,7 @@ const AccountSettings = () => {
     registerEmail: "example@gmail.com",
     newEmail: "",
     currentPassword: "",
-    phoneNo: null,
+    phoneNo: 9856743215,
     firstName: "",
     lastName: "",
   });
@@ -99,52 +114,14 @@ const AccountSettings = () => {
     }
   };
 
-  const handleProfilePhoneChange = (e) => {
-    const phoneNumber = parseInt(e.target.value);
-
-    // Handle more than 10 digit warning
-    if (phoneNumber.toString().length > 10) {
-      return;
-    }
-
-    // Handle equal to 10 digit warning
-    if (phoneNumber.toString().length === 10) {
-      setProfileInfo({ ...profileInfo, phoneNo: phoneNumber });
-      setProfileError({ ...profileError, phoneNoError: "" });
-      return;
-    }
-
-    // Check for empty field
-    if (!phoneNumber) {
-      setProfileInfo({ ...profileInfo, phoneNo: null });
-      setProfileError({
-        ...profileError,
-        phoneNoError: "This should not be empty",
-      });
-      return;
-    }
-
-    // Handle less than 10 digit warning
-    if (phoneNumber.toString().length < 10) {
-      setProfileInfo({ ...profileInfo, phoneNo: phoneNumber });
-      setProfileError({
-        ...profileError,
-        phoneNoError: "Phone number should be 10 digits",
-      });
-      return;
-    }
-  };
-
   const profileSaveBtn = () => {
-    if (profileError.firstNameError) {
-      return console.log("resolve the error");
-    } else if (profileError.lastNameError) {
-      return console.log("resolve the error");
-    } else if (profileError.phoneNoError) {
-      return console.log("resolve the error");
-    } else {
-      console.log(profileInfo);
-    }
+    // if (!profileInfo.phoneNo) {
+    //   setProfileError({
+    //     ...profileError,
+    //     phoneNoError: "This should not be empty",
+    //   });
+    // }
+    console.log(profileInfo);
   };
 
   //error handling for company section
@@ -186,7 +163,7 @@ const AccountSettings = () => {
       setCompanyInfo({ ...companyInfo, companyPhoneNo: null });
       setCompanyError({
         ...companyError,
-        companyPhoneNoError: "This should not be empty",
+        companyPhoneNoError: "Phone number should be 10 digits",
       });
       return;
     }
@@ -322,6 +299,14 @@ const AccountSettings = () => {
         isActive={changeEmailModalActive}
         setIsActive={setChangeEmailModalActive}
       />
+      <ChangePhoneNoModal
+        setProfileInfo={setProfileInfo}
+        profileInfo={profileInfo}
+        isActive={changePhoneNoModalActive}
+        setIsActive={setChangePhoneNoModalActive}
+        setProfileError={setProfileError}
+        profileError={profileError}
+      />
       <div className="page-content-inner">
         <div className="tabs-wrapper">
           <div className="tabs-inner">
@@ -375,12 +360,18 @@ const AccountSettings = () => {
                           <label>Phone Number</label>
                           <InputAddons
                             left={"+91"}
+                            right={<FeatherIcon color="#00a353" name="Edit" />}
                             type="number"
+                            disabled
+                            value={9856743215}
                             placeholder={"Enter Details"}
-                            value={
-                              profileInfo.phoneNo ? profileInfo.phoneNo : ""
-                            }
-                            onChange={handleProfilePhoneChange}
+                            // value={
+                            //   profileInfo.phoneNo ? profileInfo.phoneNo : ""
+                            // }
+                            // onChange={handleProfilePhoneChange}
+                            onRightAdornmentClick={() => {
+                              setChangePhoneNoModalActive(true);
+                            }}
                           />
 
                           <ErrorText
