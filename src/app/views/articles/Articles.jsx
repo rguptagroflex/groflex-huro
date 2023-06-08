@@ -1,15 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PageContent from "../../shared/components/pageContent/PageContent";
 import { ListAdvancedComponent } from "../../shared/components/list-advanced/ListAdvancedComponent";
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { ListAdvancedDefaultSettings } from "../../helpers/constants";
 import { CustomShowHeaderSum } from "../../shared/components/list-advanced/CustomShowHeaderSum";
+import config from "../../../../config";
+import { useSelector } from "react-redux";
+import groflexService from "../../services/groflex.service";
+
+const actions = [
+  { name: "Edit", icon: "edit" },
+  { name: "Delete", icon: "trash-alt" },
+];
 
 const Articles = () => {
-  const actions = [
-    { name: "Edit", icon: "edit" },
-    { name: "Delete", icon: "trash-alt" },
-  ];
+  const loginToken = useSelector((state) => state?.accountData?.loginToken);
+  console.log(loginToken, "FROM ARTICLES");
+
+  useEffect(() => {
+    groflexService
+      .request(
+        `${config.resourceHost}article?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
+        { auth: true }
+      )
+      .then((res) => console.log(res));
+  });
 
   return (
     <PageContent
@@ -61,8 +76,7 @@ const Articles = () => {
             method: "GET",
             url: "https://dev.groflex.in/api/article?offset=0&searchText=&limit=9999999&orderBy=number&desc=false",
             headers: {
-              Authorization:
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjo1MTYsInRlbmFudCI6NDM4LCJjbGllbnRMYW5ndWFnZSI6IkVOIiwic2Vzc2lvbklkIjo2OTk0LCJpYXQiOjE2ODQzMDk0ODEsImV4cCI6MTY4NDMzMTA4MX0.jcpLey7WEJoybrChj6FHzXQylEBf0VA4h_jYMRV-WjE",
+              Authorization: "Bearer " + loginToken,
               "Content-Type": "application/json",
             },
           }),
