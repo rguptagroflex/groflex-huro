@@ -4,7 +4,7 @@ const initialState = {
   loginToken: "",
 };
 
-export function appDataReducer(state = initialState, action) {
+export function accountDataReducer(state = initialState, action) {
   switch (action.type) {
     case types.SET_LOGIN_TOKEN:
       return { ...state, loginToken: action.payload };

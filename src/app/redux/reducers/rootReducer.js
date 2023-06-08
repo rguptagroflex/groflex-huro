@@ -1,10 +1,10 @@
 import { combineReducers } from "redux";
 import { themeReducer } from "./themeReducer";
-import { appDataReducer } from "./appDataReducer";
+import { accountDataReducer } from "./accountDataReducer";
 
 const rootReducer = combineReducers({
   themeData: themeReducer,
-  appData: appDataReducer,
+  accountData: accountDataReducer,
 });
 
 export default rootReducer;

@@ -1,21 +1,18 @@
 import config from "../../../config";
 import webStorageKeyEnum from "../enums/web-storage-key.enum";
 import WebStorageService from "../services/webstorage.service";
-import store from "../redux/store";
 
 const environment = "local";
 const localHost = "http://localhost:18000/serverconnect?url=";
-let token = store?.getState()?.appData?.loginToken;
 
 const getEndpoint = (endpoint) => {
   return environment === "local" ? `${localHost}${endpoint}` : endpoint;
 };
 
-store.subscribe(() => {
-  token = store?.getState()?.appData?.loginToken;
-});
-
 export const request = (endpoint, options) => {
+  let token = WebStorageService.getItem(webStorageKeyEnum.LOGIN_TOKEN_KEY);
+  // console.log(token, options.auth);
+
   if (!options?.auth || !token) {
     console.error("No token provided for request");
     return new Promise((resolve, reject) => {});
