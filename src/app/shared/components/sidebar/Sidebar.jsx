@@ -160,6 +160,8 @@ const Sidebar = () => {
             </li>
             {/* Profile menu */}
             <li
+              onMouseEnter={() => setProfileMenuIsActive(true)}
+              onMouseLeave={() => setProfileMenuIsActive(false)}
               style={{
                 backgroundColor: profileMenuIsActive ? "white" : "",
                 width: profileMenuIsActive ? "100%" : "98%",
