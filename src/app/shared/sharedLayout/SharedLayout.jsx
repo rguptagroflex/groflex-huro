@@ -23,7 +23,7 @@ const SharedLayout = () => {
           .then((res) => {
             // console.log(res.data, "TENANT DATA from Shared layout");
             dispatch({ type: actionTypes.SET_TENANT_DATA, payload: res.data });
-            navigate("/");
+            // navigate("/");
           });
       }
     }
