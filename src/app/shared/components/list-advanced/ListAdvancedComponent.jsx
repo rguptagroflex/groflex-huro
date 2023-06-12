@@ -7,6 +7,7 @@ import { ListSearchComponent } from "./ListSearchComponent";
 import { ListHeadbarControls } from "./ListHeadbarControls";
 import ListActionPopup from "./ListActionPopup";
 import "./ListAdvanced.style.scss";
+import groflexService from "../../../services/groflex.service";
 
 export const GridApiContext = createContext();
 
@@ -14,7 +15,7 @@ export const ListAdvancedComponent = ({
   columnDefs,
   onActionClick,
   actionMenuData,
-  fetchBody,
+  fetchUrl,
 }) => {
   const [gridApi, setGridApi] = useState();
   const [gridColumnApi, setGridColumnApi] = useState();
@@ -77,10 +78,13 @@ export const ListAdvancedComponent = ({
   const onGridReady = useCallback((params) => {
     setGridApi(params.api);
     setGridColumnApi(params.columnApi);
-    fetch("http://localhost:18000/serverconnect", fetchBody)
-      .then((res) => res.json())
+    // fetch("http://localhost:18000/serverconnect", fetchBody)
+    //   .then((res) => res.json())
+    groflexService
+      .request(fetchUrl, { auth: true })
       .then((res) => res.data)
       .then((res) => {
+        // console.log(res, "LIST ADVANCED RES");
         const newColumns = Object.keys(res[0]).filter(
           (col) => !params.columnApi.getColumn(col)
         );

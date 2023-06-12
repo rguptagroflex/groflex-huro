@@ -12,9 +12,11 @@ import { Link } from "react-router-dom";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import ChangeEmailModal from "./ChangeEmailModal";
 import ErrorText from "../../shared/components/errorText/ErrorText";
+import { useSelector } from "react-redux";
 
 const AccountSettings = () => {
   const [changeEmailModalActive, setChangeEmailModalActive] = useState(false);
+  const tenantData = useSelector((state) => state.accountData.tenantData);
 
   const [profileError, setProfileError] = useState({
     firstName: "",
@@ -218,6 +220,7 @@ const AccountSettings = () => {
     console.log(companyInfo);
   };
 
+  console.log(tenantData, "ACCOUNT DATA");
   return (
     <PageContent
       titleIsBreadCrumb

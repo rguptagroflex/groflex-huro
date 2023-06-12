@@ -10,7 +10,9 @@ const getEndpoint = (endpoint) => {
 };
 
 export const request = (endpoint, options) => {
-  let token = WebStorageService.getItem(webStorageKeyEnum.LOGIN_TOKEN_KEY);
+  let token = options.token
+    ? options.token
+    : WebStorageService.getItem(webStorageKeyEnum.LOGIN_TOKEN_KEY);
   // console.log(token, options.auth);
 
   if (!options?.auth || !token) {
@@ -32,7 +34,7 @@ export const request = (endpoint, options) => {
 
   // Local only accepts POST requests but the options body can be any method
   if (environment === "local") {
-    console.log(endpoint, fetchOptions);
+    // console.log(endpoint, fetchOptions);
     const defaultLocalhostOptions = {
       method: "POST",
       headers: {
@@ -72,7 +74,7 @@ export const request = (endpoint, options) => {
 export const login = (email, password) => {
   if (environment === "local") {
     return new Promise((resolve, reject) => {
-      fetch(getEndpoint(config.login), {
+      fetch(getEndpoint(config.resourceUrls.login), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -81,7 +83,7 @@ export const login = (email, password) => {
           body: JSON.stringify({ email, password }),
           headers: { "Content-Type": "application/json" },
           method: "POST",
-          url: config.login,
+          url: config.resourceUrls.login,
         }),
       }).then((response) => {
         if (response.ok) {
@@ -95,7 +97,7 @@ export const login = (email, password) => {
     });
   } else {
     return new Promise((resolve, reject) => {
-      fetch(getEndpoint(config.login), {
+      fetch(getEndpoint(config.resourceUrls.login), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

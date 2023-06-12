@@ -2,6 +2,7 @@ import React from "react";
 import OnClickOutside from "../onClickOutside/OnClickOutside";
 import { FeatherIcon } from "../../featherIcon/FeatherIcon";
 import GroflexService from "../../../services/groflex.service";
+import { Link } from "react-router-dom";
 
 const ProfileMenu = ({ profileMenuIsActive, setProfileMenuIsActive }) => {
   const toggleProfileDropdown = () => {
@@ -90,36 +91,32 @@ const ProfileMenu = ({ profileMenuIsActive, setProfileMenuIsActive }) => {
               <span style={{ margin: "10px 0" }}>Groflex Solutions</span>
             </div>
             <hr style={{ margin: "10px 0" }} />
-            <a href="#" className="dropdown-item is-media">
+            <Link to="/account-settings" className="dropdown-item is-media">
               <FeatherIcon name={"Settings"} size={15} />
               <span style={{ marginLeft: "8px" }}>Account Settings </span>
-            </a>
-            <a href="#" className="dropdown-item is-media">
+            </Link>
+            <Link className="dropdown-item is-media">
               <FeatherIcon name={"Users"} size={15} />
               <span style={{ marginLeft: "8px" }}>Team </span>
-            </a>
+            </Link>
             <hr style={{ margin: "10px 0" }} />
-            <a href="#" className="dropdown-item is-media">
+            <Link className="dropdown-item is-media">
               <FeatherIcon name={"HelpCircle"} size={15} />
               <span style={{ marginLeft: "8px" }}>Help </span>
-            </a>
-            <a href="#" className="dropdown-item is-media">
+            </Link>
+            <Link className="dropdown-item is-media">
               <FeatherIcon name={"Book"} size={15} />
               <span style={{ marginLeft: "8px" }}>Privacy Policy </span>
-            </a>
+            </Link>
             <hr style={{ margin: "10px 0" }} />
-            <a
-              onClick={handleLogout}
-              href="#"
-              className="dropdown-item is-media"
-            >
+            <Link onClick={handleLogout} className="dropdown-item is-media">
               <FeatherIcon
                 size={15}
                 name={"LogOut"}
                 style={{ transform: "rotate(180deg)" }}
               />
               <span style={{ marginLeft: "8px" }}>Logout </span>
-            </a>
+            </Link>
           </div>
         </div>
       </div>
