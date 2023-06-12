@@ -16,20 +16,44 @@ import ChangePhoneNoModal from "./ChangePhoneNoModal";
 import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
 import { getCountries } from "../../helpers/getCountries";
+import { get } from "jquery";
+
+const countriesOptions = getCountries().map((country) => ({
+  label: country.label,
+  value: country.iso2,
+}));
+
+const isEmail = (email) =>
+  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
 const AccountSettings = () => {
   const [changeEmailModalActive, setChangeEmailModalActive] = useState(false);
   const [changePhoneNoModalActive, setChangePhoneNoModalActive] =
     useState(false);
 
+  const [stateOptions, setStateOptions] = useState([]);
+
   //${config.resourceHost}india/states
   useEffect(() => {
     groflexService
       .request(`${config.resourceHost}india/states`, { auth: true })
       .then((res) => {
-        console.log(res.json());
+        // console.log(res.data);
+        const newStateOptions = res.data.map((state) => ({
+          label: state.stateName,
+          value: state.id,
+        }));
+        setStateOptions([...newStateOptions]);
       });
   }, []);
+
+  // useEffect(() => {
+  //   groflexService
+  //     .request(`${config.resourceHost}tenant`, { auth: true })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //     });
+  // }, []);
 
   //states for error handling in profile section
   const [profileError, setProfileError] = useState({
@@ -71,9 +95,6 @@ const AccountSettings = () => {
     gstNo: null,
     cin: null,
   });
-
-  const isEmail = (email) =>
-    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
   //error handling for profile section
 
@@ -264,6 +285,15 @@ const AccountSettings = () => {
     }
   };
 
+  const handleStateChange = (options) => {
+    // console.log(options.label);
+    setCompanyInfo({ ...companyInfo, state: options.value });
+  };
+
+  const handleCountryChange = (options) => {
+    setCompanyInfo({ ...companyInfo, country: options.value });
+  };
+
   const handleCompanySaveBtn = () => {
     if (companyError.phoneNo || !companyInfo.companyPhoneNo) {
       console.log("clear the errors");
@@ -288,6 +318,7 @@ const AccountSettings = () => {
     console.log(companyInfo);
   };
 
+  // console.log(companyInfo, profileInfo);
   return (
     <PageContent
       titleIsBreadCrumb
@@ -509,31 +540,26 @@ const AccountSettings = () => {
                         <div className="field">
                           <label>Country *</label>
                           <Select
-                            options={["India"]}
-                            onChange={(e) =>
-                              setCompanyInfo({
-                                ...companyInfo,
-                                country: e.target.value,
-                              })
-                            }
+                            options={countriesOptions}
+                            onChange={handleCountryChange}
                           />
                         </div>
                       </div>
 
-                      <div className="column is-6">
-                        <div className="field">
-                          <label>State *</label>
-                          <Select
-                            options={["Karnataka", "Maharashtra"]}
-                            onChange={(e) =>
-                              setCompanyInfo({
-                                ...companyInfo,
-                                state: e.target.value,
-                              })
-                            }
-                          />
+                      {companyInfo.country == "IN" ||
+                      companyInfo.country == "" ? (
+                        <div className="column is-6">
+                          <div className="field">
+                            <label>State *</label>
+                            <Select
+                              options={stateOptions}
+                              onChange={handleStateChange}
+                            />
+                          </div>
                         </div>
-                      </div>
+                      ) : (
+                        ""
+                      )}
                     </div>
 
                     <div className="columns is-multiline m-b-5">
@@ -627,7 +653,7 @@ const AccountSettings = () => {
                 <div className="m-t-15" />
 
                 {/* YOUR PLAN */}
-                <AdvancedCard
+                {/* <AdvancedCard
                   type={"s-card"}
                   footer
                   footerContentRight={
@@ -660,7 +686,7 @@ const AccountSettings = () => {
                       <p className="right">Ends on 10.01.2023</p>
                     </div>
                   </div>
-                </AdvancedCard>
+                </AdvancedCard> */}
               </div>
             </div>
           </div>
