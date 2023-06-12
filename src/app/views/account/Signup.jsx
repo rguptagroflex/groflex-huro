@@ -23,7 +23,7 @@ export const SignUp = () => {
     if (config.checkLoginTokenIsValid()) {
       navigate("/");
     }
-  });
+  }, []);
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value.trim());

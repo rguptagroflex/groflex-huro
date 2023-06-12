@@ -1,12 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PageContent from "../../shared/components/pageContent/PageContent";
 import { ListAdvancedComponent } from "../../shared/components/list-advanced/ListAdvancedComponent";
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { ListAdvancedDefaultSettings } from "../../helpers/constants";
 import { CustomShowHeaderSum } from "../../shared/components/list-advanced/CustomShowHeaderSum";
 import config from "../../../../config";
-import { useSelector } from "react-redux";
-import groflexService from "../../services/groflex.service";
 
 const actions = [
   { name: "Edit", icon: "edit" },
@@ -14,18 +12,6 @@ const actions = [
 ];
 
 const Articles = () => {
-  const loginToken = useSelector((state) => state?.accountData?.loginToken);
-  console.log(loginToken, "FROM ARTICLES");
-
-  useEffect(() => {
-    groflexService
-      .request(
-        `${config.resourceHost}article?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
-        { auth: true }
-      )
-      .then((res) => console.log(res));
-  });
-
   return (
     <PageContent
       title="Articles"
@@ -67,20 +53,7 @@ const Articles = () => {
             },
           },
         ]}
-        fetchBody={{
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            method: "GET",
-            url: "https://dev.groflex.in/api/article?offset=0&searchText=&limit=9999999&orderBy=number&desc=false",
-            headers: {
-              Authorization: "Bearer " + loginToken,
-              "Content-Type": "application/json",
-            },
-          }),
-        }}
+        fetchUrl={config.resourceUrls.articles}
         actionMenuData={actions}
         onActionClick={() => {}}
       />
