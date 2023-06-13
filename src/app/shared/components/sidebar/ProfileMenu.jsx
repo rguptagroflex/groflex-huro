@@ -3,8 +3,10 @@ import OnClickOutside from "../onClickOutside/OnClickOutside";
 import { FeatherIcon } from "../../featherIcon/FeatherIcon";
 import GroflexService from "../../../services/groflex.service";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ProfileMenu = ({ profileMenuIsActive, setProfileMenuIsActive }) => {
+  const tenantData = useSelector((state) => state.accountData.tenantData);
   const toggleProfileDropdown = () => {
     setProfileMenuIsActive(!profileMenuIsActive);
   };
@@ -88,7 +90,9 @@ const ProfileMenu = ({ profileMenuIsActive, setProfileMenuIsActive }) => {
                 textTransform: "uppercase",
               }}
             >
-              <span style={{ margin: "10px 0" }}>Groflex Solutions</span>
+              <span style={{ margin: "10px 0" }}>
+                {tenantData?.companyAddress?.companyName}
+              </span>
             </div>
             <hr style={{ margin: "10px 0" }} />
             <Link to="/account-settings" className="dropdown-item is-media">
