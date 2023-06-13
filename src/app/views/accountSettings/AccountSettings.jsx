@@ -4,11 +4,11 @@ import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
 import { FileInput } from "../../shared/components/fileInput/FileInput";
 import { Input } from "../../shared/components/input/Input";
 import { InputAddons } from "../../shared/components/inputAddons/InputAddons";
-import { Select } from "../../shared/components/select/Select";
+import { SelectInput } from "../../shared/components/select/SelectInput";
 import { TextArea } from "../../shared/components/textArea/TextArea";
 import ApexChart from "../../shared/components/apexChart/ApexChart";
 import PageContent from "../../shared/components/pageContent/PageContent";
-import { Link, parsePath } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import ChangeEmailModal from "./ChangeEmailModal";
 import ErrorText from "../../shared/components/errorText/ErrorText";
@@ -16,7 +16,6 @@ import ChangePhoneNoModal from "./ChangePhoneNoModal";
 import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
 import { getCountries } from "../../helpers/getCountries";
-import { get } from "jquery";
 import { useSelector } from "react-redux";
 
 const countriesOptions = getCountries().map((country) => ({
@@ -34,60 +33,6 @@ const AccountSettings = () => {
     useState(false);
 
   const [stateOptions, setStateOptions] = useState([]);
-
-  //${config.resourceHost}india/states
-  useEffect(() => {
-    groflexService
-      .request(`${config.resourceHost}india/states`, { auth: true })
-      .then((res) => {
-        // console.log(res.data);
-        const newStateOptions = res.data.map((state) => ({
-          label: state.stateName,
-          value: state.id,
-        }));
-        setStateOptions([...newStateOptions]);
-      });
-  }, []);
-
-  useEffect(() => {
-    setProfileInfo({
-      registerEmail: tenantData?.email,
-      newEmail: "",
-      currentPassword: "",
-      phoneNo: tenantData?.mobile,
-      firstName: tenantData?.companyAddress?.firstName,
-      lastName: tenantData?.companyAddress?.lastName,
-    });
-    setCompanyInfo({
-      companyName: tenantData?.companyAddress?.companyName,
-      companyPhoneNo: tenantData?.mobile,
-      logoPath: tenantData?.logoPath,
-      companyAddress: tenantData?.companyAddress?.street,
-      country: tenantData?.companyAddress?.country,
-      state: "",
-      companyEmail: "rgupta@groflex.io",
-      gstType: tenantData?.companyAddress?.gstType,
-      gstNo: tenantData?.companyAddress?.gstNumber,
-      cin: tenantData?.companyAddress?.cinNumber,
-    });
-  }, [tenantData]);
-
-  //states for error handling in profile section
-  const [profileError, setProfileError] = useState({
-    firstNameError: "",
-    lastNameError: "",
-    phoneNoError: "",
-    profileEmailError: "",
-  });
-
-  //states for error handling in company section
-  const [companyError, setCompanyError] = useState({
-    companyNameError: "",
-    companyPhoneNoError: "",
-    companyEmailError: "",
-    cinError: "",
-    gstError: "",
-  });
 
   //states to store/update data in profile section
   const [profileInfo, setProfileInfo] = useState({
@@ -111,6 +56,67 @@ const AccountSettings = () => {
     gstType: "",
     gstNo: null,
     cin: null,
+  });
+
+  useEffect(() => {
+    groflexService
+      .request(`${config.resourceHost}india/states`, { auth: true })
+      .then((res) => {
+        // console.log(res.data);
+        const newStateOptions = res.data.map((state) => ({
+          label: state.stateName,
+          value: state.id,
+        }));
+        setStateOptions([...newStateOptions]);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (tenantData && stateOptions.length > 0) {
+      setProfileInfo({
+        registerEmail: tenantData.email,
+        newEmail: "",
+        currentPassword: "",
+        phoneNo: tenantData.mobile,
+        firstName: tenantData.companyAddress.firstName,
+        lastName: tenantData.companyAddress?.lastName,
+      });
+      setCompanyInfo({
+        companyName: tenantData.companyAddress.companyName,
+        companyPhoneNo: tenantData.mobile,
+        logoPath: tenantData.logoPath,
+        companyAddress: tenantData.companyAddress.street,
+        country:
+          tenantData.companyAddress.country === "Indien"
+            ? "IN"
+            : tenantData.companyAddress.country,
+        state: stateOptions.find((indianState) => {
+          console.log(indianState.value, tenantData.indiaStateId);
+          return indianState.value === tenantData.indiaStateId;
+        }).value,
+        companyEmail: "rgupta@groflex.io",
+        gstType: tenantData.companyAddress.gstType,
+        gstNo: tenantData.companyAddress.gstNumber,
+        cin: tenantData.companyAddress.cinNumber,
+      });
+    }
+  }, [tenantData, stateOptions]);
+
+  //states for error handling in profile section
+  const [profileError, setProfileError] = useState({
+    firstNameError: "",
+    lastNameError: "",
+    phoneNoError: "",
+    profileEmailError: "",
+  });
+
+  //states for error handling in company section
+  const [companyError, setCompanyError] = useState({
+    companyNameError: "",
+    companyPhoneNoError: "",
+    companyEmailError: "",
+    cinError: "",
+    gstError: "",
   });
 
   //error handling for profile section
@@ -307,8 +313,8 @@ const AccountSettings = () => {
     setCompanyInfo({ ...companyInfo, state: options.value });
   };
 
-  const handleCountryChange = (options) => {
-    setCompanyInfo({ ...companyInfo, country: options.value });
+  const handleCountryChange = (option) => {
+    setCompanyInfo({ ...companyInfo, country: option.value });
   };
 
   const handleCompanySaveBtn = () => {
@@ -340,7 +346,8 @@ const AccountSettings = () => {
     });
   };
 
-  // console.log(companyInfo, profileInfo);
+  console.log(companyInfo, profileInfo);
+  console.log(companyInfo.state);
   return (
     <PageContent
       titleIsBreadCrumb
@@ -574,21 +581,24 @@ const AccountSettings = () => {
                       <div className="column is-6">
                         <div className="field">
                           <label>Country *</label>
-                          <Select
+                          <SelectInput
+                            defaultValue={companyInfo.country}
                             options={countriesOptions}
                             onChange={handleCountryChange}
+                            value={companyInfo.country}
                           />
                         </div>
                       </div>
 
-                      {companyInfo.country == "IN" ||
-                      companyInfo.country == "" ? (
+                      {companyInfo.country === "IN" ? (
                         <div className="column is-6">
                           <div className="field">
                             <label>State *</label>
-                            <Select
+                            <SelectInput
+                              defaultValue={companyInfo.state}
                               options={stateOptions}
                               onChange={handleStateChange}
+                              value={companyInfo.state}
                             />
                           </div>
                         </div>
@@ -631,12 +641,14 @@ const AccountSettings = () => {
                       <div className="column is-6">
                         <div className="field">
                           <label>GST Type *</label>
-                          <Select
-                            options={["Registered"]}
-                            onChange={(e) =>
+                          <SelectInput
+                            options={[
+                              { label: "Registered", value: "registered" },
+                            ]}
+                            onChange={(option) =>
                               setCompanyInfo({
                                 ...companyInfo,
-                                gstType: e.target.value,
+                                gstType: option.value,
                               })
                             }
                           />
