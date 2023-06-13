@@ -1,13 +1,13 @@
-import * as types from "../actions/actions.types";
+import * as actionTypes from "../actions/actions.types";
 
 const initialState = {
-  loginToken: "",
+  tenantData: undefined,
 };
 
 export function accountDataReducer(state = initialState, action) {
   switch (action.type) {
-    case types.SET_LOGIN_TOKEN:
-      return { ...state, loginToken: action.payload };
+    case actionTypes.SET_TENANT_DATA:
+      return { ...state, tenantData: action.payload };
     default:
       return state;
   }

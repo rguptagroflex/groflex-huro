@@ -7,7 +7,7 @@ import groflexShortLogo from "../../../assets/img/logos/logo/groflex_short_icon.
 import { useDispatch, useSelector } from "react-redux";
 import config from "../../../../config";
 import _ from "lodash";
-import GroflexService from "../../services/groflex.service";
+import groflexService from "../../services/groflex.service";
 import * as actionTypes from "../../redux/actions/actions.types";
 import store from "../../redux/store";
 import webStorageKeyEnum from "../../enums/web-storage-key.enum";
@@ -37,22 +37,34 @@ const Login = () => {
     if (config.checkLoginTokenIsValid()) {
       navigate("/");
     }
-  });
+  }, []);
 
   const handleLogin = () => {
-    GroflexService.login(email, password).then((res) => {
-      console.log(res.data, " :Response for login");
-      dispatch({ type: actionTypes.SET_LOGIN_TOKEN, payload: res.data.token });
-      webstorageService.setItem(
-        webStorageKeyEnum.LOGIN_TOKEN_KEY,
-        res.data.token
-      );
-      webstorageService.setItem(
-        webStorageKeyEnum.LOGIN_TOKEN_START_TIME,
-        new Date().getTime()
-      );
-      navigate("/");
-    });
+    groflexService
+      .login(email, password)
+      .then((res) => {
+        // console.log(res.data, " :Response for login");
+        webstorageService.setItem(
+          webStorageKeyEnum.LOGIN_TOKEN_KEY,
+          res.data.token
+        );
+        webstorageService.setItem(
+          webStorageKeyEnum.LOGIN_TOKEN_START_TIME,
+          new Date().getTime()
+        );
+        // Gretting tenant data
+      })
+      .then(() => {
+        groflexService
+          .request(config.resourceUrls.tenant, {
+            auth: true,
+          })
+          .then((res) => {
+            // console.log(res.data, "TENANT DATA from login");
+            dispatch({ type: actionTypes.SET_TENANT_DATA, payload: res.data });
+            navigate("/");
+          });
+      });
   };
 
   const logoClassnames = theme === "light" ? "light-image" : "dark-image";

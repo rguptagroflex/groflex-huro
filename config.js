@@ -18,9 +18,14 @@ const setResourceHost = () => {
   return `${baseUrl}/api/`;
 };
 const resourceHost = setResourceHost();
-const login = `${resourceHost}session/create?type=bearer`;
-const contact = `${resourceHost}customer`
-const states = `${resourceHost}india/states`
+
+const resourceUrls = {
+  login: `${resourceHost}session/create?type=bearer`,
+  articles: `${resourceHost}article?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
+  customers: `${resourceHost}customer?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
+  tenant: `${resourceHost}tenant`,
+};
+
 const checkLoginTokenIsValid = () => {
   const loginToken = WebStorageService.getItem(
     webStorageKeyEnum.LOGIN_TOKEN_KEY
@@ -46,7 +51,7 @@ const checkLoginTokenIsValid = () => {
 
 const config = {
   resourceHost,
-  login,
+  resourceUrls,
   checkLoginTokenIsValid,
   contact,
   states
