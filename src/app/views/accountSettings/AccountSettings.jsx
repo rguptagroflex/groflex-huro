@@ -328,11 +328,11 @@ const AccountSettings = () => {
           lastName: "world",
           gstNumber: companyInfo.gstNo,
           companyName: companyInfo.companyName,
-          country: companyInfo.country,
+          // country: companyInfo.country,
           street: "rgupta lane no 0",
           zipCode: "",
 
-          gstType: companyInfo.gstType,
+          // gstType: companyInfo.gstType,
         },
         indiaStateId: companyInfo.state,
         mobile: companyInfo.companyPhoneNo,
