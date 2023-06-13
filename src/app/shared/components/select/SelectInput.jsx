@@ -9,7 +9,9 @@ export const SelectInput = ({ options, onChange, value, defaultValue }) => {
   );
 
   useEffect(() => {
-    setSelectedOption(options.find((option) => option.value === value));
+    if (value) {
+      setSelectedOption(options.find((option) => option.value === value));
+    }
   }, [value]);
 
   return (
