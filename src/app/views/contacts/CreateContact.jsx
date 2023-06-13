@@ -16,10 +16,6 @@ import GroflexService from "../../services/groflex.service";
 import config from "../../../../config";
 import ErrorText from "../../shared/components/errorText/ErrorText";
 import AddContactPerson from "./AddContactPerson";
-// const countriesOptions = getCountries().map((country) => ({
-//   label: country.label,
-//   value: country.iso2,
-// }));
 
 
 const CreateContact = () => {
@@ -92,7 +88,7 @@ const CreateContact = () => {
 
   const [companyInfo, setCompanyInfo] = useState({
     id: "",
-    kind: kindOptions[0] ,
+    kind: "",
     type: "",
     number: "",
     companyName: "",
@@ -141,8 +137,9 @@ const CreateContact = () => {
     console.log(companyInfo);
   }, [companyInfo]);
 
-  const kindOptions = [{  label: "Company",value: "company"}, 
-  { label: "Payee" ,value: "payee"}]
+  const kindOptions = [{value:"company",label:"Company"},
+  {value:"payee",label:"Payee"}]
+  
   const handleKindTypeChange = (options) => {
     setCompanyInfo({ ...companyInfo, kind: options.value });
   };
@@ -177,7 +174,7 @@ const CreateContact = () => {
   //     });
   // }
   const onAddContacts = (contactData) => {
-    const endpoint = config.contact;
+    const endpoint = config.resourceUrls.contact;
     GroflexService.request(endpoint, { method: 'POST', auth: true }
     )
       .then((response) => {
@@ -245,8 +242,7 @@ const CreateContact = () => {
                         <div className="column is-6">
                           <div className="field">
                             <label>Contact Type</label>
-                            <Select 
-                            options={kindOptions}
+                            <Select options={kindOptions}
                               onChange={handleKindTypeChange}
                               value={companyInfo.kind}
 
