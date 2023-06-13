@@ -9,7 +9,7 @@
 
 
 //////////////////////
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../../shared/components/button/Button";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
 import { FileInput } from "../../shared/components/fileInput/FileInput";
@@ -23,9 +23,48 @@ import { Link, parsePath } from "react-router-dom";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 // import ChangeEmailModal from "./ChangeEmailModal";
 import ErrorText from "../../shared/components/errorText/ErrorText";
+// import ChangePhoneNoModal from "./ChangePhoneNoModal";
+import groflexService from "../../services/groflex.service";
+import config from "../../../../config";
+import { getCountries } from "../../helpers/getCountries";
+import { get } from "jquery";
+
+const countriesOptions = getCountries().map((country) => ({
+  label: country.label,
+  value: country.iso2,
+}));
+
+const isEmail = (email) =>
+  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
 const Home = () => {
-  // const [changeEmailModalActive, setChangeEmailModalActive] = useState(false);
+  const [changeEmailModalActive, setChangeEmailModalActive] = useState(false);
+  const [changePhoneNoModalActive, setChangePhoneNoModalActive] =
+    useState(false);
+
+  const [stateOptions, setStateOptions] = useState([]);
+
+  //${config.resourceHost}india/states
+  useEffect(() => {
+    groflexService
+      .request(`${config.resourceHost}india/states`, { auth: true })
+      .then((res) => {
+        // console.log(res.data);
+        const newStateOptions = res.data.map((state) => ({
+          label: state.stateName,
+          value: state.id,
+        }));
+        setStateOptions([...newStateOptions]);
+      });
+  }, []);
+
+  // useEffect(() => {
+  //   groflexService
+  //     .request(`${config.resourceHost}tenant`, { auth: true })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //     });
+  // }, []);
 
   //states for error handling in profile section
   const [profileError, setProfileError] = useState({
@@ -49,7 +88,7 @@ const Home = () => {
     registerEmail: "example@gmail.com",
     newEmail: "",
     currentPassword: "",
-    phoneNo: null,
+    phoneNo: 9856743215,
     firstName: "",
     lastName: "",
   });
@@ -67,9 +106,6 @@ const Home = () => {
     gstNo: null,
     cin: null,
   });
-
-  const isEmail = (email) =>
-    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
   //error handling for profile section
 
@@ -110,52 +146,14 @@ const Home = () => {
     }
   };
 
-  const handleProfilePhoneChange = (e) => {
-    const phoneNumber = parseInt(e.target.value);
-
-    // Handle more than 10 digit warning
-    if (phoneNumber.toString().length > 10) {
-      return;
-    }
-
-    // Handle equal to 10 digit warning
-    if (phoneNumber.toString().length === 10) {
-      setProfileInfo({ ...profileInfo, phoneNo: phoneNumber });
-      setProfileError({ ...profileError, phoneNoError: "" });
-      return;
-    }
-
-    // Check for empty field
-    if (!phoneNumber) {
-      setProfileInfo({ ...profileInfo, phoneNo: null });
-      setProfileError({
-        ...profileError,
-        phoneNoError: "This should not be empty",
-      });
-      return;
-    }
-
-    // Handle less than 10 digit warning
-    if (phoneNumber.toString().length < 10) {
-      setProfileInfo({ ...profileInfo, phoneNo: phoneNumber });
-      setProfileError({
-        ...profileError,
-        phoneNoError: "Phone number should be 10 digits",
-      });
-      return;
-    }
-  };
-
   const profileSaveBtn = () => {
-    if (profileError.firstNameError) {
-      return console.log("resolve the error");
-    } else if (profileError.lastNameError) {
-      return console.log("resolve the error");
-    } else if (profileError.phoneNoError) {
-      return console.log("resolve the error");
-    } else {
-      console.log(profileInfo);
-    }
+    // if (!profileInfo.phoneNo) {
+    //   setProfileError({
+    //     ...profileError,
+    //     phoneNoError: "This should not be empty",
+    //   });
+    // }
+    console.log(profileInfo);
   };
 
   //error handling for company section
@@ -197,7 +195,7 @@ const Home = () => {
       setCompanyInfo({ ...companyInfo, companyPhoneNo: null });
       setCompanyError({
         ...companyError,
-        companyPhoneNoError: "This should not be empty",
+        companyPhoneNoError: "Phone number should be 10 digits",
       });
       return;
     }
@@ -298,6 +296,15 @@ const Home = () => {
     }
   };
 
+  const handleStateChange = (options) => {
+    // console.log(options.label);
+    setCompanyInfo({ ...companyInfo, state: options.value });
+  };
+
+  const handleCountryChange = (options) => {
+    setCompanyInfo({ ...companyInfo, country: options.value });
+  };
+
   const handleCompanySaveBtn = () => {
     if (companyError.phoneNo || !companyInfo.companyPhoneNo) {
       console.log("clear the errors");
@@ -322,6 +329,7 @@ const Home = () => {
     console.log(companyInfo);
   };
 
+  // console.log(companyInfo, profileInfo);
   return (
     <PageContent
       titleIsBreadCrumb
@@ -332,6 +340,14 @@ const Home = () => {
         profileInfo={profileInfo}
         isActive={changeEmailModalActive}
         setIsActive={setChangeEmailModalActive}
+      /> */}
+      {/* <ChangePhoneNoModal
+        setProfileInfo={setProfileInfo}
+        profileInfo={profileInfo}
+        isActive={changePhoneNoModalActive}
+        setIsActive={setChangePhoneNoModalActive}
+        setProfileError={setProfileError}
+        profileError={profileError}
       /> */}
       <div className="page-content-inner">
         <div className="tabs-wrapper">
@@ -386,12 +402,18 @@ const Home = () => {
                           <label>Phone Number</label>
                           <InputAddons
                             left={"+91"}
+                            right={<FeatherIcon color="#00a353" name="Edit" />}
                             type="number"
+                            disabled
+                            value={9856743215}
                             placeholder={"Enter Details"}
-                            value={
-                              profileInfo.phoneNo ? profileInfo.phoneNo : ""
-                            }
-                            onChange={handleProfilePhoneChange}
+                            // value={
+                            //   profileInfo.phoneNo ? profileInfo.phoneNo : ""
+                            // }
+                            // onChange={handleProfilePhoneChange}
+                            onRightAdornmentClick={() => {
+                              setChangePhoneNoModalActive(true);
+                            }}
                           />
 
                           <ErrorText
@@ -529,31 +551,26 @@ const Home = () => {
                         <div className="field">
                           <label>Country *</label>
                           <Select
-                            options={["India"]}
-                            onChange={(e) =>
-                              setCompanyInfo({
-                                ...companyInfo,
-                                country: e.target.value,
-                              })
-                            }
+                            options={countriesOptions}
+                            onChange={handleCountryChange}
                           />
                         </div>
                       </div>
 
-                      <div className="column is-6">
-                        <div className="field">
-                          <label>State *</label>
-                          <Select
-                            options={["Karnataka", "Maharashtra"]}
-                            onChange={(e) =>
-                              setCompanyInfo({
-                                ...companyInfo,
-                                state: e.target.value,
-                              })
-                            }
-                          />
+                      {companyInfo.country == "IN" ||
+                      companyInfo.country == "" ? (
+                        <div className="column is-6">
+                          <div className="field">
+                            <label>State *</label>
+                            <Select
+                              options={stateOptions}
+                              onChange={handleStateChange}
+                            />
+                          </div>
                         </div>
-                      </div>
+                      ) : (
+                        ""
+                      )}
                     </div>
 
                     <div className="columns is-multiline m-b-5">
@@ -647,7 +664,7 @@ const Home = () => {
                 <div className="m-t-15" />
 
                 {/* YOUR PLAN */}
-                <AdvancedCard
+                {/* <AdvancedCard
                   type={"s-card"}
                   footer
                   footerContentRight={
@@ -680,7 +697,7 @@ const Home = () => {
                       <p className="right">Ends on 10.01.2023</p>
                     </div>
                   </div>
-                </AdvancedCard>
+                </AdvancedCard> */}
               </div>
             </div>
           </div>

@@ -20,7 +20,7 @@ const setResourceHost = () => {
 const resourceHost = setResourceHost();
 const login = `${resourceHost}session/create?type=bearer`;
 const contact = `${resourceHost}customer`
-
+const states = `${resourceHost}india/states`
 const checkLoginTokenIsValid = () => {
   const loginToken = WebStorageService.getItem(
     webStorageKeyEnum.LOGIN_TOKEN_KEY
@@ -48,7 +48,8 @@ const config = {
   resourceHost,
   login,
   checkLoginTokenIsValid,
-  contact
+  contact,
+  states
 };
 
 export default config;

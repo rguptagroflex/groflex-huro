@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Modal from '../../shared/components/modal/Modal';
 import { Input } from '../../shared/components/input/Input';
+import { Checkbox } from '../../shared/components/checkbox/Checkbox';
 
 const AddContactPerson = ({ isActive = false, setIsActive }) => {
   const [contact, setContact] = useState({
@@ -18,7 +19,7 @@ const AddContactPerson = ({ isActive = false, setIsActive }) => {
     handleCloseModal();
   };
 
-  const handleSave = () => { 
+  const handleSave = () => {
     console.log('Contact:', contact);
     handleCloseModal();
   };
@@ -38,7 +39,7 @@ const AddContactPerson = ({ isActive = false, setIsActive }) => {
       isActive={isActive}
       onSubmit={handleSave}
       onRequestClose={handleCancel}
-      isSmall
+      // isLarge
     >
       <form>
         <div className="columns">
@@ -80,7 +81,15 @@ const AddContactPerson = ({ isActive = false, setIsActive }) => {
               type="text"
             />
           </div>
+         
         </div>
+        {/* <div className="field column is-6">
+            <Checkbox isSolid={true}
+                      // isSuccess= {true}
+                      checked=  {true}
+                      />
+          
+          </div> */}
       </form>
     </Modal>
   );
