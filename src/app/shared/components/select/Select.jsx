@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 
 export const Select = ({
@@ -6,26 +6,29 @@ export const Select = ({
   boxStyle,
   iconStyle,
   showDropdownUpwards,
-  // handleClick,
+  onChange,
 }) => {
   const [active, setActive] = useState(false);
   const [selectedOption, setSelectedOption] = useState(options[0]);
-
+  useEffect(() => {
+    setSelectedOption(options[0]);
+  }, [options]);
   const displayDropdownUpwards = showDropdownUpwards && {
     top: "auto",
     bottom: "40px",
   };
 
   const handleOptionClick = (option) => {
+    // console.log(option);
     setSelectedOption(option);
-    // handleClick(option);
+    onChange(option);
   };
 
   return (
     <div className="control" onClick={() => setActive(!active)}>
       <div className={`h-select ${active ? "is-active" : ""}`}>
         <div className="select-box" style={boxStyle}>
-          <span>{selectedOption}</span>
+          <span>{selectedOption?.label}</span>
         </div>
 
         <div className="select-icon" style={iconStyle}>
@@ -53,12 +56,12 @@ export const Select = ({
             {options?.map((option) => (
               <div
                 className="option-row"
-                key={option}
+                key={option.value}
                 onClick={() => handleOptionClick(option)}
               >
                 <input type="radio" />
                 <div className="option-meta">
-                  <span>{option}</span>
+                  <span>{option.label}</span>
                 </div>
               </div>
             ))}
