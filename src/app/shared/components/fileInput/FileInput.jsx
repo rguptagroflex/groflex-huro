@@ -14,14 +14,14 @@ export const FileInput = ({
       return;
     }
 
-    setCompanyInfo({ ...companyInfo, companyLogo: event.target.files[0] });
+    setCompanyInfo({ ...companyInfo, logoPath: event.target.files[0] });
     setSizeLimit(true);
   }
 
   return (
     <div className="control">
       <div className="file is-boxed is-default">
-        {companyInfo.companyLogo ? (
+        {companyInfo.logoPath ? (
           <div>
             <img
               alt="Not found"
@@ -30,14 +30,12 @@ export const FileInput = ({
                 height: "82px",
                 objectFit: "contain",
               }}
-              src={URL.createObjectURL(companyInfo.companyLogo)}
+              src={URL.createObjectURL(companyInfo.logoPath)}
             />
             <br />
             <a
               className="button h-button"
-              onClick={() =>
-                setCompanyInfo({ ...companyInfo, companyLogo: null })
-              }
+              onClick={() => setCompanyInfo({ ...companyInfo, logoPath: null })}
             >
               Change Logo
             </a>

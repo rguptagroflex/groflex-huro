@@ -24,7 +24,7 @@ const resourceUrls = {
   articles: `${resourceHost}article?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
   customers: `${resourceHost}customer?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
   tenant: `${resourceHost}tenant`,
-  contact:`${resourceHost}customer`
+  accountSettings: `${resourceHost}setting/account`,
 };
 
 const checkLoginTokenIsValid = () => {
