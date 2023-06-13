@@ -16,10 +16,36 @@ import GroflexService from "../../services/groflex.service";
 import config from "../../../../config";
 import ErrorText from "../../shared/components/errorText/ErrorText";
 import AddContactPerson from "./AddContactPerson";
-
+import { getCountries } from "../../helpers/getCountries";
+import { useSelector } from "react-redux";
+const countriesOptions = getCountries().map((country) => ({
+  label: country.label,
+  value: country.iso2,
+}));
 
 const CreateContact = () => {
-  const [isContactModalActive, setIsAddContactModalActive] = useState(false);
+  const [isModalActive, setIsModalActive] = useState(false);
+  const [contact, setContact] = useState(null);
+  const handleAddContact = (newContact) => {
+    setContact(newContact);
+    setIsModalActive(false);
+  };
+  const [stateOptions, setStateOptions] = useState([]);
+
+  //${config.resourceHost}india/states
+  useEffect(() => {
+    GroflexService
+      .request(`${config.resourceHost}india/states`, { auth: true })
+      .then((res) => {
+        // console.log(res.data);
+        const newStateOptions = res.data.map((state) => ({
+          label: state.stateName,
+          value: state.id,
+        }));
+        setStateOptions([...newStateOptions]);
+      });
+  }, []);
+
 
   // const [conditions, setConditions] = useState({
   //   paymentTerms: '',
@@ -80,11 +106,21 @@ const CreateContact = () => {
   //   console.log(communicationInfo);
   //   onAddContacts(communicationInfo);
   // };
-  const [countryState, setCountryState] = useState({
-    id: "",
-    stateName: "",
-  })
-  const [selectedOption, setSelectedOption] = useState([0]);
+  // const [addContact,setAddContact] = useState({
+  //   jobTitles:"",
+  //   email:"",
+  //   mobile:"",
+  //   companyName:""
+  const categoryContact = [{ value: "not specified", label: "Not Specified" },
+  { value: "advertising", label: "Advertising" },
+  { value: "agency", label: "Agency" },
+  { value: "insurance", label: "Insurance" },
+  { value: "wholesale", label: "Wholesale" },
+  { value: "retail", label: "Retail" },
+  { value: "Workshop", label: "Workshop" },
+  { value: "end customer", label: "End customer" }]
+
+  // })
 
   const [companyInfo, setCompanyInfo] = useState({
     id: "",
@@ -92,9 +128,9 @@ const CreateContact = () => {
     type: "",
     number: "",
     companyName: "",
-    countryIso: "",
+    // countryIso: "",
     state: "",
-    category: "",
+    category: categoryContact[0].value,
     cinNumber: "",
     gstType: "",
     gstNumber: "",
@@ -125,24 +161,53 @@ const CreateContact = () => {
     console.log(companyInfo);
     onAddContacts(companyInfo);
   };
-  const handleOptionSelect = (selectedOption) => {
 
-    setCompanyInfo((prevCompanyInfo) => ({
-      ...prevCompanyInfo,
-      kind: selectedOption.value,
-    }));
-    // console.log(companyInfo);
-  };
   useEffect(() => {
     console.log(companyInfo);
   }, [companyInfo]);
+  const handleStateChange = (options) => {
+    // console.log(options.label);
+    setCompanyInfo({ ...companyInfo, state: options.value });
+  };
+  const handleCountryChange = (options) => {
+    setCompanyInfo({ ...companyInfo, country: options.value });
+  };
 
-  const kindOptions = [{value:"company",label:"Company"},
-  {value:"payee",label:"Payee"}]
-  
+  const kindOptions = [{ value: "company", label: "company" },
+  { value: "payee", label: "Payee" }]
+
   const handleKindTypeChange = (options) => {
     setCompanyInfo({ ...companyInfo, kind: options.value });
   };
+
+
+  const handleContactChange = (options) => {
+    setCompanyInfo({ ...companyInfo, category: options.value });
+  };
+  const bussinessType = [{ value: "registered", label: "Registered" },
+  { value: "unregistered", label: "Unregistered" }]
+  const handleBussinessChange = (options) => {
+    setCompanyInfo({ ...companyInfo, gstType: options.value });
+  };
+  const selectPayment = [{ value: "not specified", label: "Not Specified" }]
+  const handlePaymentChange = (options) => {
+    setCompanyInfo({ ...companyInfo, paymentTerms: options.value });
+  };
+
+  const handleRadioChange = (choices) => {
+    setCompanyInfo({ ...companyInfo, type: choices });
+  };
+  const handleSelectChange = (choices) => {
+    setCompanyInfo({ ...companyInfo, selectedOption: choices });
+  };
+
+  const handleNotesAlertChange = (event) => {
+    const checked = event.target.checked;
+    setCompanyInfo({ ...companyInfo, notesAlert: checked });
+  };
+
+
+
 
   // const handleAccountSubTypeChange = (option) => {
   // 	setAccountSubType(option.value);
@@ -183,18 +248,6 @@ const CreateContact = () => {
       .catch((error) => {
         console.error("Error adding contact:", error);
       });
-    // const options = {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     auth: true,
-    //   },
-    //   data: contactData,
-    // };
-
-    // request(endpoint, options)
-
-
   }
 
 
@@ -203,10 +256,13 @@ const CreateContact = () => {
       titleIsBreadCrumb
       breadCrumbData={["Home", "Contacts", "Create Contact"]}
     >
-      <AddContactPerson
-        isActive={isContactModalActive}
-        setIsActive={setIsAddContactModalActive}
-      />
+      {isModalActive && (
+        <AddContactPerson
+          isActive={isModalActive}
+          setIsActive={handleAddContact}
+        />
+
+      )}
       <div className="page-content-inner">
         <div className="tabs-wrapper">
           <div className="tabs-inner">
@@ -260,7 +316,7 @@ const CreateContact = () => {
                                 { label: "Payee", value: "payee", class: "radio is-outlined is-success" },
                               ]}
                               selectedOption={companyInfo.type}
-                              onChange={handleOptionSelect}
+                              onChange={handleRadioChange}
                               name="type"
                             />
                           </div>
@@ -294,15 +350,29 @@ const CreateContact = () => {
                         <div className="column is-6">
                           <div className="field">
                             <label>Country *</label>
-                            <Select options={["India", "Indionesia", "Invoices (18)", "Iceland", "France", "Spain"]}
+                            <Select options={countriesOptions}
                               value={companyInfo.countryIso}
-                              onChange={handleOptionSelect}
+                              onChange={handleCountryChange}
                               name="countryIso"
                             />
                           </div>
                         </div>
+                        {companyInfo.country == "IN" ||
+                          companyInfo.country == "" ? (
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>State *</label>
+                              <Select
+                                options={stateOptions}
+                                onChange={handleStateChange}
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          ""
+                        )}
 
-                        <div className="column is-6">
+                        {/* <div className="column is-6">
                           <div className="field">
                             <label>State *</label>
                             <Select options={["Jammu & Kashmir", "Jharkhand", "Karnataka", "Kerala", "Lakshadweep"]}
@@ -310,16 +380,16 @@ const CreateContact = () => {
                               onChange={handleOptionSelect}
                               name="state" />
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="columns is-multiline">
                         <div className="column is-6">
                           <div className="field">
                             <label>Contact Category</label>
-                            <Select options={["None", "Advertising", "Agency", "Insurance", "Wholesale", "Reatil", "Workshop", "End customer"]}
+                            <Select options={categoryContact}
 
                               value={companyInfo.category}
-                              onChange={handleOptionSelect}
+                              onChange={handleContactChange}
                               name="category"
                             />
                           </div>
@@ -344,9 +414,9 @@ const CreateContact = () => {
                         <div className="column is-6">
                           <div className="field">
                             <label>Business Type</label>
-                            <Select options={["Registered", "Unregistered"]}
-                              onChange={handleOptionSelect}
-                              value={companyInfo.gstType || ''}
+                            <Select options={bussinessType}
+                              onChange={handleBussinessChange}
+                              value={companyInfo.gstType}
 
                               name="gstType" />
                           </div>
@@ -496,7 +566,7 @@ const CreateContact = () => {
                               { label: "Excess Payments", value: "payee", class: "radio is-outlined is-success" },
                             ]}
                             selectedOption={companyInfo.selectedOption}
-                            onChange={handleChange}
+                            onChange={handleSelectChange}
                             name="selectedOption"
                           />
                         </div>
@@ -532,9 +602,9 @@ const CreateContact = () => {
                       <div className="column is-9">
                         <div className="field">
                           <label>Payment Terms</label>
-                          <Select options={["Not Specified"]}
+                          <Select options={selectPayment}
                             value={companyInfo.paymentTerms}
-                            onChange={handleChange}
+                            onChange={handlePaymentChange}
                             name="paymentTerms" />
                         </div>
                       </div>
@@ -555,13 +625,17 @@ const CreateContact = () => {
                   <AdvancedCard
                     type={"s-card"}
                     footer
-                    footerContentRight={<Button isSuccess onClick={() => setIsAddContactModalActive(true)}>Add New</Button>}
+                    footerContentRight={<Button isSuccess onClick={() => setIsModalActive(true)}>Add New</Button>}
                   >
 
                     <div className="columns is-multiline">
                       <div className="column is-8">
                         <h2 className="title is-5 is-bold">Contact Persons</h2>
+
+
                         <p>You can list all your contacts here</p>
+
+
                       </div>
 
 
@@ -587,8 +661,8 @@ const CreateContact = () => {
                         <span>Show notes when creating new documents</span>
                       </div>
                       <div className="column is-3 has-text-right">
-                        <Switch isSuccess value={companyInfo.notesAlert}
-                          onChange={handleChange} name="notesAlert" />
+                        <Switch isSuccess checked={companyInfo.notesAlert}
+                          onChange={handleNotesAlertChange} name="notesAlert" />
                       </div>
 
 

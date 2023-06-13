@@ -4,42 +4,56 @@ import { Input } from '../../shared/components/input/Input';
 import { Checkbox } from '../../shared/components/checkbox/Checkbox';
 
 const AddContactPerson = ({ isActive = false, setIsActive }) => {
-  const [contact, setContact] = useState({
-    contactName: '',
-    email: '',
-    mobileNumber: '',
-    position: ''
-  });
+  // const [contact, setContact] = useState({
+  //   contactName: '',
+  //   email: '',
+  //   mobileNumber: '',
+  //   position: ''
+  // });
+  const [addContact, setAddContact] = useState({
+    jobTitles: "",
+    email: "",
+    mobile: "",
+    companyName: ""
+  })
 
   const handleCloseModal = () => {
     setIsActive(false);
   };
 
-  const handleCancel = () => {
-    handleCloseModal();
-  };
+  // const handleCancel = () => {
+  //   handleCloseModal();
+  // };
 
   const handleSave = () => {
-    console.log('Contact:', contact);
+    event.preventDefault();
+    // console.log('Contact:', contact);
     handleCloseModal();
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setContact((prevContact) => ({
-      ...prevContact,
-      [name]: value
-    }));
-  };
+  const handleName = (event) => {
+    setAddContact({ ...addContact, companyName: event.target.value })
+  }
+  const handleEmail = (event) => {
+    setAddContact({ ...addContact, email: event.target.value })
+  }
+  const handlePosition = (event) => {
+    setAddContact({ ...addContact, jobTitles: event.target.value })
+  }
+  const handlePhone = (event) => {
+    setAddContact({ ...addContact, mobile: event.target.value })
+  }
+
 
   return (
     <Modal
       title="Add Contact Person"
       submitBtnName="Save"
       isActive={isActive}
+      setIsAcive={setIsActive}
       onSubmit={handleSave}
-      onRequestClose={handleCancel}
-      // isLarge
+    // onRequestClose={handleCancel}
+    // isLarge
     >
       <form>
         <div className="columns">
@@ -47,8 +61,8 @@ const AddContactPerson = ({ isActive = false, setIsActive }) => {
             <label>Contact Name *</label>
             <Input
               name="contactName"
-              value={contact.contactName}
-              onChange={handleChange}
+              value={addContact.companyName}
+              onChange={handleName}
               type="text"
             />
           </div>
@@ -56,8 +70,8 @@ const AddContactPerson = ({ isActive = false, setIsActive }) => {
             <label>Email *</label>
             <Input
               name="email"
-              value={contact.email}
-              onChange={handleChange}
+              value={addContact.email}
+              onChange={handleEmail}
               type="email"
             />
           </div>
@@ -67,8 +81,8 @@ const AddContactPerson = ({ isActive = false, setIsActive }) => {
             <label>Mobile Number</label>
             <Input
               name="mobileNumber"
-              value={contact.mobileNumber}
-              onChange={handleChange}
+              value={addContact.mobile}
+              onChange={handlePhone}
               type="text"
             />
           </div>
@@ -76,12 +90,12 @@ const AddContactPerson = ({ isActive = false, setIsActive }) => {
             <label>Position</label>
             <Input
               name="position"
-              value={contact.position}
-              onChange={handleChange}
+              value={addContact.jobTitles}
+              onChange={handlePosition}
               type="text"
             />
           </div>
-         
+
         </div>
         {/* <div className="field column is-6">
             <Checkbox isSolid={true}

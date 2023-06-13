@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 
-const RadioButton = ({ choices, onSelect }) => {
-  const [selectedOption, setSelectedOption] = useState('');
+const RadioButton = ({ choices, onChange, selectedOption }) => {
+  const [selectedValue, setSelectedValue] = useState(selectedOption);
+
+  useEffect(() => {
+    setSelectedValue(selectedOption);
+  }, [selectedOption]);
 
   const handleOptionChange = (event) => {
     const selectedValue = event.target.value;
-    setSelectedOption(selectedValue);
-    if (typeof onSelect === 'function') {
-      onSelect(selectedValue);
+    setSelectedValue(selectedValue);
+    if (typeof onChange === 'function') {
+      onChange(selectedValue);
     }
   };
 
@@ -17,14 +21,13 @@ const RadioButton = ({ choices, onSelect }) => {
         {choices.map((choice, index) => (
           <label
             key={index}
-            className={`radio ${selectedOption === choice.value ? choice.class : ''
-              }`}
+            className={`radio ${selectedValue === choice.value ? choice.class : ''}`}
           >
             <input
               type="radio"
               name={choice.name}
               value={choice.value}
-              checked={selectedOption === choice.value}
+              checked={selectedValue === choice.value}
               onChange={handleOptionChange}
             />
             <span></span>
@@ -35,5 +38,6 @@ const RadioButton = ({ choices, onSelect }) => {
     </div>
   );
 };
+
 
 export default RadioButton;
