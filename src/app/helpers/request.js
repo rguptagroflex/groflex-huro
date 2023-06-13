@@ -27,7 +27,7 @@ export const request = (endpoint, options) => {
     url: endpoint,
   };
 
-  fetchOptions.headers.Authorization = `Bearer ${token}`;
+  fetchOptions.headers.authorization = `Bearer ${token}`;
   if (fetchOptions.method !== "GET" && !!options.data) {
     fetchOptions.body = JSON.stringify(options.data);
   }

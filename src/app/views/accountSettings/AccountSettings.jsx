@@ -17,6 +17,7 @@ import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
 import { getCountries } from "../../helpers/getCountries";
 import { get } from "jquery";
+import { useSelector } from "react-redux";
 
 const countriesOptions = getCountries().map((country) => ({
   label: country.label,
@@ -27,6 +28,7 @@ const isEmail = (email) =>
   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
 const AccountSettings = () => {
+  const tenantData = useSelector((state) => state.accountData.tenantData);
   const [changeEmailModalActive, setChangeEmailModalActive] = useState(false);
   const [changePhoneNoModalActive, setChangePhoneNoModalActive] =
     useState(false);
@@ -47,13 +49,28 @@ const AccountSettings = () => {
       });
   }, []);
 
-  // useEffect(() => {
-  //   groflexService
-  //     .request(`${config.resourceHost}tenant`, { auth: true })
-  //     .then((res) => {
-  //       console.log(res.data);
-  //     });
-  // }, []);
+  useEffect(() => {
+    setProfileInfo({
+      registerEmail: tenantData?.email,
+      newEmail: "",
+      currentPassword: "",
+      phoneNo: tenantData?.mobile,
+      firstName: tenantData?.companyAddress?.firstName,
+      lastName: tenantData?.companyAddress?.lastName,
+    });
+    setCompanyInfo({
+      companyName: tenantData?.companyAddress?.companyName,
+      companyPhoneNo: tenantData?.mobile,
+      logoPath: tenantData?.logoPath,
+      companyAddress: tenantData?.companyAddress?.street,
+      country: tenantData?.companyAddress?.country,
+      state: "",
+      companyEmail: "rgupta@groflex.io",
+      gstType: tenantData?.companyAddress?.gstType,
+      gstNo: tenantData?.companyAddress?.gstNumber,
+      cin: tenantData?.companyAddress?.cinNumber,
+    });
+  }, [tenantData]);
 
   //states for error handling in profile section
   const [profileError, setProfileError] = useState({
@@ -74,10 +91,10 @@ const AccountSettings = () => {
 
   //states to store/update data in profile section
   const [profileInfo, setProfileInfo] = useState({
-    registerEmail: "example@gmail.com",
+    registerEmail: "",
     newEmail: "",
     currentPassword: "",
-    phoneNo: 9856743215,
+    phoneNo: "",
     firstName: "",
     lastName: "",
   });
@@ -86,11 +103,11 @@ const AccountSettings = () => {
   const [companyInfo, setCompanyInfo] = useState({
     companyName: "",
     companyPhoneNo: "",
-    companyLogo: null,
+    logoPath: null,
     companyAddress: "",
     country: "",
     state: "",
-    companyEmail: "",
+    companyEmail: "asfv",
     gstType: "",
     gstNo: null,
     cin: null,
@@ -295,27 +312,32 @@ const AccountSettings = () => {
   };
 
   const handleCompanySaveBtn = () => {
-    if (companyError.phoneNo || !companyInfo.companyPhoneNo) {
-      console.log("clear the errors");
-      return;
-    }
-    if (companyError.companyName || !companyInfo.companyName) {
-      console.log("clear the errors");
-      return;
-    }
-    if (companyError.gst || !companyInfo.gstNo) {
-      console.log("clear the errors");
-      return;
-    }
-    if (companyError.cin || !companyInfo.cin) {
-      console.log("clear the errors");
-      return;
-    }
-    if (companyError.companyEmail || !companyInfo.companyEmail) {
-      console.log("clear the errors");
-      return;
-    }
-    console.log(companyInfo);
+    // console.log(companyInfo);
+    groflexService.request(config.resourceUrls.accountSettings, {
+      auth: true,
+      method: "POST",
+      data: {
+        businessCategory: null,
+        businessTurnover: null,
+        businessType: null,
+        companyAddress: {
+          cinNumber: companyInfo.cin,
+          city: "",
+          countryIso: companyInfo.country,
+          firstName: "hello",
+          lastName: "world",
+          gstNumber: companyInfo.gstNo,
+          companyName: companyInfo.companyName,
+          country: companyInfo.country,
+          street: "rgupta lane no 0",
+          zipCode: "",
+
+          gstType: companyInfo.gstType,
+        },
+        indiaStateId: companyInfo.state,
+        mobile: companyInfo.companyPhoneNo,
+      },
+    });
   };
 
   // console.log(companyInfo, profileInfo);
@@ -419,7 +441,9 @@ const AccountSettings = () => {
                           <label>First Name</label>
                           <Input
                             placeholder={"Enter Detials"}
-                            value={profileInfo.firstName}
+                            value={
+                              profileInfo.firstName ? profileInfo.firstName : ""
+                            }
                             onChange={handleProfileFirstnameChange}
                           />
                           <ErrorText
@@ -434,7 +458,9 @@ const AccountSettings = () => {
                           <label>Last Name</label>
                           <Input
                             placeholder={"Enter Detials"}
-                            value={profileInfo.lastName}
+                            value={
+                              profileInfo.lastName ? profileInfo.lastName : ""
+                            }
                             onChange={handleProfileLastnameChange}
                           />
                           <ErrorText
@@ -472,7 +498,11 @@ const AccountSettings = () => {
                           <Input
                             placeholder="Enter Details"
                             onChange={handleCompanyNameChange}
-                            value={companyInfo.companyName}
+                            value={
+                              companyInfo.companyName
+                                ? companyInfo.companyName
+                                : ""
+                            }
                           />
                           <ErrorText
                             visible={companyError.companyNameError}
@@ -529,6 +559,11 @@ const AccountSettings = () => {
                                 ...companyInfo,
                                 companyAddress: e.target.value,
                               })
+                            }
+                            value={
+                              companyInfo.companyAddress
+                                ? companyInfo.companyAddress
+                                : ""
                             }
                           />
                         </div>

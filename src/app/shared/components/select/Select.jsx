@@ -61,7 +61,7 @@ export const Select = ({
               >
                 <input type="radio" />
                 <div className="option-meta">
-                  <span key={option.label}>{option.value}</span>
+                  <span>{option.label}</span>
                 </div>
               </div>
             ))}
