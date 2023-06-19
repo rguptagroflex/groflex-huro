@@ -365,7 +365,7 @@ const AccountSettings = () => {
   // console.log(companyInfo.state);
   return (
     <PageContent
-      titleIsBreadCrumb
+      title={"Account Details"}
       breadCrumbData={["Home", "Account Settings", "Account details"]}
     >
       <ChangeEmailModal
