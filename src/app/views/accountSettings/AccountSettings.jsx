@@ -32,7 +32,8 @@ const AccountSettings = () => {
   const [changeEmailModalActive, setChangeEmailModalActive] = useState(false);
   const [changePhoneNoModalActive, setChangePhoneNoModalActive] =
     useState(false);
-
+  const [sizeLimit, setSizeLimit] = useState(true);
+  const [logoUploadErrorMsg, setLogoUploadErrorMsg] = useState("");
   const [stateOptions, setStateOptions] = useState([]);
 
   //states to store/update data in profile section
@@ -161,14 +162,16 @@ const AccountSettings = () => {
   };
 
   const profileSaveBtn = () => {
-    // groflexService.request(config.resourceUrls.changeProfileName, {
-    //   auth: true,
-    //   method: "PUT",
-    //   data: {
-    //     firstName: profileInfo.firstName,
-    //     lastName: profileInfo.lastName,
-    //   },
-    // });
+    groflexService
+      .request(config.resourceUrls.changeProfileName, {
+        auth: true,
+        method: "PUT",
+        data: {
+          firstName: profileInfo.firstName,
+          lastName: profileInfo.lastName,
+        },
+      })
+      .then((res) => console.log(res));
   };
 
   //error handling for company section
@@ -190,6 +193,14 @@ const AccountSettings = () => {
     }
   };
 
+  const handleCompanyLogoChange = (e) => {
+    if (e.target.files[0].size > 2000000) {
+      setLogoUploadErrorMsg("File size exceeding 2 MB!");
+      return;
+    }
+
+    setCompanyInfo({ ...companyInfo, logoPath: e.target.files[0] });
+  };
   const handleCompanyPhoneNoChange = (e) => {
     const companyPhoneNumber = parseInt(e.target.value);
 
@@ -548,14 +559,43 @@ const AccountSettings = () => {
                       <div className="column is-6">
                         <div className="field">
                           <label>Company Logo</label>
-                          <FileInput
-                            setCompanyInfo={setCompanyInfo}
-                            companyInfo={companyInfo}
-                            label={"Upload logo"}
-                            description={
-                              "(Upload jpeg/png image upto 2mb size)"
-                            }
-                          />
+                          {companyInfo.logoPath ? (
+                            <div>
+                              <img
+                                alt="Not found"
+                                style={{
+                                  width: "290px",
+                                  height: "82px",
+                                  objectFit: "contain",
+                                }}
+                                src={URL.createObjectURL(companyInfo.logoPath)}
+                              />
+                              <br />
+                              <a
+                                className="button h-button"
+                                onClick={() =>
+                                  setCompanyInfo({
+                                    ...companyInfo,
+                                    logoPath: null,
+                                  })
+                                }
+                              >
+                                Change Logo
+                              </a>
+                            </div>
+                          ) : (
+                            <FileInput
+                              value={
+                                companyInfo.logoPath ? companyInfo.logoPath : ""
+                              }
+                              errorMessage={logoUploadErrorMsg}
+                              onChange={handleCompanyLogoChange}
+                              label={"Upload logo"}
+                              description={
+                                "(Upload jpeg/png image upto 2 MB size)"
+                              }
+                            />
+                          )}
                         </div>
                       </div>
 
