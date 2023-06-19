@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
 
-export const SelectInput = ({ options, onChange, value, defaultValue }) => {
+export const SelectInput = ({
+  placeholder,
+  options,
+  onChange,
+  value,
+  defaultValue,
+}) => {
   const [selectedOption, setSelectedOption] = useState(
     defaultValue
       ? options.find((option) => option.value === defaultValue)
@@ -15,6 +21,11 @@ export const SelectInput = ({ options, onChange, value, defaultValue }) => {
   }, [value]);
 
   return (
-    <Select value={selectedOption} options={options} onChange={onChange} />
+    <Select
+      placeholder={placeholder}
+      value={selectedOption}
+      options={options}
+      onChange={onChange}
+    />
   );
 };

@@ -161,14 +161,14 @@ const AccountSettings = () => {
   };
 
   const profileSaveBtn = () => {
-    // groflexService.request(config.resourceUrls.changeProfileName, {
-    //   auth: true,
-    //   method: "PUT",
-    //   data: {
-    //     firstName: profileInfo.firstName,
-    //     lastName: profileInfo.lastName,
-    //   },
-    // });
+    groflexService.request(config.resourceUrls.changeProfileName, {
+      auth: true,
+      method: "PUT",
+      data: {
+        firstName: profileInfo.firstName,
+        lastName: profileInfo.lastName,
+      },
+    });
   };
 
   //error handling for company section
@@ -354,7 +354,7 @@ const AccountSettings = () => {
   // console.log(companyInfo.state);
   return (
     <PageContent
-      titleIsBreadCrumb
+      title={"Account Details"}
       breadCrumbData={["Home", "Account Settings", "Account details"]}
     >
       <ChangeEmailModal
