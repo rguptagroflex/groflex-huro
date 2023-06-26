@@ -13,6 +13,7 @@ import Contacts from "./app/views/contacts/Contacts";
 import Expenses from "./app/views/expenses/Expenses";
 import CashAndBank from "./app/views/cashAndBank/CashAndBank";
 import CreateContact from "./app/views/contacts/CreateContact";
+import EditContact from "./app/views/contacts/EditContact";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="articles" element={<Articles />} />
           <Route path="contacts" element={<Contacts />} />
           <Route path="contacts-create" element={<CreateContact />} />
+          <Route path="contacts-edit/:contactId" element={<EditContact />} />
           <Route path="expenses" element={<Expenses />} />
           <Route path="cash-and-bank" element={<CashAndBank />} />
           <Route path="account-settings" element={<AccountSettings />} />

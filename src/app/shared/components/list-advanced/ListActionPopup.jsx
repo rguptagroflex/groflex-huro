@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const ListActionPopup = ({ actionItems, onActionClick }) => {
+const ListActionPopup = ({ actionItems, onActionClick, actionData }) => {
 	const [popupVisible, setPopupVisible] = useState(false);
 	const dropdownRef = useRef();
 
@@ -24,16 +24,15 @@ const ListActionPopup = ({ actionItems, onActionClick }) => {
 	};
 
 	const handleActionClick = (action) => {
-		onActionClick(action);
+		onActionClick(action, actionData);
 	};
 
 	return (
 		<>
 			{actionItems && (
 				<div
-					className={`dropdown is-modern is-dots is-spaced is-up is-right dropdown-trigger ${
-						popupVisible ? 'is-active' : ''
-					}`}
+					className={`dropdown is-modern is-dots is-spaced is-up is-right dropdown-trigger ${popupVisible ? 'is-active' : ''
+						}`}
 					onClick={handlePopupClick}
 					style={{ verticalAlign: 'middle' }}
 				>

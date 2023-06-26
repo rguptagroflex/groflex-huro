@@ -28,9 +28,11 @@ export const ListAdvancedComponent = ({
 
   const customActionCellRenderer = (params) => {
     return (
+      
       <ListActionPopup
         actionItems={params.data.actionItems}
         onActionClick={onActionClick}
+        actionData={params.data}
       />
     );
   };

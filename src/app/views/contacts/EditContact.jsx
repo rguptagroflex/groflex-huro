@@ -19,83 +19,106 @@ import { useSelector } from "react-redux";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import EditModal from "./EditModal";
 import DeleteModal from "./DeleteModal";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 const countriesOptions = getCountries().map((country) => ({
   label: country.label,
   value: country.iso2,
 }));
 
-const CreateContact = () => {
+const EditContact = (
+  // { previousData, selectedContact, ...props }
+) => {
   const tenantData = useSelector((state) => state.accountData.tenantData);
   const [isModalActive, setIsModalActive] = useState(false);
+  const { contactId } = useParams();
+  console.log("contactId:", contactId);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { previousData } = location.state || {};
+
+  // console.log('previousData:', { ...previousData });
+  console.log('previousData:', previousData);
   const [isModalEdit, setIsModalEdit] = useState(false);
   const [isModalDelete, setIsModalDelete] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [contact, setContact] = useState(null);
-  // const handleAddContact = (newContact) => {
-  //   setContact(newContact);
-  //   setIsModalActive(false);
-  // };
   const [stateOptions, setStateOptions] = useState([]);
   const [companyInfo, setCompanyInfo] = useState({
-    id: "",
-    kind: "",
-    type: "",
-    number: "",
-    companyName: "",
-    country: "",
-    state: "",
-    category: "",
-    cinNumber: "",
-    gstType: "",
-    gstNumber: "",
-    street: '',
-    email: '',
-    website: '',
-    mobile: '',
-    phone1: '',
-    fax: '',
-    paymentTerms: '',
-    discount: "",
-    selectedOption: '',
-    openingBalance: '',
-    notesAlert: "",
-    notes: "",
+    id: contactId,
+    kind: previousData?.kind || "",
+    type: previousData?.type || "",
+    number: previousData?.number || "",
+    companyName: previousData?.companyName || "",
+    country: previousData?.country || "",
+    state: previousData?.state || "",
+    category: previousData?.category || "",
+    cinNumber: previousData?.cinNumber || "",
+    gstType: previousData?.gstType || "",
+    gstNumber: previousData?.gstNumber || "",
+    street: previousData?.street || "",
+    email: previousData?.email || "",
+    website: previousData?.website || "",
+    mobile: previousData?.mobile || "",
+    phone1: previousData?.phone1 || "",
+    fax: previousData?.fax || "",
+    paymentTerms: previousData?.paymentTerms || "",
+    discount: previousData?.discount || "",
+    selectedOption: previousData?.selectedOption || "",
+    openingBalance: previousData?.openingBalance || "",
+    notesAlert: previousData?.notesAlert || "",
+    notes: previousData?.notes || "",
     payConditionId: 177,
-    balance: 0,
-    baseCurrency: "",
-    credits: 0,
-    debits: 0,
+    balance: previousData?.balance || 0,
+    baseCurrency: previousData?.baseCurrency || "",
+    credits: previousData?.credits || 0,
+    debits: previousData?.debits || 0,
     defaultExchangeRateToggle: false,
-    lastName: "",
-    firstName: "",
-    exchangeRate: 0,
-    outstandingAmount: 0,
-    salutation: "",
-    title: "",
-    address: "",
-    job: "",
-    contactPersons: [],
-    //////////////////
-    // job: "",
-    // email: "",
-    // mobile: "",
-    // firstName: ""
+    lastName: previousData?.lastName || "",
+    firstName: previousData?.firstName || "",
+    exchangeRate: previousData?.exchangeRate || 0,
+    outstandingAmount: previousData?.outstandingAmount || 0,
+    salutation: previousData?.salutation || "",
+    title: previousData?.title || "",
+    address: previousData?.address || "",
+    contactPersons: previousData?.contactPersons || [],
   });
+
+  // useEffect(() => {
+  //   // Once the 'previousData' prop is received, update the 'contact' state variable
+  //   // with the 'previousData' if it exists
+  //   if (previousData) {
+  //     setCompanyInfo({ ...previousData });
+  //     console.log({ ...previousData })
+  //   }
+  // }, [previousData]);
+  useEffect(() => {
+    console.log("previousData:", previousData);
+    if (previousData) {
+      setCompanyInfo(prevCompanyInfo => ({
+        ...prevCompanyInfo,
+        ...previousData,
+      }));
+    }
+  }, [previousData]);
+
+
+
+
   const [editContactIndex, setEditContactIndex] = useState(null);
   const [editContactDetails, setEditContactDetails] = useState({
     firstName: "",
     email: "",
   });
+  console.log("contactId", contactId)
   const handleEditContact = (index) => {
     const contact = companyInfo.contactPersons[index];
     setEditContactIndex(index);
     setEditContactDetails({ firstName: contact.firstName, email: contact.email });
-    setIsModalEdit(true); // Open the modal for editing the contact details
+    setIsModalEdit(true);
   };
   const handleSaveContact = () => {
     if (editContactIndex !== null) {
-      // Update the contact details in the companyInfo.contactPersons array
       const updatedContactPersons = [...companyInfo.contactPersons];
       updatedContactPersons[editContactIndex].firstName = editContactDetails.firstName;
       updatedContactPersons[editContactIndex].email = editContactDetails.email;
@@ -103,22 +126,11 @@ const CreateContact = () => {
         ...prevState,
         contactPersons: updatedContactPersons,
       }));
-      setIsModalEdit(false); // Close the modal after saving the changes
-      setEditContactIndex(null); // Reset the editContactIndex state variable
-      setEditContactDetails({ firstName: "", email: "" }); // Reset the editContactDetails state variable
+      setIsModalEdit(false);
+      setEditContactIndex(null);
+      setEditContactDetails({ firstName: "", email: "" });
     }
   };
-
-
-  // const handleDeleteContact = (index) => {
-
-  //   const updatedContactPersons = [...companyInfo.contactPersons];
-  //   updatedContactPersons.splice(index, 1);
-  //   setCompanyInfo((prevState) => ({
-  //     ...prevState,
-  //     contactPersons: updatedContactPersons,
-  //   }));
-  // };
   const handleDeleteContact = (index) => {
     setDeleteIndex(index);
     setIsModalDelete(true);
@@ -153,14 +165,6 @@ const CreateContact = () => {
       });
   }, []);
 
-
-
-  // const [addContact, setAddContact] = useState({
-  //   job: "",
-  //   email: "",
-  //   mobile: "",
-  //   companyName: ""
-  // })
   const handleAddContactPerson = (newContactPerson) => {
     setCompanyInfo((prevState) => ({
       ...prevState,
@@ -358,6 +362,7 @@ const CreateContact = () => {
 
     setCompanyInfo({ ...companyInfo, mobile: mobile });
   };
+
   const handleNumberChange = (e) => {
     const number = parseInt(e.target.value);
     setCompanyInfo({ ...companyInfo, number: number });
@@ -367,20 +372,26 @@ const CreateContact = () => {
     e.preventDefault();
     console.log(companyInfo);
     onAddContacts(companyInfo);
-    // const formData = new FormData(e.target);
-    // const person = {
-    //   firstName: formData.get('firstName'),
-    //   email: formData.get('email'),
-    //   lastName: formData.get('lastName'),
-    //   mobile: formData.get('mobile'),
-    // };
-    // // Call the addContactPerson function
-    // addContactPerson(person);
+    navigate("/contacts")
   };
+  // useEffect(() => {
+  //   if (previousData) {
+  //     setCompanyInfo((prevCompanyInfo) => ({
+  //       ...prevCompanyInfo,
+  //       id: previousData.id || "",
+  //       kind: previousData.kind || "",
+  //       type: previousData.type || "",
+  //       companyName: previousData.companyName || "",
+  //       // Update other fields as needed
+  //     }));
+  //     console.log("previousData1", previousData)
+  //   }
+  //   console.log("previousData2", previousData)
+  // }, [previousData]);
+
 
   useEffect(() => {
     console.log(companyInfo);
-    // console.log(addContact);
   }, [companyInfo]);
   const handleStateChange = (options) => {
     // console.log(options.label);
@@ -425,14 +436,13 @@ const CreateContact = () => {
   };
 
 
-
-  const onAddContacts = () => {
-    const endpoint = config.resourceUrls.contact;
-
+  const onAddContacts = (contact) => {
+    // const endpoint = config.resourceUrls.contact;
+    const endpoint = `${config.resourceUrls.contact}/${contactId}`;
 
     const contactPerson = companyInfo.contactPersons.map((person) => ({
       firstName: person.firstName,
-      job: person.job,
+      lastName: person.lastName,
       email: person.email,
       mobile: person.mobile,
     }));
@@ -463,11 +473,12 @@ const CreateContact = () => {
       email: companyInfo.email,
       street: companyInfo.street,
       // contactPersons: [contactPerson] // Include the contact person data here
-      contactPersons: contactPerson
+      contactPersons: contactPerson,
+      id: contactId,
     };
 
     GroflexService.request(endpoint, {
-      method: 'POST',
+      method: 'PUT',
       auth: true,
       data: requestData
     })
@@ -483,7 +494,7 @@ const CreateContact = () => {
   return (
     <PageContent
       titleIsBreadCrumb
-      breadCrumbData={["Home", "Contacts", "Create Contact"]}
+      breadCrumbData={["Home", "Contacts", "Edit Contact"]}
     >
       {isModalActive && (
         <AddContactPerson
@@ -493,12 +504,6 @@ const CreateContact = () => {
           companyInfo={companyInfo}
           contactPersons={companyInfo.contactPersons}
           addContactPerson={handleAddContactPerson}
-        // setCompanyInfo={setCompanyInfo}
-        // companyInfo={companyInfo}
-        // editContactIndex={editContactIndex}
-        // editContactDetails={editContactDetails}
-        // setEditContactDetails={setEditContactDetails}
-        // handleSaveContact={handleSaveContact}
         />
 
 
@@ -513,11 +518,6 @@ const CreateContact = () => {
       )}
       {isModalDelete && (
         <DeleteModal
-          // isModalDelete={isModalDelete}
-          // setIsModalDelete={setIsModalDelete}
-          // onCancelDelete={handleCancelDelete}
-          //   onConfirmDelete={handleConfirmDelete}
-          //   handleConfirmDelete={handleConfirmDelete} 
           isModalDelete={isModalDelete}
           setIsModalDelete={setIsModalDelete}
           handleConfirmDelete={handleConfirmDelete}
@@ -525,9 +525,6 @@ const CreateContact = () => {
           deleteIndex={deleteIndex}
           setDeleteIndex={setDeleteIndex}
           contactName={companyInfo.contactPersons[deleteIndex]?.firstName}
-
-        // deleteIndex={deleteIndex}
-        // setDeleteIndex={setDeleteIndex}
         />
       )
 
@@ -540,7 +537,7 @@ const CreateContact = () => {
             >
               <ul>
                 <li data-tab="account-details-tab" className="is-active">
-                  <Link to="/contacts"><h2 className="title is-5 "> Create Contact</h2></Link>
+                  <Link to="/contacts"><h2 className="title is-5 ">Edit Contact</h2></Link>
                 </li>
 
               </ul>
@@ -554,11 +551,8 @@ const CreateContact = () => {
             <div id="account-details-tab" className="tab-content is-active">
               <div className="columns is-multiline">
                 <div className="column is-7">
-                  {/* PROFILE INFO */}
                   <AdvancedCard
                     type={"s-card"}
-                  // footer
-                  // footerContentRight={<Button isSuccess onClick={handleSubmit}>Save</Button>}
                   >
                     <h2 className="title is-5 is-bold">Contact Info</h2>
 
@@ -624,7 +618,7 @@ const CreateContact = () => {
                           </div>
                         </div>
                       </div>
-                      {/* <div className="columns is-multiline">
+                      <div className="columns is-multiline">
                         <div className="column is-6">
                           <div className="field">
                             <label>Country *</label>
@@ -650,64 +644,8 @@ const CreateContact = () => {
                           </div>
                         ) : (
                           ""
-                        )
-                        }
-
-                      </div> */}
-                      <div className="columns is-multiline">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Country *</label>
-                            <SelectInput
-                              defaultValue={companyInfo.country}
-                              options={countriesOptions}
-                              value={companyInfo.country}
-                              onChange={handleCountryChange}
-                            />
-                          </div>
-                        </div>
-                        {companyInfo.country === 'IN' && (
-                          <div className="column is-6">
-                            <div className="field">
-                              <label>State *</label>
-                              <SelectInput
-                                defaultValue={companyInfo.state}
-                                options={stateOptions}
-                                onChange={handleStateChange}
-                                value={companyInfo.state}
-                              />
-                            </div>
-                          </div>
                         )}
                       </div>
-
-                      {companyInfo.country !== 'IN' && companyInfo.category && (
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Currency *</label>
-                            <SelectInput
-                              defaultValue={companyInfo.currency}
-                              options={stateOptions}
-                              onChange={handleStateChange}
-                              value={companyInfo.currency}
-                            />
-                          </div>
-                        </div>
-                      )}
-                      {companyInfo.country !== 'IN' && companyInfo.category && companyInfo.currency && (
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Exchange Rate *</label>
-                            <input
-                              type="number"
-                              step="0.01"
-                              value={companyInfo.exchangeRate}
-                              onChange={handleExchangeRateChange}
-                            />
-                          </div>
-                        </div>
-                      )}
-
                       <div className="columns is-multiline">
                         <div className="column is-6">
                           <div className="field">
@@ -737,8 +675,6 @@ const CreateContact = () => {
                               visible={companyError.cinError}
                               text={companyError.cinError}
                             />
-
-                            {/* <p>A Corporate Identification Number (CIN) is a unique identification number that is assigned by the Registrar of Companies (ROC).</p> */}
                           </div>
                         </div>
                       </div>
@@ -768,7 +704,7 @@ const CreateContact = () => {
                               visible={companyError.gstError}
                               text={companyError.gstError}
                             />
-                            {/* <p>A unique 15-digit identification number assigned to every taxpayer registered under GST regime.</p> */}
+
                           </div>
                         </div>
                       </div>
@@ -780,8 +716,7 @@ const CreateContact = () => {
                   {/* COMPANY INFO */}
                   <AdvancedCard
                     type={"s-card"}
-                  // footer
-                  // footerContentRight={<Button isSuccess onClick={handleSubmitCommunication}>Save</Button>}
+
                   >
                     <h2 className="title is-5  is-bold">Communication</h2>
 
@@ -974,31 +909,6 @@ const CreateContact = () => {
                     footer
                     footerContentRight={<Button isSuccess onClick={() => setIsModalActive(true)}>Add New</Button>}
                   >
-
-                    {/* <div className="columns is-multiline">
-                      <div className="column is-8">
-                        <h2 className="title is-5 is-bold">Contact Persons</h2>
-                        <p>You can list all your contacts here</p>
-
-                        {/* <ul>
-                          <li>
-                            <h3>Company Name:</h3>
-                            <p>{contact.firstName}</p>
-                          </li>
-                          <li>
-                            <h3>Email:</h3>
-                            <p>{contact.email}</p>
-                          </li>
-                        </ul> */}
-                    {/* {companyInfo.contactPersons.map((contact, index) => (
-                          <div key={index}>
-                            <p>
-                              Name: {contact.firstName} {contact.lastName}
-                            </p>
-                            <p>Email: {contact.email}</p>
-                            <p>Mobile: {contact.mobile}</p>
-                          </div>
-                        ))} */}
                     <div className="columns is-multiline">
                       <div className="column is-8">
                         <div className="contact-list">
@@ -1011,8 +921,6 @@ const CreateContact = () => {
                                   <tr>
                                     <th style={{ paddingRight: '30px' }}>First Name</th>
                                     <th>Email</th>
-                                    {/* <th>Edit</th>
-                                    <th>Delete</th> */}
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -1023,8 +931,6 @@ const CreateContact = () => {
                                       <td>
                                         <FeatherIcon style={{ paddingRight: '5px' }} color="#00a353" name="Edit" onClick={() => handleEditContact(index)} /></td>
                                       <td>  <FeatherIcon color="#00a353" name="Trash" onClick={() => handleDeleteContact(index)} /></td>
-                                      {/* <td>Edit Icon</td>
-                                      <td>Delete Icon</td> */}
                                     </tr>
                                   ))}
                                 </tbody>
@@ -1036,12 +942,6 @@ const CreateContact = () => {
                         </div>
                       </div>
                     </div>
-
-
-
-                    {/* </div> */}
-                    {/* </div> */}
-                    {/* </div> */}
                   </AdvancedCard>
                   <div className="m-t-15" />
                   <AdvancedCard
@@ -1078,5 +978,5 @@ const CreateContact = () => {
   );
 };
 
-export default CreateContact;
+export default EditContact;
 
