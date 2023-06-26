@@ -64,6 +64,16 @@ const Login = () => {
             dispatch({ type: actionTypes.SET_TENANT_DATA, payload: res.data });
             navigate("/");
           });
+      })
+      .then(() => {
+        groflexService
+          .request(config.resourceUrls.user, {
+            auth: true,
+          })
+          .then((res) => {
+            dispatch({ type: actionTypes.SET_USER_DATA, payload: res.data });
+            navigate("/");
+          });
       });
   };
 

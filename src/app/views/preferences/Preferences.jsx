@@ -207,7 +207,7 @@ function Preferences() {
 
   return (
     <PageContent
-      titleIsBreadCrumb
+      title="Preferences"
       breadCrumbData={["Home", "Account Settings", "Account details"]}
     >
       <div className="page-content-inner">

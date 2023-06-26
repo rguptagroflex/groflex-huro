@@ -17,13 +17,24 @@ const SharedLayout = () => {
     } else {
       if (!tenantData) {
         groflexService
-          .request(`${config.resourceHost}tenant`, {
+          .request(config.resourceUrls.tenant, {
             auth: true,
           })
           .then((res) => {
             // console.log(res.data, "TENANT DATA from Shared layout");
             dispatch({ type: actionTypes.SET_TENANT_DATA, payload: res.data });
-            // navigate("/");
+          })
+          .then(() => {
+            groflexService
+              .request(config.resourceUrls.user, {
+                auth: true,
+              })
+              .then((res) => {
+                dispatch({
+                  type: actionTypes.SET_USER_DATA,
+                  payload: res.data,
+                });
+              });
           });
       }
     }

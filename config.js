@@ -25,6 +25,8 @@ const resourceUrls = {
   customers: `${resourceHost}customer?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
   tenant: `${resourceHost}tenant`,
   accountSettings: `${resourceHost}setting/account`,
+  changeProfileName: `${resourceHost}user/changePassword`,
+  user: `${resourceHost}setting/user`,
   contact: `${resourceHost}customer`,
 };
 

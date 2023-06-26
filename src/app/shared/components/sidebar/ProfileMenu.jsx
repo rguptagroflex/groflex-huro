@@ -75,7 +75,7 @@ const ProfileMenu = ({ profileMenuIsActive, setProfileMenuIsActive }) => {
                   height: "48px",
                   objectFit: "contain",
                 }}
-                src={"https://picsum.photos/200"}
+                src={tenantData?.logoPath}
               />
             </div>
             <div

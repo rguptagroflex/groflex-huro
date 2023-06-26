@@ -12,6 +12,7 @@ import Notifications from "./app/views/notifications/Notifications";
 import Contacts from "./app/views/contacts/Contacts";
 import Expenses from "./app/views/expenses/Expenses";
 import CashAndBank from "./app/views/cashAndBank/CashAndBank";
+import CreateArticle from "./app/views/articles/CreateArticle";
 import CreateContact from "./app/views/contacts/CreateContact";
 import EditContact from "./app/views/contacts/EditContact";
 
@@ -32,6 +33,7 @@ function App() {
           <Route path="account-settings" element={<AccountSettings />} />
           <Route path="preferences" element={<Preferences />} />
           <Route path="notifications" element={<Notifications />} />
+          <Route path="create-article" element={<CreateArticle />} /> 
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />

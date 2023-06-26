@@ -1,14 +1,10 @@
 import React from "react";
 import useToggleSidebar from "../../../helpers/hooks/useToggleSidebar";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { FeatherIcon } from "../../featherIcon/FeatherIcon";
 
-const PageContent = ({
-  title,
-  children,
-  titleIsBreadCrumb = false,
-  breadCrumbData = [],
-}) => {
+const PageContent = ({ title, children, breadCrumbData = [] }) => {
   const { sidebarIsActive } = useSelector((state) => state.themeData);
   const toggleSidebar = useToggleSidebar();
   const navigate = useNavigate();
@@ -41,29 +37,44 @@ const PageContent = ({
                 </span>
               </span>
             </div>
-            {titleIsBreadCrumb ? (
-              <div className="title-wrap">
-                <nav
-                  className="breadcrumb has-bullet-separator"
-                  aria-label="breadcrumbs"
-                >
-                  <ul>
-                    {breadCrumbData.map((breadCrumb) => (
-                      <li key={breadCrumb}>
-                        <a href="#">
-                          <span>{breadCrumb}</span>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              </div>
-            ) : (
-              <div className="title-wrap">
-                <h1 className="title is-4">{title}</h1>
-              </div>
-            )}
+
+            <div className="title-wrap">
+              <nav
+                className="breadcrumb has-bullet-separator"
+                aria-label="breadcrumbs"
+              >
+                <ul>
+                  {breadCrumbData?.map((breadCrumb) => (
+                    <li key={breadCrumb}>
+                      <Link>
+                        <span>{breadCrumb}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
           </div>
+
+          <div
+            style={{
+              marginBottom: "24px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-start",
+            }}
+            className="title-wrap"
+          >
+            <FeatherIcon
+              color="#272D30"
+              name="ArrowLeft"
+              size={24}
+              style={{ cursor: "pointer", marginRight: "10px" }}
+              onClick={() => navigate(-1)}
+            />
+            <h1 className="title is-4">{title}</h1>
+          </div>
+
           <div className="page-content-inner">{children}</div>
         </div>
       </div>

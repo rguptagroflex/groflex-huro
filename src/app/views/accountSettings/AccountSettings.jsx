@@ -28,6 +28,7 @@ const isEmail = (email) =>
 
 const AccountSettings = () => {
   const tenantData = useSelector((state) => state.accountData.tenantData);
+  const userData = useSelector((state) => state.accountData.userData);
   const [changeEmailModalActive, setChangeEmailModalActive] = useState(false);
   const [changePhoneNoModalActive, setChangePhoneNoModalActive] =
     useState(false);
@@ -72,14 +73,15 @@ const AccountSettings = () => {
   }, []);
 
   useEffect(() => {
-    if (tenantData && stateOptions.length > 0) {
+    if (tenantData && stateOptions.length > 0 && userData) {
+      console.log(userData);
       setProfileInfo({
-        registerEmail: tenantData.email,
+        registerEmail: userData.email,
         newEmail: "",
         currentPassword: "",
-        phoneNo: tenantData.mobile,
-        firstName: tenantData.companyAddress.firstName,
-        lastName: tenantData.companyAddress?.lastName,
+        phoneNo: null,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
       });
       setCompanyInfo({
         companyName: tenantData.companyAddress.companyName,
@@ -91,7 +93,7 @@ const AccountSettings = () => {
             ? "IN"
             : tenantData.companyAddress.country,
         state: stateOptions.find((indianState) => {
-          console.log(indianState.value, tenantData.indiaStateId);
+          // console.log(indianState.value, tenantData.indiaStateId);
           return indianState.value === tenantData.indiaStateId;
         }).value,
         companyEmail: "rgupta@groflex.io",
@@ -100,7 +102,7 @@ const AccountSettings = () => {
         cin: tenantData.companyAddress.cinNumber,
       });
     }
-  }, [tenantData, stateOptions]);
+  }, [tenantData, stateOptions, userData]);
 
   //states for error handling in profile section
   const [profileError, setProfileError] = useState({
@@ -159,13 +161,14 @@ const AccountSettings = () => {
   };
 
   const profileSaveBtn = () => {
-    // if (!profileInfo.phoneNo) {
-    //   setProfileError({
-    //     ...profileError,
-    //     phoneNoError: "This should not be empty",
-    //   });
-    // }
-    console.log(profileInfo);
+    groflexService.request(config.resourceUrls.changeProfileName, {
+      auth: true,
+      method: "PUT",
+      data: {
+        firstName: profileInfo.firstName,
+        lastName: profileInfo.lastName,
+      },
+    });
   };
 
   //error handling for company section
@@ -344,13 +347,14 @@ const AccountSettings = () => {
         mobile: companyInfo.companyPhoneNo,
       },
     });
+    // console.log(tenantData?.logoPath);
   };
 
-  console.log(companyInfo, profileInfo);
-  console.log(companyInfo.state);
+  // console.log(companyInfo, profileInfo);
+  // console.log(companyInfo.state);
   return (
     <PageContent
-      titleIsBreadCrumb
+      title={"Account Details"}
       breadCrumbData={["Home", "Account Settings", "Account details"]}
     >
       <ChangeEmailModal
@@ -403,7 +407,7 @@ const AccountSettings = () => {
                         <div className="field">
                           <label>Registered E-mail Address</label>
                           <InputAddons
-                            value={"example@gmail.com"}
+                            value={profileInfo.registerEmail}
                             type="email"
                             disabled
                             placeholder={"Enter Details"}
