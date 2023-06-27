@@ -1,3 +1,4 @@
+import { has } from "lodash";
 import React from "react";
 
 export const InputAddons = ({
@@ -10,6 +11,9 @@ export const InputAddons = ({
   value,
   onRightAdornmentClick,
   onChange,
+  helpText,
+  hasSuccess,
+  hasError,
   ...rest
 }) => {
   return (
@@ -30,7 +34,19 @@ export const InputAddons = ({
           value={value}
           onChange={onChange}
           {...rest}
+          style={{ border: hasError ? "1px solid #D94339" : "" }}
         />
+        {/* Helper text */}
+        {helpText && (
+          <p
+            className={`help ${
+              hasSuccess ? "success-text" : hasError ? "danger-text" : ""
+            }`}
+            style={{ fontSize: "14px", fontWeight: "400" }}
+          >
+            {helpText}
+          </p>
+        )}
       </div>
 
       {right && (

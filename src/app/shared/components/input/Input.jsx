@@ -1,3 +1,4 @@
+import { has } from "lodash";
 import React from "react";
 
 export const Input = ({
@@ -56,15 +57,26 @@ export const Input = ({
     return classes.join(" ");
   };
 
+  const errorStyles = {
+    font: {
+      fontSize: "14px",
+      fontWeight: "400",
+    },
+    border: {
+      border: hasError ? "1px solid #D94339" : "",
+    },
+  };
   return (
     <div className="field">
       <div className={`control ${getControlClassOptions()}`}>
         <input
+          style={errorStyles.border}
           type={type}
           className={`input ${getFocusType()} ${getInputClassOptions()}`}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          autoComplete="off"
           {...rest}
         />
 
@@ -95,6 +107,7 @@ export const Input = ({
             className={`help ${
               hasSuccess ? "success-text" : hasError ? "danger-text" : ""
             }`}
+            style={errorStyles.font}
           >
             {helpText}
           </p>
