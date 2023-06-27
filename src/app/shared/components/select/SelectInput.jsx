@@ -15,7 +15,7 @@ export const SelectInput = ({
   );
 
   useEffect(() => {
-    if (value) {
+    if (value !== undefined || value !== null) {
       setSelectedOption(options.find((option) => option.value === value));
     }
   }, [value]);

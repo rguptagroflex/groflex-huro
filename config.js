@@ -27,6 +27,8 @@ const resourceUrls = {
   accountSettings: `${resourceHost}setting/account`,
   changeProfileName: `${resourceHost}user/changePassword`,
   user: `${resourceHost}setting/user`,
+  articleSearch: `${resourceHost}find/eanRecord/`, // concatenate search query
+  article: `${resourceHost}article`,
 };
 
 const checkLoginTokenIsValid = () => {
