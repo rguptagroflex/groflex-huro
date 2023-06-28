@@ -74,6 +74,20 @@ const Login = () => {
             dispatch({ type: actionTypes.SET_USER_DATA, payload: res.data });
             navigate("/");
           });
+      })
+      .then(() => {
+        groflexService
+          .request(config.resourceUrls.accountSettings, {
+            auth: true,
+          })
+          .then((res) => {
+            console.log(res.data);
+            dispatch({
+              type: actionTypes.SET_ACCOUNTINFO_DATA,
+              payload: res.data,
+            });
+            navigate("/");
+          });
       });
   };
 
