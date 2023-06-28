@@ -37,6 +37,11 @@ const CreateContact = () => {
   //   setIsModalActive(false);
   // };
   const [stateOptions, setStateOptions] = useState([]);
+  const currencyOptions = [{ value: "1 eur", label: "1 EUR" }, { value: "1 omr", label: "1 OMR" },
+  { value: "1 usd", label: "1 USD" }, { value: "1 qar", label: "1 QAR" }, { value: "1 sar", label: "1 SAR" }
+  ]
+
+
   const [companyInfo, setCompanyInfo] = useState({
     id: "",
     kind: "",
@@ -69,12 +74,13 @@ const CreateContact = () => {
     defaultExchangeRateToggle: false,
     lastName: "",
     firstName: "",
-    exchangeRate: 0,
+    exchangeRate: "",
     outstandingAmount: 0,
     salutation: "",
     title: "",
     address: "",
     job: "",
+    currency: "",
     contactPersons: [],
     //////////////////
     // job: "",
@@ -362,6 +368,44 @@ const CreateContact = () => {
     const number = parseInt(e.target.value);
     setCompanyInfo({ ...companyInfo, number: number });
   };
+  // const handleExchangeRateChange = (e) => {
+  //   const rate = parseInt(e.target.value);
+  //   setCompanyInfo({ ...companyInfo, exchangeRate: rate });
+  // };
+
+  const handleCurrencyChange = (selectedCurrency) => {
+    const selectedCurrencyRate = getSelectedCurrencyRate(selectedCurrency.value);
+    const convertedExchangeRate = selectedCurrencyRate.toFixed(3) + " INR";
+
+    setCompanyInfo({
+      ...companyInfo,
+      currency: selectedCurrency.value,
+      exchangeRate: convertedExchangeRate
+    });
+  };
+
+  const handleExchangeRateChange = (e) => {
+    const rate = parseFloat(e.target.value);
+    const selectedCurrencyRate = getSelectedCurrencyRate(companyInfo.currency);
+    const convertedExchangeRate = (rate / selectedCurrencyRate).toFixed(3) + " INR";
+
+    setCompanyInfo({ ...companyInfo, exchangeRate: convertedExchangeRate });
+  };
+
+  const getSelectedCurrencyRate = (currency) => {
+
+    const currencyRates = {
+      '1 eur': 89.32,  
+      '1 omr': 212.97,  
+      '1 usd': 82.00,  
+      '1 qar': 22.52,
+      '1 sar': 21.86   
+    };
+
+    return currencyRates[currency.toLowerCase()];
+  };
+
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -386,11 +430,17 @@ const CreateContact = () => {
     // console.log(options.label);
     setCompanyInfo({ ...companyInfo, state: options.value });
   };
+  // const handleCurrencyChange = (options) => {
+  //   // console.log(options.label);
+  //   setCompanyInfo({ ...companyInfo, currency: options.value });
+  // };
+
+
   const handleCountryChange = (options) => {
     setCompanyInfo({ ...companyInfo, country: options.value });
   };
 
-  const kindOptions = [{ value: "company", label: "company" },
+  const kindOptions = [{ value: "company", label: "Company" },
   { value: "payee", label: "Payee" }]
 
   const handleKindTypeChange = (options) => {
@@ -462,6 +512,8 @@ const CreateContact = () => {
       website: companyInfo.website,
       email: companyInfo.email,
       street: companyInfo.street,
+      currency: companyInfo.currency,
+      exchangeRate: companyInfo.exchangeRate,
       // contactPersons: [contactPerson] // Include the contact person data here
       contactPersons: contactPerson
     };
@@ -482,8 +534,9 @@ const CreateContact = () => {
 
   return (
     <PageContent
+      title="Create Contact"
       titleIsBreadCrumb
-      breadCrumbData={["Home", "Contacts", "Create Contact"]}
+      breadCrumbData={["Home", "Contacts", <span style={{ color: "green" }}>Create Contact</span>]}
     >
       {isModalActive && (
         <AddContactPerson
@@ -540,7 +593,7 @@ const CreateContact = () => {
             >
               <ul>
                 <li data-tab="account-details-tab" className="is-active">
-                  <Link to="/contacts"><h2 className="title is-5 "> Create Contact</h2></Link>
+                  {/* <Link to="/contacts"><h2 className="title is-5 "> Create Contact</h2></Link> */}
                 </li>
 
               </ul>
@@ -654,7 +707,7 @@ const CreateContact = () => {
                         }
 
                       </div> */}
-                      <div className="columns is-multiline">
+                      {/* <div className="columns is-multiline">
                         <div className="column is-6">
                           <div className="field">
                             <label>Country *</label>
@@ -679,34 +732,90 @@ const CreateContact = () => {
                             </div>
                           </div>
                         )}
+                        {companyInfo.country !== 'IN' && (
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>Currency *</label>
+                              <SelectInput
+                                defaultValue={companyInfo.currency}
+                                options={currencyOptions}
+                                onChange={handleCurrencyChange}
+                                value={companyInfo.currency}
+                              />
+                            </div>
+                          </div>
+                        )}
+                        {companyInfo.country !== 'IN' && (
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>Exchange Rate *</label>
+                              <Input
+                                type="number"
+                                value={companyInfo.exchangeRate}
+                                onChange={handleExchangeRateChange}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div> */}
+                      <div className="columns is-multiline">
+                        <div className={companyInfo.country === 'IN' ? 'column is-6' : 'column is-12'}>
+                          <div className="field">
+                            <label>Country *</label>
+                            <SelectInput
+                              defaultValue={companyInfo.country}
+                              options={countriesOptions}
+                              value={companyInfo.country}
+                              onChange={handleCountryChange}
+                            />
+                          </div>
+                        </div>
+                        {companyInfo.country === 'IN' && (
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>State *</label>
+                              <SelectInput
+                                defaultValue={companyInfo.state}
+                                options={stateOptions}
+                                onChange={handleStateChange}
+                                value={companyInfo.state}
+                              />
+                            </div>
+                          </div>
+                        )}
+                        {companyInfo.country !== 'IN' && (
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>Currency *</label>
+                              <SelectInput
+                                defaultValue={companyInfo.currency}
+                                options={currencyOptions}
+                                onChange={handleCurrencyChange}
+                                value={companyInfo.currency}
+                              />
+                            </div>
+                          </div>
+                        )}
+                        {companyInfo.country !== 'IN' && (
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>Exchange Rate *</label>
+                              <Input
+                                type="number"
+                                placeholder="₹ 0.00"
+                                step="0.001"
+                                value={parseFloat(companyInfo.exchangeRate)}
+                                onChange={handleExchangeRateChange}
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
 
-                      {companyInfo.country !== 'IN' && companyInfo.category && (
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Currency *</label>
-                            <SelectInput
-                              defaultValue={companyInfo.currency}
-                              options={stateOptions}
-                              onChange={handleStateChange}
-                              value={companyInfo.currency}
-                            />
-                          </div>
-                        </div>
-                      )}
-                      {companyInfo.country !== 'IN' && companyInfo.category && companyInfo.currency && (
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Exchange Rate *</label>
-                            <input
-                              type="number"
-                              step="0.01"
-                              value={companyInfo.exchangeRate}
-                              onChange={handleExchangeRateChange}
-                            />
-                          </div>
-                        </div>
-                      )}
+
+
+
+
 
                       <div className="columns is-multiline">
                         <div className="column is-6">
@@ -847,7 +956,7 @@ const CreateContact = () => {
                             <label>Mobile Number</label>
                             <InputAddons
                               type="number"
-                              left={"+91"}
+                              // left={"+91"}
                               placeholder="Enter mobile number"
                               value={companyInfo.mobile}
                               onChange={handleMobileChange}

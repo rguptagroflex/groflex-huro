@@ -401,7 +401,7 @@ const EditContact = (
     setCompanyInfo({ ...companyInfo, country: options.value });
   };
 
-  const kindOptions = [{ value: "company", label: "company" },
+  const kindOptions = [{ value: "company", label: "Company" },
   { value: "payee", label: "Payee" }]
 
   const handleKindTypeChange = (options) => {
@@ -493,8 +493,9 @@ const EditContact = (
 
   return (
     <PageContent
+    title="Edit Contact"
       titleIsBreadCrumb
-      breadCrumbData={["Home", "Contacts", "Edit Contact"]}
+      breadCrumbData={["Home", "Contacts", <span style={{ color: "green" }}>Edit Contact</span>]}
     >
       {isModalActive && (
         <AddContactPerson
@@ -537,7 +538,7 @@ const EditContact = (
             >
               <ul>
                 <li data-tab="account-details-tab" className="is-active">
-                  <Link to="/contacts"><h2 className="title is-5 ">Edit Contact</h2></Link>
+                  {/* <Link to="/contacts"><h2 className="title is-5 ">Edit Contact</h2></Link> */}
                 </li>
 
               </ul>
