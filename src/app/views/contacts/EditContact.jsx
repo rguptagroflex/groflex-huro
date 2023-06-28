@@ -26,12 +26,10 @@ const countriesOptions = getCountries().map((country) => ({
   value: country.iso2,
 }));
 
-const EditContact = (
-  // { previousData, selectedContact, ...props }
-) => {
+const EditContact = () => {
+  const { contactId } = useParams();
   const tenantData = useSelector((state) => state.accountData.tenantData);
   const [isModalActive, setIsModalActive] = useState(false);
-  const { contactId } = useParams();
   console.log("contactId:", contactId);
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,42 +44,42 @@ const EditContact = (
   const [stateOptions, setStateOptions] = useState([]);
   const [companyInfo, setCompanyInfo] = useState({
     id: contactId,
-    kind: previousData?.kind || "",
-    type: previousData?.type || "",
-    number: previousData?.number || "",
-    companyName: previousData?.companyName || "",
-    country: previousData?.country || "",
-    state: previousData?.state || "",
-    category: previousData?.category || "",
-    cinNumber: previousData?.cinNumber || "",
-    gstType: previousData?.gstType || "",
-    gstNumber: previousData?.gstNumber || "",
-    street: previousData?.street || "",
-    email: previousData?.email || "",
-    website: previousData?.website || "",
-    mobile: previousData?.mobile || "",
-    phone1: previousData?.phone1 || "",
-    fax: previousData?.fax || "",
-    paymentTerms: previousData?.paymentTerms || "",
-    discount: previousData?.discount || "",
-    selectedOption: previousData?.selectedOption || "",
-    openingBalance: previousData?.openingBalance || "",
-    notesAlert: previousData?.notesAlert || "",
-    notes: previousData?.notes || "",
+    kind:  "",
+    type: "",
+    number:"",
+    companyName:  "",
+    country:  "",
+    state:  "",
+    category: "",
+    cinNumber:  "",
+    gstType: "",
+    gstNumber: "",
+    street:  "",
+    email: "",
+    website: "",
+    mobile:  "",
+    phone1: "",
+    fax:  "",
+    paymentTerms:"",
+    discount:  "",
+    selectedOption: "",
+    openingBalance: "",
+    notesAlert: "",
+    notes: "",
     payConditionId: 177,
-    balance: previousData?.balance || 0,
-    baseCurrency: previousData?.baseCurrency || "",
-    credits: previousData?.credits || 0,
-    debits: previousData?.debits || 0,
+    balance:  0,
+    baseCurrency:  "",
+    credits: 0,
+    debits: 0,
     defaultExchangeRateToggle: false,
-    lastName: previousData?.lastName || "",
-    firstName: previousData?.firstName || "",
-    exchangeRate: previousData?.exchangeRate || 0,
-    outstandingAmount: previousData?.outstandingAmount || 0,
-    salutation: previousData?.salutation || "",
-    title: previousData?.title || "",
-    address: previousData?.address || "",
-    contactPersons: previousData?.contactPersons || [],
+    lastName:  "",
+    firstName:  "",
+    exchangeRate:  0,
+    outstandingAmount:  0,
+    salutation:  "",
+    title:"",
+    address:  "",
+    contactPersons: [],
   });
 
   // useEffect(() => {
@@ -97,7 +95,7 @@ const EditContact = (
     if (previousData) {
       setCompanyInfo(prevCompanyInfo => ({
         ...prevCompanyInfo,
-        ...previousData,
+        // ...retrievedData,
       }));
     }
   }, [previousData]);

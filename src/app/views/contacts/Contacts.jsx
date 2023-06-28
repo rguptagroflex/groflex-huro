@@ -226,12 +226,7 @@ const Contacts = () => {
         fetchUrl={config.resourceUrls.customers}
         actionMenuData={actions}
       />
-      {/* {selectedContact == null && <EditContact previousData={previousData} contactId={selectedContact} />} */}
-      {/* <EditContact
-        previousData={previousData}
-        selectedContact={selectedContact}
-        contactId={selectedContact}
-      /> */}
+     
 
     </PageContent>
   );
