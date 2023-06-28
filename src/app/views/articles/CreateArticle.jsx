@@ -68,7 +68,7 @@ const CreateArticle = () => {
         method: "POST",
       })
       .then((res) => {
-        console.log(res, "Article created lol");
+        console.log(res, "Article created");
       });
 
     console.log(payload);

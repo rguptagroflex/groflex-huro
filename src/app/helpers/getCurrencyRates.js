@@ -43,7 +43,7 @@ export const getCurrencyRatesFromOpenExchangeRates = async ({
 };
 
 // Get currency rates from exchangerate.host
-export const getCurrencyRatesFromExchangeRateHost = async ({
+export const getCurrencyRates = async ({
   base = "USD",
 }) => {
   /*
