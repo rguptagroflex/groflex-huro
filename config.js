@@ -28,6 +28,8 @@ const resourceUrls = {
   changeProfileName: `${resourceHost}user/changePassword`,
   user: `${resourceHost}setting/user`,
   contact: `${resourceHost}customer`,
+  articleSearch: `${resourceHost}find/eanRecord/`, // concatenate search query
+  article: `${resourceHost}article`,
 };
 
 const checkLoginTokenIsValid = () => {
