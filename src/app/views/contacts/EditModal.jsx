@@ -10,7 +10,7 @@ const EditModal = ({
 }) => {
   return (
     <Modal
-      title="Edit Contact Person"
+      title="Edit Contact"
       submitBtnName="Save"
       isActive={isModalEdit}
       setIsAcive={setIsModalEdit}

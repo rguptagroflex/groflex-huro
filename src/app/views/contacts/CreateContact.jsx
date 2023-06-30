@@ -7,18 +7,18 @@ import { InputAddons } from "../../shared/components/inputAddons/InputAddons";
 import { SelectInput } from "../../shared/components/select/SelectInput";
 import { TextArea } from "../../shared/components/textArea/TextArea";
 import PageContent from "../../shared/components/pageContent/PageContent";
-import { Link } from "react-router-dom";
 import { Switch } from "../../shared/components/switch/Switch";
 import RadioButton from "../../shared/components/button/RadioButton";
 import GroflexService from "../../services/groflex.service";
 import config from "../../../../config";
 import ErrorText from "../../shared/components/errorText/ErrorText";
-import AddContactPerson from "./AddContactPerson";
+import AddContactPersonModal from "./AddContactPersonModal";
 import { getCountries } from "../../helpers/getCountries";
 import { useSelector } from "react-redux";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import EditModal from "./EditModal";
 import DeleteModal from "./DeleteModal";
+
 
 const countriesOptions = getCountries().map((country) => ({
   label: country.label,
@@ -32,10 +32,6 @@ const CreateContact = () => {
   const [isModalDelete, setIsModalDelete] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [contact, setContact] = useState(null);
-  // const handleAddContact = (newContact) => {
-  //   setContact(newContact);
-  //   setIsModalActive(false);
-  // };
   const [stateOptions, setStateOptions] = useState([]);
   const currencyOptions = [{ value: "1 eur", label: "1 EUR" }, { value: "1 omr", label: "1 OMR" },
   { value: "1 usd", label: "1 USD" }, { value: "1 qar", label: "1 QAR" }, { value: "1 sar", label: "1 SAR" }
@@ -82,11 +78,6 @@ const CreateContact = () => {
     job: "",
     currency: "",
     contactPersons: [],
-    //////////////////
-    // job: "",
-    // email: "",
-    // mobile: "",
-    // firstName: ""
   });
   const [editContactIndex, setEditContactIndex] = useState(null);
   const [editContactDetails, setEditContactDetails] = useState({
@@ -109,22 +100,12 @@ const CreateContact = () => {
         ...prevState,
         contactPersons: updatedContactPersons,
       }));
-      setIsModalEdit(false); // Close the modal after saving the changes
-      setEditContactIndex(null); // Reset the editContactIndex state variable
-      setEditContactDetails({ firstName: "", email: "" }); // Reset the editContactDetails state variable
+      setIsModalEdit(false);
+      setEditContactIndex(null);
+      setEditContactDetails({ firstName: "", email: "" });
     }
   };
 
-
-  // const handleDeleteContact = (index) => {
-
-  //   const updatedContactPersons = [...companyInfo.contactPersons];
-  //   updatedContactPersons.splice(index, 1);
-  //   setCompanyInfo((prevState) => ({
-  //     ...prevState,
-  //     contactPersons: updatedContactPersons,
-  //   }));
-  // };
   const handleDeleteContact = (index) => {
     setDeleteIndex(index);
     setIsModalDelete(true);
@@ -159,14 +140,6 @@ const CreateContact = () => {
       });
   }, []);
 
-
-
-  // const [addContact, setAddContact] = useState({
-  //   job: "",
-  //   email: "",
-  //   mobile: "",
-  //   companyName: ""
-  // })
   const handleAddContactPerson = (newContactPerson) => {
     setCompanyInfo((prevState) => ({
       ...prevState,
@@ -178,12 +151,6 @@ const CreateContact = () => {
   useEffect(() => {
     if (tenantData && stateOptions.length > 0) {
       console.log("tenantData", tenantData);
-      // setAddContact({
-      //   email: "",
-      //   mobile: "",
-      //   firstName: "",
-      //   lastName: "",
-      // });
       setCompanyInfo({
         companyName: tenantData.companyName,
         country:
@@ -350,16 +317,13 @@ const CreateContact = () => {
     const phone1 = parseInt(e.target.value);
     setCompanyInfo({ ...companyInfo, phone1: phone1 });
   };
-  // const handleMobileChange = (e) => {
-  //   const mobile = parseInt(e.target.value);
-  //   setCompanyInfo({ ...companyInfo, mobile: mobile });
-  // };
+
   const handleMobileChange = (e) => {
     const inputValue = e.target.value;
-    const mobile = inputValue.slice(0, 10); // Extract the first 10 digits
+    const mobile = inputValue.slice(0, 10);
 
     if (mobile.length === 10) {
-      e.target.blur(); // Remove focus from the input field
+      e.target.blur();
     }
 
     setCompanyInfo({ ...companyInfo, mobile: mobile });
@@ -368,10 +332,7 @@ const CreateContact = () => {
     const number = parseInt(e.target.value);
     setCompanyInfo({ ...companyInfo, number: number });
   };
-  // const handleExchangeRateChange = (e) => {
-  //   const rate = parseInt(e.target.value);
-  //   setCompanyInfo({ ...companyInfo, exchangeRate: rate });
-  // };
+
 
   const handleCurrencyChange = (selectedCurrency) => {
     const selectedCurrencyRate = getSelectedCurrencyRate(selectedCurrency.value);
@@ -395,11 +356,11 @@ const CreateContact = () => {
   const getSelectedCurrencyRate = (currency) => {
 
     const currencyRates = {
-      '1 eur': 89.32,  
-      '1 omr': 212.97,  
-      '1 usd': 82.00,  
+      '1 eur': 89.32,
+      '1 omr': 212.97,
+      '1 usd': 82.00,
       '1 qar': 22.52,
-      '1 sar': 21.86   
+      '1 sar': 21.86
     };
 
     return currencyRates[currency.toLowerCase()];
@@ -411,29 +372,15 @@ const CreateContact = () => {
     e.preventDefault();
     console.log(companyInfo);
     onAddContacts(companyInfo);
-    // const formData = new FormData(e.target);
-    // const person = {
-    //   firstName: formData.get('firstName'),
-    //   email: formData.get('email'),
-    //   lastName: formData.get('lastName'),
-    //   mobile: formData.get('mobile'),
-    // };
-    // // Call the addContactPerson function
-    // addContactPerson(person);
   };
 
   useEffect(() => {
     console.log(companyInfo);
-    // console.log(addContact);
   }, [companyInfo]);
   const handleStateChange = (options) => {
-    // console.log(options.label);
     setCompanyInfo({ ...companyInfo, state: options.value });
   };
-  // const handleCurrencyChange = (options) => {
-  //   // console.log(options.label);
-  //   setCompanyInfo({ ...companyInfo, currency: options.value });
-  // };
+
 
 
   const handleCountryChange = (options) => {
@@ -443,8 +390,8 @@ const CreateContact = () => {
   const kindOptions = [{ value: "company", label: "Company" },
   { value: "payee", label: "Payee" }]
 
-  const handleKindTypeChange = (options) => {
-    setCompanyInfo({ ...companyInfo, kind: options.value });
+  const handleTypeChange = (options) => {
+    setCompanyInfo({ ...companyInfo, type: options.value });
   };
 
 
@@ -462,8 +409,8 @@ const CreateContact = () => {
     setCompanyInfo({ ...companyInfo, paymentTerms: options.value });
   };
 
-  const handleRadioChange = (choices) => {
-    setCompanyInfo({ ...companyInfo, type: choices });
+  const handleKindChange = (choices) => {
+    setCompanyInfo({ ...companyInfo, kind: choices });
   };
   const handleSelectChange = (choices) => {
     setCompanyInfo({ ...companyInfo, selectedOption: choices });
@@ -514,7 +461,6 @@ const CreateContact = () => {
       street: companyInfo.street,
       currency: companyInfo.currency,
       exchangeRate: companyInfo.exchangeRate,
-      // contactPersons: [contactPerson] // Include the contact person data here
       contactPersons: contactPerson
     };
 
@@ -536,22 +482,16 @@ const CreateContact = () => {
     <PageContent
       title="Create Contact"
       titleIsBreadCrumb
-      breadCrumbData={["Home", "Contacts", <span style={{ color: "green" }}>Create Contact</span>]}
+      breadCrumbData={["Home", "Contacts", "Create Contact"]}
     >
       {isModalActive && (
-        <AddContactPerson
+        <AddContactPersonModal
           isActive={isModalActive}
           setIsActive={setIsModalActive}
           setCompanyInfo={setCompanyInfo}
           companyInfo={companyInfo}
           contactPersons={companyInfo.contactPersons}
           addContactPerson={handleAddContactPerson}
-        // setCompanyInfo={setCompanyInfo}
-        // companyInfo={companyInfo}
-        // editContactIndex={editContactIndex}
-        // editContactDetails={editContactDetails}
-        // setEditContactDetails={setEditContactDetails}
-        // handleSaveContact={handleSaveContact}
         />
 
 
@@ -566,11 +506,6 @@ const CreateContact = () => {
       )}
       {isModalDelete && (
         <DeleteModal
-          // isModalDelete={isModalDelete}
-          // setIsModalDelete={setIsModalDelete}
-          // onCancelDelete={handleCancelDelete}
-          //   onConfirmDelete={handleConfirmDelete}
-          //   handleConfirmDelete={handleConfirmDelete} 
           isModalDelete={isModalDelete}
           setIsModalDelete={setIsModalDelete}
           handleConfirmDelete={handleConfirmDelete}
@@ -578,430 +513,319 @@ const CreateContact = () => {
           deleteIndex={deleteIndex}
           setDeleteIndex={setDeleteIndex}
           contactName={companyInfo.contactPersons[deleteIndex]?.firstName}
-
-        // deleteIndex={deleteIndex}
-        // setDeleteIndex={setDeleteIndex}
         />
       )
 
       }
+      <Button isSuccess style={{ float: "right", marginTop: "-45px" }} onClick={handleSubmit}>
+        Save
+      </Button>
 
       <div className="page-content-inner">
         <div className="tabs-wrapper">
-          <div className="tabs-inner">
-            <div
-            >
-              <ul>
-                <li data-tab="account-details-tab" className="is-active">
-                  {/* <Link to="/contacts"><h2 className="title is-5 "> Create Contact</h2></Link> */}
-                </li>
 
-              </ul>
-            </div>
-          </div>
-          <AdvancedCard
-            type={"s-card"}
-            footer
-            footerContentRight={<Button isSuccess onClick={handleSubmit} >Save</Button>}
-          >
-            <div id="account-details-tab" className="tab-content is-active">
-              <div className="columns is-multiline">
-                <div className="column is-7">
-                  {/* PROFILE INFO */}
-                  <AdvancedCard
-                    type={"s-card"}
-                  // footer
-                  // footerContentRight={<Button isSuccess onClick={handleSubmit}>Save</Button>}
-                  >
-                    <h2 className="title is-5 is-bold">Contact Info</h2>
+          <div id="account-details-tab" className="tab-content is-active">
+            <div className="columns is-multiline">
+              <div className="column is-7">
+                <AdvancedCard
+                  type={"s-card"}
+                >
+                  <h2 className="title is-5 is-bold">Contact Info</h2>
 
-                    <>
-                      <div className="columns is-multiline m-b-5">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Contact Type</label>
-                            <SelectInput options={kindOptions}
-                              onChange={handleKindTypeChange}
-                              value={companyInfo.kind}
-
-                              name="kind"
-                            />
-                          </div>
-                        </div>
-
-
-                        <div className="column is-6">
-                          <div className="field">
-                            <RadioButton
-                              choices={[
-                                { label: "Customer", value: "customer", class: "radio is-outlined is-success" },
-                                { label: "Payee", value: "payee", class: "radio is-outlined is-success" },
-                              ]}
-                              selectedOption={companyInfo.type}
-                              onChange={handleRadioChange}
-                              name="type"
-                            />
-                          </div>
+                  <>
+                    <div className="columns is-multiline m-b-5">
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Contact Type</label>
+                          <SelectInput options={kindOptions}
+                            onChange={handleTypeChange}
+                            value={companyInfo.type}
+                            name="kind"
+                          />
                         </div>
                       </div>
 
-                      <div className="columns is-multiline">
+
+                      <div className="column is-6">
+                        <div className="field">
+                          <RadioButton
+                            choices={[
+                              { label: "Company", value: "company", class: "radio is-outlined is-success" },
+                              { label: "Private", value: "private", class: "radio is-outlined is-success" },
+                            ]}
+                            selectedOption={companyInfo.kind}
+                            onChange={handleKindChange}
+                            name="type"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="columns is-multiline">
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Customer No *</label>
+                          <InputAddons
+                            type="number"
+                            // left={"+91"}
+                            placeholder={"1059"}
+                            value={companyInfo.number}
+                            onChange={handleNumberChange}
+                            name="number"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Company Name</label>
+                          <Input
+                            type="text"
+                            placeholder={"Enter Company Name"} value={companyInfo.companyName
+                              ? companyInfo.companyName
+                              : ""}
+                            onChange={handleCompanyName}
+                            name="companyName" />
+                          <ErrorText
+                            visible={companyError.companyNameError}
+                            text={companyError.companyNameError}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="columns is-multiline">
+                      <div className={companyInfo.country === 'IN' ? 'column is-6' : 'column is-12'}>
+                        <div className="field">
+                          <label>Country *</label>
+                          <SelectInput
+                            defaultValue={companyInfo.country}
+                            options={countriesOptions}
+                            value={companyInfo.country}
+                            onChange={handleCountryChange}
+                          />
+                        </div>
+                      </div>
+                      {companyInfo.country === 'IN' && (
                         <div className="column is-6">
                           <div className="field">
-                            <label>Customer No *</label>
-                            <InputAddons
+                            <label>State *</label>
+                            <SelectInput
+                              defaultValue={companyInfo.state}
+                              options={stateOptions}
+                              onChange={handleStateChange}
+                              value={companyInfo.state}
+                            />
+                          </div>
+                        </div>
+                      )}
+                      {companyInfo.country !== 'IN' && (
+                        <div className="column is-6">
+                          <div className="field">
+                            <label>Currency *</label>
+                            <SelectInput
+                              defaultValue={companyInfo.currency}
+                              options={currencyOptions}
+                              onChange={handleCurrencyChange}
+                              value={companyInfo.currency}
+                            />
+                          </div>
+                        </div>
+                      )}
+                      {companyInfo.country !== 'IN' && (
+                        <div className="column is-6">
+                          <div className="field">
+                            <label>Exchange Rate *</label>
+                            <Input
                               type="number"
-                              // left={"+91"}
-                              placeholder={"1059"}
-                              value={companyInfo.number}
-                              onChange={handleNumberChange}
-                              name="number"
+                              placeholder="₹ 0.00"
+                              step="0.001"
+                              value={parseFloat(companyInfo.exchangeRate)}
+                              onChange={handleExchangeRateChange}
                             />
                           </div>
                         </div>
+                      )}
+                    </div>
+                    <div className="columns is-multiline">
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Contact Category</label>
+                          <SelectInput options={categoryContact}
 
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Company Name</label>
-                            <Input
-                              type="text"
-                              placeholder={"Enter Company Name"} value={companyInfo.companyName
-                                ? companyInfo.companyName
-                                : ""}
-                              onChange={handleCompanyName}
-                              name="companyName" />
-                            <ErrorText
-                              visible={companyError.companyNameError}
-                              text={companyError.companyNameError}
-                            />
-                          </div>
+                            value={companyInfo.category}
+                            onChange={handleContactChange}
+                            name="category"
+                          />
                         </div>
                       </div>
-                      {/* <div className="columns is-multiline">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Country *</label>
-                            <SelectInput
-                              defaultValue={companyInfo.country}
-                              options={countriesOptions}
-                              value={companyInfo.country}
-                              onChange={handleCountryChange}
-                            />
-                          </div>
-                        </div>
-                        {companyInfo.country === "IN" ? (
-                          <div className="column is-6">
-                            <div className="field">
-                              <label>State *</label>
-                              <SelectInput
-                                defaultValue={companyInfo.state}
-                                options={stateOptions}
-                                onChange={handleStateChange}
-                                value={companyInfo.state}
-                              />
-                            </div>
-                          </div>
-                        ) : (
-                          ""
-                        )
-                        }
 
-                      </div> */}
-                      {/* <div className="columns is-multiline">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Country *</label>
-                            <SelectInput
-                              defaultValue={companyInfo.country}
-                              options={countriesOptions}
-                              value={companyInfo.country}
-                              onChange={handleCountryChange}
-                            />
-                          </div>
-                        </div>
-                        {companyInfo.country === 'IN' && (
-                          <div className="column is-6">
-                            <div className="field">
-                              <label>State *</label>
-                              <SelectInput
-                                defaultValue={companyInfo.state}
-                                options={stateOptions}
-                                onChange={handleStateChange}
-                                value={companyInfo.state}
-                              />
-                            </div>
-                          </div>
-                        )}
-                        {companyInfo.country !== 'IN' && (
-                          <div className="column is-6">
-                            <div className="field">
-                              <label>Currency *</label>
-                              <SelectInput
-                                defaultValue={companyInfo.currency}
-                                options={currencyOptions}
-                                onChange={handleCurrencyChange}
-                                value={companyInfo.currency}
-                              />
-                            </div>
-                          </div>
-                        )}
-                        {companyInfo.country !== 'IN' && (
-                          <div className="column is-6">
-                            <div className="field">
-                              <label>Exchange Rate *</label>
-                              <Input
-                                type="number"
-                                value={companyInfo.exchangeRate}
-                                onChange={handleExchangeRateChange}
-                              />
-                            </div>
-                          </div>
-                        )}
-                      </div> */}
-                      <div className="columns is-multiline">
-                        <div className={companyInfo.country === 'IN' ? 'column is-6' : 'column is-12'}>
-                          <div className="field">
-                            <label>Country *</label>
-                            <SelectInput
-                              defaultValue={companyInfo.country}
-                              options={countriesOptions}
-                              value={companyInfo.country}
-                              onChange={handleCountryChange}
-                            />
-                          </div>
-                        </div>
-                        {companyInfo.country === 'IN' && (
-                          <div className="column is-6">
-                            <div className="field">
-                              <label>State *</label>
-                              <SelectInput
-                                defaultValue={companyInfo.state}
-                                options={stateOptions}
-                                onChange={handleStateChange}
-                                value={companyInfo.state}
-                              />
-                            </div>
-                          </div>
-                        )}
-                        {companyInfo.country !== 'IN' && (
-                          <div className="column is-6">
-                            <div className="field">
-                              <label>Currency *</label>
-                              <SelectInput
-                                defaultValue={companyInfo.currency}
-                                options={currencyOptions}
-                                onChange={handleCurrencyChange}
-                                value={companyInfo.currency}
-                              />
-                            </div>
-                          </div>
-                        )}
-                        {companyInfo.country !== 'IN' && (
-                          <div className="column is-6">
-                            <div className="field">
-                              <label>Exchange Rate *</label>
-                              <Input
-                                type="number"
-                                placeholder="₹ 0.00"
-                                step="0.001"
-                                value={parseFloat(companyInfo.exchangeRate)}
-                                onChange={handleExchangeRateChange}
-                              />
-                            </div>
-                          </div>
-                        )}
-                      </div>
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>CIN ?</label>
+                          <Input
+                            type="text"
+                            placeholder={"E.g.,U 31909 WB 2020 PTC 247113"}
 
+                            value={companyInfo.cinNumber ? companyInfo.cinNumber : ""}
+                            onChange={handleCinChange}
 
-
-
-
-
-                      <div className="columns is-multiline">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Contact Category</label>
-                            <SelectInput options={categoryContact}
-
-                              value={companyInfo.category}
-                              onChange={handleContactChange}
-                              name="category"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>CIN ?</label>
-                            <Input
-                              type="text"
-                              placeholder={"E.g.,U 31909 WB 2020 PTC 247113"}
-
-                              value={companyInfo.cinNumber ? companyInfo.cinNumber : ""}
-                              onChange={handleCinChange}
-
-                              name="cinNumber"
-                            />
-                            <ErrorText
-                              visible={companyError.cinError}
-                              text={companyError.cinError}
-                            />
-
-                            {/* <p>A Corporate Identification Number (CIN) is a unique identification number that is assigned by the Registrar of Companies (ROC).</p> */}
-                          </div>
+                            name="cinNumber"
+                          />
+                          <ErrorText
+                            visible={companyError.cinError}
+                            text={companyError.cinError}
+                          />
                         </div>
                       </div>
-                      <div className="columns is-multiline">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Business Type</label>
-                            <SelectInput options={bussinessType}
-                              onChange={handleBussinessChange}
-                              value={companyInfo.gstType}
+                    </div>
+                    <div className="columns is-multiline">
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Business Type</label>
+                          <SelectInput options={bussinessType}
+                            onChange={handleBussinessChange}
+                            value={companyInfo.gstType}
 
-                              name="gstType" />
-                          </div>
-                        </div>
-
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>GST No ?</label>
-                            <Input
-                              type="text"
-                              placeholder={"E.g.,07AAAAAOOOOA1Z6"}
-                              onChange={handleGstChange}
-                              value={companyInfo.gstNumber ? companyInfo.gstNumber : ""}
-
-                              name="gstNumber" />
-                            <ErrorText
-                              visible={companyError.gstError}
-                              text={companyError.gstError}
-                            />
-                            {/* <p>A unique 15-digit identification number assigned to every taxpayer registered under GST regime.</p> */}
-                          </div>
+                            name="gstType" />
                         </div>
                       </div>
-                    </>
-                  </AdvancedCard>
 
-                  <div className="m-t-15" />
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>GST No ?</label>
+                          <Input
+                            type="text"
+                            placeholder={"E.g.,07AAAAAOOOOA1Z6"}
+                            onChange={handleGstChange}
+                            value={companyInfo.gstNumber ? companyInfo.gstNumber : ""}
 
-                  {/* COMPANY INFO */}
-                  <AdvancedCard
-                    type={"s-card"}
-                  // footer
-                  // footerContentRight={<Button isSuccess onClick={handleSubmitCommunication}>Save</Button>}
-                  >
-                    <h2 className="title is-5  is-bold">Communication</h2>
-
-                    <>
-                      <div className="columns is-multiline m-b-5">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Address</label>
-                            <TextArea
-                              rows={2}
-                              placeholder="Enter Details"
-                              value={companyInfo.street}
-                              onChange={handleChange}
-                              name="street"
-                            />
-                          </div>
+                            name="gstNumber" />
+                          <ErrorText
+                            visible={companyError.gstError}
+                            text={companyError.gstError}
+                          />
                         </div>
+                      </div>
+                    </div>
+                  </>
+                </AdvancedCard>
 
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Company Logo</label>
-                            {/* <FileInput
+                <div className="m-t-15" />
+
+                <AdvancedCard
+                  type={"s-card"}
+                >
+                  <h2 className="title is-5  is-bold">Communication</h2>
+
+                  <>
+                    <div className="columns is-multiline m-b-5">
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Address</label>
+                          <TextArea
+                            rows={2}
+                            placeholder="Enter Details"
+                            value={companyInfo.street}
+                            onChange={handleChange}
+                            name="street"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Company Logo</label>
+                          {/* <FileInput
                             label={"Upload"}
                             description={
                               "(Or Drop a file)"
                             }
                           /> */}
-                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="columns is-multiline m-b-5">
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Email</label>
+                          <Input
+                            type="email"
+                            placeholder="Enter email address"
+                            onChange={handleEmailChange}
+                            value={companyInfo.email}
+
+                            name="email"
+                          />
                         </div>
                       </div>
 
-                      <div className="columns is-multiline m-b-5">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Email</label>
-                            <Input
-                              type="email"
-                              placeholder="Enter email address"
-                              onChange={handleEmailChange}
-                              value={companyInfo.email}
-
-                              name="email"
-                            />
-                          </div>
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Website</label>
+                          <Input
+                            type="text"
+                            placeholder="Enter website URL"
+                            value={companyInfo.website}
+                            onChange={handleChange}
+                            name="website" />
                         </div>
+                      </div>
+                    </div>
 
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Website</label>
-                            <Input
-                              type="text"
-                              placeholder="Enter website URL"
-                              value={companyInfo.website}
-                              onChange={handleChange}
-                              name="website" />
-                          </div>
+                    <div className="columns is-multiline m-b-5">
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Mobile Number</label>
+                          <InputAddons
+                            type="number"
+                            // left={"+91"}
+                            placeholder="Enter mobile number"
+                            value={companyInfo.mobile}
+                            onChange={handleMobileChange}
+                            name="mobile"
+                          />
                         </div>
                       </div>
 
-                      <div className="columns is-multiline m-b-5">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Mobile Number</label>
-                            <InputAddons
-                              type="number"
-                              // left={"+91"}
-                              placeholder="Enter mobile number"
-                              value={companyInfo.mobile}
-                              onChange={handleMobileChange}
-                              name="mobile"
-                            />
-                          </div>
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Telephone No</label>
+                          <InputAddons
+                            type="number"
+                            placeholder="Enter telephone number"
+                            value={companyInfo.phone1}
+                            onChange={handlePhoneChange}
+                            name="phone1" />
                         </div>
+                      </div>
+                    </div>
 
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Telephone No</label>
-                            <InputAddons
-                              type="number"
-                              placeholder="Enter telephone number"
-                              value={companyInfo.phone1}
-                              onChange={handlePhoneChange}
-                              name="phone1" />
-                          </div>
+                    <div className="columns is-multiline m-b-5">
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Fax No</label>
+                          <Input
+                            type="text"
+                            placeholder="Enter fax number"
+                            value={companyInfo.fax}
+                            onChange={handleFaxChange}
+                            name="fax" />
                         </div>
                       </div>
 
-                      <div className="columns is-multiline m-b-5">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Fax No</label>
-                            <Input
-                              type="text"
-                              placeholder="Enter fax number"
-                              value={companyInfo.fax}
-                              onChange={handleFaxChange}
-                              name="fax" />
-                          </div>
-                        </div>
+                    </div>
+                  </>
+                </AdvancedCard>
+              </div>
 
-                      </div>
-                    </>
-                  </AdvancedCard>
-                </div>
 
-                <div className="column is-5">
-                  {/* KYC FORM */}
+              <div className="column is-5">
+                {companyInfo.type === 'company' && (
+
                   <AdvancedCard
                     type={"s-card"}
-                  // footer
-                  // footerContentRight={<Button isSuccess onClick={handleSave}>Save</Button>}
                   >
                     <div className="columns is-multiline">
                       <div className="column is-8">
@@ -1038,149 +862,112 @@ const CreateContact = () => {
                       </div>
                     </div>
                   </AdvancedCard>
+                )}
+                <AdvancedCard
+                  type={"s-card"}
+                >
+                  <div>
+                    <h2 className="title is-5 is-bold">Conditions</h2>
 
-                  <div className="m-t-15" />
+                    <p>
+                      You can set your payment terms & discount % here
+                    </p>
 
-                  {/* YOUR PLAN */}
-                  <AdvancedCard
-                    type={"s-card"}
-                  >
-                    <div>
-                      <h2 className="title is-5 is-bold">Conditions</h2>
-
-                      <p>
-                        You can set your payment terms & discount % here
-                      </p>
-
-                      {/* <div className="m-t-5"> */}
-                      <div className="column is-9">
-                        <div className="field">
-                          <label>Payment Terms</label>
-                          <SelectInput options={selectPayment}
-                            value={companyInfo.paymentTerms}
-                            onChange={handlePaymentChange}
-                            name="paymentTerms" />
-                        </div>
+                    {/* <div className="m-t-5"> */}
+                    <div className="column is-9">
+                      <div className="field">
+                        <label>Payment Terms</label>
+                        <SelectInput options={selectPayment}
+                          value={companyInfo.paymentTerms}
+                          onChange={handlePaymentChange}
+                          name="paymentTerms" />
                       </div>
-                      {/* </div> */}
-                      <div className="column is-9">
-                        <div className="field">
-                          <label>Discount on List Prices</label>
-                          <Input
-                            type="number"
-                            placeholder="0%"
-                            value={companyInfo.discount}
-                            onChange={handleDiscountChange}
-                            name="discount" />
-                        </div>
-                      </div>
-
                     </div>
-                  </AdvancedCard>
-                  <div className="m-t-15" />
-                  <AdvancedCard
-                    type={"s-card"}
-                    footer
-                    footerContentRight={<Button isSuccess onClick={() => setIsModalActive(true)}>Add New</Button>}
-                  >
+                    {/* </div> */}
+                    <div className="column is-9">
+                      <div className="field">
+                        <label>Discount on List Prices</label>
+                        <Input
+                          type="number"
+                          placeholder="0%"
+                          value={companyInfo.discount}
+                          onChange={handleDiscountChange}
+                          name="discount" />
+                      </div>
+                    </div>
 
-                    {/* <div className="columns is-multiline">
-                      <div className="column is-8">
-                        <h2 className="title is-5 is-bold">Contact Persons</h2>
+                  </div>
+                </AdvancedCard>
+                <div className="m-t-15" />
+                <AdvancedCard
+                  type={"s-card"}
+                  footer
+                  footerContentRight={<Button isSuccess onClick={() => setIsModalActive(true)}>Add New</Button>}
+                >
+                  <div className="columns is-multiline">
+                    <div className="column is-8">
+                      <div className="contact-list">
+                        <h2 className="title is-5 is-bold">Contact</h2>
                         <p>You can list all your contacts here</p>
+                        {companyInfo.contactPersons && companyInfo.contactPersons.length > 0 ? (
+                          <div style={{ border: '1px solid #ccc', padding: '10px', marginTop: '20px', width: "150%" }}>
+                            <table>
+                              <thead>
+                                <tr>
+                                  <th style={{ paddingRight: '30px' }}>First Name</th>
+                                  <th>Email</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {companyInfo.contactPersons.map((contact, index) => (
+                                  <tr key={index}>
+                                    <td style={{ paddingRight: '30px' }}>{contact.firstName}</td>
+                                    <td style={{ paddingRight: '20px' }}>{contact.email}</td>
+                                    <td>
+                                      <FeatherIcon style={{ paddingRight: '5px' }} color="#00a353" name="Edit" onClick={() => handleEditContact(index)} /></td>
+                                    <td>  <FeatherIcon color="#00a353" name="Trash" onClick={() => handleDeleteContact(index)} /></td>
 
-                        {/* <ul>
-                          <li>
-                            <h3>Company Name:</h3>
-                            <p>{contact.firstName}</p>
-                          </li>
-                          <li>
-                            <h3>Email:</h3>
-                            <p>{contact.email}</p>
-                          </li>
-                        </ul> */}
-                    {/* {companyInfo.contactPersons.map((contact, index) => (
-                          <div key={index}>
-                            <p>
-                              Name: {contact.firstName} {contact.lastName}
-                            </p>
-                            <p>Email: {contact.email}</p>
-                            <p>Mobile: {contact.mobile}</p>
-                          </div>
-                        ))} */}
-                    <div className="columns is-multiline">
-                      <div className="column is-8">
-                        <div className="contact-list">
-                          <h2 className="title is-5 is-bold">Contact</h2>
-                          <p>You can list all your contacts here</p>
-                          {companyInfo.contactPersons && companyInfo.contactPersons.length > 0 ? (
-                            <div style={{ border: '1px solid #ccc', padding: '10px', marginTop: '20px', width: "150%" }}>
-                              <table>
-                                <thead>
-                                  <tr>
-                                    <th style={{ paddingRight: '30px' }}>First Name</th>
-                                    <th>Email</th>
-                                    {/* <th>Edit</th>
-                                    <th>Delete</th> */}
                                   </tr>
-                                </thead>
-                                <tbody>
-                                  {companyInfo.contactPersons.map((contact, index) => (
-                                    <tr key={index}>
-                                      <td style={{ paddingRight: '30px' }}>{contact.firstName}</td>
-                                      <td style={{ paddingRight: '20px' }}>{contact.email}</td>
-                                      <td>
-                                        <FeatherIcon style={{ paddingRight: '5px' }} color="#00a353" name="Edit" onClick={() => handleEditContact(index)} /></td>
-                                      <td>  <FeatherIcon color="#00a353" name="Trash" onClick={() => handleDeleteContact(index)} /></td>
-                                      {/* <td>Edit Icon</td>
-                                      <td>Delete Icon</td> */}
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          ) : (
-                            <p>No contact persons available.</p>
-                          )}
-                        </div>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        ) : (
+                          <p>No contact persons available.</p>
+                        )}
                       </div>
                     </div>
-
-
-
-                    {/* </div> */}
-                    {/* </div> */}
-                    {/* </div> */}
-                  </AdvancedCard>
-                  <div className="m-t-15" />
-                  <AdvancedCard
-                    type={"s-card"}
-                  >
-                    <div className="columns is-multiline">
-                      <div className="column is-8">
-                        <h2 className="title is-5 is-bold">Notes</h2>
-                      </div>
-                      <div className="column is-12">
-                        <div className="field">
-                          <TextArea rows={3} placeholder="Enter Additional Notes here" value={companyInfo.notes}
-                            onChange={handleChange} name="notes" />
-                        </div>
-                      </div>
-                      <div className="column is-9">
-                        <span>Show notes when creating new documents</span>
-                      </div>
-                      <div className="column is-3 has-text-right">
-                        <Switch isSuccess checked={companyInfo.notesAlert}
-                          onChange={handleNotesAlertChange} name="notesAlert" />
-                      </div>
-                      {/* </div> */}
+                  </div>
+                </AdvancedCard>
+                <div className="m-t-15" />
+                <AdvancedCard
+                  type={"s-card"}
+                >
+                  <div className="columns is-multiline">
+                    <div className="column is-8">
+                      <h2 className="title is-5 is-bold">Notes</h2>
                     </div>
-                  </AdvancedCard>
+                    <div className="column is-12">
+                      <div className="field">
+                        <TextArea rows={3} placeholder="Enter Additional Notes here" value={companyInfo.notes}
+                          onChange={handleChange} name="notes" />
+                      </div>
+                    </div>
+                    <div className="column is-9">
+                      <span>Show notes when creating new documents</span>
+                    </div>
+                    <div className="column is-3 has-text-right">
+                      <Switch isSuccess checked={companyInfo.notesAlert}
+                        onChange={handleNotesAlertChange} name="notesAlert" />
+                    </div>
 
-                </div>
+                  </div>
+                </AdvancedCard>
+
               </div>
             </div>
-          </AdvancedCard>
+          </div>
+
         </div>
       </div>
     </PageContent>

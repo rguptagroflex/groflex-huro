@@ -4,8 +4,8 @@ import Modal from '../../shared/components/modal/Modal'
 const DeleteModal = ({ isModalDelete = false, setIsModalDelete, onSubmit,
   deleteIndex,
   setDeleteIndex,
-   contactName  
- }) => {
+  contactName
+}) => {
   const handleConfirmDelete = () => {
     onSubmit(deleteIndex);
     setIsModalDelete(false);
@@ -18,20 +18,16 @@ const DeleteModal = ({ isModalDelete = false, setIsModalDelete, onSubmit,
   };
 
   return (
-   <Modal
-   title="Delete Contact Persons"
-   submitBtnName="Delete"
-  //  isModalDelete={isModalDelete}
-  //  setIsModalDelete={setIsModalDelete}
-  // //  onClose={onCancelDelete}
-  //  onSubmit={handleConfirmDelete}
-  isActive={isModalDelete}
-  setIsActive={setIsModalDelete}
-  onSubmit={handleConfirmDelete}
+    <Modal
+      title="Delete Contact"
+      submitBtnName="Delete"
+      isActive={isModalDelete}
+      setIsActive={setIsModalDelete}
+      onSubmit={handleConfirmDelete}
       onClose={handleCancelDelete}
-   isSmall>
-    Are you sure you want to delete  {contactName}?
-   </Modal>
+      isSmall>
+      Are you sure you want to delete  {contactName}?
+    </Modal>
   )
 }
 

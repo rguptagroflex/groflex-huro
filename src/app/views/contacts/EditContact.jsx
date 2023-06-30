@@ -7,13 +7,12 @@ import { InputAddons } from "../../shared/components/inputAddons/InputAddons";
 import { SelectInput } from "../../shared/components/select/SelectInput";
 import { TextArea } from "../../shared/components/textArea/TextArea";
 import PageContent from "../../shared/components/pageContent/PageContent";
-import { Link } from "react-router-dom";
 import { Switch } from "../../shared/components/switch/Switch";
 import RadioButton from "../../shared/components/button/RadioButton";
 import GroflexService from "../../services/groflex.service";
 import config from "../../../../config";
 import ErrorText from "../../shared/components/errorText/ErrorText";
-import AddContactPerson from "./AddContactPerson";
+import AddContactPersonModal from "./AddContactPersonModal";
 import { getCountries } from "../../helpers/getCountries";
 import { useSelector } from "react-redux";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
@@ -34,9 +33,6 @@ const EditContact = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { previousData } = location.state || {};
-
-  // console.log('previousData:', { ...previousData });
-  console.log('previousData:', previousData);
   const [isModalEdit, setIsModalEdit] = useState(false);
   const [isModalDelete, setIsModalDelete] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState(null);
@@ -44,58 +40,107 @@ const EditContact = () => {
   const [stateOptions, setStateOptions] = useState([]);
   const [companyInfo, setCompanyInfo] = useState({
     id: contactId,
-    kind:  "",
+    kind: "",
     type: "",
-    number:"",
-    companyName:  "",
-    country:  "",
-    state:  "",
+    number: "",
+    companyName: "",
+    country: "",
+    state: "",
     category: "",
-    cinNumber:  "",
+    cinNumber: "",
     gstType: "",
     gstNumber: "",
-    street:  "",
+    street: "",
     email: "",
     website: "",
-    mobile:  "",
+    mobile: "",
     phone1: "",
-    fax:  "",
-    paymentTerms:"",
-    discount:  "",
+    fax: "",
+    paymentTerms: "",
+    discount: "",
     selectedOption: "",
     openingBalance: "",
     notesAlert: "",
     notes: "",
     payConditionId: 177,
-    balance:  0,
-    baseCurrency:  "",
+    balance: 0,
+    baseCurrency: "",
     credits: 0,
     debits: 0,
     defaultExchangeRateToggle: false,
-    lastName:  "",
-    firstName:  "",
-    exchangeRate:  0,
-    outstandingAmount:  0,
-    salutation:  "",
-    title:"",
-    address:  "",
+    lastName: "",
+    firstName: "",
+    exchangeRate: 0,
+    outstandingAmount: 0,
+    salutation: "",
+    title: "",
+    address: "",
     contactPersons: [],
   });
 
-  // useEffect(() => {
-  //   // Once the 'previousData' prop is received, update the 'contact' state variable
-  //   // with the 'previousData' if it exists
-  //   if (previousData) {
-  //     setCompanyInfo({ ...previousData });
-  //     console.log({ ...previousData })
-  //   }
-  // }, [previousData]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await GroflexService.request(
+          `${config.resourceUrls.contact}/${contactId}`,
+          { method: 'GET', auth: true }
+        );
+        const contactData = response.data;
+
+
+        setCompanyInfo({
+          id: contactData.id,
+          kind: contactData.kind,
+          type: contactData.type,
+          number: contactData.number,
+          companyName: contactData.companyName,
+          country: contactData.address.countryIso,
+          state: contactData.state,
+          category: contactData.category,
+          cinNumber: contactData.address.cinNumber,
+          gstType: contactData.address.gstType,
+          gstNumber: contactData.address.gstNumber,
+          street: contactData.address.street,
+          email: contactData.email,
+          website: contactData.website,
+          mobile: contactData.mobile,
+          phone1: contactData.phone1,
+          fax: contactData.fax,
+          paymentTerms: contactData.paymentTerms,
+          discount: contactData.discount,
+          selectedOption: contactData.selectedOption,
+          openingBalance: contactData.openingBalance,
+          notesAlert: contactData.notesAlert,
+          notes: contactData.notes,
+          payConditionId: contactData.payConditionId,
+          balance: contactData.balance,
+          baseCurrency: contactData.baseCurrency,
+          credits: contactData.credits,
+          debits: contactData.debits,
+          defaultExchangeRateToggle: contactData.defaultExchangeRateToggle,
+          lastName: contactData.lastName,
+          firstName: contactData.firstName,
+          exchangeRate: contactData.exchangeRate,
+          outstandingAmount: contactData.outstandingAmount,
+          salutation: contactData.salutation,
+          title: contactData.title,
+          address: contactData.address,
+          contactPersons: contactData.contactPersons,
+        });
+      } catch (error) {
+        console.error("Error fetching contact:", error);
+      }
+    };
+
+    fetchData();
+  }, [contactId]);
+
   useEffect(() => {
     console.log("previousData:", previousData);
     if (previousData) {
       setCompanyInfo(prevCompanyInfo => ({
         ...prevCompanyInfo,
-        // ...retrievedData,
       }));
     }
   }, [previousData]);
@@ -174,12 +219,6 @@ const EditContact = () => {
   useEffect(() => {
     if (tenantData && stateOptions.length > 0) {
       console.log("tenantData", tenantData);
-      // setAddContact({
-      //   email: "",
-      //   mobile: "",
-      //   firstName: "",
-      //   lastName: "",
-      // });
       setCompanyInfo({
         companyName: tenantData.companyName,
         country:
@@ -346,16 +385,13 @@ const EditContact = () => {
     const phone1 = parseInt(e.target.value);
     setCompanyInfo({ ...companyInfo, phone1: phone1 });
   };
-  // const handleMobileChange = (e) => {
-  //   const mobile = parseInt(e.target.value);
-  //   setCompanyInfo({ ...companyInfo, mobile: mobile });
-  // };
+
   const handleMobileChange = (e) => {
     const inputValue = e.target.value;
     const mobile = inputValue.slice(0, 10); // Extract the first 10 digits
 
     if (mobile.length === 10) {
-      e.target.blur(); // Remove focus from the input field
+      e.target.blur();
     }
 
     setCompanyInfo({ ...companyInfo, mobile: mobile });
@@ -372,21 +408,6 @@ const EditContact = () => {
     onAddContacts(companyInfo);
     navigate("/contacts")
   };
-  // useEffect(() => {
-  //   if (previousData) {
-  //     setCompanyInfo((prevCompanyInfo) => ({
-  //       ...prevCompanyInfo,
-  //       id: previousData.id || "",
-  //       kind: previousData.kind || "",
-  //       type: previousData.type || "",
-  //       companyName: previousData.companyName || "",
-  //       // Update other fields as needed
-  //     }));
-  //     console.log("previousData1", previousData)
-  //   }
-  //   console.log("previousData2", previousData)
-  // }, [previousData]);
-
 
   useEffect(() => {
     console.log(companyInfo);
@@ -402,8 +423,8 @@ const EditContact = () => {
   const kindOptions = [{ value: "company", label: "Company" },
   { value: "payee", label: "Payee" }]
 
-  const handleKindTypeChange = (options) => {
-    setCompanyInfo({ ...companyInfo, kind: options.value });
+  const handleTypeChange = (options) => {
+    setCompanyInfo({ ...companyInfo, type: options.value });
   };
 
 
@@ -421,8 +442,8 @@ const EditContact = () => {
     setCompanyInfo({ ...companyInfo, paymentTerms: options.value });
   };
 
-  const handleRadioChange = (choices) => {
-    setCompanyInfo({ ...companyInfo, type: choices });
+  const handleKindChange = (choices) => {
+    setCompanyInfo({ ...companyInfo, kind: choices });
   };
   const handleSelectChange = (choices) => {
     setCompanyInfo({ ...companyInfo, selectedOption: choices });
@@ -435,7 +456,6 @@ const EditContact = () => {
 
 
   const onAddContacts = (contact) => {
-    // const endpoint = config.resourceUrls.contact;
     const endpoint = `${config.resourceUrls.contact}/${contactId}`;
 
     const contactPerson = companyInfo.contactPersons.map((person) => ({
@@ -470,7 +490,6 @@ const EditContact = () => {
       website: companyInfo.website,
       email: companyInfo.email,
       street: companyInfo.street,
-      // contactPersons: [contactPerson] // Include the contact person data here
       contactPersons: contactPerson,
       id: contactId,
     };
@@ -491,12 +510,12 @@ const EditContact = () => {
 
   return (
     <PageContent
-    title="Edit Contact"
+      title="Edit Contact"
       titleIsBreadCrumb
-      breadCrumbData={["Home", "Contacts", <span style={{ color: "green" }}>Edit Contact</span>]}
+      breadCrumbData={["Home", "Contacts", " Edit Contact"]}
     >
       {isModalActive && (
-        <AddContactPerson
+        <AddContactPersonModal
           isActive={isModalActive}
           setIsActive={setIsModalActive}
           setCompanyInfo={setCompanyInfo}
@@ -528,305 +547,314 @@ const EditContact = () => {
       )
 
       }
+      <Button isSuccess style={{ float: "right", marginTop: "-45px" }} onClick={handleSubmit}>
+        Save
+      </Button>
 
       <div className="page-content-inner">
         <div className="tabs-wrapper">
-          <div className="tabs-inner">
-            <div
-            >
-              <ul>
-                <li data-tab="account-details-tab" className="is-active">
-                  {/* <Link to="/contacts"><h2 className="title is-5 ">Edit Contact</h2></Link> */}
-                </li>
 
-              </ul>
-            </div>
-          </div>
-          <AdvancedCard
-            type={"s-card"}
-            footer
-            footerContentRight={<Button isSuccess onClick={handleSubmit} >Save</Button>}
-          >
-            <div id="account-details-tab" className="tab-content is-active">
-              <div className="columns is-multiline">
-                <div className="column is-7">
-                  <AdvancedCard
-                    type={"s-card"}
-                  >
-                    <h2 className="title is-5 is-bold">Contact Info</h2>
+          <div id="account-details-tab" className="tab-content is-active">
+            <div className="columns is-multiline">
+              <div className="column is-7">
+                <AdvancedCard
+                  type={"s-card"}
+                >
+                  <h2 className="title is-5 is-bold">Contact Info</h2>
 
-                    <>
-                      <div className="columns is-multiline m-b-5">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Contact Type</label>
-                            <SelectInput options={kindOptions}
-                              onChange={handleKindTypeChange}
-                              value={companyInfo.kind}
+                  <>
+                    <div className="columns is-multiline m-b-5">
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Contact Type</label>
+                          <SelectInput options={kindOptions}
+                            onChange={handleTypeChange}
+                            value={companyInfo.type}
 
-                              name="kind"
-                            />
-                          </div>
-                        </div>
-
-
-                        <div className="column is-6">
-                          <div className="field">
-                            <RadioButton
-                              choices={[
-                                { label: "Customer", value: "customer", class: "radio is-outlined is-success" },
-                                { label: "Payee", value: "payee", class: "radio is-outlined is-success" },
-                              ]}
-                              selectedOption={companyInfo.type}
-                              onChange={handleRadioChange}
-                              name="type"
-                            />
-                          </div>
+                            name="kind"
+                          />
                         </div>
                       </div>
 
-                      <div className="columns is-multiline">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Customer No *</label>
-                            <InputAddons
-                              type="number"
-                              // left={"+91"}
-                              placeholder={"1059"}
-                              value={companyInfo.number}
-                              onChange={handleNumberChange}
-                              name="number"
-                            />
-                          </div>
-                        </div>
 
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Company Name</label>
-                            <Input
-                              type="text"
-                              placeholder={"Enter Company Name"} value={companyInfo.companyName
-                                ? companyInfo.companyName
-                                : ""}
-                              onChange={handleCompanyName}
-                              name="companyName" />
-                            <ErrorText
-                              visible={companyError.companyNameError}
-                              text={companyError.companyNameError}
-                            />
-                          </div>
+                      <div className="column is-6">
+                        <div className="field">
+                          <RadioButton
+                            choices={[
+                              { label: "Company", value: "company", class: "radio is-outlined is-success" },
+                              { label: "Private", value: "private", class: "radio is-outlined is-success" },
+                            ]}
+                            selectedOption={companyInfo.kind}
+                            onChange={handleKindChange}
+                            name="type"
+                          />
                         </div>
                       </div>
-                      <div className="columns is-multiline">
+                    </div>
+
+                    <div className="columns is-multiline">
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Customer No *</label>
+                          <InputAddons
+                            type="number"
+                            // left={"+91"}
+                            placeholder={"1059"}
+                            value={companyInfo.number}
+                            onChange={handleNumberChange}
+                            name="number"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Company Name</label>
+                          <Input
+                            type="text"
+                            placeholder={"Enter Company Name"} value={companyInfo.companyName
+                              ? companyInfo.companyName
+                              : ""}
+                            onChange={handleCompanyName}
+                            name="companyName" />
+                          <ErrorText
+                            visible={companyError.companyNameError}
+                            text={companyError.companyNameError}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="columns is-multiline">
+                      <div className={companyInfo.country === 'IN' ? 'column is-6' : 'column is-12'}>
+                        <div className="field">
+                          <label>Country *</label>
+                          <SelectInput
+                            defaultValue={companyInfo.country}
+                            options={countriesOptions}
+                            value={companyInfo.country}
+                            onChange={handleCountryChange}
+                          />
+                        </div>
+                      </div>
+                      {companyInfo.country === 'IN' && (
                         <div className="column is-6">
                           <div className="field">
-                            <label>Country *</label>
+                            <label>State *</label>
                             <SelectInput
-                              defaultValue={companyInfo.country}
-                              options={countriesOptions}
-                              value={companyInfo.country}
-                              onChange={handleCountryChange}
+                              defaultValue={companyInfo.state}
+                              options={stateOptions}
+                              onChange={handleStateChange}
+                              value={companyInfo.state}
                             />
                           </div>
                         </div>
-                        {companyInfo.country === "IN" ? (
-                          <div className="column is-6">
-                            <div className="field">
-                              <label>State *</label>
-                              <SelectInput
-                                defaultValue={companyInfo.state}
-                                options={stateOptions}
-                                onChange={handleStateChange}
-                                value={companyInfo.state}
-                              />
-                            </div>
-                          </div>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                      <div className="columns is-multiline">
+                      )}
+                      {/* {companyInfo.country !== 'IN' && (
                         <div className="column is-6">
                           <div className="field">
-                            <label>Contact Category</label>
-                            <SelectInput options={categoryContact}
-
-                              value={companyInfo.category}
-                              onChange={handleContactChange}
-                              name="category"
+                            <label>Currency *</label>
+                            <SelectInput
+                              // defaultValue={companyInfo.currency}
+                              // options={currencyOptions}
+                              // onChange={handleCurrencyChange}
+                              // value={companyInfo.currency}
                             />
                           </div>
                         </div>
-
+                      )}
+                      {companyInfo.country !== 'IN' && (
                         <div className="column is-6">
                           <div className="field">
-                            <label>CIN ?</label>
+                            <label>Exchange Rate *</label>
                             <Input
-                              type="text"
-                              placeholder={"E.g.,U 31909 WB 2020 PTC 247113"}
-
-                              value={companyInfo.cinNumber ? companyInfo.cinNumber : ""}
-                              onChange={handleCinChange}
-
-                              name="cinNumber"
-                            />
-                            <ErrorText
-                              visible={companyError.cinError}
-                              text={companyError.cinError}
+                              // type="number"
+                              // placeholder="₹ 0.00"
+                              // step="0.001"
+                              // value={parseFloat(companyInfo.exchangeRate)}
+                              // onChange={handleExchangeRateChange}
                             />
                           </div>
+                        </div>
+                      )} */}
+                    </div>
+                    <div className="columns is-multiline">
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Contact Category</label>
+                          <SelectInput options={categoryContact}
+
+                            value={companyInfo.category}
+                            onChange={handleContactChange}
+                            name="category"
+                          />
                         </div>
                       </div>
-                      <div className="columns is-multiline">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Business Type</label>
-                            <SelectInput options={bussinessType}
-                              onChange={handleBussinessChange}
-                              value={companyInfo.gstType}
 
-                              name="gstType" />
-                          </div>
-                        </div>
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>CIN ?</label>
+                          <Input
+                            type="text"
+                            placeholder={"E.g.,U 31909 WB 2020 PTC 247113"}
 
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>GST No ?</label>
-                            <Input
-                              type="text"
-                              placeholder={"E.g.,07AAAAAOOOOA1Z6"}
-                              onChange={handleGstChange}
-                              value={companyInfo.gstNumber ? companyInfo.gstNumber : ""}
+                            value={companyInfo.cinNumber ? companyInfo.cinNumber : ""}
+                            onChange={handleCinChange}
 
-                              name="gstNumber" />
-                            <ErrorText
-                              visible={companyError.gstError}
-                              text={companyError.gstError}
-                            />
-
-                          </div>
+                            name="cinNumber"
+                          />
+                          <ErrorText
+                            visible={companyError.cinError}
+                            text={companyError.cinError}
+                          />
                         </div>
                       </div>
-                    </>
-                  </AdvancedCard>
+                    </div>
+                    <div className="columns is-multiline">
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Business Type</label>
+                          <SelectInput options={bussinessType}
+                            onChange={handleBussinessChange}
+                            value={companyInfo.gstType}
 
-                  <div className="m-t-15" />
-
-                  {/* COMPANY INFO */}
-                  <AdvancedCard
-                    type={"s-card"}
-
-                  >
-                    <h2 className="title is-5  is-bold">Communication</h2>
-
-                    <>
-                      <div className="columns is-multiline m-b-5">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Address</label>
-                            <TextArea
-                              rows={2}
-                              placeholder="Enter Details"
-                              value={companyInfo.street}
-                              onChange={handleChange}
-                              name="street"
-                            />
-                          </div>
+                            name="gstType" />
                         </div>
+                      </div>
 
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Company Logo</label>
-                            {/* <FileInput
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>GST No ?</label>
+                          <Input
+                            type="text"
+                            placeholder={"E.g.,07AAAAAOOOOA1Z6"}
+                            onChange={handleGstChange}
+                            value={companyInfo.gstNumber ? companyInfo.gstNumber : ""}
+
+                            name="gstNumber" />
+                          <ErrorText
+                            visible={companyError.gstError}
+                            text={companyError.gstError}
+                          />
+
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                </AdvancedCard>
+
+                <div className="m-t-15" />
+                <AdvancedCard
+                  type={"s-card"}
+
+                >
+                  <h2 className="title is-5  is-bold">Communication</h2>
+
+                  <>
+                    <div className="columns is-multiline m-b-5">
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Address</label>
+                          <TextArea
+                            rows={2}
+                            placeholder="Enter Details"
+                            value={companyInfo.street}
+                            onChange={handleChange}
+                            name="street"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Company Logo</label>
+                          {/* <FileInput
                             label={"Upload"}
                             description={
                               "(Or Drop a file)"
                             }
                           /> */}
-                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="columns is-multiline m-b-5">
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Email</label>
+                          <Input
+                            type="email"
+                            placeholder="Enter email address"
+                            onChange={handleEmailChange}
+                            value={companyInfo.email}
+
+                            name="email"
+                          />
                         </div>
                       </div>
 
-                      <div className="columns is-multiline m-b-5">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Email</label>
-                            <Input
-                              type="email"
-                              placeholder="Enter email address"
-                              onChange={handleEmailChange}
-                              value={companyInfo.email}
-
-                              name="email"
-                            />
-                          </div>
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Website</label>
+                          <Input
+                            type="text"
+                            placeholder="Enter website URL"
+                            value={companyInfo.website}
+                            onChange={handleChange}
+                            name="website" />
                         </div>
+                      </div>
+                    </div>
 
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Website</label>
-                            <Input
-                              type="text"
-                              placeholder="Enter website URL"
-                              value={companyInfo.website}
-                              onChange={handleChange}
-                              name="website" />
-                          </div>
+                    <div className="columns is-multiline m-b-5">
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Mobile Number</label>
+                          <InputAddons
+                            type="number"
+                            left={"+91"}
+                            placeholder="Enter mobile number"
+                            value={companyInfo.mobile}
+                            onChange={handleMobileChange}
+                            name="mobile"
+                          />
                         </div>
                       </div>
 
-                      <div className="columns is-multiline m-b-5">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Mobile Number</label>
-                            <InputAddons
-                              type="number"
-                              left={"+91"}
-                              placeholder="Enter mobile number"
-                              value={companyInfo.mobile}
-                              onChange={handleMobileChange}
-                              name="mobile"
-                            />
-                          </div>
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Telephone No</label>
+                          <InputAddons
+                            type="number"
+                            placeholder="Enter telephone number"
+                            value={companyInfo.phone1}
+                            onChange={handlePhoneChange}
+                            name="phone1" />
                         </div>
+                      </div>
+                    </div>
 
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Telephone No</label>
-                            <InputAddons
-                              type="number"
-                              placeholder="Enter telephone number"
-                              value={companyInfo.phone1}
-                              onChange={handlePhoneChange}
-                              name="phone1" />
-                          </div>
+                    <div className="columns is-multiline m-b-5">
+                      <div className="column is-6">
+                        <div className="field">
+                          <label>Fax No</label>
+                          <Input
+                            type="text"
+                            placeholder="Enter fax number"
+                            value={companyInfo.fax}
+                            onChange={handleFaxChange}
+                            name="fax" />
                         </div>
                       </div>
 
-                      <div className="columns is-multiline m-b-5">
-                        <div className="column is-6">
-                          <div className="field">
-                            <label>Fax No</label>
-                            <Input
-                              type="text"
-                              placeholder="Enter fax number"
-                              value={companyInfo.fax}
-                              onChange={handleFaxChange}
-                              name="fax" />
-                          </div>
-                        </div>
+                    </div>
+                  </>
+                </AdvancedCard>
+              </div>
 
-                      </div>
-                    </>
-                  </AdvancedCard>
-                </div>
-
-                <div className="column is-5">
-                  {/* KYC FORM */}
+              <div className="column is-5">
+                {companyInfo.type === 'company' && (
                   <AdvancedCard
                     type={"s-card"}
-                  // footer
-                  // footerContentRight={<Button isSuccess onClick={handleSave}>Save</Button>}
                   >
                     <div className="columns is-multiline">
                       <div className="column is-8">
@@ -834,7 +862,6 @@ const EditContact = () => {
                       </div>
 
                       <div className="columns is-multiline m-b-5">
-                        {/* <div className="column is-9"> */}
                         <div className="field">
                           <RadioButton
 
@@ -847,7 +874,6 @@ const EditContact = () => {
                             name="selectedOption"
                           />
                         </div>
-                        {/* </div> */}
                         <div className="column is-8">
                           <div className="field">
                             <label>Customer owes you</label>
@@ -863,114 +889,109 @@ const EditContact = () => {
                       </div>
                     </div>
                   </AdvancedCard>
+                )}
 
-                  <div className="m-t-15" />
+                {/* <div className="m-t-15" /> */}
+                <AdvancedCard
+                  type={"s-card"}
+                >
+                  <div>
+                    <h2 className="title is-5 is-bold">Conditions</h2>
 
-                  {/* YOUR PLAN */}
-                  <AdvancedCard
-                    type={"s-card"}
-                  >
-                    <div>
-                      <h2 className="title is-5 is-bold">Conditions</h2>
-
-                      <p>
-                        You can set your payment terms & discount % here
-                      </p>
-
-                      {/* <div className="m-t-5"> */}
-                      <div className="column is-9">
-                        <div className="field">
-                          <label>Payment Terms</label>
-                          <SelectInput options={selectPayment}
-                            value={companyInfo.paymentTerms}
-                            onChange={handlePaymentChange}
-                            name="paymentTerms" />
-                        </div>
+                    <p>
+                      You can set your payment terms & discount % here
+                    </p>
+                    <div className="column is-9">
+                      <div className="field">
+                        <label>Payment Terms</label>
+                        <SelectInput options={selectPayment}
+                          value={companyInfo.paymentTerms}
+                          onChange={handlePaymentChange}
+                          name="paymentTerms" />
                       </div>
-                      {/* </div> */}
-                      <div className="column is-9">
-                        <div className="field">
-                          <label>Discount on List Prices</label>
-                          <Input
-                            type="number"
-                            placeholder="0%"
-                            value={companyInfo.discount}
-                            onChange={handleDiscountChange}
-                            name="discount" />
-                        </div>
-                      </div>
-
                     </div>
-                  </AdvancedCard>
-                  <div className="m-t-15" />
-                  <AdvancedCard
-                    type={"s-card"}
-                    footer
-                    footerContentRight={<Button isSuccess onClick={() => setIsModalActive(true)}>Add New</Button>}
-                  >
-                    <div className="columns is-multiline">
-                      <div className="column is-8">
-                        <div className="contact-list">
-                          <h2 className="title is-5 is-bold">Contact</h2>
-                          <p>You can list all your contacts here</p>
-                          {companyInfo.contactPersons && companyInfo.contactPersons.length > 0 ? (
-                            <div style={{ border: '1px solid #ccc', padding: '10px', marginTop: '20px', width: "150%" }}>
-                              <table>
-                                <thead>
-                                  <tr>
-                                    <th style={{ paddingRight: '30px' }}>First Name</th>
-                                    <th>Email</th>
+                    <div className="column is-9">
+                      <div className="field">
+                        <label>Discount on List Prices</label>
+                        <Input
+                          type="number"
+                          placeholder="0%"
+                          value={companyInfo.discount}
+                          onChange={handleDiscountChange}
+                          name="discount" />
+                      </div>
+                    </div>
+
+                  </div>
+                </AdvancedCard>
+                <div className="m-t-15" />
+                <AdvancedCard
+                  type={"s-card"}
+                  footer
+                  footerContentRight={<Button isSuccess onClick={() => setIsModalActive(true)}>Add New</Button>}
+                >
+                  <div className="columns is-multiline">
+                    <div className="column is-8">
+                      <div className="contact-list">
+                        <h2 className="title is-5 is-bold">Contact</h2>
+                        <p>You can list all your contacts here</p>
+                        {companyInfo.contactPersons && companyInfo.contactPersons.length > 0 ? (
+                          <div style={{ border: '1px solid #ccc', padding: '10px', marginTop: '20px', width: "150%" }}>
+                            <table>
+                              <thead>
+                                <tr>
+                                  <th style={{ paddingRight: '30px' }}>First Name</th>
+                                  <th>Email</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {companyInfo.contactPersons.map((contact, index) => (
+                                  <tr key={index}>
+                                    <td style={{ paddingRight: '30px' }}>{contact.firstName}</td>
+                                    <td style={{ paddingRight: '20px' }}>{contact.email}</td>
+                                    <td>
+                                      <FeatherIcon style={{ paddingRight: '5px' }} color="#00a353" name="Edit" onClick={() => handleEditContact(index)} /></td>
+                                    <td>  <FeatherIcon color="#00a353" name="Trash" onClick={() => handleDeleteContact(index)} /></td>
                                   </tr>
-                                </thead>
-                                <tbody>
-                                  {companyInfo.contactPersons.map((contact, index) => (
-                                    <tr key={index}>
-                                      <td style={{ paddingRight: '30px' }}>{contact.firstName}</td>
-                                      <td style={{ paddingRight: '20px' }}>{contact.email}</td>
-                                      <td>
-                                        <FeatherIcon style={{ paddingRight: '5px' }} color="#00a353" name="Edit" onClick={() => handleEditContact(index)} /></td>
-                                      <td>  <FeatherIcon color="#00a353" name="Trash" onClick={() => handleDeleteContact(index)} /></td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          ) : (
-                            <p>No contact persons available.</p>
-                          )}
-                        </div>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        ) : (
+                          <p>No contact persons available.</p>
+                        )}
                       </div>
                     </div>
-                  </AdvancedCard>
-                  <div className="m-t-15" />
-                  <AdvancedCard
-                    type={"s-card"}
-                  >
-                    <div className="columns is-multiline">
-                      <div className="column is-8">
-                        <h2 className="title is-5 is-bold">Notes</h2>
-                      </div>
-                      <div className="column is-12">
-                        <div className="field">
-                          <TextArea rows={3} placeholder="Enter Additional Notes here" value={companyInfo.notes}
-                            onChange={handleChange} name="notes" />
-                        </div>
-                      </div>
-                      <div className="column is-9">
-                        <span>Show notes when creating new documents</span>
-                      </div>
-                      <div className="column is-3 has-text-right">
-                        <Switch isSuccess checked={companyInfo.notesAlert}
-                          onChange={handleNotesAlertChange} name="notesAlert" />
-                      </div>
-                      {/* </div> */}
+                  </div>
+                </AdvancedCard>
+                <div className="m-t-15" />
+                <AdvancedCard
+                  type={"s-card"}
+                >
+                  <div className="columns is-multiline">
+                    <div className="column is-8">
+                      <h2 className="title is-5 is-bold">Notes</h2>
                     </div>
-                  </AdvancedCard>
+                    <div className="column is-12">
+                      <div className="field">
+                        <TextArea rows={3} placeholder="Enter Additional Notes here" value={companyInfo.notes}
+                          onChange={handleChange} name="notes" />
+                      </div>
+                    </div>
+                    <div className="column is-9">
+                      <span>Show notes when creating new documents</span>
+                    </div>
+                    <div className="column is-3 has-text-right">
+                      <Switch isSuccess checked={companyInfo.notesAlert}
+                        onChange={handleNotesAlertChange} name="notesAlert" />
+                    </div>
+                  </div>
+                </AdvancedCard>
 
-                </div>
               </div>
             </div>
-          </AdvancedCard>
+          </div>
+
         </div>
       </div>
     </PageContent>
