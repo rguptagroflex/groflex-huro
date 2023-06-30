@@ -19,6 +19,7 @@ import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import EditModal from "./EditModal";
 import DeleteModal from "./DeleteModal";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { getCurrencyRates as getCurrencyRatesFromOpenExchangeRates } from "../../helpers/getCurrencyRates";
 
 const countriesOptions = getCountries().map((country) => ({
   label: country.label,
@@ -38,6 +39,7 @@ const EditContact = () => {
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [contact, setContact] = useState(null);
   const [stateOptions, setStateOptions] = useState([]);
+  const [currencyOptions, setCurrencyOptions] = useState([]);
   const [companyInfo, setCompanyInfo] = useState({
     id: contactId,
     kind: "",
@@ -65,18 +67,41 @@ const EditContact = () => {
     payConditionId: 177,
     balance: 0,
     baseCurrency: "",
+    exchangeRate: "",
     credits: 0,
     debits: 0,
     defaultExchangeRateToggle: false,
     lastName: "",
     firstName: "",
-    exchangeRate: 0,
     outstandingAmount: 0,
     salutation: "",
     title: "",
     address: "",
     contactPersons: [],
   });
+
+  useEffect(() => {
+    const fetchCurrencyOptions = async () => {
+      try {
+        const jsonData = await getCurrencyRatesFromOpenExchangeRates({ base: 'INR' });
+        const rates = jsonData.rates;
+
+        // Generate currencyOptions dynamically
+        const newCurrencyOptions = Object.keys(rates).map((currency) => ({
+          value: currency,
+          label: `1 ${currency}`,
+        }));
+
+        // Update currencyOptions
+        setCurrencyOptions(newCurrencyOptions);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+
+    fetchCurrencyOptions();
+  }, []);
 
 
   useEffect(() => {
@@ -401,6 +426,29 @@ const EditContact = () => {
     const number = parseInt(e.target.value);
     setCompanyInfo({ ...companyInfo, number: number });
   };
+  const handleCurrencyChange = async (selectedCurrency) => {
+
+    try {
+      const jsonData = await getCurrencyRatesFromOpenExchangeRates({ base: 'INR' });
+      const selectedCurrencyRate = jsonData.rates[selectedCurrency.value.toUpperCase()];
+      const convertedExchangeRate = (1 / selectedCurrencyRate).toFixed(3) + " INR";
+
+      setCompanyInfo({
+        ...companyInfo,
+        baseCurrency: selectedCurrency.value,
+        exchangeRate: convertedExchangeRate
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleExchangeRateChange = (e) => {
+    const rate = parseFloat(e.target.value);
+    const selectedCurrencyRate = parseFloat(companyInfo.exchangeRate);
+    const convertedExchangeRate = (1 / (rate * selectedCurrencyRate)).toFixed(3) + " INR";
+
+    setCompanyInfo({ ...companyInfo, exchangeRate: convertedExchangeRate });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -490,6 +538,8 @@ const EditContact = () => {
       website: companyInfo.website,
       email: companyInfo.email,
       street: companyInfo.street,
+      baseCurrency: companyInfo.baseCurrency,
+      exchangeRate: parseFloat(companyInfo.exchangeRate),
       contactPersons: contactPerson,
       id: contactId,
     };
@@ -649,15 +699,15 @@ const EditContact = () => {
                           </div>
                         </div>
                       )}
-                      {/* {companyInfo.country !== 'IN' && (
+                      {companyInfo.country !== 'IN' && (
                         <div className="column is-6">
                           <div className="field">
                             <label>Currency *</label>
                             <SelectInput
-                              // defaultValue={companyInfo.currency}
-                              // options={currencyOptions}
-                              // onChange={handleCurrencyChange}
-                              // value={companyInfo.currency}
+                              defaultValue={companyInfo.baseCurrency}
+                              options={currencyOptions}
+                              onChange={handleCurrencyChange}
+                              value={companyInfo.baseCurrency}
                             />
                           </div>
                         </div>
@@ -667,15 +717,15 @@ const EditContact = () => {
                           <div className="field">
                             <label>Exchange Rate *</label>
                             <Input
-                              // type="number"
-                              // placeholder="₹ 0.00"
-                              // step="0.001"
-                              // value={parseFloat(companyInfo.exchangeRate)}
-                              // onChange={handleExchangeRateChange}
+                              type="number"
+                              placeholder="₹ 0.00"
+                              step="0.001"
+                              value={parseFloat(companyInfo.exchangeRate)}
+                              onChange={handleExchangeRateChange}
                             />
                           </div>
                         </div>
-                      )} */}
+                      )}
                     </div>
                     <div className="columns is-multiline">
                       <div className="column is-6">

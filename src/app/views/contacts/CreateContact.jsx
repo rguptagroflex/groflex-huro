@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import EditModal from "./EditModal";
 import DeleteModal from "./DeleteModal";
+import { getCurrencyRates as getCurrencyRatesFromOpenExchangeRates } from "../../helpers/getCurrencyRates";
 
 
 const countriesOptions = getCountries().map((country) => ({
@@ -33,11 +34,8 @@ const CreateContact = () => {
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [contact, setContact] = useState(null);
   const [stateOptions, setStateOptions] = useState([]);
-  const currencyOptions = [{ value: "1 eur", label: "1 EUR" }, { value: "1 omr", label: "1 OMR" },
-  { value: "1 usd", label: "1 USD" }, { value: "1 qar", label: "1 QAR" }, { value: "1 sar", label: "1 SAR" }
-  ]
-
-
+  
+  const [currencyOptions, setCurrencyOptions] = useState([]);
   const [companyInfo, setCompanyInfo] = useState({
     id: "",
     kind: "",
@@ -64,7 +62,7 @@ const CreateContact = () => {
     notes: "",
     payConditionId: 177,
     balance: 0,
-    baseCurrency: "",
+    // baseCurrency: "",
     credits: 0,
     debits: 0,
     defaultExchangeRateToggle: false,
@@ -76,7 +74,7 @@ const CreateContact = () => {
     title: "",
     address: "",
     job: "",
-    currency: "",
+    baseCurrency: "",
     contactPersons: [],
   });
   const [editContactIndex, setEditContactIndex] = useState(null);
@@ -122,12 +120,28 @@ const CreateContact = () => {
     setDeleteIndex(null);
   };
 
-  const handleCancelDelete = () => {
-    setIsModalDelete(false);
-    setDeleteIndex(null);
-  };
+  useEffect(() => {
+    const fetchCurrencyOptions = async () => {
+      try {
+        const jsonData = await getCurrencyRatesFromOpenExchangeRates({ base: 'INR' });
+        const rates = jsonData.rates;
+
+        // Generate currencyOptions dynamically
+        const newCurrencyOptions = Object.keys(rates).map((currency) => ({
+          value: currency,
+          label: `1 ${currency}`,
+        }));
+
+        // Update currencyOptions
+        setCurrencyOptions(newCurrencyOptions);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
 
+    fetchCurrencyOptions();
+  }, []);
   useEffect(() => {
     GroflexService
       .request(`${config.resourceHost}india/states`, { auth: true })
@@ -200,6 +214,7 @@ const CreateContact = () => {
     numberError: "",
     cinError: "",
     gstError: "",
+    currencyError: "",
   })
 
 
@@ -333,40 +348,30 @@ const CreateContact = () => {
     setCompanyInfo({ ...companyInfo, number: number });
   };
 
+  const handleCurrencyChange = async (selectedCurrency) => {
 
-  const handleCurrencyChange = (selectedCurrency) => {
-    const selectedCurrencyRate = getSelectedCurrencyRate(selectedCurrency.value);
-    const convertedExchangeRate = selectedCurrencyRate.toFixed(3) + " INR";
+    try {
+      const jsonData = await getCurrencyRatesFromOpenExchangeRates({ base: 'INR' });
+      const selectedCurrencyRate = jsonData.rates[selectedCurrency.value.toUpperCase()];
+      const convertedExchangeRate = (1 / selectedCurrencyRate).toFixed(3) + " INR";
 
-    setCompanyInfo({
-      ...companyInfo,
-      currency: selectedCurrency.value,
-      exchangeRate: convertedExchangeRate
-    });
+      setCompanyInfo({
+        ...companyInfo,
+        baseCurrency: selectedCurrency.value,
+        exchangeRate: convertedExchangeRate
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleExchangeRateChange = (e) => {
     const rate = parseFloat(e.target.value);
-    const selectedCurrencyRate = getSelectedCurrencyRate(companyInfo.currency);
-    const convertedExchangeRate = (rate / selectedCurrencyRate).toFixed(3) + " INR";
+    const selectedCurrencyRate = parseFloat(companyInfo.exchangeRate);
+    const convertedExchangeRate = (1 / (rate * selectedCurrencyRate)).toFixed(3) + " INR";
 
     setCompanyInfo({ ...companyInfo, exchangeRate: convertedExchangeRate });
   };
-
-  const getSelectedCurrencyRate = (currency) => {
-
-    const currencyRates = {
-      '1 eur': 89.32,
-      '1 omr': 212.97,
-      '1 usd': 82.00,
-      '1 qar': 22.52,
-      '1 sar': 21.86
-    };
-
-    return currencyRates[currency.toLowerCase()];
-  };
-
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -459,8 +464,8 @@ const CreateContact = () => {
       website: companyInfo.website,
       email: companyInfo.email,
       street: companyInfo.street,
-      currency: companyInfo.currency,
-      exchangeRate: companyInfo.exchangeRate,
+      baseCurrency: companyInfo.baseCurrency,
+      exchangeRate: parseFloat(companyInfo.exchangeRate),
       contactPersons: contactPerson
     };
 
@@ -624,11 +629,12 @@ const CreateContact = () => {
                           <div className="field">
                             <label>Currency *</label>
                             <SelectInput
-                              defaultValue={companyInfo.currency}
+                              defaultValue={companyInfo.baseCurrency}
                               options={currencyOptions}
                               onChange={handleCurrencyChange}
-                              value={companyInfo.currency}
+                              value={companyInfo.baseCurrency}
                             />
+
                           </div>
                         </div>
                       )}

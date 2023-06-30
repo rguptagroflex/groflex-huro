@@ -104,7 +104,7 @@ const AddContactPersonModal = ({ setCompanyInfo, companyInfo, isActive = false, 
               <InputAddons
                 type="number"
                 name="mobile"
-                left={"+91"}
+                // left={"+91"}
                 placeholder="Enter mobile number"
                 value={newContactPerson.mobile}
                 onChange={handleMobileChange}
