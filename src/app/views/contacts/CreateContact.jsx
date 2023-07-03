@@ -642,8 +642,8 @@ const CreateContact = () => {
                         <div className="column is-6">
                           <div className="field">
                             <label>Exchange Rate *</label>
-                            {/* <div style={{ display: 'flex', alignItems: 'center' }}> */}
-                            {/* <span style={{ marginRight: '5px' }}>&#8377;</span> */}
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <span style={{ marginRight: '5px' }}>&#8377;</span>
                             <Input
                               type="number"
                               placeholder="₹ 0.00"
@@ -654,7 +654,7 @@ const CreateContact = () => {
 
                           </div>
                         </div>
-                        // </div>
+                        </div>
 
                       )}
                     </div>
