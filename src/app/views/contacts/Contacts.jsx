@@ -45,23 +45,6 @@ const Contacts = () => {
     { name: "Edit", icon: "edit" },
     { name: "Delete", icon: "trash-alt" },
   ];
-  // const selectedContact = rowData.find((row) => row.id === selectedRow);
-  // const handleActionClick = (action, rowData) => {
-
-  //   if (action.name === "Edit") {
-  //     console.log("rowData", rowData)
-  //     // openEditContact(rowData)
-  //     setSelectedContact(rowData);
-  //     // // window.location.href = "/contacts-edit/:id;
-  //     navigate(`/contacts-edit/${rowData.id}`);
-
-  //   } else if (action.name === "Delete") {
-  //     // Implement delete functionality
-  //   }
-  // };
-  // useEffect(() => {
-  //   console.log("selectedContact:", selectedContact);
-  // }, [selectedContact]);
 
   const handleActionClick = (action, rowData) => {
     console.log("action:", action);
@@ -97,93 +80,7 @@ const Contacts = () => {
     }
   }, [previousData]);
 
-  // useEffect(() => {
-  //   // Fetch data or perform any other necessary operations
-  //   // based on the selected contact
-  //   console.log("selectedContact", selectedContact)
-  //   if (selectedContact) {
-  //     // Fetch additional data or perform operations here
-  //     console.log("selectedContact", selectedContact)
-  //   }
-  // }, [selectedContact]);
-  // const handleActionClick = (action, rowData) => {
-  //   if (rowData) {
-  //     if (action.name === "Edit") {
-  //       if (rowData.id) {
-  //         openEditContact(rowData, navigate);
-  //       } else {
-  //         console.log("Invalid rowData:", rowData);
-  //       }
-  //     } else if (action.name === "Delete") {
-  //       // Implement delete functionality
-  //     }
-  //   } else {
-  //     console.log("Invalid rowData:", rowData);
-  //   }
-  // };
-
-  // In your ListAdvancedComponent component
-  // const handleEditStatus =(contact)=> {
-
-  //   groflexService.request(`${config.resourceUrls.contact}/${contact.id}`, {
-  // 			auth: true,
-  // 			method: "PUT",
-  // 			data: { ...contact },
-  // 		})
-  // 		.then((res) => {
-  // 			this.setState({ ...this.state, refreshData: !this.state.refreshData });
-  // 		});
-  // }
-
-  // const openEditContact = (contact) => {
-
-  //   const handleEditData = async (editedData) => {
-  //     try {
-  //       await groflexService.request(`${config.resourceUrls.contact}/${contact.id}`, {
-  //         auth: true,
-  //         method: "PUT",
-  //         data: { ...editedData },
-  //       });
-
-  //       // Refresh the data or perform any necessary actions
-  //       navigate(`/contacts-edit/${contact.id}`); // Replace "/desired-page" with the actual path to the desired page
-  //     } catch (error) {
-  //       console.log("Error editing contact:", error);
-  //     }
-  //   };
-
-  //   // navigate(`/contacts-edit/${contact.id}`);
-  //   return <EditContact onConfirm={handleEditData} previousData={contact} />
-  // };
-
-
-
-  // const handleActionClick = (action, rowData) => {
-  //   if (rowData) {
-  //     if (action && action.name === "Edit") {
-  //       if (rowData && rowData.id) {
-  //         setSelectedContact(rowData);
-  //         navigate(`/contacts-edit/${rowData.id}`);
-  //       } else {
-  //         console.log("Invalid rowData:", rowData);
-  //       }
-  //     } else if (action && action.name === "Delete") {
-  //       // Implement delete functionality
-  //     }
-  //   }
-  //   else {
-  //     console.log("rowData:", rowData);
-  //     console.log("rowData.id:", rowData.id);
-  //   }
-  // };
-
-
-  // Inside your ListAdvancedComponent component, where you call handleActionClick
-  // onClick={() => handleActionClick(action, rowData)}
-
-
-
-
+ 
   return (
     <PageContent title="Contacts">
 
@@ -223,7 +120,7 @@ const Contacts = () => {
           { field: "category", headerName: "Category" },
           { field: "address.gstNumber", headerName: "GST Number" },
         ]}
-        fetchUrl={config.resourceUrls.customers}
+        fetchUrl={config.resourceUrls.expenses}
         actionMenuData={actions}
       />
      

@@ -34,7 +34,7 @@ const CreateContact = () => {
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [contact, setContact] = useState(null);
   const [stateOptions, setStateOptions] = useState([]);
-  
+
   const [currencyOptions, setCurrencyOptions] = useState([]);
   const [companyInfo, setCompanyInfo] = useState({
     id: "",
@@ -353,7 +353,7 @@ const CreateContact = () => {
     try {
       const jsonData = await getCurrencyRatesFromOpenExchangeRates({ base: 'INR' });
       const selectedCurrencyRate = jsonData.rates[selectedCurrency.value.toUpperCase()];
-      const convertedExchangeRate = (1 / selectedCurrencyRate).toFixed(3) + " INR";
+      const convertedExchangeRate = (1 / selectedCurrencyRate).toFixed(3) + "INR";
 
       setCompanyInfo({
         ...companyInfo,
@@ -364,14 +364,16 @@ const CreateContact = () => {
       console.error(error);
     }
   };
-
   const handleExchangeRateChange = (e) => {
     const rate = parseFloat(e.target.value);
     const selectedCurrencyRate = parseFloat(companyInfo.exchangeRate);
     const convertedExchangeRate = (1 / (rate * selectedCurrencyRate)).toFixed(3) + " INR";
-
-    setCompanyInfo({ ...companyInfo, exchangeRate: convertedExchangeRate });
+    const currencySymbol = '₹';
+    setCompanyInfo({ ...companyInfo, exchangeRate: `${currencySymbol}${convertedExchangeRate}` });
   };
+
+  const currencySymbol = '\u20B9';
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -385,8 +387,6 @@ const CreateContact = () => {
   const handleStateChange = (options) => {
     setCompanyInfo({ ...companyInfo, state: options.value });
   };
-
-
 
   const handleCountryChange = (options) => {
     setCompanyInfo({ ...companyInfo, country: options.value });
@@ -642,6 +642,8 @@ const CreateContact = () => {
                         <div className="column is-6">
                           <div className="field">
                             <label>Exchange Rate *</label>
+                            {/* <div style={{ display: 'flex', alignItems: 'center' }}> */}
+                            {/* <span style={{ marginRight: '5px' }}>&#8377;</span> */}
                             <Input
                               type="number"
                               placeholder="₹ 0.00"
@@ -649,8 +651,11 @@ const CreateContact = () => {
                               value={parseFloat(companyInfo.exchangeRate)}
                               onChange={handleExchangeRateChange}
                             />
+
                           </div>
                         </div>
+                        // </div>
+
                       )}
                     </div>
                     <div className="columns is-multiline">
