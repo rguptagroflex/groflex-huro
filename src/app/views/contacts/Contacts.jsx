@@ -80,7 +80,7 @@ const Contacts = () => {
     }
   }, [previousData]);
 
- 
+
   return (
     <PageContent title="Contacts">
 
@@ -120,10 +120,10 @@ const Contacts = () => {
           { field: "category", headerName: "Category" },
           { field: "address.gstNumber", headerName: "GST Number" },
         ]}
-        fetchUrl={config.resourceUrls.expenses}
+        fetchUrl={config.resourceUrls.customers}
         actionMenuData={actions}
       />
-     
+
 
     </PageContent>
   );

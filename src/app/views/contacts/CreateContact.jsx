@@ -183,7 +183,6 @@ const CreateContact = () => {
         kind: tenantData.kind,
         notesAlert: tenantData.notesAlert,
         number: tenantData.number,
-        companyName: tenantData.companyName,
         notes: tenantData.notes,
         paymentTerms: tenantData.paymentTerms,
         openingBalance: tenantData.openingBalance,
@@ -368,7 +367,6 @@ const CreateContact = () => {
     const rate = parseFloat(e.target.value);
     const selectedCurrencyRate = parseFloat(companyInfo.exchangeRate);
     const convertedExchangeRate = (1 / (rate * selectedCurrencyRate)).toFixed(3) + " INR";
-    const currencySymbol = '₹';
     setCompanyInfo({ ...companyInfo, exchangeRate: `${currencySymbol}${convertedExchangeRate}` });
   };
 
@@ -642,11 +640,12 @@ const CreateContact = () => {
                         <div className="column is-6">
                           <div className="field">
                             <label>Exchange Rate *</label>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span style={{ marginRight: '5px' }}>&#8377;</span>
-                            <Input
+                            {/* <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <span style={{ marginRight: '5px' }}>&#8377;</span> */}
+                            <InputAddons
+                              left={"₹"}
                               type="number"
-                              placeholder="₹ 0.00"
+                              placeholder="0.00"
                               step="0.001"
                               value={parseFloat(companyInfo.exchangeRate)}
                               onChange={handleExchangeRateChange}
@@ -654,7 +653,7 @@ const CreateContact = () => {
 
                           </div>
                         </div>
-                        </div>
+                        // </div>
 
                       )}
                     </div>

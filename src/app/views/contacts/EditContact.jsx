@@ -262,7 +262,7 @@ const EditContact = () => {
         kind: tenantData.kind,
         notesAlert: tenantData.notesAlert,
         number: tenantData.number,
-        companyName: tenantData.companyName,
+        // companyName: tenantData.companyName,
         notes: tenantData.notes,
         paymentTerms: tenantData.paymentTerms,
         openingBalance: tenantData.openingBalance,
@@ -716,9 +716,10 @@ const EditContact = () => {
                         <div className="column is-6">
                           <div className="field">
                             <label>Exchange Rate *</label>
-                            <Input
+                            <InputAddons
+                             left={"₹"}
                               type="number"
-                              placeholder="₹ 0.00"
+                              placeholder="0.00"
                               step="0.001"
                               value={parseFloat(companyInfo.exchangeRate)}
                               onChange={handleExchangeRateChange}

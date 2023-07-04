@@ -12,11 +12,26 @@ export const InputAddons = ({
   onChange,
   ...rest
 }) => {
+  const isRupeeSymbol = left === "₹";
   return (
     <div className="field has-addons">
-      {left && (
+      {/* {left && (
         <div className="control">
           <a className="button is-static">+91</a>
+         
+        </div>
+      )} */}
+       {left && (
+        <div className="control">
+          <a className="button is-static">
+            {isRupeeSymbol ? (
+              <span role="img" aria-label="Rupee Symbol">
+                ₹
+              </span>
+            ) : (
+              "+91"
+            )}
+          </a>
         </div>
       )}
 
