@@ -2,7 +2,7 @@ import Home from "./app/views/home/Home";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import SharedLayout from "./app/shared/sharedLayout/SharedLayout";
 import Login from "./app/views/account/Login";
-import { SignUp } from "./app/views/account/Signup";
+import Signup from "./app/views/account/Signup";
 import Estimates from "./app/views/estimates/Estimates";
 import Articles from "./app/views/articles/Articles";
 import Dashboard from "./app/views/dashboard/Dashboard";
@@ -29,10 +29,10 @@ function App() {
           <Route path="account-settings" element={<AccountSettings />} />
           <Route path="preferences" element={<Preferences />} />
           <Route path="notifications" element={<Notifications />} />
-          <Route path="create-article" element={<CreateArticle />} /> 
+          <Route path="create-article" element={<CreateArticle />} />
         </Route>
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>

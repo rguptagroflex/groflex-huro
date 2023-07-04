@@ -1,24 +1,41 @@
 import React, { useEffect, useState } from "react";
-import bankingImgLight from "../../../assets/img/illustrations/apps/huro-banking-light.png";
-import bankingImgDark from "../../../assets/img/illustrations/apps/huro-banking-dark.png";
-import logoLight from "../../../assets/img/logos/logo/logo.svg";
-import logoDark from "../../../assets/img/logos/logo/logo-light.svg";
+import login_Bg from "../../../assets/groflex/bg/loginpage_bg.png";
+import googleIcon from "../../../assets/groflex/logos/google.png";
+import carousel1 from "../../../assets/groflex/images/carousel1.png";
+import carousel2 from "../../../assets/groflex/images/carousel2.png";
+import carousel3 from "../../../assets/groflex/images/carousel3.png";
+import carousel4 from "../../../assets/groflex/images/carousel4.png";
+import groflex_logo_transparent from "../../../assets/groflex/logos/groflex_name_logo_color_no_tag.png";
+import useThemeSwitch from "../../helpers/hooks/useThemeSwitch";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import config from "../../../../config";
+import _ from "lodash";
+import groflexService from "../../services/groflex.service";
+import * as actionTypes from "../../redux/actions/actions.types";
+import store from "../../redux/store";
+import webStorageKeyEnum from "../../enums/web-storage-key.enum";
+import webstorageService from "../../services/webstorage.service";
+import ReactSlickCarousel from "../../shared/components/carousel/ReactSlickCarousel";
+import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
 import { Input } from "../../shared/components/input/Input";
 import { Button } from "../../shared/components/button/Button";
-import { Switch } from "../../shared/components/switch/Switch";
-import useThemeSwitch from "../../helpers/hooks/useThemeSwitch";
-import config from "../../../../config";
 
-export const SignUp = () => {
-  const themeSwitch = useThemeSwitch();
+store.subscribe(() => {
+  console.log(store.getState());
+});
+
+const Signup = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  const dispatch = useDispatch(); 
+  const [emailExistsFlag, setEmailExistsFlag] = useState(null); 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [repeatPassword, setRepeatPassword] = useState("");
-  const [receivePromotionalOffers, setReceivePromotionalOffers] =
-    useState(false);
+
+  const [formErrors, setFormErrors] = useState({
+    emailError: "",
+    passwordError: "",
+  });
   useEffect(() => {
     if (config.checkLoginTokenIsValid()) {
       navigate("/");
@@ -28,168 +45,390 @@ export const SignUp = () => {
   const handleEmailChange = (event) => {
     setEmail(event.target.value.trim());
   };
+
   const handlePasswordChange = (event) => {
     setPassword(event.target.value.trim());
   };
-  const handleRepeatPasswordChange = (event) => {
-    setRepeatPassword(event.target.value.trim());
+
+  const handleLogin = () => {
+    setFormErrors({ ...formErrors, emailError: "", passwordError: "" });
+
+    // Email is empty or not
+    if (!email) {
+      setFormErrors({ ...formErrors, emailError: "Please type email address" });
+    }
+
+    // Email is valid or not
+    if (!config.regex.emailCheck.test(email)) {
+      setFormErrors({
+        ...formErrors,
+        emailError: "Please type a valid email address",
+      });
+      return;
+    }
+
+    // Check email exists or not
+    if (emailExistsFlag === null) {
+      groflexService.checkEmailExist(email).then((res) => {
+        if (
+          res.meta.email !== undefined &&
+          res.meta.email[0].code === "NOT_FOUND"
+        ) {
+          // console.log(res, "Email not exists!");
+          setEmailExistsFlag(false);
+          navigate("/signup");
+          return;
+        }
+        // console.log("Email exists!");
+        setEmailExistsFlag(true);
+      });
+      return;
+    }
+
+    // If Email exists then try login
+    if (emailExistsFlag) {
+      groflexService.login(email, password).then((res) => {
+        if (res.meta.email) {
+          setFormErrors({ ...formErrors, emailError: "Email not found" });
+          return;
+        } else if (res.meta.password) {
+          setFormErrors({ ...formErrors, passwordError: "Incorrect password" });
+          return;
+        }
+
+        // Set Token, and login time in localstorage
+        webstorageService.setItem(
+          webStorageKeyEnum.LOGIN_TOKEN_KEY,
+          res.data.token
+        );
+        webstorageService.setItem(
+          webStorageKeyEnum.LOGIN_TOKEN_START_TIME,
+          new Date().getTime()
+        );
+
+        groflexService
+          .request(config.resourceUrls.tenant, {
+            auth: true,
+          })
+          .then((res) => {
+            dispatch({
+              type: actionTypes.SET_TENANT_DATA,
+              payload: res.data,
+            });
+          })
+          .then(() => {
+            groflexService
+              .request(config.resourceUrls.user, {
+                auth: true,
+              })
+              .then((res) => {
+                dispatch({
+                  type: actionTypes.SET_USER_DATA,
+                  payload: res.data,
+                });
+              });
+          })
+          .then(() => {
+            groflexService
+              .request(config.resourceUrls.accountSettings, {
+                auth: true,
+              })
+              .then((res) => {
+                console.log(res.data);
+                dispatch({
+                  type: actionTypes.SET_ACCOUNTINFO_DATA,
+                  payload: res.data,
+                });
+                navigate("/");
+              });
+          });
+      });
+    }
   };
 
-  const handleUserNameChange = (event) => {
-    setUsername(event.target.value.trim());
-  };
-  const handleReceivePromotionalOffers = () => {
-    setReceivePromotionalOffers(!receivePromotionalOffers);
-  };
-
-  const handleSignup = () => {
-    navigate("/");
-  };
-  console.log(
-    username,
-    email,
-    password,
-    repeatPassword,
-    receivePromotionalOffers
-  );
-
+  // console.log(email, password);
   return (
-    <div className="app-wrapper">
-      <div className="pageloader is-full"></div>
-      <div className="infraloader is-full"></div>
+    <div className="auth-wrapper is-dark">
+      <div className="modern-login">
+        <div className="underlay h-hidden-mobile h-hidden-tablet-p"></div>
 
-      <div className="auth-wrapper">
-        {/* Page Body */}
-        {/* Wrapper */}
-        <div className="auth-wrapper-inner columns is-gapless">
-          {/* Form Section */}
-          <div className="column is-5">
-            <div className="hero is-fullheight is-white">
-              <div className="hero-heading">
-                <label className="dark-mode ml-auto">
-                  <input
-                    type="checkbox"
-                    defaultChecked
-                    onChange={themeSwitch}
-                  />
-                  <span></span>
-                </label>
-
-                <div className="auth-logo">
-                  <a href="/">
-                    <img
-                      className="top-logo light-image"
-                      src={logoLight}
-                      alt="Logo"
-                    />
-                    <img
-                      className="top-logo dark-image"
-                      src={logoDark}
-                      alt="Logo"
-                    />
-                  </a>
-                </div>
-              </div>
-
-              <div className="hero-body">
-                <div className="container">
-                  <div className="columns">
-                    <div className="column is-12">
-                      <div className="auth-content">
-                        <h2>Join Us Now.</h2>
-                        <p>Start by creating your account</p>
-                        <Link to={"/login"}>I already have an account</Link>
-                      </div>
-
-                      <div className="auth-form-wrapper">
-                        {/* Login Form */}
-                        <form onSubmit={handleSignup}>
-                          <div className="login-form">
-                            <Input
-                              value={username}
-                              onChange={handleUserNameChange}
-                              placeholder={"Username"}
-                              hasIcon
-                              iconType={"user"}
-                            />
-                            <Input
-                              value={email}
-                              onChange={handleEmailChange}
-                              placeholder={"Email Address"}
-                              hasIcon
-                              iconType={"envelope"}
-                            />
-                            <Input
-                              value={password}
-                              onChange={handlePasswordChange}
-                              placeholder={"Password"}
-                              hasIcon
-                              iconType={"lock"}
-                            />
-                            <Input
-                              value={repeatPassword}
-                              onChange={handleRepeatPasswordChange}
-                              placeholder={"Repeat Password"}
-                              hasIcon
-                              iconType={"lock"}
-                            />
-
-                            <div className="setting-item">
-                              <Switch
-                                value={receivePromotionalOffers}
-                                onChange={handleReceivePromotionalOffers}
-                                isPrimary
-                              />
-                              <div className="setting-meta">
-                                <span>Receive promotional offers</span>
-                              </div>
-                            </div>
-
-                            <div className="control login">
-                              <Button
-                                onClick={handleSignup}
-                                isPrimary
-                                isBold
-                                isRaised
-                                isFullWidth
-                              >
-                                Sign Up
-                              </Button>
-                            </div>
-                          </div>
-                        </form>
+        <div className="columns is-gapless is-vcentered">
+          {/* First column */}
+          <div className="column is-relative is-7 h-hidden-mobile h-hidden-tablet-p">
+            <div
+              style={{
+                backgroundImage: `url(${login_Bg})`,
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                height: "100vh",
+              }}
+              className="hero is-fullheight is-image"
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                  width: "100%",
+                }}
+              >
+                <img
+                  style={{
+                    margin: "14px",
+                    width: "180px",
+                    objectFit: "cover",
+                  }}
+                  src={groflex_logo_transparent}
+                  alt="logo"
+                />
+                <div
+                  className="carousel-container"
+                  style={{ margin: "auto 0" }}
+                >
+                  <ReactSlickCarousel>
+                    <div
+                      style={{
+                        height: "350px",
+                      }}
+                    >
+                      <img
+                        style={{
+                          margin: "0 auto",
+                          height: "350px",
+                          objectFit: "contain",
+                        }}
+                        src={carousel1}
+                        alt="carousel1"
+                      />
+                      <div
+                        style={{
+                          margin: "0 auto",
+                          height: "150px",
+                          width: "340px",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          marginTop: "20px",
+                        }}
+                      >
+                        <h2 className="is-bold is-5 title">
+                          Best and Easiest Billing Software!
+                        </h2>
+                        <div>Create GST compliant invoices</div>
                       </div>
                     </div>
-                  </div>
+                    <div
+                      style={{
+                        height: "350px",
+                      }}
+                    >
+                      <img
+                        style={{
+                          margin: "0 auto",
+                          height: "350px",
+                          objectFit: "contain",
+                        }}
+                        src={carousel2}
+                        alt="carousel2"
+                      />
+                      <div
+                        style={{
+                          margin: "0 auto",
+                          height: "150px",
+                          width: "340px",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          marginTop: "20px",
+                        }}
+                      >
+                        <h2 className="is-bold is-5 title">
+                          Best and Easiest Billing Software!
+                        </h2>
+                        <div>Create GST compliant invoices</div>
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        height: "350px",
+                      }}
+                    >
+                      <img
+                        style={{
+                          margin: "0 auto",
+                          height: "350px",
+                          objectFit: "contain",
+                        }}
+                        src={carousel3}
+                        alt="carousel3"
+                      />
+                      <div
+                        style={{
+                          margin: "0 auto",
+                          height: "150px",
+                          width: "340px",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          marginTop: "20px",
+                        }}
+                      >
+                        <h2 className="is-bold is-5 title">
+                          Best and Easiest Billing Software!
+                        </h2>
+                        <div>Create GST compliant invoices</div>
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        height: "350px",
+                      }}
+                    >
+                      <img
+                        style={{
+                          margin: "0 auto",
+                          height: "350px",
+                          objectFit: "contain",
+                        }}
+                        src={carousel4}
+                        alt="carousel4"
+                      />
+                      <div
+                        style={{
+                          margin: "0 auto",
+                          height: "150px",
+                          width: "340px",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          marginTop: "20px",
+                        }}
+                      >
+                        <h2 className="is-bold is-5 title">
+                          Best and Easiest Billing Software!
+                        </h2>
+                        <div>Create GST compliant invoices</div>
+                      </div>
+                    </div>
+                  </ReactSlickCarousel>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Image Section (hidden on mobile) */}
-          <div className="column login-column is-7 is-hidden-mobile h-hidden-tablet-p hero-banner">
-            <div className="hero login-hero is-fullheight is-app-grey">
-              <div className="hero-body">
-                <div className="columns">
-                  <div className="column is-10 is-offset-1">
-                    <img
-                      className="light-image has-light-shadow has-light-border"
-                      src={bankingImgLight}
-                      alt="Banking Image"
-                    />
-
-                    <img
-                      className="dark-image has-light-shadow"
-                      src={bankingImgDark}
-                      alt="Banking Image"
-                    />
+          {/* Second column */}
+          <div className="column is-5 is-relative">
+            <div className="is-form">
+              <AdvancedCard
+                type={"r-card"}
+                footer
+                footerContentCenter={
+                  <div style={{ margin: "10px 50px", textAlign: "center" }}>
+                    <div>By signing up, you agree to our</div>
+                    <Link
+                      to={"/login"}
+                      className="text-primary title is-6"
+                      style={{ cursor: "pointer" }}
+                    >
+                      Terms & Privacy
+                    </Link>
                   </div>
+                }
+              >
+                <h2
+                  style={{ textAlign: "center", margin: "20px 0" }}
+                  className="title is-4 is-bold"
+                >
+                  Welcome to Groflex
+                </h2>
+                <div style={{ margin: "20px 0" }} className="field">
+                  <form
+                    id="login-form"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleLogin();
+                    }}
+                  >
+                    <label>
+                      <p>Email</p>
+                    </label>
+                    <Input
+                      helpText={formErrors.emailError}
+                      hasError={formErrors.emailError}
+                      hasValidation
+                      name="email"
+                      onChange={handleEmailChange}
+                      placeholder={"Enter email"}
+                      type={"email"}
+                      value={email}
+                    />
+                    {emailExistsFlag ? (
+                      <>
+                        <label>
+                          <p>Password</p>
+                        </label>
+                        <Input
+                          helpText={formErrors.passwordError}
+                          hasError={formErrors.passwordError}
+                          hasValidation
+                          name="password"
+                          onChange={handlePasswordChange}
+                          placeholder={"Enter password"}
+                          type="password"
+                          value={password}
+                        />
+                      </>
+                    ) : null}
+                  </form>
                 </div>
-              </div>
-
-              <div className="hero-footer">
-                <p className="has-text-centered"></p>
-              </div>
+                <Button
+                  style={{ margin: "20px 0" }}
+                  isFullWidth
+                  isLight={!email}
+                  isSuccess={email}
+                  onClick={handleLogin}
+                >
+                  Login / Register
+                </Button>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <div
+                    style={{
+                      backgroundColor: "#00A353",
+                      height: "1px",
+                      width: "100%",
+                    }}
+                  />
+                  <div style={{ margin: "0 23px" }}>Or</div>
+                  <div
+                    style={{
+                      backgroundColor: "#00A353",
+                      height: "1px",
+                      width: "100%",
+                    }}
+                  />
+                </div>
+                <Button
+                  style={{
+                    margin: "20px 0",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                  icon={
+                    <img
+                      width={20}
+                      height={20}
+                      style={{ margin: "0 10px 0 0" }}
+                      src={googleIcon}
+                      alt="loginwithgoogle"
+                    />
+                  }
+                  isFullWidth
+                  isOutlined
+                  isSuccess
+                >
+                  Continue with Google
+                </Button>
+              </AdvancedCard>
             </div>
           </div>
         </div>
@@ -197,3 +436,5 @@ export const SignUp = () => {
     </div>
   );
 };
+
+export default Signup;

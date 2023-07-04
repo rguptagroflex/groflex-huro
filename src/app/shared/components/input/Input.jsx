@@ -1,8 +1,8 @@
-import { has } from "lodash";
 import React from "react";
 
 export const Input = ({
   type = "text",
+  hasTogglePasswordView,
   placeholder,
   focusType,
   helpText,
@@ -15,6 +15,7 @@ export const Input = ({
   iconType,
   value,
   onChange,
+  rightIcon,
   ...rest
 }) => {
   const getFocusType = () => {
@@ -83,23 +84,23 @@ export const Input = ({
         {/* Icon */}
         {hasIcon && (
           <span className="form-icon">
-            <i className={`fas fa-${iconType}`}></i>
+            <i className={`fas fa-${iconType}`} />
           </span>
         )}
 
         {/* Validation Success */}
-        {hasValidation && hasSuccess && (
+        {/* {hasValidation && hasSuccess && (
           <div className="validation-icon is-success">
-            <i data-feather="check"></i>
+            <i style={{ color: "#00a353" }} className={`fas fa-check`} />
           </div>
-        )}
+        )} */}
 
         {/* Validation Error */}
-        {hasValidation && hasSuccess && (
+        {/* {hasValidation && hasError && (
           <div className="validation-icon is-error">
-            <i data-feather="x"></i>
+            <i style={{ color: "#D94339" }} className={`fas fa-x`} />
           </div>
-        )}
+        )} */}
 
         {/* Helper text */}
         {helpText && (

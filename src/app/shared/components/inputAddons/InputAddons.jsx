@@ -1,10 +1,11 @@
-import { has } from "lodash";
-import React from "react";
+import React, { useState } from "react";
+import { FeatherIcon } from "../../featherIcon/FeatherIcon";
 
 export const InputAddons = ({
+  hasShowPassword,
   disabled = false,
   left,
-  type,
+  type = "text",
   maxLength,
   right,
   placeholder,
@@ -16,11 +17,21 @@ export const InputAddons = ({
   hasError,
   ...rest
 }) => {
+  const [inputType, setInputType] = useState(type);
+
+  const togglePasswordView = () => {
+    if (inputType === "password") {
+      setInputType("text");
+    } else {
+      setInputType("password");
+    }
+  };
+
   return (
     <div className="field has-addons">
       {left && (
         <div className="control">
-          <a className="button is-static">+91</a>
+          <a className="button is-static">{left}</a>
         </div>
       )}
 
@@ -28,7 +39,7 @@ export const InputAddons = ({
         <input
           disabled={disabled}
           className="input"
-          type={type}
+          type={inputType}
           maxLength={maxLength}
           placeholder={placeholder}
           value={value}
@@ -52,6 +63,17 @@ export const InputAddons = ({
       {right && (
         <div onClick={onRightAdornmentClick} className="control">
           <a className="button">{right}</a>
+        </div>
+      )}
+      {hasShowPassword && (
+        <div onClick={togglePasswordView} className="control">
+          <a className="button">
+            {inputType === "password" ? (
+              <FeatherIcon primaryColor name={"EyeOff"} />
+            ) : (
+              <FeatherIcon primaryColor name={"Eye"} />
+            )}
+          </a>
         </div>
       )}
     </div>

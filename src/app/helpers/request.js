@@ -9,6 +9,57 @@ const getEndpoint = (endpoint) => {
   return environment === "local" ? `${localHost}${endpoint}` : endpoint;
 };
 
+export const login = (email, password) => {
+  if (environment === "local") {
+    return new Promise((resolve, reject) => {
+      fetch(getEndpoint(config.resourceUrls.login), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          body: JSON.stringify({ email, password }),
+          headers: { "Content-Type": "application/json" },
+          method: "POST",
+          url: config.resourceUrls.login,
+        }),
+      }).then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            resolve(data);
+          });
+        } else {
+          reject(response);
+        }
+      });
+    });
+  } else {
+    return new Promise((resolve, reject) => {
+      fetch(getEndpoint(config.resourceUrls.login), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      }).then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            resolve(data);
+          });
+        } else {
+          reject(response);
+        }
+      });
+    });
+  }
+};
+
+export const logout = () => {
+  WebStorageService.removeItem(webStorageKeyEnum.LOGIN_TOKEN_KEY);
+  WebStorageService.removeItem(webStorageKeyEnum.LOGIN_TOKEN_START_TIME);
+  location.assign("/login");
+};
+
 export const request = (endpoint, options) => {
   let token = options.token
     ? options.token
@@ -71,7 +122,7 @@ export const request = (endpoint, options) => {
   }
 };
 
-export const login = (email, password) => {
+export const checkEmailExist = (email, password = "lSlSlS@3") => {
   if (environment === "local") {
     return new Promise((resolve, reject) => {
       fetch(getEndpoint(config.resourceUrls.login), {
@@ -116,8 +167,62 @@ export const login = (email, password) => {
   }
 };
 
-export const logout = () => {
-  WebStorageService.removeItem(webStorageKeyEnum.LOGIN_TOKEN_KEY);
-  WebStorageService.removeItem(webStorageKeyEnum.LOGIN_TOKEN_START_TIME);
-  location.assign("/login");
-};
+
+// export const checkEmailExist = (email) => {
+//   if (environment === "local") {
+//     return new Promise((resolve, reject) => {
+//       fetch(
+//         getEndpoint(
+//           `${config.resourceUrls.checkEmailExist}?` +
+//             new URLSearchParams({
+//               email,
+//             })
+//         ),
+//         {
+//           method: "POST",
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//           body: JSON.stringify({
+//             headers: { "Content-Type": "application/json" },
+//             method: "GET",
+//             url: config.resourceUrls.checkEmailExist,
+//           }),
+//         }
+//       ).then((response) => {
+//         if (response.ok) {
+//           response.json().then((data) => {
+//             resolve(data);
+//           });
+//         } else {
+//           reject(response);
+//         }
+//       });
+//     });
+//   } else {
+//     return new Promise((resolve, reject) => {
+//       fetch(
+//         getEndpoint(
+//           `${config.resourceUrls.checkEmailExist}?` +
+//             new URLSearchParams({
+//               email,
+//             })
+//         ),
+//         {
+//           method: "GET",
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//         }
+//       ).then((response) => {
+//         if (response.ok) {
+//           response.json().then((data) => {
+//             resolve(data);
+//           });
+//         } else {
+//           reject(response);
+//         }
+//       });
+//     });
+//   }
+// };

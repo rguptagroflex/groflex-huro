@@ -459,7 +459,7 @@ const AccountSettings = () => {
                             type="email"
                             disabled
                             placeholder={"Enter Details"}
-                            right={<FeatherIcon color="#00a353" name="Edit" />}
+                            right={<FeatherIcon primaryColor name="Edit" />}
                             onRightAdornmentClick={() => {
                               setChangeEmailModalActive(true);
                             }}
@@ -467,15 +467,15 @@ const AccountSettings = () => {
                         </div>
                       </div>
 
-                      <div className="column is-6 ">
+                      <div className="column is-6">
                         <div className="field ">
                           <label>Phone Number</label>
                           <InputAddons
                             left={"+91"}
-                            right={<FeatherIcon color="#00a353" name="Edit" />}
+                            right={<FeatherIcon primaryColor name="Edit" />}
                             type="number"
                             disabled
-                            value={9856743215}
+                            value={profileInfo.phoneNo}
                             placeholder={"Enter Details"}
                             // value={
                             //   profileInfo.phoneNo ? profileInfo.phoneNo : ""

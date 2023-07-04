@@ -21,6 +21,7 @@ const resourceHost = setResourceHost();
 
 const resourceUrls = {
   login: `${resourceHost}session/create?type=bearer`,
+  checkEmailExist: `${resourceHost}user/checkUser`,
   articles: `${resourceHost}article?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
   customers: `${resourceHost}customer?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
   tenant: `${resourceHost}tenant`,
@@ -29,6 +30,7 @@ const resourceUrls = {
   user: `${resourceHost}setting/user`,
   articleSearch: `${resourceHost}find/eanRecord/`, // concatenate search query
   article: `${resourceHost}article`,
+  miscellaneous: `${resourceHost}setting/miscellaneous`,
 };
 
 const checkLoginTokenIsValid = () => {
@@ -54,10 +56,16 @@ const checkLoginTokenIsValid = () => {
   return false;
 };
 
+const regex = {
+  emailCheck:
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i,
+};
+
 const config = {
   resourceHost,
   resourceUrls,
   checkLoginTokenIsValid,
+  regex,
 };
 
 export default config;
