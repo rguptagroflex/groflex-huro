@@ -262,7 +262,6 @@ const EditContact = () => {
         kind: tenantData.kind,
         notesAlert: tenantData.notesAlert,
         number: tenantData.number,
-        // companyName: tenantData.companyName,
         notes: tenantData.notes,
         paymentTerms: tenantData.paymentTerms,
         openingBalance: tenantData.openingBalance,
