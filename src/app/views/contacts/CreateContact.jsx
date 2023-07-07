@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "../../shared/components/button/Button";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
 import { FileInput } from "../../shared/components/fileInput/FileInput";
@@ -19,6 +19,8 @@ import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import EditModal from "./EditModal";
 import DeleteModal from "./DeleteModal";
 import { getCurrencyRates as getCurrencyRatesFromOpenExchangeRates } from "../../helpers/getCurrencyRates";
+import groflexService from "../../services/groflex.service";
+import { useNavigate } from "react-router-dom";
 
 
 const countriesOptions = getCountries().map((country) => ({
@@ -34,8 +36,14 @@ const CreateContact = () => {
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [contact, setContact] = useState(null);
   const [stateOptions, setStateOptions] = useState([]);
-
+  const endpoint = config.resourceUrls.miscellaneous;
+  const [salutationOptions, setSalutationOptions] = useState([]);
+  const [titleOptions, setTitleOptions] = useState([]);
   const [currencyOptions, setCurrencyOptions] = useState([]);
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  // const isDataFetchedRef = useRef(false);
+  // const initialDataRef = useRef('');
   const [companyInfo, setCompanyInfo] = useState({
     id: "",
     kind: "",
@@ -161,6 +169,64 @@ const CreateContact = () => {
     }));
   };
 
+ 
+  const fetchNumberData = () => {
+    try {
+      groflexService
+        .request(`${config.resourceHost}customer/number`, { auth: true })
+        .then((response) => {
+          console.log("response", response);
+          // Process the received data as needed
+          setIsLoading(false); // Mark data as loaded
+          const numberData = response.data; // Assuming the number value is in response.data
+
+          if (numberData) {
+            setCompanyInfo((prevCompanyInfo) => ({
+              ...prevCompanyInfo,
+              number: numberData,
+            }));
+          }
+        });
+    } catch (error) {
+      console.error('Failed to fetch number data:', error);
+    }
+  };
+
+
+
+
+
+  useEffect(() => {
+    fetchMiscellaneousData();
+    fetchNumberData()
+  }, []);
+
+ 
+  const fetchMiscellaneousData = () => {
+    try {
+      groflexService
+        .request(`${config.resourceHost}setting/miscellaneous`, { auth: true })
+        .then((response) => {
+          console.log("response", response);
+          // Process the received data as needed
+          const data = response.data;
+          const salutations = data?.salutations.map((salutation) => ({
+            label: salutation,
+            value: salutation,
+          })) || [];
+          const titles = data?.titles.map((title) => ({
+            label: title,
+            value: title,
+          })) || [];
+          setSalutationOptions(salutations);
+          setTitleOptions(titles);
+        });
+    } catch (error) {
+      console.error('Failed to fetch miscellaneous data:', error);
+    }
+  };
+ 
+  
 
   useEffect(() => {
     if (tenantData && stateOptions.length > 0) {
@@ -347,6 +413,7 @@ const CreateContact = () => {
     setCompanyInfo({ ...companyInfo, number: number });
   };
 
+
   const handleCurrencyChange = async (selectedCurrency) => {
 
     try {
@@ -377,6 +444,7 @@ const CreateContact = () => {
     e.preventDefault();
     console.log(companyInfo);
     onAddContacts(companyInfo);
+    navigate("/contacts")
   };
 
   useEffect(() => {
@@ -390,7 +458,7 @@ const CreateContact = () => {
     setCompanyInfo({ ...companyInfo, country: options.value });
   };
 
-  const kindOptions = [{ value: "company", label: "Company" },
+  const kindOptions = [{ value: "customer", label: "Customer" },
   { value: "payee", label: "Payee" }]
 
   const handleTypeChange = (options) => {
@@ -423,6 +491,25 @@ const CreateContact = () => {
     const checked = e.target.checked;
     setCompanyInfo({ ...companyInfo, notesAlert: checked });
   };
+  const handleSalutationChange = (options) => {
+    setCompanyInfo({ ...companyInfo, salutation: options.value });
+
+  }
+  const handleTitleChange = (options) => {
+    setCompanyInfo({ ...companyInfo, title: options.value });
+  }
+
+  const handleSurnameChange = (e) => {
+
+    const surname = e.target.value;
+    setCompanyInfo({ ...companyInfo, lastName: surname });
+  }
+  const handleFirstNameChange = (e) => {
+    const name = e.target.value;
+    setCompanyInfo({ ...companyInfo, firstName: name });
+
+  }
+
 
 
 
@@ -463,6 +550,10 @@ const CreateContact = () => {
       email: companyInfo.email,
       street: companyInfo.street,
       baseCurrency: companyInfo.baseCurrency,
+      firstName: companyInfo.firstName,
+      lastName: companyInfo.lastName,
+      salutation: companyInfo.salutation,
+      title: companyInfo.title,
       exchangeRate: parseFloat(companyInfo.exchangeRate),
       contactPersons: contactPerson
     };
@@ -543,7 +634,7 @@ const CreateContact = () => {
                           <SelectInput options={kindOptions}
                             onChange={handleTypeChange}
                             value={companyInfo.type}
-                            name="kind"
+                            name="type"
                           />
                         </div>
                       </div>
@@ -554,11 +645,11 @@ const CreateContact = () => {
                           <RadioButton
                             choices={[
                               { label: "Company", value: "company", class: "radio is-outlined is-success" },
-                              { label: "Private", value: "private", class: "radio is-outlined is-success" },
+                              { label: "Private", value: "person", class: "radio is-outlined is-success" },
                             ]}
                             selectedOption={companyInfo.kind}
                             onChange={handleKindChange}
-                            name="type"
+                            name="kind"
                           />
                         </div>
                       </div>
@@ -568,34 +659,97 @@ const CreateContact = () => {
                       <div className="column is-6">
                         <div className="field">
                           <label>Customer No *</label>
-                          <InputAddons
+                          <Input
                             type="number"
                             // left={"+91"}
                             placeholder={"1059"}
                             value={companyInfo.number}
-                            onChange={handleNumberChange}
+                            // value={companyInfo.number || ''}
+                            // onChange={handleNumberChange}
+                            readOnly
                             name="number"
                           />
                         </div>
                       </div>
-
-                      <div className="column is-6">
-                        <div className="field">
-                          <label>Company Name</label>
-                          <Input
-                            type="text"
-                            placeholder={"Enter Company Name"} value={companyInfo.companyName
-                              ? companyInfo.companyName
-                              : ""}
-                            onChange={handleCompanyName}
-                            name="companyName" />
-                          <ErrorText
-                            visible={companyError.companyNameError}
-                            text={companyError.companyNameError}
-                          />
+                      {companyInfo.kind === 'company' && (
+                        <div className="column is-6">
+                          <div className="field">
+                            <label>Company Name</label>
+                            <Input
+                              type="text"
+                              placeholder={"Enter Company Name"}
+                              value={companyInfo.companyName ? companyInfo.companyName : ""}
+                              onChange={handleCompanyName}
+                              name="companyName"
+                            />
+                            <ErrorText
+                              visible={companyError.companyNameError}
+                              text={companyError.companyNameError}
+                            />
+                          </div>
                         </div>
-                      </div>
+                      )}
+                      {companyInfo.kind === 'person' && (
+                        <>
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>Salutation</label>
+                              <SelectInput
+                                // type="text"
+                                // placeholder="Enter Salutation"
+                                defaultValue={companyInfo.salutation}
+                                onChange={handleSalutationChange}
+                                name="salutation"
+                                options={salutationOptions}
+
+                              />
+                            </div>
+                          </div>
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>Title</label>
+                              <SelectInput
+                                // type="text"
+                                // placeholder="Enter Title"
+                                // value={companyInfo.title ? companyInfo.title : ""}
+                                // onChange={handleTitleChange}
+                                // name="title"
+                                defaultValue={companyInfo.title}
+                                onChange={handleTitleChange}
+                                name="title"
+                                options={titleOptions}
+                              />
+                            </div>
+                          </div>
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>First Name</label>
+                              <Input
+                                type="text"
+                                placeholder="Enter First Name"
+                                value={companyInfo.firstName}
+                                onChange={handleFirstNameChange}
+                                name="firstName"
+                              />
+                            </div>
+                          </div>
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>Surname</label>
+                              <Input
+                                type="text"
+                                placeholder="Enter Surname"
+                                value={companyInfo.lastName}
+                                onChange={handleSurnameChange}
+                                name="lastName"
+                              />
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
+
+
 
                     <div className="columns is-multiline">
                       <div className={companyInfo.country === 'IN' ? 'column is-6' : 'column is-12'}>
@@ -832,7 +986,7 @@ const CreateContact = () => {
 
 
               <div className="column is-5">
-                {companyInfo.type === 'company' && (
+                {companyInfo.type === 'customer' && (
 
                   <AdvancedCard
                     type={"s-card"}

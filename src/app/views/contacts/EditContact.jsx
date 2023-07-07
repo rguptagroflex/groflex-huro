@@ -17,9 +17,11 @@ import { getCountries } from "../../helpers/getCountries";
 import { useSelector } from "react-redux";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import EditModal from "./EditModal";
+
 import DeleteModal from "./DeleteModal";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { getCurrencyRates as getCurrencyRatesFromOpenExchangeRates } from "../../helpers/getCurrencyRates";
+import groflexService from "../../services/groflex.service";
 
 const countriesOptions = getCountries().map((country) => ({
   label: country.label,
@@ -40,6 +42,9 @@ const EditContact = () => {
   const [contact, setContact] = useState(null);
   const [stateOptions, setStateOptions] = useState([]);
   const [currencyOptions, setCurrencyOptions] = useState([]);
+  const [salutationOptions, setSalutationOptions] = useState([]);
+  const [titleOptions, setTitleOptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [companyInfo, setCompanyInfo] = useState({
     id: contactId,
     kind: "",
@@ -103,25 +108,22 @@ const EditContact = () => {
     fetchCurrencyOptions();
   }, []);
 
+console.log("companyInfo",companyInfo)
+ 
+  const fetchData = () => {
+    // try {
+    GroflexService.request(`${config.resourceUrls.contact}/${contactId}`, { method: 'GET', auth: true })
+      .then((response) => {
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await GroflexService.request(
-          `${config.resourceUrls.contact}/${contactId}`,
-          { method: 'GET', auth: true }
-        );
         const contactData = response.data;
-
-
+        console.log("Fetched Contact Data:", contactData); 
         setCompanyInfo({
-          id: contactData.id,
+          companyName: contactData.name,
           kind: contactData.kind,
           type: contactData.type,
           number: contactData.number,
-          companyName: contactData.companyName,
           country: contactData.address.countryIso,
-          state: contactData.state,
+          indiaState: contactData.indiaState?.stateName,
           category: contactData.category,
           cinNumber: contactData.address.cinNumber,
           gstType: contactData.address.gstType,
@@ -132,40 +134,35 @@ const EditContact = () => {
           mobile: contactData.mobile,
           phone1: contactData.phone1,
           fax: contactData.fax,
-          paymentTerms: contactData.paymentTerms,
           discount: contactData.discount,
-          selectedOption: contactData.selectedOption,
           openingBalance: contactData.openingBalance,
-          notesAlert: contactData.notesAlert,
           notes: contactData.notes,
-          payConditionId: contactData.payConditionId,
-          balance: contactData.balance,
-          baseCurrency: contactData.baseCurrency,
-          credits: contactData.credits,
-          debits: contactData.debits,
-          defaultExchangeRateToggle: contactData.defaultExchangeRateToggle,
-          lastName: contactData.lastName,
-          firstName: contactData.firstName,
-          exchangeRate: contactData.exchangeRate,
-          outstandingAmount: contactData.outstandingAmount,
-          salutation: contactData.salutation,
-          title: contactData.title,
-          address: contactData.address,
+          notesAlert: contactData.notesAlert,
           contactPersons: contactData.contactPersons,
         });
-      } catch (error) {
-        console.error("Error fetching contact:", error);
-      }
-    };
+        
 
+        setIsLoading(false);
+      })
+      // }
+      .catch((error) => {
+        console.error("Error fetching contact:", error);
+        setIsLoading(false);
+      })
+  };
+
+  useEffect(() => {
     fetchData();
   }, [contactId]);
 
+ 
   useEffect(() => {
     console.log("previousData:", previousData);
     if (previousData) {
       setCompanyInfo(prevCompanyInfo => ({
+
         ...prevCompanyInfo,
+
       }));
     }
   }, [previousData]);
@@ -232,6 +229,56 @@ const EditContact = () => {
         setStateOptions([...newStateOptions]);
       });
   }, []);
+  const fetchNumberData = () => {
+    try {
+      groflexService
+        .request(`${config.resourceHost}customer/number`, { auth: true })
+        .then((response) => {
+          console.log("response", response);
+          // Process the received data as needed
+          setIsLoading(false); // Mark data as loaded
+          const numberData = response.data; // Assuming the number value is in response.data
+
+          if (numberData) {
+            setCompanyInfo((prevCompanyInfo) => ({
+              ...prevCompanyInfo,
+              number: numberData,
+            }));
+          }
+        });
+    } catch (error) {
+      console.error('Failed to fetch number data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMiscellaneousData();
+    fetchNumberData();
+  }, []);
+
+  const fetchMiscellaneousData = () => {
+    try {
+      groflexService
+        .request(`${config.resourceHost}setting/miscellaneous`, { auth: true })
+        .then((response) => {
+          console.log("response", response);
+          // Process the received data as needed
+          const data = response.data;
+          const salutations = data?.salutations.map((salutation) => ({
+            label: salutation,
+            value: salutation,
+          })) || [];
+          const titles = data?.titles.map((title) => ({
+            label: title,
+            value: title,
+          })) || [];
+          setSalutationOptions(salutations);
+          setTitleOptions(titles);
+        });
+    } catch (error) {
+      console.error('Failed to fetch miscellaneous data:', error);
+    }
+  };
 
   const handleAddContactPerson = (newContactPerson) => {
     setCompanyInfo((prevState) => ({
@@ -421,10 +468,10 @@ const EditContact = () => {
     setCompanyInfo({ ...companyInfo, mobile: mobile });
   };
 
-  const handleNumberChange = (e) => {
-    const number = parseInt(e.target.value);
-    setCompanyInfo({ ...companyInfo, number: number });
-  };
+  // const handleNumberChange = (e) => {
+  //   const number = parseInt(e.target.value);
+  //   setCompanyInfo({ ...companyInfo, number: number });
+  // };
   const handleCurrencyChange = async (selectedCurrency) => {
 
     try {
@@ -467,7 +514,7 @@ const EditContact = () => {
     setCompanyInfo({ ...companyInfo, country: options.value });
   };
 
-  const kindOptions = [{ value: "company", label: "Company" },
+  const kindOptions = [{ value: "customer", label: "Customer" },
   { value: "payee", label: "Payee" }]
 
   const handleTypeChange = (options) => {
@@ -500,6 +547,24 @@ const EditContact = () => {
     const checked = e.target.checked;
     setCompanyInfo({ ...companyInfo, notesAlert: checked });
   };
+  const handleSalutationChange = (options) => {
+    setCompanyInfo({ ...companyInfo, salutation: options.value });
+
+  }
+  const handleTitleChange = (options) => {
+    setCompanyInfo({ ...companyInfo, title: options.value });
+  }
+
+  const handleSurnameChange = (e) => {
+
+    const surname = e.target.value;
+    setCompanyInfo({ ...companyInfo, lastName: surname });
+  }
+  const handleFirstNameChange = (e) => {
+    const name = e.target.value;
+    setCompanyInfo({ ...companyInfo, firstName: name });
+
+  }
 
 
   const onAddContacts = (contact) => {
@@ -538,6 +603,10 @@ const EditContact = () => {
       email: companyInfo.email,
       street: companyInfo.street,
       baseCurrency: companyInfo.baseCurrency,
+      firstName: companyInfo.firstName,
+      lastName: companyInfo.lastName,
+      salutation: companyInfo.salutation,
+      title: companyInfo.title,
       exchangeRate: parseFloat(companyInfo.exchangeRate),
       contactPersons: contactPerson,
       id: contactId,
@@ -631,7 +700,7 @@ const EditContact = () => {
                           <RadioButton
                             choices={[
                               { label: "Company", value: "company", class: "radio is-outlined is-success" },
-                              { label: "Private", value: "private", class: "radio is-outlined is-success" },
+                              { label: "Private", value: "person", class: "radio is-outlined is-success" },
                             ]}
                             selectedOption={companyInfo.kind}
                             onChange={handleKindChange}
@@ -640,7 +709,6 @@ const EditContact = () => {
                         </div>
                       </div>
                     </div>
-
                     <div className="columns is-multiline">
                       <div className="column is-6">
                         <div className="field">
@@ -650,28 +718,88 @@ const EditContact = () => {
                             // left={"+91"}
                             placeholder={"1059"}
                             value={companyInfo.number}
-                            onChange={handleNumberChange}
+                            // onChange={handleNumberChange}
+                            readOnly
                             name="number"
                           />
                         </div>
                       </div>
-
-                      <div className="column is-6">
-                        <div className="field">
-                          <label>Company Name</label>
-                          <Input
-                            type="text"
-                            placeholder={"Enter Company Name"} value={companyInfo.companyName
-                              ? companyInfo.companyName
-                              : ""}
-                            onChange={handleCompanyName}
-                            name="companyName" />
-                          <ErrorText
-                            visible={companyError.companyNameError}
-                            text={companyError.companyNameError}
-                          />
+                      {companyInfo.kind === 'company' && (
+                        <div className="column is-6">
+                          <div className="field">
+                            <label>Company Name</label>
+                            <Input
+                              type="text"
+                              placeholder={"Enter Company Name"}
+                              value={companyInfo.companyName ? companyInfo.companyName : ""}
+                              onChange={handleCompanyName}
+                              name="companyName"
+                            />
+                            <ErrorText
+                              visible={companyError.companyNameError}
+                              text={companyError.companyNameError}
+                            />
+                          </div>
                         </div>
-                      </div>
+                      )}
+                      {companyInfo.kind === 'person' && (
+                        <>
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>Salutation</label>
+                              <SelectInput
+                                // type="text"
+                                // placeholder="Enter Salutation"
+                                defaultValue={companyInfo.salutation}
+                                onChange={handleSalutationChange}
+                                name="salutation"
+                                options={salutationOptions}
+
+                              />
+                            </div>
+                          </div>
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>Title</label>
+                              <SelectInput
+                                // type="text"
+                                // placeholder="Enter Title"
+                                // value={companyInfo.title ? companyInfo.title : ""}
+                                // onChange={handleTitleChange}
+                                // name="title"
+                                defaultValue={companyInfo.title}
+                                onChange={handleTitleChange}
+                                name="title"
+                                options={titleOptions}
+                              />
+                            </div>
+                          </div>
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>First Name</label>
+                              <Input
+                                type="text"
+                                placeholder="Enter First Name"
+                                value={companyInfo.firstName}
+                                onChange={handleFirstNameChange}
+                                name="firstName"
+                              />
+                            </div>
+                          </div>
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>Surname</label>
+                              <Input
+                                type="text"
+                                placeholder="Enter Surname"
+                                value={companyInfo.lastName}
+                                onChange={handleSurnameChange}
+                                name="lastName"
+                              />
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                     <div className="columns is-multiline">
                       <div className={companyInfo.country === 'IN' ? 'column is-6' : 'column is-12'}>
@@ -716,7 +844,7 @@ const EditContact = () => {
                           <div className="field">
                             <label>Exchange Rate *</label>
                             <InputAddons
-                             left={"₹"}
+                              left={"₹"}
                               type="number"
                               placeholder="0.00"
                               step="0.001"
@@ -902,7 +1030,7 @@ const EditContact = () => {
               </div>
 
               <div className="column is-5">
-                {companyInfo.type === 'company' && (
+                {companyInfo.type === 'customer' && (
                   <AdvancedCard
                     type={"s-card"}
                   >
