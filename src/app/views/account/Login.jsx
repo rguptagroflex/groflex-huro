@@ -1,33 +1,19 @@
 import React, { useEffect, useState } from "react";
-import login_Bg from "../../../assets/groflex/bg/loginpage_bg.png";
 import googleIcon from "../../../assets/groflex/logos/google.png";
-import carousel1 from "../../../assets/groflex/images/carousel1.png";
-import carousel2 from "../../../assets/groflex/images/carousel2.png";
-import carousel3 from "../../../assets/groflex/images/carousel3.png";
-import carousel4 from "../../../assets/groflex/images/carousel4.png";
-import groflex_logo_transparent from "../../../assets/groflex/logos/groflex_name_logo_color_no_tag.png";
-import useThemeSwitch from "../../helpers/hooks/useThemeSwitch";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import config from "../../../../config";
-import _ from "lodash";
 import groflexService from "../../services/groflex.service";
 import * as actionTypes from "../../redux/actions/actions.types";
 import store from "../../redux/store";
 import webStorageKeyEnum from "../../enums/web-storage-key.enum";
 import webstorageService from "../../services/webstorage.service";
-import ReactSlickCarousel from "../../shared/components/carousel/ReactSlickCarousel";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
 import { Input } from "../../shared/components/input/Input";
 import { Button } from "../../shared/components/button/Button";
-import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import { InputAddons } from "../../shared/components/inputAddons/InputAddons";
-import { Check } from "react-feather";
 import { Checkbox } from "../../shared/components/checkbox/Checkbox";
-
-store.subscribe(() => {
-  console.log(store.getState());
-});
+import FirstColumn from "./FirstColumn";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -160,167 +146,7 @@ const Login = () => {
 
         <div className="columns is-gapless is-vcentered">
           {/* First column */}
-          <div className="column is-relative is-7 h-hidden-mobile h-hidden-tablet-p">
-            <div
-              style={{
-                backgroundImage: `url(${login_Bg})`,
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                height: "100vh",
-              }}
-              className="hero is-fullheight is-image"
-            >
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  height: "100%",
-                  width: "100%",
-                }}
-              >
-                <img
-                  style={{
-                    margin: "14px",
-                    width: "180px",
-                    objectFit: "cover",
-                  }}
-                  src={groflex_logo_transparent}
-                  alt="logo"
-                />
-                <div
-                  className="carousel-container"
-                  style={{ margin: "auto 0" }}
-                >
-                  <ReactSlickCarousel>
-                    <div
-                      style={{
-                        height: "350px",
-                      }}
-                    >
-                      <img
-                        style={{
-                          margin: "0 auto",
-                          height: "350px",
-                          objectFit: "contain",
-                        }}
-                        src={carousel1}
-                        alt="carousel1"
-                      />
-                      <div
-                        style={{
-                          margin: "0 auto",
-                          height: "150px",
-                          width: "340px",
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          marginTop: "20px",
-                        }}
-                      >
-                        <h2 className="is-bold is-5 title">
-                          Best and Easiest Billing Software!
-                        </h2>
-                        <div>Create GST compliant invoices</div>
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        height: "350px",
-                      }}
-                    >
-                      <img
-                        style={{
-                          margin: "0 auto",
-                          height: "350px",
-                          objectFit: "contain",
-                        }}
-                        src={carousel2}
-                        alt="carousel2"
-                      />
-                      <div
-                        style={{
-                          margin: "0 auto",
-                          height: "150px",
-                          width: "340px",
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          marginTop: "20px",
-                        }}
-                      >
-                        <h2 className="is-bold is-5 title">
-                          Best and Easiest Billing Software!
-                        </h2>
-                        <div>Create GST compliant invoices</div>
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        height: "350px",
-                      }}
-                    >
-                      <img
-                        style={{
-                          margin: "0 auto",
-                          height: "350px",
-                          objectFit: "contain",
-                        }}
-                        src={carousel3}
-                        alt="carousel3"
-                      />
-                      <div
-                        style={{
-                          margin: "0 auto",
-                          height: "150px",
-                          width: "340px",
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          marginTop: "20px",
-                        }}
-                      >
-                        <h2 className="is-bold is-5 title">
-                          Best and Easiest Billing Software!
-                        </h2>
-                        <div>Create GST compliant invoices</div>
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        height: "350px",
-                      }}
-                    >
-                      <img
-                        style={{
-                          margin: "0 auto",
-                          height: "350px",
-                          objectFit: "contain",
-                        }}
-                        src={carousel4}
-                        alt="carousel4"
-                      />
-                      <div
-                        style={{
-                          margin: "0 auto",
-                          height: "150px",
-                          width: "340px",
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          marginTop: "20px",
-                        }}
-                      >
-                        <h2 className="is-bold is-5 title">
-                          Best and Easiest Billing Software!
-                        </h2>
-                        <div>Create GST compliant invoices</div>
-                      </div>
-                    </div>
-                  </ReactSlickCarousel>
-                </div>
-              </div>
-            </div>
-          </div>
+          <FirstColumn />
 
           {/* Second column */}
           <div className="column is-5 is-relative">
@@ -332,11 +158,7 @@ const Login = () => {
                   emailExistsFlag ? null : (
                     <div style={{ margin: "10px 50px", textAlign: "center" }}>
                       <div>By signing up, you agree to our</div>
-                      <Link
-                        to={"/login"}
-                        className="text-primary title is-6"
-                        style={{ cursor: "pointer" }}
-                      >
+                      <Link to={"/login"} className="text-primary title is-6">
                         Terms & Privacy
                       </Link>
                     </div>
@@ -358,7 +180,7 @@ const Login = () => {
                     }}
                   >
                     <label>
-                      <p>Email</p>
+                      <p style={{ fontWeight: "500" }}>Email</p>
                     </label>
                     <Input
                       helpText={formErrors.emailError}
@@ -373,13 +195,12 @@ const Login = () => {
                     {emailExistsFlag ? (
                       <>
                         <label>
-                          <p>Password</p>
+                          <p style={{ fontWeight: "500" }}>Password</p>
                         </label>
                         <InputAddons
                           hasValidation
                           hasError={formErrors.passwordError}
                           helpText={formErrors.passwordError}
-                          // right={<FeatherIcon name={"Eye"} />}
                           hasShowPassword
                           name="password"
                           onChange={handlePasswordChange}
@@ -414,7 +235,7 @@ const Login = () => {
 
                     <h2
                       style={{ cursor: "pointer", color: "#00A353" }}
-                      className="title is-bold is-6"
+                      className="title is-6"
                     >
                       Forgot Password?
                     </h2>
@@ -422,6 +243,7 @@ const Login = () => {
                 ) : null}
 
                 <Button
+                  isBold
                   style={{ margin: "20px 0" }}
                   isFullWidth
                   isLight={!email}
@@ -454,6 +276,7 @@ const Login = () => {
                       />
                     </div>
                     <Button
+                      isBold
                       style={{
                         margin: "20px 0",
                         display: "flex",
@@ -476,6 +299,12 @@ const Login = () => {
                     </Button>
                   </>
                 )}
+                <div style={{ textAlign: "center" }}>
+                  Don't have an account?{" "}
+                  <Link to={"/signup"} className="text-primary title is-6">
+                    Sign up
+                  </Link>
+                </div>
               </AdvancedCard>
             </div>
           </div>

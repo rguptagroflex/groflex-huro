@@ -1,4 +1,10 @@
-import { login, request, logout, checkEmailExist } from "../helpers/request";
+import {
+  login,
+  request,
+  logout,
+  checkEmailExist,
+  checkEmailExist2,
+} from "../helpers/request";
 
 class GroflexService {
   constructor() {
@@ -12,6 +18,7 @@ class GroflexService {
     this.login = login;
     this.logout = logout;
     this.checkEmailExist = checkEmailExist;
+    this.checkEmailExist2 = checkEmailExist2;
   }
 }
 export default new GroflexService();

@@ -13,6 +13,13 @@ import Contacts from "./app/views/contacts/Contacts";
 import Expenses from "./app/views/expenses/Expenses";
 import CashAndBank from "./app/views/cashAndBank/CashAndBank";
 import CreateArticle from "./app/views/articles/CreateArticle";
+import EmailVerification from "./app/views/account/EmailVerification";
+import store from "./app/redux/store";
+import MobileVerification from "./app/views/account/MobileVerification";
+
+store.subscribe(() => {
+  console.log(store.getState());
+});
 
 function App() {
   return (
@@ -33,6 +40,8 @@ function App() {
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/email-verification" element={<EmailVerification />} />
+        <Route path="/mobile-verification" element={<MobileVerification />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>

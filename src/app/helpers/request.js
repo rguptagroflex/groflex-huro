@@ -167,62 +167,63 @@ export const checkEmailExist = (email, password = "lSlSlS@3") => {
   }
 };
 
-
-// export const checkEmailExist = (email) => {
-//   if (environment === "local") {
-//     return new Promise((resolve, reject) => {
-//       fetch(
-//         getEndpoint(
-//           `${config.resourceUrls.checkEmailExist}?` +
-//             new URLSearchParams({
-//               email,
-//             })
-//         ),
-//         {
-//           method: "POST",
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//           body: JSON.stringify({
-//             headers: { "Content-Type": "application/json" },
-//             method: "GET",
-//             url: config.resourceUrls.checkEmailExist,
-//           }),
-//         }
-//       ).then((response) => {
-//         if (response.ok) {
-//           response.json().then((data) => {
-//             resolve(data);
-//           });
-//         } else {
-//           reject(response);
-//         }
-//       });
-//     });
-//   } else {
-//     return new Promise((resolve, reject) => {
-//       fetch(
-//         getEndpoint(
-//           `${config.resourceUrls.checkEmailExist}?` +
-//             new URLSearchParams({
-//               email,
-//             })
-//         ),
-//         {
-//           method: "GET",
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//         }
-//       ).then((response) => {
-//         if (response.ok) {
-//           response.json().then((data) => {
-//             resolve(data);
-//           });
-//         } else {
-//           reject(response);
-//         }
-//       });
-//     });
-//   }
-// };
+export const checkEmailExist2 = (email) => {
+  if (environment === "local") {
+    return new Promise((resolve, reject) => {
+      fetch(
+        getEndpoint(
+          `${config.resourceUrls.checkEmailExist}?` +
+            new URLSearchParams({
+              email,
+            })
+        ),
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            headers: { "Content-Type": "application/json" },
+            method: "GET",
+            url: config.resourceUrls.checkEmailExist,
+          }),
+        }
+      ).then((response) => {
+        if (response) {
+          // response.json().then((data) => {
+          //   resolve(data);
+          // });
+          resolve(response);
+        } else {
+          reject(response);
+        }
+      });
+    });
+  } else {
+    return new Promise((resolve, reject) => {
+      fetch(
+        getEndpoint(
+          `${config.resourceUrls.checkEmailExist}?` +
+            new URLSearchParams({
+              email,
+            })
+        ),
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      ).then((response) => {
+        if (response) {
+          // response.json().then((data) => {
+          //   resolve(data);
+          // });
+          resolve(response);
+        } else {
+          reject(response);
+        }
+      });
+    });
+  }
+};
