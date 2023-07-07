@@ -16,6 +16,7 @@ export const AdvancedCard = ({
 	footer,
 	footerContentLeft,
 	footerContentRight,
+	footerContentCenter,
 }) => {
 	const getCardType = () => {
 		switch (type) {
@@ -72,7 +73,7 @@ export const AdvancedCard = ({
 			{footer ? (
 				<div className="card-foot">
 					<div className="left">{footerContentLeft}</div>
-
+					<div className="center">{footerContentCenter}</div>
 					<div className="right">{footerContentRight}</div>
 				</div>
 			) : null}

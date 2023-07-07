@@ -35,6 +35,18 @@ const SharedLayout = () => {
                   payload: res.data,
                 });
               });
+          })
+          .then(() => {
+            groflexService
+              .request(config.resourceUrls.accountSettings, {
+                auth: true,
+              })
+              .then((res) => {
+                dispatch({
+                  type: actionTypes.SET_ACCOUNTINFO_DATA,
+                  payload: res.data,
+                });
+              });
           });
       }
     }

@@ -10,8 +10,7 @@ import ApexChart from "../../shared/components/apexChart/ApexChart";
 import PageContent from "../../shared/components/pageContent/PageContent";
 import { Link } from "react-router-dom";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
-import ChangeEmailModal from "./ChangeEmailModal";
-import ErrorText from "../../shared/components/errorText/ErrorText";
+import ChangeEmailModal from "./ChangeEmailModal"; 
 import ChangePhoneNoModal from "./ChangePhoneNoModal";
 import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
@@ -75,12 +74,12 @@ const AccountSettings = () => {
 
   useEffect(() => {
     if (tenantData && stateOptions.length > 0 && userData) {
-      console.log(userData);
+      // console.log(userData);
       setProfileInfo({
         registerEmail: userData.email,
         newEmail: "",
         currentPassword: "",
-        phoneNo: null,
+        phoneNo: tenantData.mobile,
         firstName: userData.firstName,
         lastName: userData.lastName,
       });
@@ -361,6 +360,44 @@ const AccountSettings = () => {
     // console.log(tenantData?.logoPath);
   };
 
+  //change number modal mobile number verification
+
+  const handleMobileChangeNumber = (e) => {
+    const phoneNumber = parseInt(e.target.value);
+
+    // Handle more than 10 digit warning
+    if (phoneNumber.toString().length > 10) {
+      return;
+    }
+
+    // Handle equal to 10 digit warning
+    if (phoneNumber.toString().length === 10) {
+      setProfileInfo({ ...profileInfo, phoneNo: phoneNumber });
+      setProfileError({ ...profileError, phoneNoError: "" });
+      return;
+    }
+
+    // Check for empty field
+    if (!phoneNumber) {
+      setProfileInfo({ ...profileInfo, phoneNo: null });
+      setProfileError({
+        ...profileError,
+        phoneNoError: "This should not be empty",
+      });
+      return;
+    }
+
+    // Handle less than 10 digit warning
+    if (phoneNumber.toString().length < 10) {
+      setProfileInfo({ ...profileInfo, phoneNo: phoneNumber });
+      setProfileError({
+        ...profileError,
+        phoneNoError: "Phone number should be 10 digits",
+      });
+      return;
+    }
+  };
+
   // console.log(companyInfo, profileInfo);
   // console.log(companyInfo.state);
   return (
@@ -375,12 +412,11 @@ const AccountSettings = () => {
         setIsActive={setChangeEmailModalActive}
       />
       <ChangePhoneNoModal
-        setProfileInfo={setProfileInfo}
-        profileInfo={profileInfo}
         isActive={changePhoneNoModalActive}
         setIsActive={setChangePhoneNoModalActive}
-        setProfileError={setProfileError}
-        profileError={profileError}
+        value={profileInfo.phoneNo}
+        onChange={handleMobileChangeNumber}
+        errorMessage={profileError.phoneNoError}
       />
       <div className="page-content-inner">
         <div className="tabs-wrapper">
@@ -422,7 +458,7 @@ const AccountSettings = () => {
                             type="email"
                             disabled
                             placeholder={"Enter Details"}
-                            right={<FeatherIcon color="#00a353" name="Edit" />}
+                            right={<FeatherIcon primaryColor name="Edit" />}
                             onRightAdornmentClick={() => {
                               setChangeEmailModalActive(true);
                             }}
@@ -430,15 +466,15 @@ const AccountSettings = () => {
                         </div>
                       </div>
 
-                      <div className="column is-6 ">
+                      <div className="column is-6">
                         <div className="field ">
                           <label>Phone Number</label>
                           <InputAddons
                             left={"+91"}
-                            right={<FeatherIcon color="#00a353" name="Edit" />}
+                            right={<FeatherIcon primaryColor name="Edit" />}
                             type="number"
                             disabled
-                            value={9856743215}
+                            value={profileInfo.phoneNo}
                             placeholder={"Enter Details"}
                             // value={
                             //   profileInfo.phoneNo ? profileInfo.phoneNo : ""
@@ -447,11 +483,8 @@ const AccountSettings = () => {
                             onRightAdornmentClick={() => {
                               setChangePhoneNoModalActive(true);
                             }}
-                          />
-
-                          <ErrorText
-                            visible={profileError.phoneNoError}
-                            text={profileError.phoneNoError}
+                            hasError={profileError.phoneNoError}
+                            helpText={profileError.phoneNoError}
                           />
                         </div>
                       </div>
@@ -467,10 +500,8 @@ const AccountSettings = () => {
                               profileInfo.firstName ? profileInfo.firstName : ""
                             }
                             onChange={handleProfileFirstnameChange}
-                          />
-                          <ErrorText
-                            visible={profileError.firstNameError}
-                            text={profileError.firstNameError}
+                            helpText={profileError.firstNameError}
+                            hasError={profileError.firstNameError}
                           />
                         </div>
                       </div>
@@ -484,10 +515,8 @@ const AccountSettings = () => {
                               profileInfo.lastName ? profileInfo.lastName : ""
                             }
                             onChange={handleProfileLastnameChange}
-                          />
-                          <ErrorText
-                            visible={profileError.lastNameError}
-                            text={profileError.lastNameError}
+                            hasError={profileError.lastNameError}
+                            helpText={profileError.lastNameError}
                           />
                         </div>
                       </div>
@@ -525,10 +554,8 @@ const AccountSettings = () => {
                                 ? companyInfo.companyName
                                 : ""
                             }
-                          />
-                          <ErrorText
-                            visible={companyError.companyNameError}
-                            text={companyError.companyNameError}
+                            hasError={companyError.companyNameError}
+                            helpText={companyError.companyNameError}
                           />
                         </div>
                       </div>
@@ -546,10 +573,8 @@ const AccountSettings = () => {
                                 : ""
                             }
                             placeholder={"Enter Details"}
-                          />
-                          <ErrorText
-                            visible={companyError.companyPhoneNoError}
-                            text={companyError.companyPhoneNoError}
+                            hasError={companyError.companyPhoneNoError}
+                            helpText={companyError.companyPhoneNoError}
                           />
                         </div>
                       </div>
@@ -585,9 +610,6 @@ const AccountSettings = () => {
                             </div>
                           ) : (
                             <FileInput
-                              value={
-                                companyInfo.logoPath ? companyInfo.logoPath : ""
-                              }
                               errorMessage={logoUploadErrorMsg}
                               onChange={handleCompanyLogoChange}
                               label={"Upload logo"}
@@ -659,10 +681,8 @@ const AccountSettings = () => {
                             placeholder={"Enter Detials"}
                             type="email"
                             onChange={handleCompanyEmailChange}
-                          />
-                          <ErrorText
-                            visible={companyError.companyEmailError}
-                            text={companyError.companyEmailError}
+                            hasError={companyError.companyEmailError}
+                            helpText={companyError.companyEmailError}
                           />
                         </div>
                       </div>
@@ -674,10 +694,8 @@ const AccountSettings = () => {
                             placeholder={"E.g.,U 31909 WB 2020 PTC 247113"}
                             onChange={handleCinNumberChange}
                             value={companyInfo.cin ? companyInfo.cin : ""}
-                          />
-                          <ErrorText
-                            visible={companyError.cinError}
-                            text={companyError.cinError}
+                            hasError={companyError.cinError}
+                            helpText={companyError.cinError}
                           />
                         </div>
                       </div>
@@ -688,6 +706,19 @@ const AccountSettings = () => {
                           <SelectInput
                             options={[
                               { label: "Registered", value: "registered" },
+                              { label: "Unregistered", value: "unregistered" },
+                              {
+                                label: "SEZ - Special Economic Zone",
+                                value: "sez",
+                              },
+                              {
+                                label: "Deemed Export",
+                                value: "deemedExport",
+                              },
+                              {
+                                label: "Overseas",
+                                value: "overseas",
+                              },
                             ]}
                             onChange={(option) =>
                               setCompanyInfo({
@@ -706,10 +737,8 @@ const AccountSettings = () => {
                             type="text"
                             onChange={handleGstNumberChange}
                             value={companyInfo.gstNo ? companyInfo.gstNo : ""}
-                          />
-                          <ErrorText
-                            visible={companyError.gstError}
-                            text={companyError.gstError}
+                            hasError={companyError.gstError}
+                            helpText={companyError.gstError}
                           />
                         </div>
                       </div>

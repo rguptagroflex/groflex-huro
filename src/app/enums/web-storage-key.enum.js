@@ -1,7 +1,8 @@
 const WebStorageKey = {
-  REGISTRATION_EMAIL: "REGISTRATION_EMAIL",
-  LOGIN_TOKEN_KEY: "LOGIN_TOKEN_KEY",
-  LOGIN_TOKEN_START_TIME: "LOGIN_TOKEN_START_TIME",
+  REGISTRATION_EMAIL: "registrationEmail",
+  LOGIN_TOKEN_KEY: "loginTokenKey",
+  LOGIN_TOKEN_START_TIME: "loginTokenStartTime",
+  USER: "user",
 };
 
 export default Object.freeze(WebStorageKey);

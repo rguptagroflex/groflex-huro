@@ -2,7 +2,7 @@ import Home from "./app/views/home/Home";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import SharedLayout from "./app/shared/sharedLayout/SharedLayout";
 import Login from "./app/views/account/Login";
-import { SignUp } from "./app/views/account/Signup";
+import Signup from "./app/views/account/Signup";
 import Estimates from "./app/views/estimates/Estimates";
 import Articles from "./app/views/articles/Articles";
 import Dashboard from "./app/views/dashboard/Dashboard";
@@ -15,6 +15,13 @@ import CashAndBank from "./app/views/cashAndBank/CashAndBank";
 import CreateArticle from "./app/views/articles/CreateArticle";
 import CreateContact from "./app/views/contacts/CreateContact";
 import EditContact from "./app/views/contacts/EditContact";
+import EmailVerification from "./app/views/account/EmailVerification";
+import store from "./app/redux/store";
+import MobileVerification from "./app/views/account/MobileVerification";
+
+store.subscribe(() => {
+  console.log(store.getState());
+});
 
 function App() {
   return (
@@ -33,10 +40,12 @@ function App() {
           <Route path="account-settings" element={<AccountSettings />} />
           <Route path="preferences" element={<Preferences />} />
           <Route path="notifications" element={<Notifications />} />
-          <Route path="create-article" element={<CreateArticle />} /> 
+          <Route path="create-article" element={<CreateArticle />} />
         </Route>
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/email-verification" element={<EmailVerification />} />
+        <Route path="/mobile-verification" element={<MobileVerification />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import groflexShortLogo from "../../../../assets/img/logos/logo/groflex_short_icon.svg";
+import groflexShortLogo from "../../../../assets/groflex/logos/groflex_short_icon.svg";
 import { FeatherIcon } from "../../featherIcon/FeatherIcon";
 import { NavLink } from "react-router-dom";
 import SidebarPanel from "./SidebarPanel";
