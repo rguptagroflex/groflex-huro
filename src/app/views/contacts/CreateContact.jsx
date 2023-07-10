@@ -169,7 +169,7 @@ const CreateContact = () => {
     }));
   };
 
- 
+
   const fetchNumberData = () => {
     try {
       groflexService
@@ -201,7 +201,7 @@ const CreateContact = () => {
     fetchNumberData()
   }, []);
 
- 
+
   const fetchMiscellaneousData = () => {
     try {
       groflexService
@@ -225,8 +225,8 @@ const CreateContact = () => {
       console.error('Failed to fetch miscellaneous data:', error);
     }
   };
- 
-  
+
+
 
   useEffect(() => {
     if (tenantData && stateOptions.length > 0) {
@@ -735,10 +735,10 @@ const CreateContact = () => {
                           </div>
                           <div className="column is-6">
                             <div className="field">
-                              <label>Surname</label>
+                              <label>Last Name</label>
                               <Input
                                 type="text"
-                                placeholder="Enter Surname"
+                                placeholder="Enter Last Name"
                                 value={companyInfo.lastName}
                                 onChange={handleSurnameChange}
                                 name="lastName"

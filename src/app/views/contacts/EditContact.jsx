@@ -116,8 +116,8 @@ const EditContact = () => {
       .then((response) => {
 
         const contactData = response.data;
-        console.log("Fetched Contact Data:", contactData);
-        console.log("set company Data:", setCompanyInfo);
+        // console.log("Fetched Contact Data:", contactData);
+        // console.log("set company Data:", setCompanyInfo);
         // setCompanyInfo({
         //   companyName: contactData.name,
         //   state: contactData.indiaState.stateName,
