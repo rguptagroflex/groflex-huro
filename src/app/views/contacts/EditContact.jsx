@@ -32,7 +32,7 @@ const EditContact = () => {
   const { contactId } = useParams();
   const tenantData = useSelector((state) => state.accountData.tenantData);
   const [isModalActive, setIsModalActive] = useState(false);
-  console.log("contactId:", contactId);
+  // console.log("contactId:", contactId);
   const navigate = useNavigate();
   const location = useLocation();
   const { previousData } = location.state || {};
@@ -108,22 +108,50 @@ const EditContact = () => {
     fetchCurrencyOptions();
   }, []);
 
-console.log("companyInfo",companyInfo)
- 
+
+
   const fetchData = () => {
     // try {
     GroflexService.request(`${config.resourceUrls.contact}/${contactId}`, { method: 'GET', auth: true })
       .then((response) => {
 
         const contactData = response.data;
-        console.log("Fetched Contact Data:", contactData); 
-        setCompanyInfo({
+        console.log("Fetched Contact Data:", contactData);
+        console.log("set company Data:", setCompanyInfo);
+        // setCompanyInfo({
+        //   companyName: contactData.name,
+        //   state: contactData.indiaState.stateName,
+        //   kind: contactData.kind,
+        //   type: contactData.type,
+        //   number: contactData.number,
+        //   country: contactData.address.countryIso,
+        //   indiaState: contactData.indiaState?.stateName,
+        //   category: contactData.category,
+        //   cinNumber: contactData.address.cinNumber,
+        //   gstType: contactData.address.gstType,
+        //   gstNumber: contactData.address.gstNumber,
+        //   street: contactData.address.street,
+        //   email: contactData.email,
+        //   website: contactData.website,
+        //   mobile: contactData.mobile,
+        //   phone1: contactData.phone1,
+        //   fax: contactData.fax,
+        //   discount: contactData.discount,
+        //   openingBalance: contactData.openingBalance,
+        //   selectedOption: contactData.selectedOption,
+        //   notes: contactData.notes,
+        //   notesAlert: contactData.notesAlert,
+        //   contactPersons: contactData.contactPersons,
+        // });
+
+        const updatedCompanyInfo = {
           companyName: contactData.name,
+          state: contactData.state,
           kind: contactData.kind,
           type: contactData.type,
           number: contactData.number,
           country: contactData.address.countryIso,
-          indiaState: contactData.indiaState?.stateName,
+          // indiaState: contactData.indiaState?.stateName,
           category: contactData.category,
           cinNumber: contactData.address.cinNumber,
           gstType: contactData.address.gstType,
@@ -135,13 +163,21 @@ console.log("companyInfo",companyInfo)
           phone1: contactData.phone1,
           fax: contactData.fax,
           discount: contactData.discount,
+          salutation: contactData.salutation,
+          title: contactData.title,
+          firstName: contactData.firstName,
+          lastName: contactData.lastName,
           openingBalance: contactData.openingBalance,
+          baseCurrency: contactData.baseCurrency,
+          exchangeRate: contactData.exchangeRate,
+          paymentTerms: contactData.paymentTerms,
+          selectedOption: contactData.selectedOption,
           notes: contactData.notes,
           notesAlert: contactData.notesAlert,
           contactPersons: contactData.contactPersons,
-        });
-        
-
+        };
+        setCompanyInfo(updatedCompanyInfo);
+        console.log("companyInfo", companyInfo)
         setIsLoading(false);
       })
       // }
@@ -152,12 +188,15 @@ console.log("companyInfo",companyInfo)
   };
 
   useEffect(() => {
-    fetchData();
+    // console.log("contact id", contactId)
+    if (contactId) {
+      fetchData();
+    }
   }, [contactId]);
 
- 
+
   useEffect(() => {
-    console.log("previousData:", previousData);
+    // console.log("previousData:", previousData);
     if (previousData) {
       setCompanyInfo(prevCompanyInfo => ({
 
@@ -175,7 +214,7 @@ console.log("companyInfo",companyInfo)
     firstName: "",
     email: "",
   });
-  console.log("contactId", contactId)
+  // console.log("contactId", contactId)
   const handleEditContact = (index) => {
     const contact = companyInfo.contactPersons[index];
     setEditContactIndex(index);
@@ -234,7 +273,7 @@ console.log("companyInfo",companyInfo)
       groflexService
         .request(`${config.resourceHost}customer/number`, { auth: true })
         .then((response) => {
-          console.log("response", response);
+          // console.log("response", response);
           // Process the received data as needed
           setIsLoading(false); // Mark data as loaded
           const numberData = response.data; // Assuming the number value is in response.data
@@ -261,7 +300,7 @@ console.log("companyInfo",companyInfo)
       groflexService
         .request(`${config.resourceHost}setting/miscellaneous`, { auth: true })
         .then((response) => {
-          console.log("response", response);
+          // console.log("response", response);
           // Process the received data as needed
           const data = response.data;
           const salutations = data?.salutations.map((salutation) => ({
@@ -288,41 +327,7 @@ console.log("companyInfo",companyInfo)
   };
 
 
-  useEffect(() => {
-    if (tenantData && stateOptions.length > 0) {
-      console.log("tenantData", tenantData);
-      setCompanyInfo({
-        companyName: tenantData.companyName,
-        country:
-          tenantData.companyAddress.country === "India"
-            ? "IN"
-            : tenantData.companyAddress.country,
-        state: stateOptions.find((indianState) => {
-          console.log(indianState.value, tenantData.indiaStateId);
-          return indianState.value === tenantData.indiaStateId;
-        }).value,
-        gstType: tenantData.companyAddress.gstType,
-        gstNumber: tenantData.companyAddress.gstNumber,
-        cinNumber: tenantData.companyAddress.cinNumber,
-        category: tenantData.category,
-        discount: tenantData.discount,
-        kind: tenantData.kind,
-        notesAlert: tenantData.notesAlert,
-        number: tenantData.number,
-        notes: tenantData.notes,
-        paymentTerms: tenantData.paymentTerms,
-        openingBalance: tenantData.openingBalance,
-        selectedOption: tenantData.selectedOption,
-        fax: tenantData.fax,
-        phone1: tenantData.phone1,
-        mobile: tenantData.mobile,
-        website: tenantData.website,
-        email: tenantData.email,
-        street: tenantData.street,
-        // payConditionId: tenantData.payConditionId,
-      });
-    }
-  }, [tenantData, stateOptions])
+
 
   const categoryContact = [{ value: "not specified", label: "Not Specified" },
   { value: "advertising", label: "Advertising" },
@@ -498,13 +503,13 @@ console.log("companyInfo",companyInfo)
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(companyInfo);
+    // console.log(companyInfo);
     onAddContacts(companyInfo);
     navigate("/contacts")
   };
 
   useEffect(() => {
-    console.log(companyInfo);
+    // console.log(companyInfo);
   }, [companyInfo]);
   const handleStateChange = (options) => {
     // console.log(options.label);
@@ -685,11 +690,11 @@ console.log("companyInfo",companyInfo)
                       <div className="column is-6">
                         <div className="field">
                           <label>Contact Type</label>
-                          <SelectInput options={kindOptions}
+                          <SelectInput
+                            options={kindOptions}
                             onChange={handleTypeChange}
                             value={companyInfo.type}
-
-                            name="kind"
+                            defaultValue={companyInfo.type}
                           />
                         </div>
                       </div>
