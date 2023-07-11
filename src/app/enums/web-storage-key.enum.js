@@ -1,6 +1,7 @@
 const WebStorageKey = {
   REGISTRATION_EMAIL: "registrationEmail",
-  LOGIN_TOKEN_KEY: "loginTokenKey",
+  REGISTRATION_TOKEN: "registrationToken",
+  LOGIN_TOKEN_KEY: "loginToken",
   LOGIN_TOKEN_START_TIME: "loginTokenStartTime",
   USER: "user",
 };

@@ -64,6 +64,7 @@ const MobileVerification = () => {
     }
   }, []);
 
+  //First Part
   const handleMobileNumberChange = (e) => {
     const inputNumber = e.target.value.trim();
     if (inputNumber.length <= 10) {
@@ -76,8 +77,6 @@ const MobileVerification = () => {
     setMobileOtp(otp);
   };
 
-  const handleResendMobileOtp = () => {};
-
   const handleSendMobileOTP = () => {
     if (mobileNumber.length !== 10 || /^0/.test(mobileNumber)) return;
     console.log("mobile and mobileotp");
@@ -86,26 +85,40 @@ const MobileVerification = () => {
     if (mobileNumber.length !== 10) {
       return;
     }
-    webstorageService.setItem(webStorageKeyEnum.USER, {
-      mobileNumber,
-      registrationStep: "mobileOtp",
+
+    groflexService.sendMobileOtp(mobileNumber).then((res) => {
+      console.log("response from send mobile otp", res.data);
+      webstorageService.setItem(webStorageKeyEnum.USER, {
+        mobileNumber,
+        registrationStep: "mobileOtp",
+      });
+      setRegistrationStep("mobileOtp");
     });
-    setRegistrationStep("mobileOtp");
   };
 
-  const handleChangePhoneNumber = () => {
+  const handleResendMobileOtp = () => {};
+
+  const handleChangeRegistrationPhoneNumber = () => {
+    setMobileOtp("");
     webstorageService.setItem(webStorageKeyEnum.USER, {
       registrationStep: "mobile",
     });
     setRegistrationStep("mobile");
   };
 
+  //Second Part
   const handleVerifyMobileOtp = () => {
     if (mobileOtp.length !== 6) return;
     setFormErrors({ ...formErrors, mobileOtpError: "", mobileNumberError: "" });
-    webstorageService.removeItem(webStorageKeyEnum.REGISTRATION_EMAIL);
-    webstorageService.removeItem(webStorageKeyEnum.USER);
-    navigate("/login");
+
+    groflexService.verifyMobileOtp(mobileOtp).then((res) => {
+      console.log("response from verify mobile otp", res);
+      if (res.success) {
+        webstorageService.removeItem(webStorageKeyEnum.REGISTRATION_EMAIL);
+        webstorageService.removeItem(webStorageKeyEnum.USER);
+        navigate("/login");
+      }
+    });
   };
 
   return (
@@ -252,7 +265,7 @@ const MobileVerification = () => {
                     Change phone number?{" "}
                     <p
                       style={{ cursor: "pointer", lineHeight: 1.5 }}
-                      onClick={handleChangePhoneNumber}
+                      onClick={handleChangeRegistrationPhoneNumber}
                       className="text-primary title is-6 is-inline-block"
                     >
                       Go back

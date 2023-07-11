@@ -60,6 +60,7 @@ const EmailVerification = () => {
 
   const handleChangeRegisterationEmail = () => {
     webstorageService.removeItem(webStorageKeyEnum.REGISTRATION_EMAIL);
+    webstorageService.removeItem(webStorageKeyEnum.REGISTRATION_TOKEN);
     webstorageService.removeItem(webStorageKeyEnum.USER);
     navigate("/signup");
   };
@@ -69,21 +70,30 @@ const EmailVerification = () => {
   };
 
   const handleResendOtp = () => {
-    setFormErrors({ ...formErrors, otpError: "Entered OTP is wrong" });
-  };
-
-  const handleVerifyOtp = () => {
-    if (otp.length !== 4) return;
-    console.log("code wala");
     setFormErrors({ ...formErrors, otpError: "" });
-    webstorageService.setItem(webStorageKeyEnum.USER, {
-      registrationStep: "mobile",
-    });
-    navigate(stepWisePage["mobile"]);
+
+    groflexService.resendEmailOtp();
   };
 
-  console.log(otp, "otp");
-  console.log(formErrors, "formErrors");
+  const handleVerifyEmailOtp = () => {
+    if (otp.length !== 4) return;
+    setFormErrors({ ...formErrors, otpError: "" });
+
+    groflexService.verifyEmailOtp(otp).then((res) => {
+      console.log(res, "response of verify email otp in Component");
+      if (res.emailOtpSuccess) {
+        webstorageService.setItem(webStorageKeyEnum.USER, {
+          registrationStep: "mobile",
+        });
+        navigate(stepWisePage["mobile"]);
+      } else {
+        setFormErrors({ ...formErrors, otpError: "Entered OTP is wrong " });
+      }
+    });
+  };
+
+  // console.log(otp, "otp");
+  // console.log(formErrors, "formErrors");
 
   return (
     <div className="auth-wrapper is-dark">
@@ -124,7 +134,7 @@ const EmailVerification = () => {
                     id="email-verification-otp-form"
                     onSubmit={(e) => {
                       e.preventDefault();
-                      handleVerifyOtp();
+                      handleVerifyEmailOtp();
                     }}
                   >
                     <OtpInputComponent
@@ -157,7 +167,7 @@ const EmailVerification = () => {
                   isFullWidth
                   isLight={otp.length < 4}
                   isSuccess={otp.length === 4}
-                  onClick={handleVerifyOtp}
+                  onClick={handleVerifyEmailOtp}
                 >
                   Verify OTP
                 </Button>

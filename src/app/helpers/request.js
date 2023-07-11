@@ -122,6 +122,8 @@ export const request = (endpoint, options) => {
   }
 };
 
+/* Registration APIs */
+//Check email exist
 export const checkEmailExist = (email, password = "lSlSlS@3") => {
   if (environment === "local") {
     return new Promise((resolve, reject) => {
@@ -220,6 +222,342 @@ export const checkEmailExist2 = (email) => {
           //   resolve(data);
           // });
           resolve(response);
+        } else {
+          reject(response);
+        }
+      });
+    });
+  }
+};
+
+//Get Registration Token
+export const getRegistrationToken = (email) => {
+  if (environment === "local") {
+    return new Promise((resolve, reject) => {
+      fetch(getEndpoint(config.resourceUrls.getRegistartionToken), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          body: JSON.stringify({ email }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          url: config.resourceUrls.getRegistartionToken,
+        }),
+      }).then((response) => {
+        if (response) {
+          response.json().then((data) => {
+            resolve(data);
+          });
+          // resolve(response);
+        } else {
+          reject(response);
+        }
+      });
+    });
+  } else {
+    return new Promise((resolve, reject) => {
+      fetch(getEndpoint(config.resourceUrls.getRegistartionToken), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      }).then((response) => {
+        if (response) {
+          response.json().then((data) => {
+            resolve(data);
+          });
+          // resolve(response);
+        } else {
+          reject(response);
+        }
+      });
+    });
+  }
+};
+
+//Verify email
+export const sendEmailOtp = (email, password) => {
+  const registrationToken = WebStorageService.getItem(
+    webStorageKeyEnum.REGISTRATION_TOKEN
+  );
+
+  console.log("from REQUEST JS sendEmailOtp", registrationToken);
+  if (environment === "local") {
+    return new Promise((resolve, reject) => {
+      fetch(getEndpoint(config.resourceUrls.sendEmailOtp), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          body: JSON.stringify({ email, password }),
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${registrationToken}`,
+          },
+          method: "POST",
+          url: config.resourceUrls.sendEmailOtp,
+        }),
+      }).then((response) => {
+        if (response) {
+          response.json().then((data) => {
+            resolve(data);
+          });
+          // resolve(response);
+        } else {
+          reject(response);
+        }
+      });
+    });
+  } else {
+    return new Promise((resolve, reject) => {
+      fetch(getEndpoint(config.resourceUrls.sendEmailOtp), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${registrationToken}`,
+        },
+        body: JSON.stringify({ email, password }),
+      }).then((response) => {
+        if (response) {
+          response.json().then((data) => {
+            resolve(data);
+          });
+          // resolve(response);
+        } else {
+          reject(response);
+        }
+      });
+    });
+  }
+};
+
+export const resendEmailOtp = () => {
+  const registrationToken = WebStorageService.getItem(
+    webStorageKeyEnum.REGISTRATION_TOKEN
+  );
+  if (environment === "local") {
+    return new Promise((resolve, reject) => {
+      fetch(getEndpoint(config.resourceUrls.resendEmailOtp), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${registrationToken}`,
+          },
+          method: "POST",
+          url: config.resourceUrls.resendEmailOtp,
+        }),
+      }).then((response) => {
+        if (response) {
+          response.json().then((data) => {
+            resolve(data);
+          });
+          // resolve(response);
+        } else {
+          reject(response);
+        }
+      });
+    });
+  } else {
+    return new Promise((resolve, reject) => {
+      fetch(getEndpoint(config.resourceUrls.resendEmailOtp), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${registrationToken}`,
+        },
+      }).then((response) => {
+        if (response) {
+          response.json().then((data) => {
+            resolve(data);
+          });
+          // resolve(response);
+        } else {
+          reject(response);
+        }
+      });
+    });
+  }
+};
+
+export const verifyEmailOtp = (code) => {
+  const registrationToken = WebStorageService.getItem(
+    webStorageKeyEnum.REGISTRATION_TOKEN
+  );
+  if (environment === "local") {
+    return new Promise((resolve, reject) => {
+      fetch(getEndpoint(config.resourceUrls.verifyEmailOtp), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          body: JSON.stringify({ code }),
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${registrationToken}`,
+          },
+          method: "POST",
+          url: config.resourceUrls.verifyEmailOtp,
+        }),
+      }).then((response) => {
+        if (response) {
+          response
+            .json()
+            .then((res) => {
+              if (res) {
+                console.log(res, "code was wrong");
+                resolve(res);
+              }
+            })
+            .catch((err) => {
+              /*
+              Poorly formed response from backend. 
+              Response Body comes when code is incorrect and not comes when correct.
+              So i have to check for the error that throws looking for any body (above) in response
+              to know it was correct.
+              */
+              // console.log("when no body in response means code is correct");
+              resolve({ emailOtpSuccess: true });
+            });
+        } else {
+          reject(response);
+        }
+      });
+    });
+  } else {
+    return new Promise((resolve, reject) => {
+      fetch(getEndpoint(config.resourceUrls.verifyEmailOtp), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${registrationToken}`,
+        },
+        body: JSON.stringify({ code }),
+      }).then((response) => {
+        if (response) {
+          // response.json().then((data) => {
+          //   resolve(data);
+          // });
+          resolve(response);
+        } else {
+          reject(response);
+        }
+      });
+    });
+  }
+};
+
+//Verify mobile number
+export const sendMobileOtp = (mobileNo) => {
+  const registrationToken = WebStorageService.getItem(
+    webStorageKeyEnum.REGISTRATION_TOKEN
+  );
+  if (environment === "local") {
+    return new Promise((resolve, reject) => {
+      fetch(getEndpoint(config.resourceUrls.sendMobileOtp), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          body: JSON.stringify({ mobileNo }),
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${registrationToken}`,
+          },
+          method: "PUT",
+          url: config.resourceUrls.sendMobileOtp,
+        }),
+      }).then((response) => {
+        if (response) {
+          // response.json().then((data) => {
+          //   resolve(data);
+          // });
+          resolve(response);
+        } else {
+          reject(response);
+        }
+      });
+    });
+  } else {
+    return new Promise((resolve, reject) => {
+      fetch(getEndpoint(config.resourceUrls.sendMobileOtp), {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${registrationToken}`,
+        },
+        body: JSON.stringify({ mobileNo }),
+      }).then((response) => {
+        if (response) {
+          // response.json().then((data) => {
+          //   resolve(data);
+          // });
+          resolve(response);
+        } else {
+          reject(response);
+        }
+      });
+    });
+  }
+};
+
+export const verifyMobileOtp = (mobileOtp) => {
+  const registrationToken = WebStorageService.getItem(
+    webStorageKeyEnum.REGISTRATION_TOKEN
+  );
+  if (environment === "local") {
+    return new Promise((resolve, reject) => {
+      fetch(getEndpoint(config.resourceUrls.verifyMobileOtp), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          body: JSON.stringify({ mobileOtp }),
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${registrationToken}`,
+          },
+          method: "PUT",
+          url: config.resourceUrls.verifyMobileOtp,
+        }),
+      }).then((response) => {
+        if (response) {
+          response.json().then((data) => {
+            resolve(data);
+          });
+          // resolve(response);
+        } else {
+          reject(response);
+        }
+      });
+    });
+  } else {
+    return new Promise((resolve, reject) => {
+      fetch(getEndpoint(config.resourceUrls.verifyMobileOtp), {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${registrationToken}`,
+        },
+        body: JSON.stringify({ mobileOtp }),
+      }).then((response) => {
+        if (response) {
+          response.json().then((data) => {
+            resolve(data);
+          });
+          // resolve(response);
         } else {
           reject(response);
         }
