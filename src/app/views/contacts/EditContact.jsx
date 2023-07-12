@@ -116,33 +116,6 @@ const EditContact = () => {
       .then((response) => {
 
         const contactData = response.data;
-        // console.log("Fetched Contact Data:", contactData);
-        // console.log("set company Data:", setCompanyInfo);
-        // setCompanyInfo({
-        //   companyName: contactData.name,
-        //   state: contactData.indiaState.stateName,
-        //   kind: contactData.kind,
-        //   type: contactData.type,
-        //   number: contactData.number,
-        //   country: contactData.address.countryIso,
-        //   indiaState: contactData.indiaState?.stateName,
-        //   category: contactData.category,
-        //   cinNumber: contactData.address.cinNumber,
-        //   gstType: contactData.address.gstType,
-        //   gstNumber: contactData.address.gstNumber,
-        //   street: contactData.address.street,
-        //   email: contactData.email,
-        //   website: contactData.website,
-        //   mobile: contactData.mobile,
-        //   phone1: contactData.phone1,
-        //   fax: contactData.fax,
-        //   discount: contactData.discount,
-        //   openingBalance: contactData.openingBalance,
-        //   selectedOption: contactData.selectedOption,
-        //   notes: contactData.notes,
-        //   notesAlert: contactData.notesAlert,
-        //   contactPersons: contactData.contactPersons,
-        // });
 
         const updatedCompanyInfo = {
           companyName: contactData.name,
@@ -188,7 +161,6 @@ const EditContact = () => {
   };
 
   useEffect(() => {
-    // console.log("contact id", contactId)
     if (contactId) {
       fetchData();
     }
@@ -196,7 +168,6 @@ const EditContact = () => {
 
 
   useEffect(() => {
-    // console.log("previousData:", previousData);
     if (previousData) {
       setCompanyInfo(prevCompanyInfo => ({
 
@@ -273,10 +244,8 @@ const EditContact = () => {
       groflexService
         .request(`${config.resourceHost}customer/number`, { auth: true })
         .then((response) => {
-          // console.log("response", response);
-          // Process the received data as needed
-          setIsLoading(false); // Mark data as loaded
-          const numberData = response.data; // Assuming the number value is in response.data
+          setIsLoading(false);
+          const numberData = response.data;
 
           if (numberData) {
             setCompanyInfo((prevCompanyInfo) => ({
@@ -300,8 +269,6 @@ const EditContact = () => {
       groflexService
         .request(`${config.resourceHost}setting/miscellaneous`, { auth: true })
         .then((response) => {
-          // console.log("response", response);
-          // Process the received data as needed
           const data = response.data;
           const salutations = data?.salutations.map((salutation) => ({
             label: salutation,
@@ -472,11 +439,6 @@ const EditContact = () => {
 
     setCompanyInfo({ ...companyInfo, mobile: mobile });
   };
-
-  // const handleNumberChange = (e) => {
-  //   const number = parseInt(e.target.value);
-  //   setCompanyInfo({ ...companyInfo, number: number });
-  // };
   const handleCurrencyChange = async (selectedCurrency) => {
 
     try {
@@ -767,11 +729,6 @@ const EditContact = () => {
                             <div className="field">
                               <label>Title</label>
                               <SelectInput
-                                // type="text"
-                                // placeholder="Enter Title"
-                                // value={companyInfo.title ? companyInfo.title : ""}
-                                // onChange={handleTitleChange}
-                                // name="title"
                                 defaultValue={companyInfo.title}
                                 onChange={handleTitleChange}
                                 name="title"

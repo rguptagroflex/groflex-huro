@@ -47,22 +47,13 @@ const Contacts = () => {
   ];
 
   const handleActionClick = (action, rowData) => {
-    // console.log("action:", action);
-    // console.log("rowData:", rowData);
-
+   
     if (rowData) {
       if (action.name === "Edit") {
         if (rowData.id) {
-          // console.log("Selected Contact:", rowData.id)
           setSelectedContact(rowData.id);
           const previousData = { ...rowData };
           setPreviousData(previousData);
-
-          // console.log("rowDataaaaaaaaaaaa", rowData);
-          // console.log("previousDataaaaaaaaa", previousData);
-          // console.log("selectedContactttttt", selectedContact);
-
-          // console.log("previousDataaaaaaaaa", previousData);
           navigate(`/contacts-edit/${rowData.id}`, { state: { previousData } })
         } else {
           console.log("Invalid rowData:", rowData);

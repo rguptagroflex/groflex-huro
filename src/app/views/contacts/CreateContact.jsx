@@ -134,13 +134,11 @@ const CreateContact = () => {
         const jsonData = await getCurrencyRatesFromOpenExchangeRates({ base: 'INR' });
         const rates = jsonData.rates;
 
-        // Generate currencyOptions dynamically
         const newCurrencyOptions = Object.keys(rates).map((currency) => ({
           value: currency,
           label: `1 ${currency}`,
         }));
 
-        // Update currencyOptions
         setCurrencyOptions(newCurrencyOptions);
       } catch (error) {
         console.error(error);
@@ -176,9 +174,8 @@ const CreateContact = () => {
         .request(`${config.resourceHost}customer/number`, { auth: true })
         .then((response) => {
           console.log("response", response);
-          // Process the received data as needed
-          setIsLoading(false); // Mark data as loaded
-          const numberData = response.data; // Assuming the number value is in response.data
+          setIsLoading(false); 
+          const numberData = response.data; 
 
           if (numberData) {
             setCompanyInfo((prevCompanyInfo) => ({
@@ -208,7 +205,6 @@ const CreateContact = () => {
         .request(`${config.resourceHost}setting/miscellaneous`, { auth: true })
         .then((response) => {
           console.log("response", response);
-          // Process the received data as needed
           const data = response.data;
           const salutations = data?.salutations.map((salutation) => ({
             label: salutation,
@@ -661,11 +657,8 @@ const CreateContact = () => {
                           <label>Customer No *</label>
                           <Input
                             type="number"
-                            // left={"+91"}
                             placeholder={"1059"}
                             value={companyInfo.number}
-                            // value={companyInfo.number || ''}
-                            // onChange={handleNumberChange}
                             readOnly
                             name="number"
                           />
@@ -709,11 +702,6 @@ const CreateContact = () => {
                             <div className="field">
                               <label>Title</label>
                               <SelectInput
-                                // type="text"
-                                // placeholder="Enter Title"
-                                // value={companyInfo.title ? companyInfo.title : ""}
-                                // onChange={handleTitleChange}
-                                // name="title"
                                 defaultValue={companyInfo.title}
                                 onChange={handleTitleChange}
                                 name="title"
@@ -794,8 +782,6 @@ const CreateContact = () => {
                         <div className="column is-6">
                           <div className="field">
                             <label>Exchange Rate *</label>
-                            {/* <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span style={{ marginRight: '5px' }}>&#8377;</span> */}
                             <InputAddons
                               left={"₹"}
                               type="number"
@@ -807,7 +793,7 @@ const CreateContact = () => {
 
                           </div>
                         </div>
-                        // </div>
+                        
 
                       )}
                     </div>
@@ -997,7 +983,6 @@ const CreateContact = () => {
                       </div>
 
                       <div className="columns is-multiline m-b-5">
-                        {/* <div className="column is-9"> */}
                         <div className="field">
                           <RadioButton
 
@@ -1010,7 +995,7 @@ const CreateContact = () => {
                             name="selectedOption"
                           />
                         </div>
-                        {/* </div> */}
+                      
                         <div className="column is-8">
                           <div className="field">
                             <label>Customer owes you</label>
