@@ -37,7 +37,7 @@ const FirstColumn = () => {
             alt="logo"
           />
           <div className="carousel-container" style={{ margin: "auto 0" }}>
-            <ReactSlickCarousel>
+            <ReactSlickCarousel settings={{ fade: true }}>
               <div
                 style={{
                   height: "350px",

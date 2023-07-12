@@ -67,6 +67,10 @@ const Login = () => {
           res.meta.email[0].code === "NOT_FOUND"
         ) {
           console.log(res, "Email not exists!");
+          webstorageService.setItem(
+            webStorageKeyEnum.REGISTRATION_EMAIL,
+            email
+          );
           setEmailExistsFlag(false);
           navigate("/signup");
           return;
@@ -81,7 +85,8 @@ const Login = () => {
     if (emailExistsFlag) {
       groflexService.login(email, password).then((res) => {
         if (res.meta.email) {
-          setFormErrors({ ...formErrors, emailError: "Email not found" });
+          // setFormErrors({ ...formErrors, emailError: "Email not found" });
+          navigate("/signup");
           return;
         } else if (res.meta.password) {
           setFormErrors({ ...formErrors, passwordError: "Password is wrong" });

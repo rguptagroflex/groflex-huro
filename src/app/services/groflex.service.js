@@ -4,6 +4,12 @@ import {
   logout,
   checkEmailExist,
   checkEmailExist2,
+  sendEmailOtp,
+  verifyMobileOtp,
+  sendMobileOtp,
+  verifyEmailOtp,
+  resendEmailOtp,
+  getRegistrationToken,
 } from "../helpers/request";
 
 class GroflexService {
@@ -19,6 +25,12 @@ class GroflexService {
     this.logout = logout;
     this.checkEmailExist = checkEmailExist;
     this.checkEmailExist2 = checkEmailExist2;
+    this.sendEmailOtp = sendEmailOtp;
+    this.resendEmailOtp = resendEmailOtp;
+    this.verifyEmailOtp = verifyEmailOtp;
+    this.sendMobileOtp = sendMobileOtp;
+    this.verifyMobileOtp = verifyMobileOtp;
+    this.getRegistartionToken = getRegistrationToken;
   }
 }
 export default new GroflexService();

@@ -20,8 +20,21 @@ const setResourceHost = () => {
 const resourceHost = setResourceHost();
 
 const resourceUrls = {
+  //Registration token
+  getRegistartionToken: `${resourceHost}user/email`, // POST | body: {email: "ritesh098765432+15dev@gmail"} | Gives the registration token
+  /*All verification APIs will need Registration token */
+  //Email verification
+  sendEmailOtp: `${resourceHost}user/password`, //  POST | body: {password: "rguptagrofleX1@", email: "ritesh098765432+15dev@gmail.com"} | Gives verifystep = "code"
+  resendEmailOtp: `${resourceHost}user/email/resend_code`, // Dont know the method :( | no payload | no body res
+  verifyEmailOtp: `${resourceHost}user/email/code`, // POST | body: {code: "1234"} | no body res :(
+  //Mobile verification
+  sendMobileOtp: `${resourceHost}tenant/set_mobile`, // PUT | body: {mobileNo : "9876543210"} | gives no body response
+  verifyMobileOtp: `${resourceHost}tenant/verify_mobile_otp`, // PUT | body : {mobileOtp : "123456"} | success : true
+  /* ALl in-app APIs will need Login token */
+  //Login
   login: `${resourceHost}session/create?type=bearer`,
   checkEmailExist: `${resourceHost}user/checkUser`,
+  //After login token needing
   articles: `${resourceHost}article?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
   customers: `${resourceHost}customer?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
   tenant: `${resourceHost}tenant`,

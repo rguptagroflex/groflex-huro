@@ -49,6 +49,7 @@ const Signup = () => {
     if (!regEmail) {
       return;
     } else {
+      setEmail(regEmail);
       // If registration email exists in webstorage
       if (user?.registrationStep) {
         // if registration email exists AND registration step is SET in websotrage
@@ -80,6 +81,7 @@ const Signup = () => {
     setPassword(inputPassword);
   };
 
+  //Signup
   const handleSignup = () => {
     if (!passwordValidations.allValid || !email) return;
 
@@ -99,11 +101,35 @@ const Signup = () => {
       return;
     }
 
-    webstorageService.setItem(webStorageKeyEnum.REGISTRATION_EMAIL, email);
-    webstorageService.setItem(webStorageKeyEnum.USER, {
-      registrationStep: "code",
-    });
-    navigate(stepWisePage["code"]);
+    // Once email regex is valid, Send Email OTP
+    groflexService
+      .getRegistartionToken(email)
+      .then((res) => {
+        if (res?.meta?.email[0]?.code === "EXISTS") {
+          setFormErrors({ emailError: "Email already exists" });
+          return;
+        }
+        webstorageService.setItem(webStorageKeyEnum.REGISTRATION_EMAIL, email);
+        webstorageService.setItem(
+          webStorageKeyEnum.REGISTRATION_TOKEN,
+          res.data.token
+        );
+        console.log(res.data, "Token 1st");
+        return res;
+      })
+      .then(() => {
+        groflexService.sendEmailOtp(email, password).then((res) => {
+          webstorageService.setItem(
+            webStorageKeyEnum.REGISTRATION_TOKEN,
+            res.data.token
+          );
+          webstorageService.setItem(webStorageKeyEnum.USER, {
+            registrationStep: "code",
+          });
+          console.log(res.data, "Token 2nd");
+          navigate(stepWisePage["code"]);
+        });
+      });
   };
 
   // console.log(email, password);
