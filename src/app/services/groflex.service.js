@@ -1,3 +1,4 @@
+import webStorageKeyEnum from "../enums/web-storage-key.enum";
 import {
   login,
   request,
@@ -11,6 +12,7 @@ import {
   resendEmailOtp,
   getRegistrationToken,
 } from "../helpers/request";
+import WebStorageService from "./webstorage.service";
 
 class GroflexService {
   constructor() {

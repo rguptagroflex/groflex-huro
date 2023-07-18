@@ -18,6 +18,7 @@ import EditContact from "./app/views/contacts/EditContact";
 import EmailVerification from "./app/views/account/EmailVerification";
 import store from "./app/redux/store";
 import MobileVerification from "./app/views/account/MobileVerification";
+import EditArticle from "./app/views/articles/EditArticle";
 
 store.subscribe(() => {
   console.log(store.getState());
@@ -32,6 +33,8 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="estimates" element={<Estimates />} />
           <Route path="articles" element={<Articles />} />
+          <Route path="create-article" element={<CreateArticle />} />
+          <Route path="article-edit/:articleId" element={<EditArticle />} />
           <Route path="contacts" element={<Contacts />} />
           <Route path="contacts-create" element={<CreateContact />} />
           <Route path="contacts-edit/:contactId" element={<EditContact />} />
@@ -40,7 +43,6 @@ function App() {
           <Route path="account-settings" element={<AccountSettings />} />
           <Route path="preferences" element={<Preferences />} />
           <Route path="notifications" element={<Notifications />} />
-          <Route path="create-article" element={<CreateArticle />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

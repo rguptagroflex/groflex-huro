@@ -4,7 +4,12 @@ import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { FeatherIcon } from "../../featherIcon/FeatherIcon";
 
-const PageContent = ({ title, children, breadCrumbData = [] }) => {
+const PageContent = ({
+  title,
+  children,
+  breadCrumbData = [],
+  titleActionContent,
+}) => {
   const { sidebarIsActive } = useSelector((state) => state.themeData);
   const toggleSidebar = useToggleSidebar();
   const navigate = useNavigate();
@@ -61,18 +66,25 @@ const PageContent = ({ title, children, breadCrumbData = [] }) => {
               marginBottom: "24px",
               display: "flex",
               alignItems: "center",
-              justifyContent: "flex-start",
+              justifyContent: "space-between",
             }}
             className="title-wrap"
           >
-            <FeatherIcon
-              color="#272D30"
-              name="ArrowLeft"
-              size={24}
-              style={{ cursor: "pointer", marginRight: "10px" }}
-              onClick={() => navigate(-1)}
-            />
-            <h1 className="title is-4">{title}</h1>
+            <div style={{ display: "flex" }}>
+              <FeatherIcon
+                color="#272D30"
+                name="ArrowLeft"
+                size={24}
+                style={{ cursor: "pointer", marginRight: "10px" }}
+                onClick={() => navigate(-1)}
+              />
+              <h1 className="title is-4">{title}</h1>
+            </div>
+            <div
+            // className="h-hidden-mobile"
+            >
+              {titleActionContent}
+            </div>
           </div>
 
           <div className="page-content-inner">{children}</div>

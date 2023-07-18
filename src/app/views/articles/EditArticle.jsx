@@ -9,9 +9,12 @@ import { TextArea } from "../../shared/components/textArea/TextArea";
 import { Switch } from "../../shared/components/switch/Switch";
 import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
+import { useParams } from "react-router-dom";
 
-const CreateArticle = () => {
-  const [createArticleFormData, setCreateArticleFormData] = useState({
+const EditArticle = () => {
+  const { articleId } = useParams();
+  console.log(articleId, "articleId");
+  const [editArticleFormData, setEditArticleFormData] = useState({
     articleNumber: "",
     hsnSacCode: "",
     articleName: "",
@@ -31,60 +34,88 @@ const CreateArticle = () => {
     showNotes: false,
   });
 
-  const [formErrors, setFormErrors] = useState({
-    articleImageError: "",
-  });
-
   useEffect(() => {
-    groflexService
-      .request(config.resourceUrls.articleNumber, { auth: true })
-      .then((res) => {
-        setCreateArticleFormData({
-          ...createArticleFormData,
-          articleNumber: Number(res.body.data),
+    if (articleId) {
+      groflexService
+        .request(`${config.resourceUrls.article}${articleId}`, { auth: true })
+        .then((res) => {
+          console.log(res, "Article data from edit");
+          setEditArticleFormData({
+            ...editArticleFormData,
+            articleNumber: String(res.body.data.number),
+            avgPurchaseValue: 0,
+            calculationBase: "net",
+            articleCategory: res.body.data.category,
+            currentStock: null,
+            articleDescription: res.body.data.description,
+            ean: String(res.body.data.eanNo),
+            hsnSacCode: String(res.body.data.hsnSacCode),
+            images: [],
+            isValidated: false,
+            metaData: {
+              imageUrl: null,
+            },
+            minimumBalance: null,
+            mrp: res.body.data.mrp,
+            showNotes: res.body.data.notesAlert,
+            openingBalance: null,
+            netSalesPrice: res.body.data.price,
+            grossSalesPrice: res.body.data.priceGross,
+            netPurchasePrice: res.body.data.purchasePrice,
+            grossPurchasePrice: res.body.data.purchasePriceGross,
+            articleName: res.body.data.title,
+            trackedInInventory: false,
+            unit: res.body.data.unit,
+            value: 0,
+            gstRate: res.body.data.vatPercent,
+            notes: res.body.data.notes,
+          });
         });
-        // console.log(res, "Article Number");
-      });
-  }, []);
+    }
+  }, [articleId]);
 
-  const handleSave = () => {
+  const handleEdit = () => {
     const payload = {
       avgPurchaseValue: 0,
       calculationBase: "net",
-      category: createArticleFormData.articleCategory,
+      category: editArticleFormData.articleCategory,
       currentStock: null,
-      description: createArticleFormData.articleDescription,
-      eanNo: createArticleFormData.ean.toString(),
-      hsnSacCode: createArticleFormData.hsnSacCode.toString(),
+      description: editArticleFormData.articleDescription,
+      eanNo: editArticleFormData.ean.toString(),
+      hsnSacCode: editArticleFormData.hsnSacCode.toString(),
       images: [],
       isValidated: false,
       metaData: {
         imageUrl: null,
       },
       minimumBalance: null,
-      mrp: createArticleFormData.mrp,
-      notesAlert: createArticleFormData.showNotes,
-      number: createArticleFormData.articleNumber.toString(),
+      mrp: editArticleFormData.mrp,
+      notesAlert: editArticleFormData.showNotes,
+      number: editArticleFormData.articleNumber.toString(),
       openingBalance: null,
-      price: createArticleFormData.netSalesPrice,
-      priceGross: createArticleFormData.grossSalesPrice,
-      purchasePrice: createArticleFormData.netPurchasePrice,
-      purchasePriceGross: createArticleFormData.grossPurchasePrice,
-      title: createArticleFormData.articleName,
+      price: editArticleFormData.netSalesPrice,
+      priceGross: editArticleFormData.grossSalesPrice,
+      purchasePrice: editArticleFormData.netPurchasePrice,
+      purchasePriceGross: editArticleFormData.grossPurchasePrice,
+      title: editArticleFormData.articleName,
       trackedInInventory: false,
-      unit: createArticleFormData.unit,
+      unit: editArticleFormData.unit,
       value: 0,
-      vatPercent: createArticleFormData.gstRate,
-      notes: createArticleFormData.notes,
+      vatPercent: editArticleFormData.gstRate,
+      notes: editArticleFormData.notes,
     };
     groflexService
-      .request(config.resourceUrls.article, {
+      .request(`${config.resourceUrls.article}${articleId}`, {
         auth: true,
         data: payload,
-        method: "POST",
+        method: "PUT",
       })
       .then((res) => {
-        console.log(res, "Article created response");
+        if (res.body.data) {
+          console.log(res, "Article Edited Succcessfullys");
+        } else {
+          console.log(res, "Article Edited failed");
+        }
       });
 
     console.log(payload);
@@ -92,104 +123,100 @@ const CreateArticle = () => {
 
   const handleArticleNumberChange = (e) => {
     const inputArticleNumber = parseInt(e.target.value);
-    setCreateArticleFormData({
-      ...createArticleFormData,
+    setEditArticleFormData({
+      ...editArticleFormData,
       articleNumber: inputArticleNumber,
     });
   };
 
   const handleHsnSacCodeChange = (e) => {
     const inputHsnSacCode = parseInt(e.target.value);
-    setCreateArticleFormData({
-      ...createArticleFormData,
+    setEditArticleFormData({
+      ...editArticleFormData,
       hsnSacCode: inputHsnSacCode,
     });
   };
 
   const handleArticleNameChange = (option) => {
-    setCreateArticleFormData({
-      ...createArticleFormData,
+    setEditArticleFormData({
+      ...editArticleFormData,
       articleName: option.value,
     });
   };
 
   const handleArticleDescriptionChange = (e) => {
-    setCreateArticleFormData({
-      ...createArticleFormData,
+    setEditArticleFormData({
+      ...editArticleFormData,
       articleDescription: e.target.value,
     });
   };
 
   const handleArticleImageChange = (e) => {
     if (e.target.files[0].size > 2000000) {
-      // console.log("Size more than 2MB");
-      setFormErrors({
-        ...formErrors,
-        articleImageError: "Size more than 2MB",
-      });
+      console.log("Size more than 2MB");
       return;
     }
-    setCreateArticleFormData({
-      ...createArticleFormData,
+    setEditArticleFormData({
+      ...editArticleFormData,
       articleImage: e.target.files[0],
     });
   };
 
   const handleEanChange = (e) => {
     const inputEan = parseInt(e.target.value);
-    setCreateArticleFormData({
-      ...createArticleFormData,
+    setEditArticleFormData({
+      ...editArticleFormData,
       ean: inputEan,
     });
   };
 
   const handleSkuChange = (e) => {
     const inputSku = parseInt(e.target.value);
-    setCreateArticleFormData({
-      ...createArticleFormData,
+    setEditArticleFormData({
+      ...editArticleFormData,
       sku: inputSku,
     });
   };
 
   const handleArticleCategoryChange = (option) => {
-    setCreateArticleFormData({
-      ...createArticleFormData,
+    setEditArticleFormData({
+      ...editArticleFormData,
       articleCategory: option.value,
     });
   };
 
   const handleUnitChange = (option) => {
-    setCreateArticleFormData({
-      ...createArticleFormData,
+    setEditArticleFormData({
+      ...editArticleFormData,
       unit: option.value,
     });
   };
 
   const handleGstRateChange = (option) => {
-    setCreateArticleFormData({
-      ...createArticleFormData,
+    setEditArticleFormData({
+      ...editArticleFormData,
       gstRate: option.value,
     });
   };
 
   const handleMrpChange = (e) => {
     if (e.target.value === "") {
-      setCreateArticleFormData({ ...createArticleFormData, mrp: "" });
+      setEditArticleFormData({ ...editArticleFormData, mrp: "" });
       return;
     }
 
     const inputMrp = parseFloat(e.target.value);
 
-    setCreateArticleFormData({
-      ...createArticleFormData,
+    setEditArticleFormData({
+      ...editArticleFormData,
       mrp: inputMrp,
     });
   };
 
   const handleNetPurchasePriceChange = (e) => {
     if (e.target.value === "") {
-      setCreateArticleFormData({
-        ...createArticleFormData,
+      setEditArticleFormData({
+        ...editArticleFormData,
         netPurchasePrice: "",
       });
       return;
@@ -197,20 +224,20 @@ const CreateArticle = () => {
 
     const inputNetPurchasePrice = parseFloat(e.target.value);
 
-    setCreateArticleFormData({
-      ...createArticleFormData,
+    setEditArticleFormData({
+      ...editArticleFormData,
       netPurchasePrice: inputNetPurchasePrice,
       grossPurchasePrice: (
         inputNetPurchasePrice *
-        (1 + createArticleFormData.gstRate / 100)
+        (1 + editArticleFormData.gstRate / 100)
       ).toFixed(2),
     });
   };
 
   const handleGrossPurchasePriceChange = (e) => {
     if (e.target.value === "") {
-      setCreateArticleFormData({
-        ...createArticleFormData,
+      setEditArticleFormData({
+        ...editArticleFormData,
         grossPurchasePrice: "",
       });
       return;
@@ -218,42 +245,42 @@ const CreateArticle = () => {
 
     const inputGrossPurchasePrice = parseFloat(e.target.value);
 
-    setCreateArticleFormData({
-      ...createArticleFormData,
+    setEditArticleFormData({
+      ...editArticleFormData,
       grossPurchasePrice: inputGrossPurchasePrice,
       netPurchasePrice: (
         inputGrossPurchasePrice /
-        (1 + createArticleFormData.gstRate / 100)
+        (1 + editArticleFormData.gstRate / 100)
       ).toFixed(2),
     });
   };
 
   const handleNetSalesPriceChange = (e) => {
     if (e.target.value === "") {
-      setCreateArticleFormData({ ...createArticleFormData, netSalesPrice: "" });
+      setEditArticleFormData({ ...editArticleFormData, netSalesPrice: "" });
       return;
     }
 
     const inputNetSalesPrice = parseFloat(e.target.value);
 
-    setCreateArticleFormData({
-      ...createArticleFormData,
+    setEditArticleFormData({
+      ...editArticleFormData,
       netSalesPrice: inputNetSalesPrice,
       grossSalesPrice: (
         inputNetSalesPrice *
-        (1 + createArticleFormData.gstRate / 100)
+        (1 + editArticleFormData.gstRate / 100)
       ).toFixed(2),
       mrp: (
         inputNetSalesPrice *
-        (1 + createArticleFormData.gstRate / 100)
+        (1 + editArticleFormData.gstRate / 100)
       ).toFixed(2),
     });
   };
 
   const handleGrossSalesPriceChange = (e) => {
     if (e.target.value === "") {
-      setCreateArticleFormData({
-        ...createArticleFormData,
+      setEditArticleFormData({
+        ...editArticleFormData,
         grossSalesPrice: "",
       });
       return;
@@ -261,39 +288,39 @@ const CreateArticle = () => {
 
     const inputGrossSalesPrice = parseFloat(e.target.value);
 
-    setCreateArticleFormData({
-      ...createArticleFormData,
+    setEditArticleFormData({
+      ...editArticleFormData,
       grossSalesPrice: inputGrossSalesPrice,
       mrp: inputGrossSalesPrice,
       netSalesPrice: (
         inputGrossSalesPrice /
-        (1 + createArticleFormData.gstRate / 100)
+        (1 + editArticleFormData.gstRate / 100)
       ).toFixed(2),
     });
   };
 
   const handleShowNotesToggle = () => {
-    setCreateArticleFormData({
-      ...createArticleFormData,
-      showNotes: !createArticleFormData.showNotes,
+    setEditArticleFormData({
+      ...editArticleFormData,
+      showNotes: !editArticleFormData.showNotes,
     });
   };
 
   const handleNotesChange = (e) => {
-    setCreateArticleFormData({
-      ...createArticleFormData,
+    setEditArticleFormData({
+      ...editArticleFormData,
       notes: e.target.value,
     });
   };
 
-  console.log(createArticleFormData, "createArticle Data");
+  console.log(editArticleFormData, "EditArticleData");
 
   return (
     <PageContent
-      title={"Create Article"}
-      breadCrumbData={["Home", "Articles", "Create Article"]}
+      title={"Edit Article"}
+      breadCrumbData={["Home", "Articles", "Edit Article"]}
       titleActionContent={
-        <Button onClick={handleSave} isSuccess>
+        <Button onClick={handleEdit} isSuccess>
           Save
         </Button>
       }
@@ -314,7 +341,7 @@ const CreateArticle = () => {
                     onChange={handleArticleNumberChange}
                     placeholder={"Enter Article number"}
                     type={"number"}
-                    value={createArticleFormData.articleNumber}
+                    value={editArticleFormData.articleNumber}
                   />
                 </div>
               </div>
@@ -325,7 +352,7 @@ const CreateArticle = () => {
                     onChange={handleHsnSacCodeChange}
                     type={"number"}
                     placeholder={"E.g., 720991"}
-                    value={createArticleFormData.hsnSacCode}
+                    value={editArticleFormData.hsnSacCode}
                   />
                 </div>
               </div>
@@ -343,7 +370,7 @@ const CreateArticle = () => {
                     ]}
                     placeholder={<p>Search or type article name</p>}
                     onChange={handleArticleNameChange}
-                    value={createArticleFormData.articleName}
+                    value={editArticleFormData.articleName}
                   />
                 </div>
               </div>
@@ -357,7 +384,7 @@ const CreateArticle = () => {
                     rows={3}
                     placeholder="Enter Details"
                     onChange={handleArticleDescriptionChange}
-                    value={createArticleFormData.articleDescription}
+                    value={editArticleFormData.articleDescription}
                   />
                 </div>
               </div>
@@ -365,7 +392,7 @@ const CreateArticle = () => {
               <div className="column is-6">
                 <div className="field">
                   <label>Article Image</label>
-                  {createArticleFormData.articleImage ? (
+                  {editArticleFormData.articleImage ? (
                     <div
                       style={{
                         display: "flex",
@@ -382,21 +409,18 @@ const CreateArticle = () => {
                           objectFit: "contain",
                         }}
                         src={URL.createObjectURL(
-                          createArticleFormData.articleImage
+                          editArticleFormData.articleImage
                         )}
                       />
                       <br />
                       <p
                         className="button h-button"
-                        onClick={() => {
-                          setFormErrors({
-                            articleImageError: "",
-                          });
-                          setCreateArticleFormData({
-                            ...createArticleFormData,
+                        onClick={() =>
+                          setEditArticleFormData({
+                            ...editArticleFormData,
                             articleImage: "",
-                          });
-                        }}
+                          })
+                        }
                       >
                         Change Logo
                       </p>
@@ -421,7 +445,7 @@ const CreateArticle = () => {
                     onChange={handleEanChange}
                     placeholder={"Enter EAN"}
                     type={"number"}
-                    value={createArticleFormData.ean}
+                    value={editArticleFormData.ean}
                   />
                 </div>
               </div>
@@ -435,7 +459,7 @@ const CreateArticle = () => {
                     onChange={handleSkuChange}
                     placeholder={"Enter SKU"}
                     type={"number"}
-                    value={createArticleFormData.sku}
+                    value={editArticleFormData.sku}
                   />
                 </div>
               </div>
@@ -455,7 +479,7 @@ const CreateArticle = () => {
                       { label: "Spare parts", value: "Spare parts" },
                       { label: "Programming", value: "Programming" },
                     ]}
-                    value={createArticleFormData.articleCategory}
+                    value={editArticleFormData.articleCategory}
                   />
                 </div>
               </div>
@@ -471,7 +495,7 @@ const CreateArticle = () => {
                       { label: "m²", value: "m²" },
                       { label: "liters", value: "liters" },
                     ]}
-                    value={createArticleFormData.unit}
+                    value={editArticleFormData.unit}
                   />
                 </div>
               </div>
@@ -484,7 +508,7 @@ const CreateArticle = () => {
             type={"s-card"}
             footer
             // footerContentRight={
-            //   <Button onClick={handleSave} isSuccess>
+            //   <Button onClick={handleEdit} isSuccess>
             //     Save
             //   </Button>
             // }
@@ -506,7 +530,7 @@ const CreateArticle = () => {
                       { label: "28%", value: 28 },
                     ]}
                     placeholder={"Choose GST rate"}
-                    value={createArticleFormData.gstRate}
+                    value={editArticleFormData.gstRate}
                     defaultValue={0}
                   />
                 </div>
@@ -518,7 +542,7 @@ const CreateArticle = () => {
                     onChange={handleMrpChange}
                     type={"number"}
                     placeholder={"₹ 0.00"}
-                    value={createArticleFormData.mrp}
+                    value={editArticleFormData.mrp}
                   />
                 </div>
               </div>
@@ -533,7 +557,7 @@ const CreateArticle = () => {
                     onChange={handleNetPurchasePriceChange}
                     placeholder={"₹ 0.00"}
                     type={"number"}
-                    value={createArticleFormData.netPurchasePrice}
+                    value={editArticleFormData.netPurchasePrice}
                   />
                 </div>
               </div>
@@ -544,7 +568,7 @@ const CreateArticle = () => {
                     onChange={handleGrossPurchasePriceChange}
                     placeholder={"₹ 0.00"}
                     type={"number"}
-                    value={createArticleFormData.grossPurchasePrice}
+                    value={editArticleFormData.grossPurchasePrice}
                   />
                 </div>
               </div>
@@ -558,7 +582,7 @@ const CreateArticle = () => {
                     onChange={handleNetSalesPriceChange}
                     placeholder={"₹ 0.00"}
                     type={"number"}
-                    value={createArticleFormData.netSalesPrice}
+                    value={editArticleFormData.netSalesPrice}
                   />
                 </div>
               </div>
@@ -569,7 +593,7 @@ const CreateArticle = () => {
                     onChange={handleGrossSalesPriceChange}
                     placeholder={"₹ 0.00"}
                     type={"number"}
-                    value={createArticleFormData.grossSalesPrice}
+                    value={editArticleFormData.grossSalesPrice}
                   />
                 </div>
               </div>
@@ -586,7 +610,7 @@ const CreateArticle = () => {
             footerContentRight={
               <Switch
                 onChange={handleShowNotesToggle}
-                checked={createArticleFormData.showNotes}
+                checked={editArticleFormData.showNotes}
                 isSuccess
               />
             }
@@ -596,7 +620,7 @@ const CreateArticle = () => {
               rows={3}
               placeholder="Enter notes here"
               onChange={handleNotesChange}
-              value={createArticleFormData.notes}
+              value={editArticleFormData.notes}
             />
           </AdvancedCard>
         </div>
@@ -605,4 +629,4 @@ const CreateArticle = () => {
   );
 };
 
-export default CreateArticle;
+export default EditArticle;

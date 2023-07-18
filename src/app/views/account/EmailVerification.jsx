@@ -87,7 +87,7 @@ const EmailVerification = () => {
         });
         navigate(stepWisePage["mobile"]);
       } else {
-        setFormErrors({ ...formErrors, otpError: "Entered OTP is wrong " });
+        setFormErrors({ ...formErrors, otpError: "Entered OTP is wrong" });
       }
     });
   };

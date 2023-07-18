@@ -1,6 +1,12 @@
 import React from "react";
 
-export const FileInput = ({ label, description, onChange, errorMessage }) => {
+export const FileInput = ({
+  label,
+  description,
+  onChange,
+  errorMessage,
+  accept = "image/jpeg, image/png",
+}) => {
   return (
     <div className="control">
       <div className="file is-boxed is-default">
@@ -8,7 +14,7 @@ export const FileInput = ({ label, description, onChange, errorMessage }) => {
           <input
             className="file-input"
             type="file"
-            accept="image/jpeg, image/png"
+            accept={accept}
             onChange={onChange}
           />
           <span className="file-cta">

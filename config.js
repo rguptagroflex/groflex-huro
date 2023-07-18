@@ -11,7 +11,7 @@ const apiServers = {
   // integration: "https://web-integration-invoiz.buhl.de",
   // admin: "https://invoiz-admin.buhl.de",
 };
-const loginExpireHours = 24;
+const loginExpireHours = 14;
 const baseUrl = apiServers.local;
 
 const setResourceHost = () => {
@@ -20,30 +20,34 @@ const setResourceHost = () => {
 const resourceHost = setResourceHost();
 
 const resourceUrls = {
-  //Registration token
+  //1st Registration token
   getRegistartionToken: `${resourceHost}user/email`, // POST | body: {email: "ritesh098765432+15dev@gmail"} | Gives the registration token
   /*All verification APIs will need Registration token */
-  //Email verification
+  //Email verification and 2nd Registeration token, this can also be used as Login token
   sendEmailOtp: `${resourceHost}user/password`, //  POST | body: {password: "rguptagrofleX1@", email: "ritesh098765432+15dev@gmail.com"} | Gives verifystep = "code"
   resendEmailOtp: `${resourceHost}user/email/resend_code`, // Dont know the method :( | no payload | no body res
   verifyEmailOtp: `${resourceHost}user/email/code`, // POST | body: {code: "1234"} | no body res :(
   //Mobile verification
   sendMobileOtp: `${resourceHost}tenant/set_mobile`, // PUT | body: {mobileNo : "9876543210"} | gives no body response
   verifyMobileOtp: `${resourceHost}tenant/verify_mobile_otp`, // PUT | body : {mobileOtp : "123456"} | success : true
-  /* ALl in-app APIs will need Login token */
   //Login
   login: `${resourceHost}session/create?type=bearer`,
   checkEmailExist: `${resourceHost}user/checkUser`,
-  //After login token needing
+  /* ALl in-app APIs will need Login token */
+  //Articles
+  articleNumber: `${resourceHost}article/number`, //Create article's number
   articles: `${resourceHost}article?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
+  article: `${resourceHost}article/`, // concatenate article Id
+  articleHistory: (articleId) =>
+    `${resourceHost}article/${articleId}/history?offset=0&limit=5&orderBy=date&desc=true&filter=all`, // pass article Id
+  articleSearch: `${resourceHost}find/eanRecord/`, // concatenate search query
+  //Customers
   customers: `${resourceHost}customer?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
   tenant: `${resourceHost}tenant`,
   accountSettings: `${resourceHost}setting/account`,
   changeProfileName: `${resourceHost}user/changePassword`,
   user: `${resourceHost}setting/user`,
   contact: `${resourceHost}customer`,
-  articleSearch: `${resourceHost}find/eanRecord/`, // concatenate search query
-  article: `${resourceHost}article`,
   miscellaneous: `${resourceHost}setting/miscellaneous`,
 };
 
@@ -60,6 +64,7 @@ const checkLoginTokenIsValid = () => {
       new Date().getTime() - parseInt(loginTokenStartTime)
     );
     const hours = Math.ceil(Math.abs(difference / 36e5));
+    console.log("Hours after login: ", hours);
     if (hours <= loginExpireHours) {
       return true;
     }

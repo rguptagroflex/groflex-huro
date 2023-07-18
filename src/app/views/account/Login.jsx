@@ -92,7 +92,7 @@ const Login = () => {
           setFormErrors({ ...formErrors, passwordError: "Password is wrong" });
           return;
         }
-
+        console.log(res, "response after login");
         // Set Token, and login time in localstorage
         webstorageService.setItem(
           webStorageKeyEnum.LOGIN_TOKEN_KEY,
@@ -110,7 +110,7 @@ const Login = () => {
           .then((res) => {
             dispatch({
               type: actionTypes.SET_TENANT_DATA,
-              payload: res.data,
+              payload: res.body.data,
             });
           })
           .then(() => {
@@ -121,7 +121,7 @@ const Login = () => {
               .then((res) => {
                 dispatch({
                   type: actionTypes.SET_USER_DATA,
-                  payload: res.data,
+                  payload: res.body.data,
                 });
               });
           })
@@ -131,10 +131,10 @@ const Login = () => {
                 auth: true,
               })
               .then((res) => {
-                console.log(res.data);
+                console.log(res.body.data);
                 dispatch({
                   type: actionTypes.SET_ACCOUNTINFO_DATA,
-                  payload: res.data,
+                  payload: res.body.data,
                 });
                 navigate("/");
               });

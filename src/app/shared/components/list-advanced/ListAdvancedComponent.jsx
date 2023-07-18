@@ -1,13 +1,13 @@
 import React, { createContext, useCallback, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
 import { ListPaginationComponent } from "./ListPaginationComponent";
 import { ListSearchComponent } from "./ListSearchComponent";
 import { ListHeadbarControls } from "./ListHeadbarControls";
 import ListActionPopup from "./ListActionPopup";
 import "./ListAdvanced.style.scss";
 import groflexService from "../../../services/groflex.service";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
 
 export const GridApiContext = createContext();
 
@@ -28,7 +28,6 @@ export const ListAdvancedComponent = ({
 
   const customActionCellRenderer = (params) => {
     return (
-      
       <ListActionPopup
         actionItems={params.data.actionItems}
         onActionClick={onActionClick}
@@ -84,9 +83,9 @@ export const ListAdvancedComponent = ({
     //   .then((res) => res.json())
     groflexService
       .request(fetchUrl, { auth: true })
-      .then((res) => res.data)
+      .then((res) => res.body.data)
       .then((res) => {
-        // console.log(res, "LIST ADVANCED RES");
+        // console.log(res, "LIST ADVANCED RESPONSE");
         const newColumns = Object.keys(res[0]).filter(
           (col) => !params.columnApi.getColumn(col)
         );

@@ -10,7 +10,7 @@ import ApexChart from "../../shared/components/apexChart/ApexChart";
 import PageContent from "../../shared/components/pageContent/PageContent";
 import { Link } from "react-router-dom";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
-import ChangeEmailModal from "./ChangeEmailModal"; 
+import ChangeEmailModal from "./ChangeEmailModal";
 import ChangePhoneNoModal from "./ChangePhoneNoModal";
 import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
@@ -64,7 +64,7 @@ const AccountSettings = () => {
       .request(`${config.resourceHost}india/states`, { auth: true })
       .then((res) => {
         // console.log(res.data);
-        const newStateOptions = res.data.map((state) => ({
+        const newStateOptions = res.body.data.map((state) => ({
           label: state.stateName,
           value: state.id,
         }));

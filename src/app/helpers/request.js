@@ -1,6 +1,9 @@
+import _ from "lodash";
 import config from "../../../config";
 import webStorageKeyEnum from "../enums/web-storage-key.enum";
+import groflexService from "../services/groflex.service";
 import WebStorageService from "../services/webstorage.service";
+import qs from "qs";
 
 const environment = "local";
 const localHost = "http://localhost:18000/serverconnect?url=";
@@ -9,6 +12,7 @@ const getEndpoint = (endpoint) => {
   return environment === "local" ? `${localHost}${endpoint}` : endpoint;
 };
 
+//Login
 export const login = (email, password) => {
   if (environment === "local") {
     return new Promise((resolve, reject) => {
@@ -58,68 +62,6 @@ export const logout = () => {
   WebStorageService.removeItem(webStorageKeyEnum.LOGIN_TOKEN_KEY);
   WebStorageService.removeItem(webStorageKeyEnum.LOGIN_TOKEN_START_TIME);
   location.assign("/login");
-};
-
-export const request = (endpoint, options) => {
-  let token = options.token
-    ? options.token
-    : WebStorageService.getItem(webStorageKeyEnum.LOGIN_TOKEN_KEY);
-  // console.log(token, options.auth);
-
-  if (!options?.auth || !token) {
-    console.error("No token provided for request");
-    return new Promise((resolve, reject) => {});
-  }
-
-  // This options object is to be sent to the fetch function
-  const fetchOptions = {
-    method: options.method || "GET",
-    headers: options.headers || { "Content-Type": "application/json" },
-    url: endpoint,
-  };
-
-  fetchOptions.headers.Authorization = `Bearer ${token}`;
-  if (fetchOptions.method !== "GET" && !!options.data) {
-    fetchOptions.body = JSON.stringify(options.data);
-  }
-
-  // Local only accepts POST requests but the options body can be any method
-  if (environment === "local") {
-    // console.log(endpoint, fetchOptions);
-    const defaultLocalhostOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(fetchOptions),
-    };
-    return new Promise((resolve, reject) => {
-      fetch(`${localHost}${endpoint}`, defaultLocalhostOptions).then(
-        (response) => {
-          if (response.ok) {
-            response.json().then((data) => {
-              resolve(data);
-            });
-          } else {
-            reject(response);
-          }
-        }
-      );
-    });
-  } else {
-    // on non local environment
-    return new Promise((resolve, reject) => {
-      fetch(endpoint, fetchOptions).then((response) => {
-        if (response.ok) {
-          response.json().then((data) => {
-            resolve(data);
-          });
-        } else {
-          reject(response);
-        }
-      });
-    });
-  }
 };
 
 /* Registration APIs */
@@ -420,13 +362,6 @@ export const verifyEmailOtp = (code) => {
               }
             })
             .catch((err) => {
-              /*
-              Poorly formed response from backend. 
-              Response Body comes when code is incorrect and not comes when correct.
-              So i have to check for the error that throws looking for any body (above) in response
-              to know it was correct.
-              */
-              // console.log("when no body in response means code is correct");
               resolve({ emailOtpSuccess: true });
             });
         } else {
@@ -562,6 +497,252 @@ export const verifyMobileOtp = (mobileOtp) => {
           reject(response);
         }
       });
+    });
+  }
+};
+
+//Requests after login
+export const request2 = (
+  endpoint,
+  options = { data, auth, authCustomBearerToken, method, headers }
+) => {
+  const token = options.authCustomBearerToken
+    ? options.authCustomBearerToken
+    : WebStorageService.getItem(webStorageKeyEnum.LOGIN_TOKEN_KEY);
+  // console.log(token, options.auth);
+
+  if (!options?.auth || !token) {
+    console.error("No token provided for request");
+    return new Promise((resolve, reject) => {});
+  }
+
+  // This options object is to be sent to the fetch function
+  const fetchOptions = {
+    method: options.method || "GET",
+    headers: options.headers || { "Content-Type": "application/json" },
+    url: endpoint,
+  };
+
+  fetchOptions.headers.Authorization = `Bearer ${token}`;
+  if (fetchOptions.method !== "GET" && !!options.data) {
+    fetchOptions.body = JSON.stringify(options.data);
+  }
+
+  // Local only accepts POST requests but the options body can be any method
+  if (environment === "local") {
+    // console.log(endpoint, fetchOptions);
+    const defaultLocalhostOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(fetchOptions),
+    };
+    return new Promise((resolve, reject) => {
+      fetch(`${localHost}${endpoint}`, defaultLocalhostOptions).then(
+        (response) => {
+          console.log(response, "RAW response from req.js");
+
+          resolve(response);
+          // if (response.ok) {
+          //   response.json().then((data) => {
+          //     resolve(data);
+          //   });
+          // } else {
+          //   reject(response);
+          // }
+        }
+      );
+    });
+  } else {
+    // on non local environment
+    return new Promise((resolve, reject) => {
+      fetch(endpoint, fetchOptions).then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            resolve(data);
+          });
+        } else {
+          reject(response);
+        }
+      });
+    });
+  }
+};
+
+//Request function from old groflex
+
+const blobTypes = ["pdf", "csv"];
+const textTypes = ["json", "text"];
+const isMatching = (header, types) => {
+  if (!header) return header;
+  for (let type of types)
+    if (header.includes(type))
+      // need to modify in future
+      return true;
+};
+
+export const request = (endpoint, options) => {
+  options = options || {};
+
+  const fetchOptions = {
+    method: options.method || "GET",
+    headers: options.headers || { "Content-Type": "application/json" },
+    url: endpoint,
+  };
+
+  const token = WebStorageService.getItem(webStorageKeyEnum.LOGIN_TOKEN_KEY);
+
+  if (options.auth === true && (options.authCustomBearerToken || token)) {
+    if (options.authCustomBearerToken) {
+      fetchOptions.headers.authtoken = options.authCustomBearerToken;
+      fetchOptions.headers["api-version"] = "1";
+
+      if (options.requestId) {
+        fetchOptions.headers["logLevel"] = "Debug";
+        fetchOptions.headers["requestId"] = options.requestId;
+      }
+    } else {
+      fetchOptions.headers.authorization = `Bearer ${token}`;
+    }
+  }
+
+  if (
+    options.customHeaders &&
+    options.customHeaders &&
+    Object.keys(options.customHeaders).length > 0
+  ) {
+    Object.keys(options.customHeaders).forEach((key) => {
+      fetchOptions.headers[key] = options.customHeaders[key];
+    });
+  }
+
+  if (fetchOptions.method === "GET" && options.data) {
+    const forXDataOptimizedParams = _.reduce(
+      options.data,
+      (result, value, key) => {
+        result[key] = _.isString(value) ? `${value}` : value;
+        return result;
+      },
+      {}
+    );
+
+    endpoint = `${fetchOptions.url}?${qs.stringify(forXDataOptimizedParams)}`;
+  } else if (fetchOptions.method !== "GET" && options.data) {
+    fetchOptions.body = JSON.stringify(options.data);
+  }
+
+  if (fetchOptions.method !== "GET" && options.responseType) {
+    fetchOptions.responseType = options.responseType;
+  }
+  // console.log(endpoint, fetchOptions, )
+
+  if (environment == "local") {
+    var options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(fetchOptions),
+    };
+    return new Promise((resolve, reject) => {
+      fetch(`http://localhost:18000/serverconnect?url=${endpoint}`, options)
+        .then((res) => {
+          if (!res.ok) {
+            if (res.status === 401 && res.url !== config.resourceUrls.login) {
+              groflexService.logout();
+            } else {
+              if (res.status === 404) {
+                const error = {
+                  body: res.statusText,
+                };
+
+                reject(error);
+              } else if (res.status === 500) {
+                const error = {
+                  body: res.statusText,
+                };
+
+                reject(error);
+              } else {
+                res.json().then((err) => {
+                  const error = {
+                    body: err,
+                  };
+
+                  reject(error);
+                });
+              }
+            }
+
+            throw Error(res.statusText);
+          }
+          if (isMatching(fetchOptions.headers["Content-Type"], textTypes))
+            return res.text();
+          if (isMatching(fetchOptions.headers["Content-Type"], blobTypes))
+            return res.blob();
+          return res;
+        })
+        .then((data) => {
+          try {
+            if (isMatching(fetchOptions.headers["Content-Type"], textTypes))
+              data = JSON.parse(data);
+            resolve({ body: data });
+          } catch (err) {
+            resolve(true);
+          }
+        })
+        .catch((reason) => {});
+    });
+  } else {
+    return new Promise((resolve, reject) => {
+      fetch(endpoint, fetchOptions)
+        .then((res) => {
+          if (!res.ok) {
+            if (res.status === 401 && res.url !== config.resourceUrls.login) {
+              groflexService.logout();
+            } else {
+              if (res.status === 404) {
+                const error = {
+                  body: res.statusText,
+                };
+
+                reject(error);
+              } else if (res.status === 500) {
+                const error = {
+                  body: res.statusText,
+                };
+
+                reject(error);
+              } else {
+                res.json().then((err) => {
+                  const error = {
+                    body: err,
+                  };
+
+                  reject(error);
+                });
+              }
+            }
+
+            throw Error(res.statusText);
+          }
+          if (isMatching(fetchOptions.headers["Content-Type"], textTypes))
+            return res.text();
+          if (isMatching(fetchOptions.headers["Content-Type"], blobTypes))
+            return res.blob();
+          return res;
+        })
+        .then((data) => {
+          try {
+            if (isMatching(fetchOptions.headers["Content-Type"], textTypes))
+              data = JSON.parse(data);
+            resolve({ body: data });
+          } catch (err) {
+            resolve(true);
+          }
+        })
+        .catch((reason) => {});
     });
   }
 };

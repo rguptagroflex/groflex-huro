@@ -22,7 +22,10 @@ const SharedLayout = () => {
           })
           .then((res) => {
             // console.log(res.data, "TENANT DATA from Shared layout");
-            dispatch({ type: actionTypes.SET_TENANT_DATA, payload: res.data });
+            dispatch({
+              type: actionTypes.SET_TENANT_DATA,
+              payload: res.body.data,
+            });
           })
           .then(() => {
             groflexService
@@ -32,7 +35,7 @@ const SharedLayout = () => {
               .then((res) => {
                 dispatch({
                   type: actionTypes.SET_USER_DATA,
-                  payload: res.data,
+                  payload: res.body.data,
                 });
               });
           })
@@ -44,7 +47,7 @@ const SharedLayout = () => {
               .then((res) => {
                 dispatch({
                   type: actionTypes.SET_ACCOUNTINFO_DATA,
-                  payload: res.data,
+                  payload: res.body.data,
                 });
               });
           });
