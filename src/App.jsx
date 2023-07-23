@@ -19,6 +19,9 @@ import EmailVerification from "./app/views/account/EmailVerification";
 import store from "./app/redux/store";
 import MobileVerification from "./app/views/account/MobileVerification";
 import EditArticle from "./app/views/articles/EditArticle";
+import ArticleDetail from "./app/views/articles/ArticleDetail";
+import "./assets/scss/main.scss";
+import "./styles/app.scss";
 
 store.subscribe(() => {
   console.log(store.getState());
@@ -32,12 +35,16 @@ function App() {
           <Route index element={<Home />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="estimates" element={<Estimates />} />
+          {/* Articles */}
           <Route path="articles" element={<Articles />} />
-          <Route path="create-article" element={<CreateArticle />} />
-          <Route path="article-edit/:articleId" element={<EditArticle />} />
+          <Route path="article/:articleId" element={<ArticleDetail />} />
+          <Route path="article/new" element={<CreateArticle />} />
+          <Route path="article/edit/:articleId" element={<EditArticle />} />
+          {/* Contacts */}
           <Route path="contacts" element={<Contacts />} />
           <Route path="contacts-create" element={<CreateContact />} />
           <Route path="contacts-edit/:contactId" element={<EditContact />} />
+          {/* Other */}
           <Route path="expenses" element={<Expenses />} />
           <Route path="cash-and-bank" element={<CashAndBank />} />
           <Route path="account-settings" element={<AccountSettings />} />

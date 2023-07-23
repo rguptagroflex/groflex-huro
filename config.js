@@ -11,7 +11,7 @@ const apiServers = {
   // integration: "https://web-integration-invoiz.buhl.de",
   // admin: "https://invoiz-admin.buhl.de",
 };
-const loginExpireHours = 14;
+const loginExpireHours = 6;
 const baseUrl = apiServers.local;
 
 const setResourceHost = () => {
@@ -35,7 +35,8 @@ const resourceUrls = {
   checkEmailExist: `${resourceHost}user/checkUser`,
   /* ALl in-app APIs will need Login token */
   //Articles
-  articleNumber: `${resourceHost}article/number`, //Create article's number
+  articleNumber: `${resourceHost}article/number`, //Get Create article's number
+  postArticleImage: `${resourceHost}article/image/`, //Concatenate articleId
   articles: `${resourceHost}article?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
   article: `${resourceHost}article/`, // concatenate article Id
   articleHistory: (articleId) =>
@@ -63,7 +64,7 @@ const checkLoginTokenIsValid = () => {
     const difference = Math.abs(
       new Date().getTime() - parseInt(loginTokenStartTime)
     );
-    const hours = Math.ceil(Math.abs(difference / 36e5));
+    const hours = parseFloat(Math.abs(difference / 36e5).toFixed(2));
     console.log("Hours after login: ", hours);
     if (hours <= loginExpireHours) {
       return true;

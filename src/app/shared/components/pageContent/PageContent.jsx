@@ -3,12 +3,14 @@ import useToggleSidebar from "../../../helpers/hooks/useToggleSidebar";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { FeatherIcon } from "../../featherIcon/FeatherIcon";
+import LoaderSpinner from "../loaderSpinner/LoaderSpinner";
 
 const PageContent = ({
   title,
   children,
   breadCrumbData = [],
   titleActionContent,
+  loading,
 }) => {
   const { sidebarIsActive } = useSelector((state) => state.themeData);
   const toggleSidebar = useToggleSidebar();
@@ -61,33 +63,38 @@ const PageContent = ({
             </div>
           </div>
 
-          <div
-            style={{
-              marginBottom: "24px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-            className="title-wrap"
-          >
-            <div style={{ display: "flex" }}>
-              <FeatherIcon
-                color="#272D30"
-                name="ArrowLeft"
-                size={24}
-                style={{ cursor: "pointer", marginRight: "10px" }}
-                onClick={() => navigate(-1)}
-              />
-              <h1 className="title is-4">{title}</h1>
-            </div>
+          {title && (
             <div
-            // className="h-hidden-mobile"
+              style={{
+                marginBottom: "24px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+              className="title-wrap"
             >
-              {titleActionContent}
+              <div style={{ display: "flex" }}>
+                <FeatherIcon
+                  color="#272D30"
+                  name="ArrowLeft"
+                  size={24}
+                  style={{ cursor: "pointer", marginRight: "10px" }}
+                  onClick={() => navigate(-1)}
+                />
+                <h1 className="title is-4">{title}</h1>
+              </div>
+              <div
+              // className="h-hidden-mobile"
+              >
+                {titleActionContent}
+              </div>
             </div>
-          </div>
-
-          <div className="page-content-inner">{children}</div>
+          )}
+          {loading ? (
+            <LoaderSpinner />
+          ) : (
+            <div className="page-content-inner">{children}</div>
+          )}
         </div>
       </div>
     </div>

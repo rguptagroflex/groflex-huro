@@ -4,19 +4,22 @@ import { ListPaginationComponent } from "./ListPaginationComponent";
 import { ListSearchComponent } from "./ListSearchComponent";
 import { ListHeadbarControls } from "./ListHeadbarControls";
 import ListActionPopup from "./ListActionPopup";
-import "./ListAdvanced.style.scss";
 import groflexService from "../../../services/groflex.service";
+import "./ListAdvanced.style.scss";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
 export const GridApiContext = createContext();
 
 export const ListAdvancedComponent = ({
+  onRowClicked,
   columnDefs,
   onActionClick,
   actionMenuData,
   fetchUrl,
+  onCellClicked,
 }) => {
+  const [dataIsEmptyFlag, setDataIsEmptyFlag] = useState(false);
   const [gridApi, setGridApi] = useState();
   const [gridColumnApi, setGridColumnApi] = useState();
   const [isFiltered, setIsFiltered] = useState(false);
@@ -27,10 +30,11 @@ export const ListAdvancedComponent = ({
   );
 
   const customActionCellRenderer = (params) => {
+    // console.log(params, "ON ACTION CLICK MENu CLICK");
     return (
       <ListActionPopup
         actionItems={params.data.actionItems}
-        onActionClick={onActionClick}
+        onActionClick={(...args) => onActionClick(...args, params)}
         actionData={params.data}
       />
     );
@@ -79,13 +83,16 @@ export const ListAdvancedComponent = ({
   const onGridReady = useCallback((params) => {
     setGridApi(params.api);
     setGridColumnApi(params.columnApi);
-    // fetch("http://localhost:18000/serverconnect", fetchBody)
-    //   .then((res) => res.json())
     groflexService
       .request(fetchUrl, { auth: true })
       .then((res) => res.body.data)
       .then((res) => {
         // console.log(res, "LIST ADVANCED RESPONSE");
+        if (res.length === 0) {
+          setDataIsEmptyFlag(true);
+          return;
+          console.log("Empty data list");
+        }
         const newColumns = Object.keys(res[0]).filter(
           (col) => !params.columnApi.getColumn(col)
         );
@@ -122,6 +129,17 @@ export const ListAdvancedComponent = ({
     setIsFiltered(params.api.isAnyFilterPresent());
   };
 
+  const handleOnRowClick = (e) => {
+    if (
+      e.eventPath[0].ariaColIndex === null ||
+      String(e.eventPath[0].ariaColIndex) ===
+        String(e.columnApi.columnModel.columnDefs.length)
+    ) {
+      return;
+    }
+    onRowClicked(e);
+  };
+
   return (
     <GridApiContext.Provider
       value={{
@@ -141,12 +159,34 @@ export const ListAdvancedComponent = ({
         </div>
 
         <div className="my-grid-container ag-theme-alpine">
-          <AgGridReact
-            gridOptions={gridOptions}
-            components={components}
-            onGridReady={onGridReady}
-            onFilterChanged={onFilterChanged}
-          />
+          {dataIsEmptyFlag ? (
+            <div
+              className="title is-4"
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              List is empty
+            </div>
+          ) : (
+            <AgGridReact
+              onRowClicked={handleOnRowClick}
+              onCellClicked={onCellClicked}
+              gridOptions={gridOptions}
+              components={components}
+              onGridReady={onGridReady}
+              onFilterChanged={onFilterChanged}
+              getRowStyle={(params) => {
+                return {
+                  cursor: onRowClicked ? "pointer" : "default",
+                };
+              }}
+            />
+          )}
         </div>
       </div>
 

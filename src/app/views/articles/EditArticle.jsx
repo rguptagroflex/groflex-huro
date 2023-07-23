@@ -9,9 +9,10 @@ import { TextArea } from "../../shared/components/textArea/TextArea";
 import { Switch } from "../../shared/components/switch/Switch";
 import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const EditArticle = () => {
+  const navigate = useNavigate();
   const { articleId } = useParams();
   console.log(articleId, "articleId");
   const [editArticleFormData, setEditArticleFormData] = useState({
@@ -40,6 +41,10 @@ const EditArticle = () => {
         .request(`${config.resourceUrls.article}${articleId}`, { auth: true })
         .then((res) => {
           console.log(res, "Article data from edit");
+          if (!res.body.data) {
+            navigate("/articles");
+            return;
+          }
           setEditArticleFormData({
             ...editArticleFormData,
             articleNumber: String(res.body.data.number),
@@ -69,6 +74,7 @@ const EditArticle = () => {
             value: 0,
             gstRate: res.body.data.vatPercent,
             notes: res.body.data.notes,
+            sku: String(res.body.data.skuNo),
           });
         });
     }
@@ -103,6 +109,7 @@ const EditArticle = () => {
       value: 0,
       vatPercent: editArticleFormData.gstRate,
       notes: editArticleFormData.notes,
+      skuNo: String(editArticleFormData.sku),
     };
     groflexService
       .request(`${config.resourceUrls.article}${articleId}`, {
@@ -112,9 +119,12 @@ const EditArticle = () => {
       })
       .then((res) => {
         if (res.body.data) {
-          console.log(res, "Article Edited Succcessfullys");
+          navigate("/articles");
+          groflexService.toast.success("Article edit succesfully");
+          // console.log(res, "Article Edited Succcessfullys");
         } else {
-          console.log(res, "Article Edited failed");
+          groflexService.toast.error("Failed to edit article");
+          // console.log(res, "Article Edited failed");
         }
       });
 
@@ -317,6 +327,7 @@ const EditArticle = () => {
 
   return (
     <PageContent
+      loading={editArticleFormData.articleNumber ? false : true}
       title={"Edit Article"}
       breadCrumbData={["Home", "Articles", "Edit Article"]}
       titleActionContent={
@@ -327,11 +338,7 @@ const EditArticle = () => {
     >
       <div className="columns is-multiline">
         <div className="column is-7">
-          <AdvancedCard
-            type={"s-card"}
-            // footer
-            // footerContentRight={<Button isSuccess>Save</Button>}
-          >
+          <AdvancedCard type={"s-card"}>
             <h2 className="title is-5 is-bold">Article Info</h2>
             <div className="columns is-multiline m-b-5">
               <div className="column is-6">
@@ -454,7 +461,7 @@ const EditArticle = () => {
             <div className="columns is-multiline m-b-5">
               <div className="column is-12">
                 <div className="field">
-                  <label>SKU</label>
+                  <label>SKU *</label>
                   <Input
                     onChange={handleSkuChange}
                     placeholder={"Enter SKU"}
@@ -504,15 +511,7 @@ const EditArticle = () => {
 
           <div className="m-t-20" />
 
-          <AdvancedCard
-            type={"s-card"}
-            footer
-            // footerContentRight={
-            //   <Button onClick={handleEdit} isSuccess>
-            //     Save
-            //   </Button>
-            // }
-          >
+          <AdvancedCard type={"s-card"}>
             <h2 className="title is-5 is-bold">Price</h2>
 
             <div className="columns is-multiline m-b-5">

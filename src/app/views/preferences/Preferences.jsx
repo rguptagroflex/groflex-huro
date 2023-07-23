@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Input } from "../../shared/components/input/Input";
 import { Button } from "../../shared/components/button/Button";
 import { TextArea } from "../../shared/components/textArea/TextArea";
@@ -117,6 +117,7 @@ function Preferences() {
 
   return (
     <PageContent
+      loading={!tenantData}
       title="Preferences"
       breadCrumbData={["Home", "Account Settings", "Account details"]}
     >

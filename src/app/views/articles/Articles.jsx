@@ -16,9 +16,7 @@ const actions = [
 
 const Articles = () => {
   const navigate = useNavigate();
-  const [rerender, setRerender] = useState(false);
-  const handleActionClick = (action, row) => {
-    console.log(row, "Row info dude");
+  const handleActionClick = (action, row, params) => {
     switch (action.name) {
       case "Delete":
         groflexService
@@ -27,15 +25,16 @@ const Articles = () => {
             method: "DELETE",
           })
           .then((res) => {
-            if (!!res?.body?.name) {
+            if (res?.body?.message) {
               console.log(res, "Delete Failed");
             } else {
-              console.log(res, "Delete Succesfull");
+              params.api.applyTransaction({ remove: [row] });
+              console.log(res, "Deleted Succesfullyyy");
             }
           });
         break;
       case "Edit":
-        navigate(`/article-edit/${row.id}`);
+        navigate(`/article/edit/${row.id}`);
     }
   };
 
@@ -45,12 +44,15 @@ const Articles = () => {
       titleIsBreadCrumb
       breadCrumbData={["Home", "Articles"]}
       titleActionContent={
-        <Button onClick={() => navigate("/create-article")} isSuccess>
+        <Button onClick={() => navigate("/article/new")} isSuccess>
           Create Article
         </Button>
       }
     >
       <ListAdvancedComponent
+        onRowClicked={(e) => {
+          navigate(`/article/${e.data.id}`);
+        }}
         onActionClick={handleActionClick}
         columnDefs={[
           {

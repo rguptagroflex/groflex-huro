@@ -9,8 +9,14 @@ import { TextArea } from "../../shared/components/textArea/TextArea";
 import { Switch } from "../../shared/components/switch/Switch";
 import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
+import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import FontAwesomeIcon from "../../shared/fontAwesomeIcon/FontAwesomeIcon";
+import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 
 const CreateArticle = () => {
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   const [createArticleFormData, setCreateArticleFormData] = useState({
     articleNumber: "",
     hsnSacCode: "",
@@ -30,6 +36,7 @@ const CreateArticle = () => {
     notes: "",
     showNotes: false,
   });
+  const [articleImage, setArticleImage] = useState(null);
 
   const [formErrors, setFormErrors] = useState({
     articleImageError: "",
@@ -43,6 +50,7 @@ const CreateArticle = () => {
           ...createArticleFormData,
           articleNumber: Number(res.body.data),
         });
+        setLoading(false);
         // console.log(res, "Article Number");
       });
   }, []);
@@ -76,6 +84,7 @@ const CreateArticle = () => {
       value: 0,
       vatPercent: createArticleFormData.gstRate,
       notes: createArticleFormData.notes,
+      skuNo: String(createArticleFormData.sku),
     };
     groflexService
       .request(config.resourceUrls.article, {
@@ -84,7 +93,14 @@ const CreateArticle = () => {
         method: "POST",
       })
       .then((res) => {
-        console.log(res, "Article created response");
+        if (res.body.data) {
+          groflexService.toast.success("Article created succesfully");
+          navigate("/articles");
+          // console.log(res, "Article created Succcessfullys");
+        } else {
+          groflexService.toast.error("Failed to create article");
+          // console.log(res, "Article creation failed");
+        }
       });
 
     console.log(payload);
@@ -290,6 +306,7 @@ const CreateArticle = () => {
 
   return (
     <PageContent
+      loading={loading}
       title={"Create Article"}
       breadCrumbData={["Home", "Articles", "Create Article"]}
       titleActionContent={
@@ -300,11 +317,7 @@ const CreateArticle = () => {
     >
       <div className="columns is-multiline">
         <div className="column is-7">
-          <AdvancedCard
-            type={"s-card"}
-            // footer
-            // footerContentRight={<Button isSuccess>Save</Button>}
-          >
+          <AdvancedCard type={"s-card"}>
             <h2 className="title is-5 is-bold">Article Info</h2>
             <div className="columns is-multiline m-b-5">
               <div className="column is-6">
@@ -398,7 +411,7 @@ const CreateArticle = () => {
                           });
                         }}
                       >
-                        Change Logo
+                        Change Image
                       </p>
                     </div>
                   ) : (
@@ -430,7 +443,7 @@ const CreateArticle = () => {
             <div className="columns is-multiline m-b-5">
               <div className="column is-12">
                 <div className="field">
-                  <label>SKU</label>
+                  <label>SKU *</label>
                   <Input
                     onChange={handleSkuChange}
                     placeholder={"Enter SKU"}
@@ -480,15 +493,7 @@ const CreateArticle = () => {
 
           <div className="m-t-20" />
 
-          <AdvancedCard
-            type={"s-card"}
-            footer
-            // footerContentRight={
-            //   <Button onClick={handleSave} isSuccess>
-            //     Save
-            //   </Button>
-            // }
-          >
+          <AdvancedCard type={"s-card"}>
             <h2 className="title is-5 is-bold">Price</h2>
 
             <div className="columns is-multiline m-b-5">

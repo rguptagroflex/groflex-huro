@@ -1,4 +1,3 @@
-import webStorageKeyEnum from "../enums/web-storage-key.enum";
 import {
   login,
   request,
@@ -12,7 +11,7 @@ import {
   resendEmailOtp,
   getRegistrationToken,
 } from "../helpers/request";
-import WebStorageService from "./webstorage.service";
+import toastService from "./toast.service";
 
 class GroflexService {
   constructor() {
@@ -33,6 +32,7 @@ class GroflexService {
     this.sendMobileOtp = sendMobileOtp;
     this.verifyMobileOtp = verifyMobileOtp;
     this.getRegistartionToken = getRegistrationToken;
+    this.toast = toastService;
   }
 }
 export default new GroflexService();

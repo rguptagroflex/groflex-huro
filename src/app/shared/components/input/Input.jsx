@@ -2,7 +2,6 @@ import React from "react";
 
 export const Input = ({
   type = "text",
-  hasTogglePasswordView,
   placeholder,
   focusType,
   helpText,

@@ -190,7 +190,7 @@ const Login = () => {
                     <Input
                       helpText={formErrors.emailError}
                       hasError={formErrors.emailError}
-                      hasValidation
+                      hasValidation={true}
                       name="email"
                       onChange={handleEmailChange}
                       placeholder={"Enter email"}

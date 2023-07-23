@@ -402,6 +402,7 @@ const AccountSettings = () => {
   // console.log(companyInfo.state);
   return (
     <PageContent
+      loading={!stateOptions.length}
       title={"Account Details"}
       breadCrumbData={["Home", "Account Settings", "Account details"]}
     >
@@ -524,7 +525,7 @@ const AccountSettings = () => {
                   </>
                 </AdvancedCard>
 
-                <div className="m-t-15" />
+                <div className="m-t-20" />
 
                 {/* COMPANY INFO */}
                 <AdvancedCard
@@ -625,7 +626,7 @@ const AccountSettings = () => {
                         <div className="field">
                           <label>Address</label>
                           <TextArea
-                            rows={2}
+                            rows={3}
                             placeholder="Enter Details"
                             onChange={(e) =>
                               setCompanyInfo({
