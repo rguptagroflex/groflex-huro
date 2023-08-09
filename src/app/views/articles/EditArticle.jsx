@@ -120,7 +120,7 @@ const EditArticle = () => {
       .then((res) => {
         if (res.body.data) {
           navigate("/articles");
-          groflexService.toast.success("Article edit succesfully");
+          groflexService.toast.success("Article edited succesfully");
           // console.log(res, "Article Edited Succcessfullys");
         } else {
           groflexService.toast.error("Failed to edit article");

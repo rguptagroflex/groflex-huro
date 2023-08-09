@@ -6,6 +6,7 @@ import { FeatherIcon } from "../../featherIcon/FeatherIcon";
 import LoaderSpinner from "../loaderSpinner/LoaderSpinner";
 
 const PageContent = ({
+  navigateBackTo,
   title,
   children,
   breadCrumbData = [],
@@ -79,7 +80,9 @@ const PageContent = ({
                   name="ArrowLeft"
                   size={24}
                   style={{ cursor: "pointer", marginRight: "10px" }}
-                  onClick={() => navigate(-1)}
+                  onClick={() =>
+                    navigateBackTo ? navigate(navigateBackTo) : navigate(-1)
+                  }
                 />
                 <h1 className="title is-4">{title}</h1>
               </div>

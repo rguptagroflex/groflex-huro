@@ -5,7 +5,6 @@ import { useDispatch } from "react-redux";
 import config from "../../../../config";
 import groflexService from "../../services/groflex.service";
 import * as actionTypes from "../../redux/actions/actions.types";
-import store from "../../redux/store";
 import webStorageKeyEnum from "../../enums/web-storage-key.enum";
 import webstorageService from "../../services/webstorage.service";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
@@ -248,10 +247,10 @@ const Login = () => {
                 ) : null}
 
                 <Button
+                  isDisabled={!email}
                   isBold
-                  style={{ margin: "20px 0" }}
+                  className={"mt-20 mb-20"}
                   isFullWidth
-                  isLight={!email}
                   isSuccess={email}
                   onClick={handleLogin}
                 >

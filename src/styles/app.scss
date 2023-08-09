@@ -1,7 +1,9 @@
+//Variables
+@import "../assets//scss/abstracts/variables";
+
 // SHARED
 @import "./components/shared/otpInputComponent/otp-input-component";
 @import "./components/shared/toast/toast";
-
 
 // VIEWS
 @import "./components/views/Articles/articleOverview";

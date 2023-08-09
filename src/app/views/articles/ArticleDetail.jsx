@@ -14,6 +14,11 @@ import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { TextArea } from "../../shared/components/textArea/TextArea";
 import Articles from "./Articles";
+import { Button } from "../../shared/components/button/Button";
+import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
+import FontAwesomeIcon from "../../shared/fontAwesomeIcon/FontAwesomeIcon";
+import OnClickOutside from "../../shared/components/onClickOutside/OnClickOutside";
+import { ListAdvancedComponent } from "../../shared/components/list-advanced/ListAdvancedComponent";
 
 const ArticleDetail = () => {
   const navigate = useNavigate();
@@ -37,6 +42,50 @@ const ArticleDetail = () => {
         });
     }
   }, [articleId]);
+
+  //Dropdown Menu
+  const DropdownMenu = () => {
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    return (
+      <div style={{ display: "flex" }}>
+        <Button
+          onClick={() => navigate(`/article/edit/${articleData.id}`)}
+          isOutlined
+          isPrimary
+          isBold
+          className={"mr-5"}
+        >
+          Edit Details
+        </Button>
+        <span style={{ position: "relative" }}>
+          <Button
+            onClick={() => setIsDropdownOpen(true)}
+            isPrimary
+            isBold
+            iconRight={
+              <FontAwesomeIcon color="white" size={13} name={"angle-down"} />
+            }
+            className={"is-bold pr-4"}
+          >
+            <span className="mr-1">Create New</span>
+          </Button>
+
+          {isDropdownOpen && (
+            <OnClickOutside onClickOutside={() => setIsDropdownOpen(false)}>
+              <div className="articleDetailDropdownContainer">
+                <Link className="articleDetailropdownItem" to="">
+                  Expenditure
+                </Link>
+                <Link className="articleDetailropdownItem" to="">
+                  Purchase Order
+                </Link>
+              </div>
+            </OnClickOutside>
+          )}
+        </span>
+      </div>
+    );
+  };
 
   //Overview Tab Component
   const OverviewTab = () => {
@@ -249,7 +298,9 @@ const ArticleDetail = () => {
                       <p style={{ fontWeight: "500", marginBottom: "5px" }}>
                         Selling Price (Net)
                       </p>
-                      <div style={{ marginTop: "auto" }}>₹12,800</div>
+                      <div style={{ marginTop: "auto" }}>
+                        {formatCurrency(articleData.price)}
+                      </div>
                     </div>
                     <div
                       style={{
@@ -274,7 +325,9 @@ const ArticleDetail = () => {
                       <p style={{ fontWeight: "500", marginBottom: "5px" }}>
                         Selling price (Gross)
                       </p>
-                      <div style={{ marginTop: "auto" }}>₹12,800</div>
+                      <div style={{ marginTop: "auto" }}>
+                        {formatCurrency(articleData.priceGross)}
+                      </div>
                     </div>
                     <div
                       style={{
@@ -299,7 +352,7 @@ const ArticleDetail = () => {
                       <p style={{ fontWeight: "500", marginBottom: "5px" }}>
                         Total revenue
                       </p>
-                      <div style={{ marginTop: "auto" }}>₹12,800</div>
+                      <div style={{ marginTop: "auto" }}>No data</div>
                     </div>
                     <div
                       style={{
@@ -324,7 +377,9 @@ const ArticleDetail = () => {
                       <p style={{ fontWeight: "500", marginBottom: "5px" }}>
                         Purchase price (Net)
                       </p>
-                      <div style={{ marginTop: "auto" }}>₹12,800</div>
+                      <div style={{ marginTop: "auto" }}>
+                        {formatCurrency(articleData.purchasePrice)}
+                      </div>
                     </div>
                     <div
                       style={{
@@ -349,7 +404,9 @@ const ArticleDetail = () => {
                       <p style={{ fontWeight: "500", marginBottom: "5px" }}>
                         Purchase price (Gross)
                       </p>
-                      <div style={{ marginTop: "auto" }}>₹12,800</div>
+                      <div style={{ marginTop: "auto" }}>
+                        {formatCurrency(articleData.purchasePriceGross)}
+                      </div>
                     </div>
                     <div
                       style={{
@@ -375,7 +432,7 @@ const ArticleDetail = () => {
                       <p style={{ fontWeight: "500", marginBottom: "5px" }}>
                         Total orders
                       </p>
-                      <div style={{ marginTop: "auto" }}>75pcs</div>
+                      <div style={{ marginTop: "auto" }}>No data</div>
                     </div>
                   </div>
                 </AdvancedCard>
@@ -486,14 +543,51 @@ const ArticleDetail = () => {
     );
   };
 
-  //Overview Component
+  //History Tab Component
   const HistoryTab = () => {
     return (
       <div
         id="article-history-tab"
         className={`tab-content ${overViewActive ? "" : "is-active"}`}
       >
-        <Articles />
+        <ListAdvancedComponent
+          columnDefs={[
+            {
+              field: "number",
+              headerName: "No.",
+            },
+            { field: "title", headerName: "Article Name" },
+            {
+              field: "mrp",
+              headerName: "MRP",
+              // cellClass: ListAdvancedDefaultSettings.EXCEL_STYLE_IDS.Currency,
+              valueFormatter: (evt) => {
+                return formatCurrency(evt.value);
+              },
+              // headerComponent: CustomShowHeaderSum,
+              headerComponentParams: { value: "mrp", headerName: "MRP" },
+            },
+            { field: "category", headerName: "Category" },
+            { field: "eanNo", headerName: "EAN" },
+            // { field: "skuNo", headerName: "SKU" },
+            {
+              field: "purchasePrice",
+              headerName: "Purchase Price (NET)",
+              valueFormatter: (evt) => {
+                return formatCurrency(evt.value);
+              },
+            },
+            {
+              field: "price",
+              headerName: "Sales Price (NET)",
+              valueFormatter: (evt) => {
+                return formatCurrency(evt.value);
+              },
+            },
+          ]}
+          fetchUrl={config.resourceUrls.articleHistory(articleId)}
+          // actionMenuData={actions}
+        />
       </div>
     );
   };
@@ -504,6 +598,7 @@ const ArticleDetail = () => {
       title={overViewActive ? "Article Overview" : "History"}
       breadCrumbData={["Home", "Articles", "Article Overview"]}
       loading={articleData?.id ? false : true}
+      titleActionContent={<DropdownMenu />}
     >
       <div className="tabs-wrapper">
         {/* Tab switchers */}

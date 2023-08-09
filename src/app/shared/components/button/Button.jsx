@@ -3,6 +3,7 @@ import React from "react";
 export const Button = ({
   className,
   children,
+  iconRight,
   isBold,
   isPrimary,
   isSuccess,
@@ -55,7 +56,8 @@ export const Button = ({
 
     isLoading && classes.push("is-loading");
 
-    isDisabled && classes.push("is-disabled");
+    // isDisabled && classes.push("is-disabled");
+    isDisabled && classes.push("is-light");
 
     isFullWidth && classes.push("is-fullwidth");
 
@@ -64,6 +66,11 @@ export const Button = ({
 
   return (
     <button
+      style={{
+        pointerEvents: isDisabled && "none",
+        opacity: isDisabled && 0.6,
+        cursor: isDisabled && "default !important",
+      }}
       onClick={onClick}
       {...rest}
       className={`button h-button ${getButtonClasses()}`}
@@ -73,6 +80,8 @@ export const Button = ({
       )}
 
       <span>{children}</span>
+
+      {iconRight && <span>{iconRight}</span>}
     </button>
   );
 };

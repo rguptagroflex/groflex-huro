@@ -72,7 +72,7 @@ const Articles = () => {
           },
           { field: "category", headerName: "Category" },
           { field: "eanNo", headerName: "EAN" },
-          { field: "sku", headerName: "SKU" },
+          // { field: "skuNo", headerName: "SKU" },
           {
             field: "purchasePrice",
             headerName: "Purchase Price (NET)",
