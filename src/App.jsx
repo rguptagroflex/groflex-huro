@@ -22,6 +22,8 @@ import EditArticle from "./app/views/articles/EditArticle";
 import ArticleDetail from "./app/views/articles/ArticleDetail";
 import "./assets/scss/main.scss";
 import "./styles/app.scss";
+import Crm from "./app/views/crm/Crm";
+import CrmCreateContact from "./app/views/crm/CrmCreateContact";
 
 store.subscribe(() => {
   console.log(store.getState());
@@ -50,6 +52,9 @@ function App() {
           <Route path="account-settings" element={<AccountSettings />} />
           <Route path="preferences" element={<Preferences />} />
           <Route path="notifications" element={<Notifications />} />
+          //CRM route
+          <Route path="/crm" element={<Crm />} />
+          <Route path="/crm/crmCreateContact" element={<CrmCreateContact />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

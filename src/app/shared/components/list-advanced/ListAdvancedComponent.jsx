@@ -5,7 +5,7 @@ import { ListSearchComponent } from "./ListSearchComponent";
 import { ListHeadbarControls } from "./ListHeadbarControls";
 import ListActionPopup from "./ListActionPopup";
 import groflexService from "../../../services/groflex.service";
-import "./ListAdvanced.style.scss";
+// import "./ListAdvanced.style.scss";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 

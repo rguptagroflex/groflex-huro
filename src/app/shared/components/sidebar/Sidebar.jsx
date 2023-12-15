@@ -16,23 +16,28 @@ const sidebarRoutes = [
     icon: "Activity",
   },
   {
-    route: "/estimates",
+    route: "/sales",
     icon: "TrendingUp",
-  },
-  {
-    route: "/articles",
-    icon: "Inbox",
   },
   {
     route: "/contacts",
     icon: "Users",
   },
   {
+    route: "/articles",
+    icon: "Inbox",
+  },
+
+  {
     route: "/expenses",
     icon: "ShoppingBag",
   },
   {
-    route: "/cash-and-bank",
+    route: "/inventory",
+    icon: "ShoppingBag",
+  },
+  {
+    route: "/crm",
     icon: "CreditCard",
   },
 ];
@@ -58,8 +63,10 @@ const Sidebar = () => {
       return { margin: "406px 0 0 0", class: "from-top" };
     } else if (currentLocation.startsWith("/expenses")) {
       return { margin: "470px 0 0 0", class: "from-top" };
-    } else if (currentLocation.startsWith("/cash-and-bank")) {
+    } else if (currentLocation.startsWith("/inventory")) {
       return { margin: "534px 0 0 0", class: "from-top" };
+    } else if (currentLocation.startsWith("/crm")) {
+      return { margin: "598px 0 0 0", class: "from-top" };
     } else if (currentLocation.startsWith("/notifications")) {
       return { margin: "0 0 128px 0", class: "from-bottom" };
     }
@@ -98,10 +105,10 @@ const Sidebar = () => {
         </div>
         <div className="sidebar-inner">
           {/* Sidebar routes */}
-          <div
+          {/* <div
             className={`naver ${getNaverMarginInfo()?.class}`}
             style={{ margin: getNaverMarginInfo()?.margin, zIndex: 1 }}
-          />
+          /> */}
           <div
             className="naver from-bottom"
             style={{
@@ -110,7 +117,14 @@ const Sidebar = () => {
               zIndex: 1,
             }}
           />
-          <ul className="icon-menu">
+          <ul
+            className="icon-menu"
+            style={{
+              overflowY: "auto",
+              maxHeight: "calc(100% - 128px)",
+              overflowX: "hidden",
+            }}
+          >
             {sidebarRoutes.map((linkItem) => {
               return (
                 <li key={linkItem.route}>
@@ -123,6 +137,7 @@ const Sidebar = () => {
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
+                        borderLeft: isActive ? "5px solid #00A353" : "",
                       };
                     }}
                     to={linkItem.route}
