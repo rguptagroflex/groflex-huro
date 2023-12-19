@@ -26,7 +26,7 @@ import Crm from "./app/views/crm/Crm";
 import CrmCreateContact from "./app/views/crm/CrmCreateContact";
 
 store.subscribe(() => {
-  console.log(store.getState());
+  // console.log(store.getState());
 });
 
 function App() {
