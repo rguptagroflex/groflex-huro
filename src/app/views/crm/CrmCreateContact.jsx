@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageContent from "../../shared/components/pageContent/PageContent";
 import { Button } from "../../shared/components/button/Button";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +32,8 @@ const CrmCreateContact = () => {
     notes: "",
     showNotes: false,
   });
+
+  const [topbarButton, setTopbarButton] = useState(false);
 
   const onCrmContactFieldChange = (key, value) => {
     // newArticle[key] = value;
@@ -139,6 +141,21 @@ const CrmCreateContact = () => {
       showNotes: !createCrmContactFormData.showNotes,
     });
   };
+
+  const disableTopbarButton = () => {
+    let isDisabled = false;
+    if (!createCrmContactFormData.firstName) {
+      isDisabled = true;
+    }
+    if (!createCrmContactFormData.lastName) {
+      isDisabled = true;
+    }
+    setTopbarButton(isDisabled);
+  };
+
+  useEffect(() => {
+    disableTopbarButton();
+  }, [createCrmContactFormData]);
   console.log(createCrmContactFormData);
   return (
     <PageContent
@@ -146,7 +163,11 @@ const CrmCreateContact = () => {
       titleIsBreadCrumb
       breadCrumbData={["Home", "Crm", "Create Contact"]}
       titleActionContent={
-        <Button onClick={() => navigate("/crm/createNewContact")} isSuccess>
+        <Button
+          onClick={() => navigate("/crm/createNewContact")}
+          isSuccess
+          isDisabled={topbarButton}
+        >
           Save
         </Button>
       }

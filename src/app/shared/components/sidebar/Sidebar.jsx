@@ -30,15 +30,15 @@ const sidebarRoutes = [
 
   {
     route: "/expenses",
-    icon: "ShoppingBag",
+    icon: "CreditCard",
   },
   {
     route: "/inventory",
-    icon: "ShoppingBag",
+    icon: "Archive",
   },
   {
     route: "/crm",
-    icon: "CreditCard",
+    icon: "Briefcase",
   },
 ];
 
