@@ -24,6 +24,7 @@ import "./assets/scss/main.scss";
 import "./styles/app.scss";
 import Crm from "./app/views/crm/Crm";
 import CrmCreateContact from "./app/views/crm/CrmCreateContact";
+import CrmLeadOverview from "./app/views/crm/CrmLeadOverview";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -55,6 +56,7 @@ function App() {
           //CRM route
           <Route path="/crm" element={<Crm />} />
           <Route path="/crm/crmCreateContact" element={<CrmCreateContact />} />
+          <Route path="/crm/crmLead/overview" element={<CrmLeadOverview />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

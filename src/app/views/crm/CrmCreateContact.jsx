@@ -65,6 +65,20 @@ const CrmCreateContact = () => {
       industry: option.value,
     });
   };
+
+  const handleLeadSourceChange = (option) => {
+    setCreateCrmContactFormData({
+      ...createCrmContactFormData,
+      leadSource: option.value,
+    });
+  };
+
+  const handleLeadStatusChange = (option) => {
+    setCreateCrmContactFormData({
+      ...createCrmContactFormData,
+      leadStatus: option.value,
+    });
+  };
   const handleLeadOwnerChange = (e) => {
     setCreateCrmContactFormData({
       ...createCrmContactFormData,
@@ -179,7 +193,7 @@ const CrmCreateContact = () => {
             <div className="columns is-multiline m-b-5">
               <div className="column is-6">
                 <div className="field">
-                  <label>First Name</label>
+                  <label>First Name *</label>
                   <Input
                     onChange={handleFirstNameChange}
                     placeholder={"None"}
@@ -225,6 +239,39 @@ const CrmCreateContact = () => {
                     placeholder={"None"}
                     onChange={handleIndustryChange}
                     value={createCrmContactFormData.industry}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="columns is-multiline m-b-5">
+              <div className="column is-6">
+                <div className="field">
+                  <label>Lead Source</label>
+                  <SelectInput
+                    options={[
+                      { label: "source 1", value: "source 1" },
+                      { label: "source 2", value: "source 2" },
+                      { label: "source 3", value: "source 3" },
+                    ]}
+                    placeholder={"None"}
+                    onChange={handleLeadSourceChange}
+                    value={createCrmContactFormData.leadSource}
+                  />
+                </div>
+              </div>
+              <div className="column is-6">
+                <div className="field">
+                  <label>Lead Status</label>
+                  <SelectInput
+                    options={[
+                      { label: "status1", value: "status1" },
+                      { label: "status2", value: "status2" },
+                      { label: "status3", value: "status3" },
+                    ]}
+                    placeholder={"None"}
+                    onChange={handleLeadStatusChange}
+                    value={createCrmContactFormData.leadStatus}
                   />
                 </div>
               </div>
