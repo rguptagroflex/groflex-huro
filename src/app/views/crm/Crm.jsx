@@ -67,7 +67,18 @@ const Crm = () => {
       titleIsBreadCrumb
       breadCrumbData={["Home", "Crm"]}
       titleActionContent={
-        <Button onClick={() => navigate("/crm/crmCreateContact")} isSuccess>
+        <Button
+          onClick={() =>
+            navigate("/crm/crmCreateForm", {
+              state: {
+                title: "Create Contact",
+                api: "Create contact api",
+                infoTitle: "Contact Info",
+              },
+            })
+          }
+          isSuccess
+        >
           Create new contact
         </Button>
       }

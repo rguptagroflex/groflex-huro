@@ -67,7 +67,18 @@ const CrmLeadOverview = () => {
       titleIsBreadCrumb
       breadCrumbData={["Home", "CRM", "Leads"]}
       titleActionContent={
-        <Button onClick={() => navigate("/crm/crmCreateLead")} isSuccess>
+        <Button
+          onClick={() =>
+            navigate("/crm/crmCreateForm", {
+              state: {
+                title: "Create Lead",
+                api: "Create lead api",
+                infoTitle: "Lead Info",
+              },
+            })
+          }
+          isSuccess
+        >
           Create Lead
         </Button>
       }

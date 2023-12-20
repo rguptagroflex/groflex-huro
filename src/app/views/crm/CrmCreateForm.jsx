@@ -8,8 +8,9 @@ import { SelectInput } from "../../shared/components/select/SelectInput";
 import { TextArea } from "../../shared/components/textArea/TextArea";
 import { FileInput } from "../../shared/components/fileInput/FileInput";
 import { Switch } from "../../shared/components/switch/Switch";
-
-const CrmCreateContact = () => {
+import { useLocation } from "react-router-dom";
+const CrmCreateForm = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const [createCrmContactFormData, setCreateCrmContactFormData] = useState({
     // contactNumber:"",
@@ -170,15 +171,21 @@ const CrmCreateContact = () => {
   useEffect(() => {
     disableTopbarButton();
   }, [createCrmContactFormData]);
-  console.log(createCrmContactFormData);
+  console.log(location.state);
   return (
     <PageContent
-      title="Create Contact"
+      title={location.state.title}
       titleIsBreadCrumb
-      breadCrumbData={["Home", "Crm", "Create Contact"]}
+      breadCrumbData={[
+        "Home",
+        "Crm",
+        location.state.title === "Create Contact"
+          ? "Create Contact"
+          : "Create Lead",
+      ]}
       titleActionContent={
         <Button
-          onClick={() => navigate("/crm/createNewContact")}
+          onClick={() => alert(location.state.api)}
           isSuccess
           isDisabled={topbarButton}
         >
@@ -189,7 +196,7 @@ const CrmCreateContact = () => {
       <div className="columns is-multiline">
         <div className="column is-7">
           <AdvancedCard type={"s-card"}>
-            <h2 className="title is-5 is-bold">Contact Info</h2>
+            <h2 className="title is-5 is-bold">{location.state.infoTitle}</h2>
             <div className="columns is-multiline m-b-5">
               <div className="column is-6">
                 <div className="field">
@@ -443,4 +450,4 @@ const CrmCreateContact = () => {
   );
 };
 
-export default CrmCreateContact;
+export default CrmCreateForm;
