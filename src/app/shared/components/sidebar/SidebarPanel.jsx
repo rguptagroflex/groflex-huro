@@ -4,7 +4,11 @@ import { useSelector } from "react-redux";
 
 const SidebarPanel = ({
   heading,
-  panelLinks = [{ label: "Leads", route: "/crm/crmLead/Overview" }],
+  panelLinks = [
+    { label: "Leads", route: "/crm/leads" },
+    { label: "Contact Management", route: "/crm/contactManagement" },
+    { label: "LeadDetails", route: "/crm/leads/id" },
+  ],
 }) => {
   const { sidebarIsActive } = useSelector((state) => state.themeData);
   const sidebarPanelClassNames = `sidebar-panel is-generic ${
