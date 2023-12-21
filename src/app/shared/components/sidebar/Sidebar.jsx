@@ -37,7 +37,7 @@ const sidebarRoutes = [
     icon: "Archive",
   },
   {
-    route: "/crm",
+    route: "/crm/leads",
     icon: "Briefcase",
   },
 ];

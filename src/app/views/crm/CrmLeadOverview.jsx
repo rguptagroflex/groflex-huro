@@ -69,7 +69,7 @@ const CrmLeadOverview = () => {
       titleActionContent={
         <Button
           onClick={() =>
-            navigate("/crm/crmCreateForm", {
+            navigate("/crm/createForm", {
               state: {
                 title: "Create Lead",
                 api: "Create lead api",

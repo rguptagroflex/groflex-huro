@@ -34,7 +34,7 @@ const getCompanyPersonIcon = (
   );
 };
 
-const Crm = () => {
+const CrmContactManagement = () => {
   const actions = [
     { name: "Edit", icon: "edit" },
     { name: "Delete", icon: "trash-alt" },
@@ -69,7 +69,7 @@ const Crm = () => {
       titleActionContent={
         <Button
           onClick={() =>
-            navigate("/crm/crmCreateForm", {
+            navigate("/crm/createForm", {
               state: {
                 title: "Create Contact",
                 api: "Create contact api",
@@ -131,4 +131,4 @@ const Crm = () => {
   );
 };
 
-export default Crm;
+export default CrmContactManagement;
