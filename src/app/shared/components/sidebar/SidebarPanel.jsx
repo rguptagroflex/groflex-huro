@@ -2,11 +2,34 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const SidebarPanel = ({ heading, panelLinks }) => {
+const SidebarPanel = ({
+  heading,
+  panelLinks = [{ label: "Leads", route: "/crm/crmLead/Overview" }],
+}) => {
   const { sidebarIsActive } = useSelector((state) => state.themeData);
   const sidebarPanelClassNames = `sidebar-panel is-generic ${
     sidebarIsActive ? "is-active" : ""
   }`;
+  const GetSubmoduleNavlinks = () => {
+    return (
+      <ul>
+        {panelLinks.map((link) => (
+          <li>
+            <NavLink
+              style={({ isActive }) => {
+                if (isActive) {
+                  return { color: "#00a353" };
+                }
+              }}
+              to={link.route}
+            >
+              {link.label}
+            </NavLink>
+          </li>
+        ))}
+      </ul>
+    );
+  };
 
   return (
     <div className={sidebarPanelClassNames}>
@@ -32,7 +55,7 @@ const SidebarPanel = ({ heading, panelLinks }) => {
             <div className="simplebar-offset">
               <div className="simplebar-content-wrapper">
                 <div className="simplebar-content">
-                  <ul>
+                  {/* <ul>
                     <li>
                       <NavLink
                         style={({ isActive }) => {
@@ -45,7 +68,8 @@ const SidebarPanel = ({ heading, panelLinks }) => {
                         Dashboard
                       </NavLink>
                     </li>
-                  </ul>
+                  </ul> */}
+                  <GetSubmoduleNavlinks />
                 </div>
               </div>
             </div>

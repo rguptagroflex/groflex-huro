@@ -1,0 +1,26 @@
+.crm-lead-details-wrapper {
+  .lead-basic-info-card {
+    .lead-image {
+      height: 100px;
+    }
+    .lead-details {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      margin-bottom: 10px;
+      .lead-role {
+        color: #888787;
+      }
+    }
+    .lead-button-container {
+      display: flex;
+      justify-content: center;
+    }
+  }
+  .lead-details-card {
+    .title {
+      color: #00a353;
+    }
+  }
+}
