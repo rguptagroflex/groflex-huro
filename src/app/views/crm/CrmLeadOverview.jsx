@@ -38,6 +38,7 @@ const CrmLeadOverview = () => {
   const actions = [
     { name: "Edit", icon: "edit" },
     { name: "Delete", icon: "trash-alt" },
+    { name: "Convert to Deal", icon: "trash-alt" },
   ];
   const navigate = useNavigate();
   const handleActionClick = (action, rowData) => {

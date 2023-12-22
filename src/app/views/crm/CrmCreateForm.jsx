@@ -239,9 +239,13 @@ const CrmCreateForm = () => {
                   <label>Industry</label>
                   <SelectInput
                     options={[
-                      { label: "Industry 1", value: "industry1" },
-                      { label: "Industry 2", value: "industry2" },
-                      { label: "Industry 3", value: "industry3" },
+                      { label: "Technology", value: "technology" },
+                      { label: "Healthcare", value: "healthcare" },
+                      { label: "Finance", value: "finance" },
+                      { label: "Manufacturing", value: "manufacturing" },
+                      { label: "Retail", value: "retail" },
+                      { label: "Education", value: "education" },
+                      { label: "Other", value: "other" },
                     ]}
                     placeholder={"None"}
                     onChange={handleIndustryChange}
@@ -257,9 +261,14 @@ const CrmCreateForm = () => {
                   <label>Lead Source</label>
                   <SelectInput
                     options={[
-                      { label: "source 1", value: "source 1" },
-                      { label: "source 2", value: "source 2" },
-                      { label: "source 3", value: "source 3" },
+                      { label: "Web Visitors", value: "webVisitors" },
+                      { label: "Social Media", value: "socialMedia" },
+                      { label: "Web Forms", value: "webForms" },
+                      { label: "Import", value: "import" },
+                      { label: "ChatBot", value: "chatBot" },
+                      { label: "Manually Created", value: "manuallyCreated" },
+                      { label: "Automations", value: "automations" },
+                      { label: "Other", value: "other" },
                     ]}
                     placeholder={"None"}
                     onChange={handleLeadSourceChange}
@@ -272,9 +281,12 @@ const CrmCreateForm = () => {
                   <label>Lead Status</label>
                   <SelectInput
                     options={[
-                      { label: "status1", value: "status1" },
-                      { label: "status2", value: "status2" },
-                      { label: "status3", value: "status3" },
+                      { label: "New Lead", value: "newLead" },
+                      { label: "Contacted", value: "contacted" },
+                      { label: "Qualified", value: "qualified" },
+                      { label: "Not Interested", value: "notInterested" },
+                      { label: "Lost", value: "lost" },
+                      { label: "Nurture", value: "nurture" },
                     ]}
                     placeholder={"None"}
                     onChange={handleLeadStatusChange}
