@@ -4,7 +4,7 @@ import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
 import { Button } from "../../shared/components/button/Button";
 import { ListAdvancedComponent } from "../../shared/components/list-advanced/ListAdvancedComponent";
 import config from "../../../../config";
-const CrmLeadDetails = () => {
+const LeadDetails = () => {
   const leadDetails = {
     Mobile: "1234567891",
     Address: "#123, abc Banglore",
@@ -102,4 +102,4 @@ const CrmLeadDetails = () => {
   );
 };
 
-export default CrmLeadDetails;
+export default LeadDetails;

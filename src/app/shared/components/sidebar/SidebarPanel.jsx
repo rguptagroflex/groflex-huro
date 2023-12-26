@@ -8,6 +8,7 @@ const SidebarPanel = ({
     { label: "Leads", route: "/crm/leads" },
     { label: "Contact Management", route: "/crm/contactManagement" },
     { label: "LeadDetails", route: "/crm/leads/id" },
+    { label: "ContactDetails", route: "/crm/contactManagement/id" },
   ],
 }) => {
   const { sidebarIsActive } = useSelector((state) => state.themeData);
@@ -17,8 +18,8 @@ const SidebarPanel = ({
   const GetSubmoduleNavlinks = () => {
     return (
       <ul>
-        {panelLinks.map((link) => (
-          <li>
+        {panelLinks.map((link, id) => (
+          <li key={id}>
             <NavLink
               style={({ isActive }) => {
                 if (isActive) {

@@ -34,10 +34,11 @@ const getCompanyPersonIcon = (
   );
 };
 
-const CrmContactManagement = () => {
+const LeadOverview = () => {
   const actions = [
     { name: "Edit", icon: "edit" },
     { name: "Delete", icon: "trash-alt" },
+    { name: "Convert to Deal", icon: "trash-alt" },
   ];
   const navigate = useNavigate();
   const handleActionClick = (action, rowData) => {
@@ -63,33 +64,32 @@ const CrmContactManagement = () => {
 
   return (
     <PageContent
-      title="Crm"
+      title="Leads Overview"
       titleIsBreadCrumb
-      breadCrumbData={["Home", "Crm"]}
+      breadCrumbData={["Home", "CRM", "Leads"]}
       titleActionContent={
         <Button
           onClick={() =>
             navigate("/crm/createForm", {
               state: {
-                title: "Create Contact",
-                api: "Create contact api",
-                infoTitle: "Contact Info",
+                title: "Create Lead",
+                api: "Create lead api",
+                infoTitle: "Lead Info",
               },
             })
           }
           isSuccess
         >
-          Create new contact
+          Create Lead
         </Button>
       }
     >
       <ListAdvancedComponent
         onActionClick={handleActionClick}
         columnDefs={[
-          { field: "number", headerName: "No.", filter: false },
           {
             field: "kind",
-            headerName: "Type",
+            headerName: "label",
             cellRenderer: (evt) => {
               return getCompanyPersonIcon(evt.value, 20, true);
             },
@@ -97,32 +97,19 @@ const CrmContactManagement = () => {
             flex: 1.5,
           },
 
-          { field: "customerName", headerName: "Customer Name" },
-          { field: "companyName", headerName: "Company Name" },
-          { field: "email", headerName: "E-mail" },
+          { field: "leadName", headerName: "Lead Name" },
+          { field: "activity", headerName: "Activity" },
           { field: "phoneNumber", headerName: "Phone" },
+          { field: "email", headerName: "E-mail" },
+
           {
-            field: "closedDeals",
-            headerName: "Closed Deals",
+            field: "source",
+            headerName: "Source",
             valueFormatter: (evt) => {
               return evt.value;
             },
           },
-          {
-            field: "openDeals",
-            headerName: "openDeals",
-            valueFormatter: (evt) => {
-              return evt.value;
-            },
-          },
-          {
-            field: "nextActivityDate",
-            headerName: "Next Activity Date",
-            valueFormatter: (evt) => {
-              return evt.value;
-            },
-          },
-          { field: "contactOwner", headerName: "Contact Owner" },
+          { field: "owner", headerName: "Owner" },
         ]}
         fetchUrl={config.resourceUrls.customers}
         actionMenuData={actions}
@@ -131,4 +118,4 @@ const CrmContactManagement = () => {
   );
 };
 
-export default CrmContactManagement;
+export default LeadOverview;
