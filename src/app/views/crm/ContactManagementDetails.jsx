@@ -8,6 +8,7 @@ import { Input } from "../../shared/components/input/Input";
 import { ListAdvancedDefaultSettings } from "../../helpers/constants";
 import { CustomShowHeaderSum } from "../../shared/components/list-advanced/CustomShowHeaderSum";
 import { formatCurrency } from "../../helpers/formatCurrency";
+import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 const ContactManagementDetails = () => {
   const contactList = [
     {
@@ -91,6 +92,12 @@ const ContactManagementDetails = () => {
     { name: "Delete", icon: "trash-alt" },
   ];
 
+  const utilityIcons = [
+    { label: "Email", icon: "Mail" },
+    { label: "Call", icon: "Phone" },
+    { label: "Notes", icon: "File" },
+  ];
+
   return (
     <PageContent
       title="Contact Management"
@@ -105,6 +112,14 @@ const ContactManagementDetails = () => {
               <AdvancedCard type={"s-card"}>
                 <h2 className="title is-5">Contact Info</h2>
                 <div className="contact-image"></div>
+                <div className="utility-icons-container">
+                  {utilityIcons.map((item) => (
+                    <div className="utility-icons">
+                      <FeatherIcon name={item.icon} />
+                      <span className="utilit-icon-label">{item.label}</span>
+                    </div>
+                  ))}
+                </div>
                 <div className="contact-basic-info-fields">
                   <div className="columns is-multiline m-b-5">
                     <div className="column is-12">
