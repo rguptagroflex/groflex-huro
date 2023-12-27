@@ -9,7 +9,9 @@ import { ListAdvancedDefaultSettings } from "../../helpers/constants";
 import { CustomShowHeaderSum } from "../../shared/components/list-advanced/CustomShowHeaderSum";
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
+import Tabs from "../../shared/components/tabs/Tabs";
 const ContactManagementDetails = () => {
+  const [selectedTab, setSelectedTab] = useState(0);
   const contactList = [
     {
       contactName: "Arushi Nath",
@@ -98,6 +100,21 @@ const ContactManagementDetails = () => {
     { label: "Notes", icon: "File" },
   ];
 
+  const tabsList = ["team", "projects", "tasks"];
+  const Activity = () => {
+    return <div>Activity tab</div>;
+  };
+  const Call = () => {
+    return <div>Call tab</div>;
+  };
+  const tabList = [
+    { label: "Activity", content: <Activity /> },
+    { label: "Call", content: <Call /> },
+  ];
+  const handleTabChange = (event) => {
+    setSelectedTab(event);
+  };
+
   return (
     <PageContent
       title="Contact Management"
@@ -113,8 +130,8 @@ const ContactManagementDetails = () => {
                 <h2 className="title is-5">Contact Info</h2>
                 <div className="contact-image"></div>
                 <div className="utility-icons-container">
-                  {utilityIcons.map((item) => (
-                    <div className="utility-icons">
+                  {utilityIcons.map((item, id) => (
+                    <div className="utility-icons" key={id}>
                       <FeatherIcon name={item.icon} />
                       <span className="utilit-icon-label">{item.label}</span>
                     </div>
@@ -190,8 +207,8 @@ const ContactManagementDetails = () => {
                 <div className="form-divider"></div>
                 <div className="contact-management-details-contact-list">
                   <h3 className="title is-5">Contact Info</h3>
-                  {contactList.map((contact) => (
-                    <div className="contact-container">
+                  {contactList.map((contact, id) => (
+                    <div className="contact-container" key={id}>
                       <h5 className="contact-name">{contact.contactName}</h5>
                       <span className="company-name">
                         {contact.companyName}
@@ -212,6 +229,7 @@ const ContactManagementDetails = () => {
           <div className="column is-5 right-content">
             <AdvancedCard type={"s-card"}>
               <h2 className="title is-5">Recent Activity</h2>
+              <Tabs tabList={tabList} />
             </AdvancedCard>
             <div className="m-t-20" />
             <AdvancedCard type={"s-card"}>

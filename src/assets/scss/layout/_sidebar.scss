@@ -635,3 +635,21 @@ body {
     }
   }
 }
+
+//redesign sidebar scrollbar
+.main-sidebar {
+  .sidebar-inner {
+    .icon-menu::-webkit-scrollbar {
+      width: 5px;
+      height: 48px;
+    }
+    .icon-menu::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+    .icon-menu::-webkit-scrollbar-track {
+      background: #ddd;
+      border-radius: 10px;
+    }
+  }
+}

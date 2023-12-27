@@ -19,12 +19,14 @@ import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import FontAwesomeIcon from "../../shared/fontAwesomeIcon/FontAwesomeIcon";
 import OnClickOutside from "../../shared/components/onClickOutside/OnClickOutside";
 import { ListAdvancedComponent } from "../../shared/components/list-advanced/ListAdvancedComponent";
+import Tabs from "../../shared/components/tabs/Tabs";
 
 const ArticleDetail = () => {
   const navigate = useNavigate();
   const { articleId } = useParams();
   const [overViewActive, setOverViewActive] = useState(true);
   const [articleData, setArticleData] = useState({});
+
   useEffect(() => {
     if (articleId) {
       groflexService
@@ -90,10 +92,7 @@ const ArticleDetail = () => {
   //Overview Tab Component
   const OverviewTab = () => {
     return (
-      <div
-        id="article-overview-tab"
-        className={`tab-content ${overViewActive ? "is-active" : ""}`}
-      >
+      <div id="article-overview-tab">
         <div className="columns is-multiline">
           <div className="column is-4">
             <AdvancedCard style={{ padding: "15px" }} type={"r-card"}>
@@ -546,10 +545,7 @@ const ArticleDetail = () => {
   //History Tab Component
   const HistoryTab = () => {
     return (
-      <div
-        id="article-history-tab"
-        className={`tab-content ${overViewActive ? "" : "is-active"}`}
-      >
+      <div id="article-history-tab">
         <ListAdvancedComponent
           columnDefs={[
             {
@@ -593,6 +589,10 @@ const ArticleDetail = () => {
   };
 
   console.log(articleData, "Article Data in Article Detail");
+  const tabList = [
+    { label: "Article Overview", content: <OverviewTab /> },
+    { label: "History", content: <HistoryTab /> },
+  ];
   return (
     <PageContent
       title={overViewActive ? "Article Overview" : "History"}
@@ -600,8 +600,7 @@ const ArticleDetail = () => {
       loading={articleData?.id ? false : true}
       titleActionContent={<DropdownMenu />}
     >
-      <div className="tabs-wrapper">
-        {/* Tab switchers */}
+      {/* <div className="tabs-wrapper">
         <div className="tabs-inner">
           <div className="tabs">
             <ul>
@@ -622,10 +621,11 @@ const ArticleDetail = () => {
             </ul>
           </div>
         </div>
-        {/* Tab content */}
+
         <OverviewTab />
         <HistoryTab />
-      </div>
+      </div> */}
+      <Tabs tabList={tabList} />
     </PageContent>
   );
 };
