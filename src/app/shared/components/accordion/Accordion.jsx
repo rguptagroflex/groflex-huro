@@ -21,11 +21,17 @@ const Accordion = ({
         <div className="accordian-header-left-container">
           {accordionLeftHeader}
         </div>
-        <div className="accordian-header-middle-container">
-          {accordianMiddleHeader}
-        </div>
+        {accordianMiddleHeader && (
+          <div className="accordian-header-middle-container">
+            {accordianMiddleHeader}
+          </div>
+        )}
+
         <div className="accordian-header-right-container">
-          <div className="accordian-header-right">{accordianRightHeader}</div>
+          {accordianRightHeader && (
+            <div className="accordian-header-right">{accordianRightHeader}</div>
+          )}
+
           <div className="collapse-icon">
             <FeatherIcon name={"ChevronDown"} />
           </div>

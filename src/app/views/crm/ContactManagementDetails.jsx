@@ -3,11 +3,9 @@ import PageContent from "../../shared/components/pageContent/PageContent";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
 import { Button } from "../../shared/components/button/Button";
 import { ListAdvancedComponent } from "../../shared/components/list-advanced/ListAdvancedComponent";
-import config from "../../../../config";
+
 import { Input } from "../../shared/components/input/Input";
-import { ListAdvancedDefaultSettings } from "../../helpers/constants";
-import { CustomShowHeaderSum } from "../../shared/components/list-advanced/CustomShowHeaderSum";
-import { formatCurrency } from "../../helpers/formatCurrency";
+
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import Tabs from "../../shared/components/tabs/Tabs";
 import ContactManagementActivity from "./ContactManagementActivity";
@@ -93,10 +91,6 @@ const ContactManagementDetails = () => {
     });
   };
   const handleActionClick = () => {};
-  const actions = [
-    { name: "Edit", icon: "edit" },
-    { name: "Delete", icon: "trash-alt" },
-  ];
 
   const utilityIcons = [
     { label: "Email", icon: "Mail" },
@@ -232,33 +226,6 @@ const ContactManagementDetails = () => {
 
           <div className="column is-5 right-content">
             <Tabs tabList={tabList} />
-
-            <div className="m-t-20" />
-            <AdvancedCard type={"s-card"}>
-              <h2 className="title is-5">Deals</h2>
-              <ListAdvancedComponent
-                onActionClick={handleActionClick}
-                columnDefs={[
-                  { field: "dealName", headerName: "Deal Name" },
-                  { field: "amount", headerName: "Amount" },
-
-                  {
-                    field: "price",
-                    headerName: "Price",
-                    cellClass:
-                      ListAdvancedDefaultSettings.EXCEL_STYLE_IDS.Currency,
-                    valueFormatter: (evt) => {
-                      return formatCurrency(0);
-                    },
-
-                    headerComponentParams: { value: "mrp", headerName: "MRP" },
-                  },
-                  { field: "closedDate", headerName: "Closed Date" },
-                ]}
-                fetchUrl={config.resourceUrls.customers}
-                actionMenuData={actions}
-              />
-            </AdvancedCard>
           </div>
         </div>
       </div>
