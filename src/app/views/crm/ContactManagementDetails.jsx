@@ -231,10 +231,8 @@ const ContactManagementDetails = () => {
           </div>
 
           <div className="column is-5 right-content">
-            <AdvancedCard type={"s-card"}>
-              <h2 className="title is-5">Recent Activity</h2>
-              <Tabs tabList={tabList} />
-            </AdvancedCard>
+            <Tabs tabList={tabList} />
+
             <div className="m-t-20" />
             <AdvancedCard type={"s-card"}>
               <h2 className="title is-5">Deals</h2>

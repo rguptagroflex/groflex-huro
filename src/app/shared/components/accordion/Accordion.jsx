@@ -25,7 +25,7 @@ const Accordion = ({
           {accordianMiddleHeader}
         </div>
         <div className="accordian-header-right-container">
-          <h3>{accordianRightHeader}</h3>
+          <div className="accordian-header-right">{accordianRightHeader}</div>
           <div className="collapse-icon">
             <FeatherIcon name={"ChevronDown"} />
           </div>
