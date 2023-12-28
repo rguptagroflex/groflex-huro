@@ -1,0 +1,22 @@
+.collapse {
+  .collapse-header {
+    .accordian-header-right-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  }
+  .accordianOpen {
+    display: block;
+    padding: 0 20px 20px;
+    color: #a2a5b9;
+    font-family: roboto, sans-serif;
+  }
+
+  .accordianClose {
+    display: none;
+    padding: 0 20px 20px;
+    color: #a2a5b9;
+    font-family: roboto, sans-serif;
+  }
+}

@@ -10,6 +10,10 @@ import { CustomShowHeaderSum } from "../../shared/components/list-advanced/Custo
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import Tabs from "../../shared/components/tabs/Tabs";
+import ContactManagementActivity from "./ContactManagementActivity";
+import ContactManagementEmail from "./ContactManagementEmail";
+import ContactManagementCall from "./ContactManagementCall";
+import ContactManagementMeeting from "./ContactManagementMeeting";
 const ContactManagementDetails = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const contactList = [
@@ -101,15 +105,15 @@ const ContactManagementDetails = () => {
   ];
 
   const tabsList = ["team", "projects", "tasks"];
-  const Activity = () => {
-    return <div>Activity tab</div>;
-  };
+
   const Call = () => {
     return <div>Call tab</div>;
   };
   const tabList = [
-    { label: "Activity", content: <Activity /> },
-    { label: "Call", content: <Call /> },
+    { label: "Activity", content: <ContactManagementActivity /> },
+    { label: "Email", content: <ContactManagementEmail /> },
+    { label: "Call", content: <ContactManagementCall /> },
+    { label: "Meeting", content: <ContactManagementMeeting /> },
   ];
   const handleTabChange = (event) => {
     setSelectedTab(event);
@@ -131,7 +135,7 @@ const ContactManagementDetails = () => {
                 <div className="contact-image"></div>
                 <div className="utility-icons-container">
                   {utilityIcons.map((item, id) => (
-                    <div className="utility-icons" key={id}>
+                    <div className="utility-icons" key={`utility-icon-${id}`}>
                       <FeatherIcon name={item.icon} />
                       <span className="utilit-icon-label">{item.label}</span>
                     </div>
@@ -208,7 +212,7 @@ const ContactManagementDetails = () => {
                 <div className="contact-management-details-contact-list">
                   <h3 className="title is-5">Contact Info</h3>
                   {contactList.map((contact, id) => (
-                    <div className="contact-container" key={id}>
+                    <div className="contact-container" key={`contact-${id}`}>
                       <h5 className="contact-name">{contact.contactName}</h5>
                       <span className="company-name">
                         {contact.companyName}

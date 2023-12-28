@@ -5,8 +5,10 @@
 @import "./components/shared/listAdvancedComponent/ListAdvanced";
 @import "./components/shared/otpInputComponent/otp-input-component";
 @import "./components/shared/toast/toast";
+@import "./components/shared/accordion/accordion";
 
 // VIEWS
 @import "./components/views/Articles/articleOverview";
 @import "./components//views/Crm/crmLeadDetail";
 @import "./components/views/Crm/_contactManagementDetails";
+@import "./components/views/Crm/contactManagementActivity";
