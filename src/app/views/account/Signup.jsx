@@ -110,6 +110,7 @@ const Signup = () => {
           return;
         }
         webstorageService.setItem(webStorageKeyEnum.REGISTRATION_EMAIL, email);
+        webstorageService.setItem(webStorageKeyEnum.REGISTRATION_PASS, password);
         webstorageService.setItem(
           webStorageKeyEnum.REGISTRATION_TOKEN,
           res.data.token

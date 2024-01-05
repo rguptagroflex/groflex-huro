@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import config from "../../../../config";
 import groflexService from "../../services/groflex.service";
 import * as actionTypes from "../../redux/actions/actions.types";
@@ -11,6 +11,7 @@ import { Button } from "../../shared/components/button/Button";
 import FirstColumn from "./FirstColumn";
 import OtpInputComponent from "../../shared/components/otpInput/OtpInputComponent";
 import ErrorText from "../../shared/components/errorText/ErrorText";
+import { useDispatch } from "react-redux";
 
 const stepWisePage = {
   code: "/email-verification",
@@ -20,7 +21,9 @@ const stepWisePage = {
 
 const EmailVerification = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [registerationEmail, setRegisterationEmail] = useState("");
+  const [registerationPass, setRegisterationPass] = useState("");
   const [otp, setOtp] = useState("");
   const [formErrors, setFormErrors] = useState({
     otpError: "",
@@ -35,6 +38,9 @@ const EmailVerification = () => {
     const regEmail = webstorageService.getItem(
       webStorageKeyEnum.REGISTRATION_EMAIL
     );
+    const regPass = webstorageService.getItem(
+      webStorageKeyEnum.REGISTRATION_PASS
+    );
 
     const user = webstorageService.getItem(webStorageKeyEnum.USER);
 
@@ -44,8 +50,9 @@ const EmailVerification = () => {
     } else {
       // If registration email exists in webstorage
       setRegisterationEmail(regEmail);
+      setRegisterationPass(regPass);
       if (!user?.registrationStep) {
-        // if registration email exists but registration step is not set in websotrage
+        // if registration email exists but registration step is not set in webstorage
         navigate("/signup");
         return;
       } else {
@@ -60,6 +67,7 @@ const EmailVerification = () => {
 
   const handleChangeRegisterationEmail = () => {
     webstorageService.removeItem(webStorageKeyEnum.REGISTRATION_EMAIL);
+    webstorageService.removeItem(webStorageKeyEnum.REGISTRATION_PASS);
     webstorageService.removeItem(webStorageKeyEnum.REGISTRATION_TOKEN);
     webstorageService.removeItem(webStorageKeyEnum.USER);
     navigate("/signup");
@@ -71,7 +79,6 @@ const EmailVerification = () => {
 
   const handleResendOtp = () => {
     setFormErrors({ ...formErrors, otpError: "" });
-
     groflexService.resendEmailOtp();
   };
 
@@ -82,13 +89,80 @@ const EmailVerification = () => {
     groflexService.verifyEmailOtp(otp).then((res) => {
       console.log(res, "response of verify email otp in Component");
       if (res.emailOtpSuccess) {
-        webstorageService.setItem(webStorageKeyEnum.USER, {
-          registrationStep: "mobile",
-        });
-        navigate(stepWisePage["mobile"]);
+        // webstorageService.setItem(webStorageKeyEnum.USER, {
+        //   registrationStep: "mobile",
+        // });
+        // navigate(stepWisePage["mobile"]);
+        //Directly Login :(
+        handleLogin();
       } else {
         setFormErrors({ ...formErrors, otpError: "Entered OTP is wrong" });
       }
+    });
+  };
+
+  const handleLogin = () => {
+    setFormErrors({ ...formErrors, otpError: "" });
+
+    groflexService.login(registerationEmail, registerationPass).then((res) => {
+      if (res.meta.email) {
+        navigate("/signup");
+        return;
+      } else if (res.meta.password) {
+        setFormErrors({ ...formErrors, passwordError: "Password is wrong" });
+        return;
+      }
+      console.log(res, "response after login");
+      //Set Token, and login time in localstorage
+      webstorageService.setItem(
+        webStorageKeyEnum.LOGIN_TOKEN_KEY,
+        res.data.token
+      );
+      webstorageService.setItem(
+        webStorageKeyEnum.LOGIN_TOKEN_START_TIME,
+        new Date().getTime()
+      );
+      //Remove the temporary Email and password from localstorage
+      webstorageService.removeItem(webStorageKeyEnum.REGISTRATION_EMAIL);
+      webstorageService.removeItem(webStorageKeyEnum.REGISTRATION_PASS);
+
+      //Set Tenant stuff
+      groflexService
+        .request(config.resourceUrls.tenant, {
+          auth: true,
+        })
+        .then((res) => {
+          dispatch({
+            type: actionTypes.SET_TENANT_DATA,
+            payload: res.body.data,
+          });
+        })
+        .then(() => {
+          groflexService
+            .request(config.resourceUrls.user, {
+              auth: true,
+            })
+            .then((res) => {
+              dispatch({
+                type: actionTypes.SET_USER_DATA,
+                payload: res.body.data,
+              });
+            });
+        })
+        .then(() => {
+          groflexService
+            .request(config.resourceUrls.accountSettings, {
+              auth: true,
+            })
+            .then((res) => {
+              console.log(res.body.data);
+              dispatch({
+                type: actionTypes.SET_ACCOUNTINFO_DATA,
+                payload: res.body.data,
+              });
+              navigate("/");
+            });
+        });
     });
   };
 

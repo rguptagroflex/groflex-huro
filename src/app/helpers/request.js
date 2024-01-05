@@ -303,6 +303,7 @@ export const resendEmailOtp = () => {
           response.json().then((data) => {
             resolve(data);
           });
+          groflexService.toast.success("OTP resent succesfully");
           // resolve(response);
         } else {
           reject(response);
@@ -322,6 +323,7 @@ export const resendEmailOtp = () => {
           response.json().then((data) => {
             resolve(data);
           });
+          groflexService.toast.success("OTP resent succesfully");
           // resolve(response);
         } else {
           reject(response);
