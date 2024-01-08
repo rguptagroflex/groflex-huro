@@ -39,6 +39,76 @@ const ContactManagement = () => {
     { name: "Edit", icon: "edit" },
     { name: "Delete", icon: "trash-alt" },
   ];
+
+  const contacts = [
+    {
+      id: 0,
+      customerName: "Shivali Mall",
+      companyName: "Company 1",
+      email: "janedoe@domain.com",
+      phoneNumber: "+123456789",
+      closedDeals: 25,
+      openDeals: 1,
+      nextActivityDate: "16.09.2023",
+      contactOwner: "Kiran Bala",
+      label: "Hot",
+      continent: "Asia",
+      country: "India",
+      city: "Delhi",
+      businessType: "Small",
+      profit: "20%",
+      purchaseBehaviour: "regular",
+    },
+    {
+      id: 1,
+      customerName: "Navin Muni",
+      companyName: "Company 1",
+      email: "janedoe@domain.com",
+      phoneNumber: "+123456789",
+      closedDeals: 25,
+      openDeals: 1,
+      nextActivityDate: "16.09.2023",
+      contactOwner: "Kiran Bala",
+      label: "Warm",
+    },
+    {
+      id: 2,
+      customerName: "Abha Sarin",
+      companyName: "Company 1",
+      email: "janedoe@domain.com",
+      phoneNumber: "+123456789",
+      closedDeals: 25,
+      openDeals: 1,
+      nextActivityDate: "16.09.2023",
+      contactOwner: "Kiran Bala",
+      label: "Cold",
+    },
+  ];
+  const createLabel = (params) => {
+    let cellColor = "";
+    switch (params.value.toLowerCase()) {
+      case "hot":
+        cellColor = "#D94339";
+        break;
+      case "warm":
+        cellColor = "#FFAA2C";
+        break;
+      case "cold":
+        cellColor = "#0071CA";
+        break;
+    }
+    return (
+      <div
+        className="status-label"
+        style={{
+          background: cellColor,
+        }}
+      >
+        {params.value}
+      </div>
+    );
+  };
+
   const navigate = useNavigate();
   const handleActionClick = (action, rowData) => {
     if (rowData) {
@@ -63,7 +133,7 @@ const ContactManagement = () => {
 
   return (
     <PageContent
-      title="Crm"
+      title="Contact Management"
       titleIsBreadCrumb
       breadCrumbData={["Home", "Crm"]}
       titleActionContent={
@@ -83,50 +153,54 @@ const ContactManagement = () => {
         </Button>
       }
     >
-      <ListAdvancedComponent
-        onActionClick={handleActionClick}
-        columnDefs={[
-          { field: "number", headerName: "No.", filter: false },
-          {
-            field: "kind",
-            headerName: "Type",
-            cellRenderer: (evt) => {
-              return getCompanyPersonIcon(evt.value, 20, true);
-            },
-            filter: false,
-            flex: 1.5,
-          },
+      <div className="contact-management-wrapper">
+        <ListAdvancedComponent
+          onRowClicked={(e) => {
+            console.log(e);
+            navigate(`/crm/contactManagement/${e.data.id}`);
+          }}
+          onActionClick={handleActionClick}
+          columnDefs={[
+            // { field: "number", headerName: "No.", filter: false },
 
-          { field: "customerName", headerName: "Customer Name" },
-          { field: "companyName", headerName: "Company Name" },
-          { field: "email", headerName: "E-mail" },
-          { field: "phoneNumber", headerName: "Phone" },
-          {
-            field: "closedDeals",
-            headerName: "Closed Deals",
-            valueFormatter: (evt) => {
-              return evt.value;
+            { field: "customerName", headerName: "Customer Name" },
+            {
+              field: "label",
+              headerName: "Label",
+              cellRenderer: createLabel,
             },
-          },
-          {
-            field: "openDeals",
-            headerName: "openDeals",
-            valueFormatter: (evt) => {
-              return evt.value;
+
+            { field: "companyName", headerName: "Company Name" },
+            { field: "email", headerName: "E-mail" },
+            { field: "phoneNumber", headerName: "Phone" },
+            {
+              field: "closedDeals",
+              headerName: "Closed Deals",
+              valueFormatter: (evt) => {
+                return evt.value;
+              },
             },
-          },
-          {
-            field: "nextActivityDate",
-            headerName: "Next Activity Date",
-            valueFormatter: (evt) => {
-              return evt.value;
+            {
+              field: "openDeals",
+              headerName: "openDeals",
+              valueFormatter: (evt) => {
+                return evt.value;
+              },
             },
-          },
-          { field: "contactOwner", headerName: "Contact Owner" },
-        ]}
-        fetchUrl={config.resourceUrls.customers}
-        actionMenuData={actions}
-      />
+            {
+              field: "nextActivityDate",
+              headerName: "Next Activity Date",
+              valueFormatter: (evt) => {
+                return evt.value;
+              },
+            },
+            { field: "contactOwner", headerName: "Contact Owner" },
+          ]}
+          // fetchUrl={config.resourceUrls.customers}
+          customRowData={contacts}
+          actionMenuData={actions}
+        />
+      </div>
     </PageContent>
   );
 };

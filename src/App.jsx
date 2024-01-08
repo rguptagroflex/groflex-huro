@@ -31,6 +31,7 @@ import ContactManagement from "./app/views/crm/ContactManagement";
 import LeadOverview from "./app/views/crm/LeadOverview";
 import LeadDetails from "./app/views/crm/LeadDetails";
 import ContactManagementDetails from "./app/views/crm/ContactManagementDetails";
+import DealsOverview from "./app/views/crm/DealsOverview";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -66,11 +67,12 @@ function App() {
           />
           <Route path="/crm/createForm" element={<CrmCreateForm />} />
           <Route path="/crm/leads" element={<LeadOverview />} />
-          <Route path="/crm/leads/id" element={<LeadDetails />} />
+          <Route path="/crm/leads/:leadId" element={<LeadDetails />} />
           <Route
-            path="/crm/contactManagement/id"
+            path="/crm/contactManagement/:contactManagementId"
             element={<ContactManagementDetails />}
           />
+          <Route path="/crm/dealsOverview" element={<DealsOverview />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

@@ -18,6 +18,7 @@ export const ListAdvancedComponent = ({
   actionMenuData,
   fetchUrl,
   onCellClicked,
+  customRowData,
 }) => {
   const [dataIsEmptyFlag, setDataIsEmptyFlag] = useState(false);
   const [gridApi, setGridApi] = useState();
@@ -80,49 +81,85 @@ export const ListAdvancedComponent = ({
     customActionCellRenderer: ListActionPopup,
   };
 
+  const useCustomRowData = (params) => {
+    if (customRowData.length === 0) {
+      setDataIsEmptyFlag(true);
+      return;
+    }
+
+    const newColumns = Object.keys(customRowData[0]).filter(
+      (col) => !params.columnApi.getColumn(col)
+    );
+
+    setAdditionalColumns(newColumns);
+
+    const visibleColumns = params.columnApi
+      .getColumns()
+      .filter((col) => !col.getColDef().hide)
+      .map((col) => col.getColId());
+    setVisibleColumns(visibleColumns);
+
+    const initialVisibleColumnState = visibleColumns.reduce(
+      (acc, column) => ({ ...acc, [column]: true }),
+      {}
+    );
+
+    setVisibleColumnCheckedState(initialVisibleColumnState);
+
+    customRowData.forEach((row) => {
+      row.actionItems = actionMenuData;
+    });
+
+    params.api.applyTransaction({ add: customRowData });
+  };
+
   const onGridReady = useCallback((params) => {
     setGridApi(params.api);
     setGridColumnApi(params.columnApi);
-    groflexService
-      .request(fetchUrl, { auth: true })
-      .then((res) => res.body.data)
-      .then((res) => {
-        // console.log(res, "LIST ADVANCED RESPONSE");
-        if (res.length === 0) {
-          setDataIsEmptyFlag(true);
-          return;
-          console.log("Empty data list");
-        }
-        const newColumns = Object.keys(res[0]).filter(
-          (col) => !params.columnApi.getColumn(col)
-        );
-        setAdditionalColumns(newColumns);
+    if (customRowData) {
+      useCustomRowData(params);
+    } else {
+      groflexService
+        .request(fetchUrl, { auth: true })
+        .then((res) => res.body.data)
+        .then((res) => {
+          // console.log(res, "LIST ADVANCED RESPONSE");
+          if (res.length === 0) {
+            setDataIsEmptyFlag(true);
+            return;
+            console.log("Empty data list");
+          }
+          const newColumns = Object.keys(res[0]).filter(
+            (col) => !params.columnApi.getColumn(col)
+          );
+          setAdditionalColumns(newColumns);
 
-        const visibleColumns = params.columnApi
-          .getColumns()
-          .filter((col) => !col.getColDef().hide)
-          .map((col) => col.getColId());
-        setVisibleColumns(visibleColumns);
+          const visibleColumns = params.columnApi
+            .getColumns()
+            .filter((col) => !col.getColDef().hide)
+            .map((col) => col.getColId());
+          setVisibleColumns(visibleColumns);
 
-        const initialVisibleColumnState = visibleColumns.reduce(
-          (acc, column) => ({ ...acc, [column]: true }),
-          {}
-        );
-        setVisibleColumnCheckedState(initialVisibleColumnState);
+          const initialVisibleColumnState = visibleColumns.reduce(
+            (acc, column) => ({ ...acc, [column]: true }),
+            {}
+          );
+          setVisibleColumnCheckedState(initialVisibleColumnState);
 
-        return res;
-      })
-      .then((res) => {
-        res.forEach((row) => {
-          row.actionItems = actionMenuData;
-        });
+          return res;
+        })
+        .then((res) => {
+          res.forEach((row) => {
+            row.actionItems = actionMenuData;
+          });
 
-        return res;
-      })
-      .then((res) => {
-        params.api.applyTransaction({ add: res });
-      })
-      .catch((err) => console.log("Error fetching data:", err));
+          return res;
+        })
+        .then((res) => {
+          params.api.applyTransaction({ add: res });
+        })
+        .catch((err) => console.log("Error fetching data:", err));
+    }
   }, []);
 
   const onFilterChanged = (params) => {

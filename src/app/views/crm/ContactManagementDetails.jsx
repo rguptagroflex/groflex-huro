@@ -3,13 +3,15 @@ import PageContent from "../../shared/components/pageContent/PageContent";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
 import { Button } from "../../shared/components/button/Button";
 import { ListAdvancedComponent } from "../../shared/components/list-advanced/ListAdvancedComponent";
-import config from "../../../../config";
+
 import { Input } from "../../shared/components/input/Input";
-import { ListAdvancedDefaultSettings } from "../../helpers/constants";
-import { CustomShowHeaderSum } from "../../shared/components/list-advanced/CustomShowHeaderSum";
-import { formatCurrency } from "../../helpers/formatCurrency";
+
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import Tabs from "../../shared/components/tabs/Tabs";
+import ContactManagementActivity from "./ContactManagementActivity";
+import ContactManagementEmail from "./ContactManagementEmail";
+import ContactManagementCall from "./ContactManagementCall";
+import ContactManagementMeeting from "./ContactManagementMeeting";
 const ContactManagementDetails = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const contactList = [
@@ -89,10 +91,6 @@ const ContactManagementDetails = () => {
     });
   };
   const handleActionClick = () => {};
-  const actions = [
-    { name: "Edit", icon: "edit" },
-    { name: "Delete", icon: "trash-alt" },
-  ];
 
   const utilityIcons = [
     { label: "Email", icon: "Mail" },
@@ -101,15 +99,15 @@ const ContactManagementDetails = () => {
   ];
 
   const tabsList = ["team", "projects", "tasks"];
-  const Activity = () => {
-    return <div>Activity tab</div>;
-  };
+
   const Call = () => {
     return <div>Call tab</div>;
   };
   const tabList = [
-    { label: "Activity", content: <Activity /> },
-    { label: "Call", content: <Call /> },
+    { label: "Activity", content: <ContactManagementActivity /> },
+    { label: "Email", content: <ContactManagementEmail /> },
+    { label: "Call", content: <ContactManagementCall /> },
+    { label: "Meeting", content: <ContactManagementMeeting /> },
   ];
   const handleTabChange = (event) => {
     setSelectedTab(event);
@@ -131,7 +129,7 @@ const ContactManagementDetails = () => {
                 <div className="contact-image"></div>
                 <div className="utility-icons-container">
                   {utilityIcons.map((item, id) => (
-                    <div className="utility-icons" key={id}>
+                    <div className="utility-icons" key={`utility-icon-${id}`}>
                       <FeatherIcon name={item.icon} />
                       <span className="utilit-icon-label">{item.label}</span>
                     </div>
@@ -208,7 +206,7 @@ const ContactManagementDetails = () => {
                 <div className="contact-management-details-contact-list">
                   <h3 className="title is-5">Contact Info</h3>
                   {contactList.map((contact, id) => (
-                    <div className="contact-container" key={id}>
+                    <div className="contact-container" key={`contact-${id}`}>
                       <h5 className="contact-name">{contact.contactName}</h5>
                       <span className="company-name">
                         {contact.companyName}
@@ -227,36 +225,7 @@ const ContactManagementDetails = () => {
           </div>
 
           <div className="column is-5 right-content">
-            <AdvancedCard type={"s-card"}>
-              <h2 className="title is-5">Recent Activity</h2>
-              <Tabs tabList={tabList} />
-            </AdvancedCard>
-            <div className="m-t-20" />
-            <AdvancedCard type={"s-card"}>
-              <h2 className="title is-5">Deals</h2>
-              <ListAdvancedComponent
-                onActionClick={handleActionClick}
-                columnDefs={[
-                  { field: "dealName", headerName: "Deal Name" },
-                  { field: "amount", headerName: "Amount" },
-
-                  {
-                    field: "price",
-                    headerName: "Price",
-                    cellClass:
-                      ListAdvancedDefaultSettings.EXCEL_STYLE_IDS.Currency,
-                    valueFormatter: (evt) => {
-                      return formatCurrency(0);
-                    },
-
-                    headerComponentParams: { value: "mrp", headerName: "MRP" },
-                  },
-                  { field: "closedDate", headerName: "Closed Date" },
-                ]}
-                fetchUrl={config.resourceUrls.customers}
-                actionMenuData={actions}
-              />
-            </AdvancedCard>
+            <Tabs tabList={tabList} />
           </div>
         </div>
       </div>
