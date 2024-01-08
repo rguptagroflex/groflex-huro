@@ -7,8 +7,7 @@ const SidebarPanel = ({
   panelLinks = [
     { label: "Leads", route: "/crm/leads" },
     { label: "Contact Management", route: "/crm/contactManagement" },
-    { label: "LeadDetails", route: "/crm/leads/id" },
-    { label: "ContactDetails", route: "/crm/contactManagement/id" },
+
     { label: "Deals Overview", route: "/crm/dealsOverview" },
   ],
 }) => {

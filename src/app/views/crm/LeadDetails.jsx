@@ -25,7 +25,7 @@ const LeadDetails = () => {
   ];
   return (
     <PageContent
-      title="Crm"
+      title="Lead Info"
       titleIsBreadCrumb
       breadCrumbData={["Home", "Crm"]}
       titleActionContent={""}
