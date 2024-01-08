@@ -69,7 +69,7 @@ function App() {
           <Route path="/crm/leads" element={<LeadOverview />} />
           <Route path="/crm/leads/id" element={<LeadDetails />} />
           <Route
-            path="/crm/contactManagement/id"
+            path="/crm/contactManagement/:contactManagementId"
             element={<ContactManagementDetails />}
           />
           <Route path="/crm/dealsOverview" element={<DealsOverview />} />
