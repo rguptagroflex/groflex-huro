@@ -32,6 +32,7 @@ import LeadOverview from "./app/views/crm/LeadOverview";
 import LeadDetails from "./app/views/crm/LeadDetails";
 import ContactManagementDetails from "./app/views/crm/ContactManagementDetails";
 import DealsOverview from "./app/views/crm/DealsOverview";
+import TasksOverview from "./app/views/crm/TasksOverview";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -73,6 +74,7 @@ function App() {
             element={<ContactManagementDetails />}
           />
           <Route path="/crm/dealsOverview" element={<DealsOverview />} />
+          <Route path="/crm/tasksOverview" element={<TasksOverview />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
