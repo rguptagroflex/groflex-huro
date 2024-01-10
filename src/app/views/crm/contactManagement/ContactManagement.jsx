@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import PageContent from "../../shared/components/pageContent/PageContent";
-import { ListAdvancedComponent } from "../../shared/components/list-advanced/ListAdvancedComponent";
-import { formatCurrency } from "../../helpers/formatCurrency";
+import PageContent from "../../../shared/components/pageContent/PageContent";
+import { ListAdvancedComponent } from "../../../shared/components/list-advanced/ListAdvancedComponent";
+import { formatCurrency } from "../../../helpers/formatCurrency";
 import {
   ListAdvancedDefaultSettings,
   customerTypes,
-} from "../../helpers/constants";
-import { CustomShowHeaderSum } from "../../shared/components/list-advanced/CustomShowHeaderSum";
-import config from "../../../../config";
-import groflexService from "../../services/groflex.service";
+} from "../../../helpers/constants";
+import { CustomShowHeaderSum } from "../../../shared/components/list-advanced/CustomShowHeaderSum";
+import config from "../../../../../config";
+import groflexService from "../../../services/groflex.service";
 import { useNavigate } from "react-router-dom";
-import { Button } from "../../shared/components/button/Button";
-import { isNil } from "../../helpers/isNil";
+import { Button } from "../../../shared/components/button/Button";
+import { isNil } from "../../../helpers/isNil";
 const getCompanyPersonIcon = (
   value,
   personIconWidth,
@@ -139,7 +139,7 @@ const ContactManagement = () => {
       titleActionContent={
         <Button
           onClick={() =>
-            navigate("/crm/createForm", {
+            navigate("/crm/create-form", {
               state: {
                 title: "Create Contact",
                 api: "Create contact api",
@@ -157,7 +157,7 @@ const ContactManagement = () => {
         <ListAdvancedComponent
           onRowClicked={(e) => {
             console.log(e);
-            navigate(`/crm/contactManagement/${e.data.id}`);
+            navigate(`/crm/contact-management/${e.data.id}`);
           }}
           onActionClick={handleActionClick}
           columnDefs={[

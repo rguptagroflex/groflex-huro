@@ -22,17 +22,13 @@ import EditArticle from "./app/views/articles/EditArticle";
 import ArticleDetail from "./app/views/articles/ArticleDetail";
 import "./assets/scss/main.scss";
 import "./styles/app.scss";
-
-import CrmLeadOverview from "./app/views/crm/LeadOverview";
+import TasksOverview from "./app/views/crm/tasks/TasksOverview";
+import DealsOverview from "./app/views/crm/deals/DealsOverview";
+import ContactManagement from "./app/views/crm/contactManagement/ContactManagement";
 import CrmCreateForm from "./app/views/crm/CrmCreateForm";
-import CrmLeadDetails from "./app/views/crm/LeadDetails";
-import CrmContactManagement from "./app/views/crm/ContactManagement";
-import ContactManagement from "./app/views/crm/ContactManagement";
-import LeadOverview from "./app/views/crm/LeadOverview";
-import LeadDetails from "./app/views/crm/LeadDetails";
-import ContactManagementDetails from "./app/views/crm/ContactManagementDetails";
-import DealsOverview from "./app/views/crm/DealsOverview";
-import TasksOverview from "./app/views/crm/TasksOverview";
+import LeadOverview from "./app/views/crm/leads/LeadOverview";
+import LeadDetails from "./app/views/crm/leads/LeadDetails";
+import ContactManagementDetails from "./app/views/crm/contactManagement/ContactManagementDetails";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -70,7 +66,7 @@ function App() {
           <Route path="/crm/leads" element={<LeadOverview />} />
           <Route path="/crm/leads/:leadId" element={<LeadDetails />} />
           <Route
-            path="/crm/contactManagement/:contactManagementId"
+            path="/crm/contact-management/:contactManagementId"
             element={<ContactManagementDetails />}
           />
           <Route path="/crm/deals-overview" element={<DealsOverview />} />

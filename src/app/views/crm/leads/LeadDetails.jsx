@@ -1,9 +1,9 @@
 import React from "react";
-import PageContent from "../../shared/components/pageContent/PageContent";
-import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
-import { Button } from "../../shared/components/button/Button";
-import { ListAdvancedComponent } from "../../shared/components/list-advanced/ListAdvancedComponent";
-import config from "../../../../config";
+import PageContent from "../../../shared/components/pageContent/PageContent";
+import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
+import { Button } from "../../../shared/components/button/Button";
+import { ListAdvancedComponent } from "../../../shared/components/list-advanced/ListAdvancedComponent";
+import config from "../../../../../config";
 const LeadDetails = () => {
   const leadDetails = {
     Mobile: "1234567891",

@@ -1,191 +1,191 @@
 import React from "react";
-import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
-import Accordion from "../../shared/components/accordion/Accordion";
-import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
+import Accordion from "../../../shared/components/accordion/Accordion";
+import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
+import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
 
-const ContactManagementCall = () => {
-  const calls = [
+const ContactManagementMeeting = () => {
+  const meetings = [
     {
-      callName: (
+      meetingName: (
         <>
-          <FeatherIcon name={"Phone"} size={15} />
+          <FeatherIcon name={"Calendar"} size={15} />
           <h5>Change last orders to 25pcs</h5>
         </>
       ),
-      callDuration: (
+      meetingDuration: (
         <>
           <FeatherIcon name={"Clock"} size={15} color="#0071CA" />
           <span className="call-duration"> 12:47min </span>
         </>
       ),
-      callDate: "18.08.2023. at 2:46 PM",
-      callBody:
+      meetingDate: "18.08.2023. at 2:46 PM",
+      meetingSummary:
         "Orders has to be reduced from 35pcs to 25pcs because storage is to small.",
     },
     {
-      callName: (
+      meetingName: (
         <>
-          <FeatherIcon name={"Phone"} size={15} />
+          <FeatherIcon name={"Calendar"} size={15} />
           <h5>Change last orders to 25pcs</h5>
         </>
       ),
-      callDuration: (
+      meetingDuration: (
         <>
           <FeatherIcon name={"Clock"} size={15} color="#0071CA" />
           <span className="call-duration"> 12:47min </span>
         </>
       ),
-      callDate: "18.08.2023. at 2:46 PM",
-      callBody:
+      meetingDate: "18.08.2023. at 2:46 PM",
+      meetingSummary:
         "Orders has to be reduced from 35pcs to 25pcs because storage is to small.",
     },
     {
-      callName: (
+      meetingName: (
         <>
-          <FeatherIcon name={"Phone"} size={15} />
+          <FeatherIcon name={"Calendar"} size={15} />
           <h5>Change last orders to 25pcs</h5>
         </>
       ),
-      callDuration: (
+      meetingDuration: (
         <>
           <FeatherIcon name={"Clock"} size={15} color="#0071CA" />
           <span className="call-duration"> 12:47min </span>
         </>
       ),
-      callDate: "18.08.2023. at 2:46 PM",
-      callBody:
+      meetingDate: "18.08.2023. at 2:46 PM",
+      meetingSummary:
         "Orders has to be reduced from 35pcs to 25pcs because storage is to small.",
     },
     {
-      callName: (
+      meetingName: (
         <>
-          <FeatherIcon name={"Phone"} size={15} />
+          <FeatherIcon name={"Calendar"} size={15} />
           <h5>Change last orders to 25pcs</h5>
         </>
       ),
-      callDuration: (
+      meetingDuration: (
         <>
           <FeatherIcon name={"Clock"} size={15} color="#0071CA" />
           <span className="call-duration"> 12:47min </span>
         </>
       ),
-      callDate: "18.08.2023. at 2:46 PM",
-      callBody:
+      meetingDate: "18.08.2023. at 2:46 PM",
+      meetingSummary:
         "Orders has to be reduced from 35pcs to 25pcs because storage is to small.",
     },
     {
-      callName: (
+      meetingName: (
         <>
-          <FeatherIcon name={"Phone"} size={15} />
+          <FeatherIcon name={"Calendar"} size={15} />
           <h5>Change last orders to 25pcs</h5>
         </>
       ),
-      callDuration: (
+      meetingDuration: (
         <>
           <FeatherIcon name={"Clock"} size={15} color="#0071CA" />
           <span className="call-duration"> 12:47min </span>
         </>
       ),
-      callDate: "18.08.2023. at 2:46 PM",
-      callBody:
+      meetingDate: "18.08.2023. at 2:46 PM",
+      meetingSummary:
         "Orders has to be reduced from 35pcs to 25pcs because storage is to small.",
     },
     {
-      callName: (
+      meetingName: (
         <>
-          <FeatherIcon name={"Phone"} size={15} />
+          <FeatherIcon name={"Calendar"} size={15} />
           <h5>Change last orders to 25pcs</h5>
         </>
       ),
-      callDuration: (
+      meetingDuration: (
         <>
           <FeatherIcon name={"Clock"} size={15} color="#0071CA" />
           <span className="call-duration"> 12:47min </span>
         </>
       ),
-      callDate: "18.08.2023. at 2:46 PM",
-      callBody:
+      meetingDate: "18.08.2023. at 2:46 PM",
+      meetingSummary:
         "Orders has to be reduced from 35pcs to 25pcs because storage is to small.",
     },
     {
-      callName: (
+      meetingName: (
         <>
-          <FeatherIcon name={"Phone"} size={15} />
+          <FeatherIcon name={"Calendar"} size={15} />
           <h5>Change last orders to 25pcs</h5>
         </>
       ),
-      callDuration: (
+      meetingDuration: (
         <>
           <FeatherIcon name={"Clock"} size={15} color="#0071CA" />
           <span className="call-duration"> 12:47min </span>
         </>
       ),
-      callDate: "18.08.2023. at 2:46 PM",
-      callBody:
+      meetingDate: "18.08.2023. at 2:46 PM",
+      meetingSummary:
         "Orders has to be reduced from 35pcs to 25pcs because storage is to small.",
     },
     {
-      callName: (
+      meetingName: (
         <>
-          <FeatherIcon name={"Phone"} size={15} />
+          <FeatherIcon name={"Calendar"} size={15} />
           <h5>Change last orders to 25pcs</h5>
         </>
       ),
-      callDuration: (
+      meetingDuration: (
         <>
           <FeatherIcon name={"Clock"} size={15} color="#0071CA" />
           <span className="call-duration"> 12:47min </span>
         </>
       ),
-      callDate: "18.08.2023. at 2:46 PM",
-      callBody:
+      meetingDate: "18.08.2023. at 2:46 PM",
+      meetingSummary:
         "Orders has to be reduced from 35pcs to 25pcs because storage is to small.",
     },
     {
-      callName: (
+      meetingName: (
         <>
-          <FeatherIcon name={"Phone"} size={15} />
+          <FeatherIcon name={"Calendar"} size={15} />
           <h5>Change last orders to 25pcs</h5>
         </>
       ),
-      callDuration: (
+      meetingDuration: (
         <>
           <FeatherIcon name={"Clock"} size={15} color="#0071CA" />
           <span className="call-duration"> 12:47min </span>
         </>
       ),
-      callDate: "18.08.2023. at 2:46 PM",
-      callBody:
+      meetingDate: "18.08.2023. at 2:46 PM",
+      meetingSummary:
         "Orders has to be reduced from 35pcs to 25pcs because storage is to small.",
     },
     {
-      callName: (
+      meetingName: (
         <>
-          <FeatherIcon name={"Phone"} size={15} />
+          <FeatherIcon name={"Calendar"} size={15} />
           <h5>Change last orders to 25pcs</h5>
         </>
       ),
-      callDuration: (
+      meetingDuration: (
         <>
           <FeatherIcon name={"Clock"} size={15} color="#0071CA" />
           <span className="call-duration"> 12:47min </span>
         </>
       ),
-      callDate: "18.08.2023. at 2:46 PM",
-      callBody:
+      meetingDate: "18.08.2023. at 2:46 PM",
+      meetingSummary:
         "Orders has to be reduced from 35pcs to 25pcs because storage is to small.",
     },
   ];
   return (
-    <div className="contact-management-call-wrapper">
+    <div className="contact-management-meeting-wrapper">
       <AdvancedCard type={"s-card"}>
-        {calls.map((call, id) => (
-          <div className="call-accordian-container" key={`call-${id}`}>
+        {meetings.map((meeting, id) => (
+          <div className="meeting-accordian-container" key={`meeting-${id}`}>
             <Accordion
-              accordionLeftHeader={call.callName}
-              accordianMiddleHeader={call.callDuration}
-              accordianRightHeader={call.callDate}
-              accordionBody={call.callBody}
+              accordionLeftHeader={meeting.meetingName}
+              accordianMiddleHeader={meeting.meetingDuration}
+              accordianRightHeader={meeting.meetingDate}
+              accordionBody={meeting.meetingSummary}
             />
           </div>
         ))}
@@ -194,4 +194,4 @@ const ContactManagementCall = () => {
   );
 };
 
-export default ContactManagementCall;
+export default ContactManagementMeeting;

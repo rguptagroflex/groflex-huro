@@ -9,13 +9,13 @@
 
 // VIEWS
 @import "./components/views/Articles/articleOverview";
-@import "./components/views/Crm/leadsOverview";
-@import "./components//views/Crm/crmLeadDetail";
-@import "./components/views/Crm/contactManagement";
-@import "./components/views/Crm/_contactManagementDetails";
-@import "./components/views/Crm/contactManagementActivity";
-@import "./components/views/Crm/contactManagementEmail";
-@import "./components/views/Crm/contactManagementCall";
-@import "./components/views/Crm/contactManagementMeetings";
-@import "./components//views/Crm/dealsOverview";
-@import "./components/views/Crm/tasksOverview";
+@import "./components/views/Crm/leads/leadsOverview";
+@import "./components//views/Crm/leads/crmLeadDetail";
+@import "./components/views/Crm/contactManagement/contactManagement";
+@import "./components/views/Crm/contactManagement/contactManagementDetails";
+@import "./components/views/Crm/contactManagement/contactManagementActivity";
+@import "./components/views/Crm/contactManagement/contactManagementEmail";
+@import "./components/views/Crm/contactManagement/contactManagementCall";
+@import "./components/views/Crm/contactManagement/contactManagementMeetings";
+@import "./components//views/Crm/deals/dealsOverview";
+@import "./components/views/Crm/tasks/tasksOverview";

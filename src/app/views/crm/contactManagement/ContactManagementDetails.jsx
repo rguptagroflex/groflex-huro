@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import PageContent from "../../shared/components/pageContent/PageContent";
-import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
-import { Button } from "../../shared/components/button/Button";
-import { ListAdvancedComponent } from "../../shared/components/list-advanced/ListAdvancedComponent";
+import PageContent from "../../../shared/components/pageContent/PageContent";
+import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
+import { Button } from "../../../shared/components/button/Button";
+import { ListAdvancedComponent } from "../../../shared/components/list-advanced/ListAdvancedComponent";
 
-import { Input } from "../../shared/components/input/Input";
+import { Input } from "../../../shared/components/input/Input";
 
-import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
-import Tabs from "../../shared/components/tabs/Tabs";
+import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
+import Tabs from "../../../shared/components/tabs/Tabs";
 import ContactManagementActivity from "./ContactManagementActivity";
 import ContactManagementEmail from "./ContactManagementEmail";
 import ContactManagementCall from "./ContactManagementCall";

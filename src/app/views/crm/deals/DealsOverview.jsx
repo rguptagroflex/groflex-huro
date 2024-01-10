@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import PageContent from "../../shared/components/pageContent/PageContent";
-import { Button } from "../../shared/components/button/Button";
-import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
-import { Input } from "../../shared/components/input/Input";
-import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
+import PageContent from "../../../shared/components/pageContent/PageContent";
+import { Button } from "../../../shared/components/button/Button";
+import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
+import { Input } from "../../../shared/components/input/Input";
+import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
 
 const DealsOverview = () => {
   const [searchText, setSearchText] = useState("");
