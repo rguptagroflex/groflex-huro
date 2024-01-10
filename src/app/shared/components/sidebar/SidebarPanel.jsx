@@ -6,10 +6,10 @@ const SidebarPanel = ({
   heading,
   panelLinks = [
     { label: "Leads", route: "/crm/leads" },
-    { label: "Contact Management", route: "/crm/contactManagement" },
+    { label: "Contact Management", route: "/crm/contact-management" },
 
-    { label: "Tasks Overview", route: "/crm/tasksOverview" },
-    { label: "Deals Overview", route: "/crm/dealsOverview" },
+    { label: "Tasks Overview", route: "/crm/tasks-overview" },
+    { label: "Deals Overview", route: "/crm/deals-overview" },
   ],
 }) => {
   const { sidebarIsActive } = useSelector((state) => state.themeData);

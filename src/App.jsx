@@ -63,18 +63,18 @@ function App() {
           <Route path="notifications" element={<Notifications />} />
           //CRM route
           <Route
-            path="/crm/contactManagement"
+            path="/crm/contact-management"
             element={<ContactManagement />}
           />
-          <Route path="/crm/createForm" element={<CrmCreateForm />} />
+          <Route path="/crm/create-form" element={<CrmCreateForm />} />
           <Route path="/crm/leads" element={<LeadOverview />} />
           <Route path="/crm/leads/:leadId" element={<LeadDetails />} />
           <Route
             path="/crm/contactManagement/:contactManagementId"
             element={<ContactManagementDetails />}
           />
-          <Route path="/crm/dealsOverview" element={<DealsOverview />} />
-          <Route path="/crm/tasksOverview" element={<TasksOverview />} />
+          <Route path="/crm/deals-overview" element={<DealsOverview />} />
+          <Route path="/crm/tasks-overview" element={<TasksOverview />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
