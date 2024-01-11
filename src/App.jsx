@@ -29,6 +29,7 @@ import CrmCreateForm from "./app/views/crm/CrmCreateForm";
 import LeadOverview from "./app/views/crm/leads/LeadOverview";
 import LeadDetails from "./app/views/crm/leads/LeadDetails";
 import ContactManagementDetails from "./app/views/crm/contactManagement/ContactManagementDetails";
+import TaskDetails from "./app/views/crm/tasks/TaskDetails";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -71,6 +72,7 @@ function App() {
           />
           <Route path="/crm/deals-overview" element={<DealsOverview />} />
           <Route path="/crm/tasks-overview" element={<TasksOverview />} />
+          <Route path="/crm/task-details" element={<TaskDetails />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

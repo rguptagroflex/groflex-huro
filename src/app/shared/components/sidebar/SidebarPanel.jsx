@@ -10,6 +10,7 @@ const SidebarPanel = ({
 
     { label: "Tasks Overview", route: "/crm/tasks-overview" },
     { label: "Deals Overview", route: "/crm/deals-overview" },
+    { label: "Task details", route: "/crm/task-details" },
   ],
 }) => {
   const { sidebarIsActive } = useSelector((state) => state.themeData);
