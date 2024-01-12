@@ -37,6 +37,10 @@ import QuotationsList from "./app/views/sales/quotations/QuotationsList";
 import RecurringInvoicesList from "./app/views/sales/recurringInvoices/RecurringInvoicesList";
 import TimesheetsList from "./app/views/sales/timeTracking/TimesheetsList";
 import DebitNotesList from "./app/views/accounting/debitNote/DebitNotesList";
+import InventoryDashboard from "./app/views/inventory/inventoryDashboard/InventoryDashboard";
+import PurchaseOrderList from "./app/views/inventory/purchaseOrder/PurchaseOrderList";
+import SalesOrdersList from "./app/views/inventory/salesOrder/SalesOrdersList";
+import ReportingAndAnalytics from "./app/views/inventory/reportingAndAnalytics/ReportingAndAnalytics";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -77,12 +81,15 @@ function App() {
           <Route path="accounting/debit-notes" element={<DebitNotesList />} />
 
           {/* Inventory Module */}
-          <Route path="inventory/dashboard" element={<Transactions />} />
-          <Route path="inventory/purchase-order" element={<CashAndBank />} />
-          <Route path="inventory/sales-order" element={<CashAndBank />} />
+          <Route path="inventory/dashboard" element={<InventoryDashboard />} />
+          <Route
+            path="inventory/purchase-orders"
+            element={<PurchaseOrderList />}
+          />
+          <Route path="inventory/sales-orders" element={<SalesOrdersList />} />
           <Route
             path="inventory/reporting-and-analytics"
-            element={<CashAndBank />}
+            element={<ReportingAndAnalytics />}
           />
 
           {/* CRM Module */}

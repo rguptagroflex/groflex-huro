@@ -106,8 +106,8 @@ const modules = {
     heading: "Inventory",
     links: [
       { label: "Dashboard", route: "/inventory/dashboard" },
-      { label: "Purchase Order", route: "/inventory/purchase-order" },
-      { label: "Sales Order", route: "/inventory/sales-order" },
+      { label: "Purchase Order", route: "/inventory/purchase-orders" },
+      { label: "Sales Order", route: "/inventory/sales-orders" },
       {
         label: "Reporting & Analytics",
         route: "/inventory/reporting-and-analytics",
