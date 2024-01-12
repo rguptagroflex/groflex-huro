@@ -6,7 +6,7 @@ const TaskInformation = ({
   cardInfo,
   handleAssignedUserChange,
   handleLeadChange,
-  handleTaskDecriptionChange,
+  handleDecriptionChange,
   handleStartDateChange,
   handleDueDateChange,
   handleStatusChange,
@@ -69,10 +69,10 @@ const TaskInformation = ({
           <div className="field">
             <label>Task Description</label>
             <Input
-              onChange={handleTaskDecriptionChange}
+              onChange={handleDecriptionChange}
               type={"text"}
               placeholder={"Enter task description"}
-              value={cardInfo.taskDescription}
+              value={cardInfo.description}
             />
           </div>
         </div>

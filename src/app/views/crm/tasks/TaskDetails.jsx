@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from "react";
 import PageContent from "../../../shared/components/pageContent/PageContent";
-import { ListAdvancedComponent } from "../../../shared/components/list-advanced/ListAdvancedComponent";
-import { formatCurrency } from "../../../helpers/formatCurrency";
-import {
-  ListAdvancedDefaultSettings,
-  customerTypes,
-} from "../../../helpers/constants";
-import { CustomShowHeaderSum } from "../../../shared/components/list-advanced/CustomShowHeaderSum";
+
 import config from "../../../../../config";
 import groflexService from "../../../services/groflex.service";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../../shared/components/button/Button";
-import { isNil } from "../../../helpers/isNil";
-import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
+
 import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
 import { Switch } from "../../../shared/components/switch/Switch";
 import { TextArea } from "../../../shared/components/textArea/TextArea";
@@ -31,11 +24,18 @@ const TaskDetails = () => {
   const [cardInfo, setCardInfo] = useState({
     assignedUser: "",
     lead: "",
-    taskDescription: "",
+    description: "",
     startDate: "",
     dueDate: "",
     status: "",
     label: "",
+    host: "",
+    location: "",
+    date: "",
+    time: "",
+    attendees: "",
+    email: "",
+    contact: "",
   });
   const [reminder, setReminder] = useState({
     remind: false,
@@ -53,7 +53,7 @@ const TaskDetails = () => {
 
   useEffect(() => {
     createInfoCard();
-  }, [taskType]);
+  }, [taskType, cardInfo]);
   const navigate = useNavigate();
 
   const handleTaskTypeChange = (e) => {
@@ -114,7 +114,18 @@ const TaskDetails = () => {
       case "meeting":
         card = {
           title: "Meeting Information",
-          content: <MeetingInformation />,
+          content: (
+            <MeetingInformation
+              cardInfo={cardInfo}
+              handleHostChange={(e) => handleHostChange(e)}
+              handleDecriptionChange={(e) => handleDecriptionChange(e)}
+              handleLocationsChange={(e) => handleLocationsChange(e)}
+              handleLabelChange={(e) => handleLabelChange(e)}
+              handleDateChange={(e) => handleDateChange(e)}
+              handleTimeChange={(e) => handleTimeChange(e)}
+              handleAttendeesChange={(e) => handleAttendeesChange(e)}
+            />
+          ),
         };
         break;
       case "task":
@@ -123,13 +134,13 @@ const TaskDetails = () => {
           content: (
             <TaskInformation
               cardInfo={cardInfo}
-              handleAssignedUserChange={() => handleAssignedUserChange}
-              handleLeadChange={() => handleLeadChange}
-              handleTaskDecriptionChange={() => handleTaskDecriptionChange}
-              handleStartDateChange={() => handleStartDateChange}
-              handleDueDateChange={() => handleDueDateChange}
-              handleStatusChange={() => handleStatusChange}
-              handleLabelChange={() => handleLabelChange}
+              handleAssignedUserChange={(e) => handleAssignedUserChange(e)}
+              handleLeadChange={(e) => handleLeadChange(e)}
+              handleDecriptionChange={(e) => handleDecriptionChange(e)}
+              handleStartDateChange={(e) => handleStartDateChange(e)}
+              handleDueDateChange={(e) => handleDueDateChange(e)}
+              handleStatusChange={(e) => handleStatusChange(e)}
+              handleLabelChange={(e) => handleLabelChange(e)}
             />
           ),
         };
@@ -137,19 +148,48 @@ const TaskDetails = () => {
       case "toDo":
         card = {
           title: "To-do Information",
-          content: <ToDoInformation />,
+          content: (
+            <ToDoInformation
+              cardInfo={cardInfo}
+              handleAssignedUserChange={(e) => handleAssignedUserChange(e)}
+              handleDecriptionChange={(e) => handleDecriptionChange(e)}
+              handleStartDateChange={(e) => handleStartDateChange(e)}
+              handleDueDateChange={(e) => handleDueDateChange(e)}
+              handleLabelChange={(e) => handleLabelChange(e)}
+            />
+          ),
         };
         break;
       case "email":
         card = {
           title: "Email Information",
-          content: <EmailInformation />,
+          content: (
+            <EmailInformation
+              cardInfo={cardInfo}
+              handleAssignedUserChange={(e) => handleAssignedUserChange(e)}
+              handleEmailChange={(e) => handleEmailChange(e)}
+              handleDecriptionChange={(e) => handleDecriptionChange(e)}
+              handleDateChange={(e) => handleDateChange(e)}
+              handleTimeChange={(e) => handleTimeChange(e)}
+              handleLabelChange={(e) => handleLabelChange(e)}
+            />
+          ),
         };
         break;
       case "call":
         card = {
           title: "Call Information",
-          content: <CallInformation />,
+          content: (
+            <CallInformation
+              cardInfo={cardInfo}
+              handleAssignedUserChange={(e) => handleAssignedUserChange(e)}
+              handleContactChange={(e) => handleContactChange(e)}
+              handleDecriptionChange={(e) => handleDecriptionChange(e)}
+              handleDateChange={(e) => handleDateChange(e)}
+              handleTimeChange={(e) => handleTimeChange(e)}
+              handleLabelChange={(e) => handleLabelChange(e)}
+            />
+          ),
         };
         break;
     }
@@ -164,17 +204,17 @@ const TaskDetails = () => {
     });
   };
 
-  const handleLeadChange = (e) => {
+  const handleLeadChange = (option) => {
     setCardInfo({
       ...cardInfo,
-      lead: e.target.value,
+      lead: option.value,
     });
   };
 
-  const handleTaskDecriptionChange = (e) => {
+  const handleDecriptionChange = (e) => {
     setCardInfo({
       ...cardInfo,
-      taskDescription: e.target.value,
+      description: e.target.value,
     });
   };
 
@@ -206,6 +246,54 @@ const TaskDetails = () => {
     });
   };
 
+  const handleHostChange = (option) => {
+    setCardInfo({
+      ...cardInfo,
+      host: option.value,
+    });
+  };
+
+  const handleLocationsChange = (option) => {
+    setCardInfo({
+      ...cardInfo,
+      location: option.value,
+    });
+  };
+
+  const handleDateChange = (e) => {
+    setCardInfo({
+      ...cardInfo,
+      date: e.target.value,
+    });
+  };
+
+  const handleTimeChange = (e) => {
+    setCardInfo({
+      ...cardInfo,
+      time: e.target.value,
+    });
+  };
+
+  const handleAttendeesChange = (option) => {
+    setCardInfo({
+      ...cardInfo,
+      attendees: option.value,
+    });
+  };
+
+  const handleEmailChange = (option) => {
+    setCardInfo({
+      ...cardInfo,
+      email: option.value,
+    });
+  };
+
+  const handleContactChange = (option) => {
+    setCardInfo({
+      ...cardInfo,
+      contact: option.value,
+    });
+  };
   const taskTypes = [
     {
       label: "Meeting",
@@ -238,7 +326,8 @@ const TaskDetails = () => {
     { label: "Lead A", value: "leadA" },
     { label: "Lead B", value: "leadB" },
   ];
-  console.log(taskType);
+  console.log(cardInfo);
+
   return (
     <PageContent
       title="Create"
@@ -266,16 +355,6 @@ const TaskDetails = () => {
                     />
                   </div>
                   {infoCard.content}
-                  {/* <TaskInformation
-                    cardInfo={cardInfo}
-                    handleAssignedUserChange={handleAssignedUserChange}
-                    handleLeadChange={handleLeadChange}
-                    handleTaskDecriptionChange={handleTaskDecriptionChange}
-                    handleStartDateChange={handleStartDateChange}
-                    handleDueDateChange={handleDueDateChange}
-                    handleStatusChange={handleStatusChange}
-                    handleLabelChange={handleLabelChange}
-                  /> */}
                 </div>
               </AdvancedCard>
             </div>
