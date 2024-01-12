@@ -3,7 +3,7 @@ import PageContent from "../../../shared/components/pageContent/PageContent";
 
 import config from "../../../../../config";
 import groflexService from "../../../services/groflex.service";
-import { useNavigate } from "react-router-dom";
+
 import { Button } from "../../../shared/components/button/Button";
 
 import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
@@ -49,13 +49,7 @@ const TaskDetails = () => {
     notesContent: "",
   });
 
-  const [infoCard, setInfoCard] = useState("");
-
-  useEffect(() => {
-    createInfoCard();
-  }, [taskType, cardInfo]);
-  const navigate = useNavigate();
-
+  //funtions to manage cardInfo states
   const handleTaskTypeChange = (e) => {
     setTaskType(e);
   };
@@ -108,95 +102,6 @@ const TaskDetails = () => {
     });
   };
 
-  const createInfoCard = () => {
-    let card = {};
-    switch (taskType) {
-      case "meeting":
-        card = {
-          title: "Meeting Information",
-          content: (
-            <MeetingInformation
-              cardInfo={cardInfo}
-              handleHostChange={(e) => handleHostChange(e)}
-              handleDecriptionChange={(e) => handleDecriptionChange(e)}
-              handleLocationsChange={(e) => handleLocationsChange(e)}
-              handleLabelChange={(e) => handleLabelChange(e)}
-              handleDateChange={(e) => handleDateChange(e)}
-              handleTimeChange={(e) => handleTimeChange(e)}
-              handleAttendeesChange={(e) => handleAttendeesChange(e)}
-            />
-          ),
-        };
-        break;
-      case "task":
-        card = {
-          title: "Task Information",
-          content: (
-            <TaskInformation
-              cardInfo={cardInfo}
-              handleAssignedUserChange={(e) => handleAssignedUserChange(e)}
-              handleLeadChange={(e) => handleLeadChange(e)}
-              handleDecriptionChange={(e) => handleDecriptionChange(e)}
-              handleStartDateChange={(e) => handleStartDateChange(e)}
-              handleDueDateChange={(e) => handleDueDateChange(e)}
-              handleStatusChange={(e) => handleStatusChange(e)}
-              handleLabelChange={(e) => handleLabelChange(e)}
-            />
-          ),
-        };
-        break;
-      case "toDo":
-        card = {
-          title: "To-do Information",
-          content: (
-            <ToDoInformation
-              cardInfo={cardInfo}
-              handleAssignedUserChange={(e) => handleAssignedUserChange(e)}
-              handleDecriptionChange={(e) => handleDecriptionChange(e)}
-              handleStartDateChange={(e) => handleStartDateChange(e)}
-              handleDueDateChange={(e) => handleDueDateChange(e)}
-              handleLabelChange={(e) => handleLabelChange(e)}
-            />
-          ),
-        };
-        break;
-      case "email":
-        card = {
-          title: "Email Information",
-          content: (
-            <EmailInformation
-              cardInfo={cardInfo}
-              handleAssignedUserChange={(e) => handleAssignedUserChange(e)}
-              handleEmailChange={(e) => handleEmailChange(e)}
-              handleDecriptionChange={(e) => handleDecriptionChange(e)}
-              handleDateChange={(e) => handleDateChange(e)}
-              handleTimeChange={(e) => handleTimeChange(e)}
-              handleLabelChange={(e) => handleLabelChange(e)}
-            />
-          ),
-        };
-        break;
-      case "call":
-        card = {
-          title: "Call Information",
-          content: (
-            <CallInformation
-              cardInfo={cardInfo}
-              handleAssignedUserChange={(e) => handleAssignedUserChange(e)}
-              handleContactChange={(e) => handleContactChange(e)}
-              handleDecriptionChange={(e) => handleDecriptionChange(e)}
-              handleDateChange={(e) => handleDateChange(e)}
-              handleTimeChange={(e) => handleTimeChange(e)}
-              handleLabelChange={(e) => handleLabelChange(e)}
-            />
-          ),
-        };
-        break;
-    }
-    setInfoCard(card);
-  };
-
-  //Funtions to handle task information states
   const handleAssignedUserChange = (option) => {
     setCardInfo({
       ...cardInfo,
@@ -294,6 +199,109 @@ const TaskDetails = () => {
       contact: option.value,
     });
   };
+
+  //function to create info card
+  const createInfoCard = () => {
+    let card = "";
+    switch (taskType) {
+      case "meeting":
+        card = (
+          <MeetingInformation
+            cardInfo={cardInfo}
+            handleHostChange={(e) => handleHostChange(e)}
+            handleDecriptionChange={(e) => handleDecriptionChange(e)}
+            handleLocationsChange={(e) => handleLocationsChange(e)}
+            handleLabelChange={(e) => handleLabelChange(e)}
+            handleDateChange={(e) => handleDateChange(e)}
+            handleTimeChange={(e) => handleTimeChange(e)}
+            handleAttendeesChange={(e) => handleAttendeesChange(e)}
+          />
+        );
+
+        break;
+      case "task":
+        card = (
+          <TaskInformation
+            cardInfo={cardInfo}
+            handleAssignedUserChange={(e) => handleAssignedUserChange(e)}
+            handleLeadChange={(e) => handleLeadChange(e)}
+            handleDecriptionChange={(e) => handleDecriptionChange(e)}
+            handleStartDateChange={(e) => handleStartDateChange(e)}
+            handleDueDateChange={(e) => handleDueDateChange(e)}
+            handleStatusChange={(e) => handleStatusChange(e)}
+            handleLabelChange={(e) => handleLabelChange(e)}
+          />
+        );
+        break;
+      case "toDo":
+        card = (
+          <ToDoInformation
+            cardInfo={cardInfo}
+            handleAssignedUserChange={(e) => handleAssignedUserChange(e)}
+            handleDecriptionChange={(e) => handleDecriptionChange(e)}
+            handleStartDateChange={(e) => handleStartDateChange(e)}
+            handleDueDateChange={(e) => handleDueDateChange(e)}
+            handleLabelChange={(e) => handleLabelChange(e)}
+          />
+        );
+        break;
+      case "email":
+        card = (
+          <EmailInformation
+            cardInfo={cardInfo}
+            handleAssignedUserChange={(e) => handleAssignedUserChange(e)}
+            handleEmailChange={(e) => handleEmailChange(e)}
+            handleDecriptionChange={(e) => handleDecriptionChange(e)}
+            handleDateChange={(e) => handleDateChange(e)}
+            handleTimeChange={(e) => handleTimeChange(e)}
+            handleLabelChange={(e) => handleLabelChange(e)}
+          />
+        );
+        break;
+      case "call":
+        card = (
+          <CallInformation
+            cardInfo={cardInfo}
+            handleAssignedUserChange={(e) => handleAssignedUserChange(e)}
+            handleContactChange={(e) => handleContactChange(e)}
+            handleDecriptionChange={(e) => handleDecriptionChange(e)}
+            handleDateChange={(e) => handleDateChange(e)}
+            handleTimeChange={(e) => handleTimeChange(e)}
+            handleLabelChange={(e) => handleLabelChange(e)}
+          />
+        );
+
+        break;
+    }
+    return card;
+  };
+
+  //funtion to create info card title
+  const cardInfoTitle = () => {
+    let title = "";
+    switch (taskType) {
+      case "meeting":
+        title = <h2 className="title is-5">Meeting Informations</h2>;
+        break;
+      case "task":
+        title = <h2 className="title is-5">Task Informations</h2>;
+        break;
+
+      case "toDo":
+        title = <h2 className="title is-5">To-Do Informations</h2>;
+        break;
+      case "email":
+        title = <h2 className="title is-5">Email Informations</h2>;
+        break;
+      case "call":
+        title = <h2 className="title is-5">Call Informations</h2>;
+        break;
+    }
+
+    return title;
+  };
+
+  //values for radio buttons
   const taskTypes = [
     {
       label: "Meeting",
@@ -322,11 +330,12 @@ const TaskDetails = () => {
     },
   ];
 
+  //dropdown options for leads input
   const leads = [
     { label: "Lead A", value: "leadA" },
     { label: "Lead B", value: "leadB" },
   ];
-  console.log(cardInfo);
+  // console.log(cardInfo, "Hello");
 
   return (
     <PageContent
@@ -344,7 +353,8 @@ const TaskDetails = () => {
           <div className="column is-7 type-info-card">
             <div className="task-info-card">
               <AdvancedCard type={"s-card"}>
-                <h2 className="title is-5">{infoCard.title}</h2>
+                {/* <h2 className="title is-5"></h2> */}
+                {cardInfoTitle()}
                 <div className="task-info">
                   <div className="columns is-multiline m-b-5">
                     <RadioButton
@@ -354,7 +364,7 @@ const TaskDetails = () => {
                       name="kind"
                     />
                   </div>
-                  {infoCard.content}
+                  {createInfoCard()}
                 </div>
               </AdvancedCard>
             </div>
