@@ -10,8 +10,8 @@ import AccountSettings from "./app/views/accountSettings/AccountSettings";
 import Preferences from "./app/views/preferences/Preferences";
 import Notifications from "./app/views/notifications/Notifications";
 import Contacts from "./app/views/contacts/Contacts";
-import Expenses from "./app/views/expenses/Expenses";
-import CashAndBank from "./app/views/cashAndBank/CashAndBank";
+import Transactions from "./app/views/accounting/transactions/Transactions";
+import CashAndBank from "./app/views/accounting/cashAndBank/CashAndBankList";
 import CreateArticle from "./app/views/articles/CreateArticle";
 import CreateContact from "./app/views/contacts/CreateContact";
 import EditContact from "./app/views/contacts/EditContact";
@@ -32,6 +32,11 @@ import LeadOverview from "./app/views/crm/LeadOverview";
 import LeadDetails from "./app/views/crm/LeadDetails";
 import ContactManagementDetails from "./app/views/crm/ContactManagementDetails";
 import DealsOverview from "./app/views/crm/DealsOverview";
+import InvoicesList from "./app/views/sales/invoices/InvoicesList";
+import QuotationsList from "./app/views/sales/quotations/QuotationsList";
+import RecurringInvoicesList from "./app/views/sales/recurringInvoices/RecurringInvoicesList";
+import TimesheetsList from "./app/views/sales/timeTracking/TimesheetsList";
+import DebitNotesList from "./app/views/accounting/debitNote/DebitNotesList";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -45,22 +50,42 @@ function App() {
           <Route index element={<Home />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="estimates" element={<Estimates />} />
+
           {/* Articles */}
           <Route path="articles" element={<Articles />} />
           <Route path="article/:articleId" element={<ArticleDetail />} />
           <Route path="article/new" element={<CreateArticle />} />
           <Route path="article/edit/:articleId" element={<EditArticle />} />
+
           {/* Contacts */}
           <Route path="contacts" element={<Contacts />} />
           <Route path="contacts-create" element={<CreateContact />} />
           <Route path="contacts-edit/:contactId" element={<EditContact />} />
-          {/* Other */}
-          <Route path="expenses" element={<Expenses />} />
-          <Route path="cash-and-bank" element={<CashAndBank />} />
-          <Route path="account-settings" element={<AccountSettings />} />
-          <Route path="preferences" element={<Preferences />} />
-          <Route path="notifications" element={<Notifications />} />
-          //CRM route
+
+          {/* Sales Module*/}
+          <Route path="sales/invoices" element={<InvoicesList />} />
+          <Route path="sales/quotations" element={<QuotationsList />} />
+          <Route
+            path="sales/recurring-invoices"
+            element={<RecurringInvoicesList />}
+          />
+          <Route path="sales/time-sheets" element={<TimesheetsList />} />
+
+          {/* Accounting Module */}
+          <Route path="accounting/transactions" element={<Transactions />} />
+          <Route path="accounting/cash-and-bank" element={<CashAndBank />} />
+          <Route path="accounting/debit-notes" element={<DebitNotesList />} />
+
+          {/* Inventory Module */}
+          <Route path="inventory/dashboard" element={<Transactions />} />
+          <Route path="inventory/purchase-order" element={<CashAndBank />} />
+          <Route path="inventory/sales-order" element={<CashAndBank />} />
+          <Route
+            path="inventory/reporting-and-analytics"
+            element={<CashAndBank />}
+          />
+
+          {/* CRM Module */}
           <Route
             path="/crm/contactManagement"
             element={<ContactManagement />}
@@ -73,7 +98,14 @@ function App() {
             element={<ContactManagementDetails />}
           />
           <Route path="/crm/dealsOverview" element={<DealsOverview />} />
+
+          {/* Miscilaneous*/}
+          <Route path="account-settings" element={<AccountSettings />} />
+          <Route path="preferences" element={<Preferences />} />
+          <Route path="notifications" element={<Notifications />} />
         </Route>
+
+        {/* Unprotected Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/email-verification" element={<EmailVerification />} />
