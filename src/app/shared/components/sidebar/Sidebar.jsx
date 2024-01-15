@@ -7,51 +7,59 @@ import ProfileMenu from "./ProfileMenu";
 import { useDispatch, useSelector } from "react-redux";
 import config from "../../../../../config";
 import { SET_SIDEBAR_PANEL_ACTIVE } from "../../../redux/actions/actions.types";
-
+import Tooltip from "@mui/material/Tooltip";
 const sidebarRoutes = [
   {
     route: "/",
     icon: "Home",
     isModule: false,
+    name: "Home",
   },
   {
     route: "/dashboard",
     icon: "Activity",
     isModule: false,
+    name: "Dashboard",
   },
   {
     route: "/sales/invoices",
     icon: "TrendingUp",
     isModule: true,
     moduleName: "sales",
+    name: "Sales",
   },
   {
     route: "/contacts",
     icon: "Users",
     isModule: false,
+    name: "Contacts",
   },
   {
     route: "/articles",
     icon: "Inbox",
     isModule: false,
+    name: "Articles",
   },
   {
     route: "/accounting/transactions",
     icon: "CreditCard",
     isModule: true,
     moduleName: "accounting",
+    name: "Accounting",
   },
   {
     route: "/inventory/dashboard",
     icon: "Archive",
     isModule: true,
     moduleName: "inventory",
+    name: "Inventory",
   },
   {
     route: "/crm/leads",
     icon: "Briefcase",
     isModule: true,
     moduleName: "crm",
+    name: "CRM",
   },
 ];
 
@@ -90,39 +98,45 @@ const Sidebar = () => {
       >
         {sidebarRoutes.map((linkItem) => {
           return (
-            <li key={linkItem.route}>
-              <NavLink
-                onClick={() => {
-                  if (linkItem.isModule) {
-                    dispatch({ type: SET_SIDEBAR_PANEL_ACTIVE });
-                  }
-                }}
-                style={({ isActive }) => {
-                  let isCurrentModuleActive;
-                  if (
-                    linkItem.isModule &&
-                    config.getCurrentModule()?.name === linkItem.moduleName
-                  ) {
-                    isCurrentModuleActive = true;
-                  } else if (isActive) {
-                    isCurrentModuleActive = true;
-                  }
-                  return {
-                    backgroundColor: isCurrentModuleActive ? "white" : "",
-                    width: isCurrentModuleActive ? "100%" : "98%",
-                    height: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderLeft: isCurrentModuleActive && "5px solid #00A353",
-                  };
-                }}
-                to={linkItem.route}
-                className={sidebarRoutesIsActiveClass}
-              >
-                <FeatherIcon name={linkItem.icon} />
-              </NavLink>
-            </li>
+            <Tooltip
+              title={linkItem.name}
+              placement="right"
+              key={linkItem.route}
+            >
+              <li>
+                <NavLink
+                  onClick={() => {
+                    if (linkItem.isModule) {
+                      dispatch({ type: SET_SIDEBAR_PANEL_ACTIVE });
+                    }
+                  }}
+                  style={({ isActive }) => {
+                    let isCurrentModuleActive;
+                    if (
+                      linkItem.isModule &&
+                      config.getCurrentModule()?.name === linkItem.moduleName
+                    ) {
+                      isCurrentModuleActive = true;
+                    } else if (isActive) {
+                      isCurrentModuleActive = true;
+                    }
+                    return {
+                      backgroundColor: isCurrentModuleActive ? "white" : "",
+                      width: isCurrentModuleActive ? "100%" : "98%",
+                      height: "100%",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderLeft: isCurrentModuleActive && "5px solid #00A353",
+                    };
+                  }}
+                  to={linkItem.route}
+                  className={sidebarRoutesIsActiveClass}
+                >
+                  <FeatherIcon name={linkItem.icon} />
+                </NavLink>
+              </li>
+            </Tooltip>
           );
         })}
       </ul>

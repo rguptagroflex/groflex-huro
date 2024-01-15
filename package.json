@@ -10,6 +10,9 @@
     "host": "vite --host"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.15.4",
     "accounting": "^0.4.1",
     "ag-grid-community": "^29.3.2",
     "ag-grid-react": "^29.3.2",
