@@ -8,7 +8,7 @@ import { ListAdvancedComponent } from "../../../shared/components/list-advanced/
 import { formatCurrency } from "../../../helpers/formatCurrency";
 import { Button } from "../../../shared/components/button/Button";
 import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
-import { dateCompareSort } from "../../../helpers/sortComparators";
+import { dateCompareSort, localeCompare } from "../../../helpers/sortComparators";
 import groflexService from "../../../services/groflex.service";
 const actions = [
   { name: "Edit", icon: "edit" },
@@ -85,20 +85,24 @@ const QuotationsList = () => {
           },
           { field: "customerData.name", headerName: "Customer Name" },
           {
-            field: "baseCurrency",
             headerName: "Currency",
-            // cellClass: ListAdvancedDefaultSettings.EXCEL_STYLE_IDS.Currency,
-            // valueFormatter: (evt) => {
-            //   return formatCurrency(evt.value);
-            // },
-            // headerComponent: CustomShowHeaderSum,
-            // headerComponentParams: { value: "mrp", headerName: "MRP" },
+            field: "baseCurrency",
+            minWidth: ListAdvancedDefaultSettings.COLUMN_MIN_WIDTH,
+            comparator: localeCompare,
+            hide: true,
+            filterParams: {
+              suppressMiniFilter: true,
+            },
+            valueFormatter: (evt) => {
+              console.log(evt.value === "" || evt.value === null ? "INR" : evt.value)
+              return evt.value === "" || evt.value === null ? "INR" : evt.value;
+            },
           },
           {field:"type",headerName:"Quotation Type"},
           { field: "state", headerName: "Status",
           cellRenderer: createActivity,},
           
-          // { field: "skuNo", headerName: "SKU" },
+          
           // {
           //   field: "date",
           //   headerName: "Date Created",
