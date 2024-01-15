@@ -26,11 +26,12 @@
         }
       }
       .s-card-advanced::-webkit-scrollbar {
-        width: 8px;
+        width: 4px;
         height: 48px;
       }
       .s-card-advanced::-webkit-scrollbar-thumb {
         background: #00a353;
+        // background: #ecfcf4;
         border-radius: 10px;
       }
       .s-card-advanced::-webkit-scrollbar-track {
