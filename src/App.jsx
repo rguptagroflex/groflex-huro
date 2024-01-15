@@ -41,6 +41,7 @@ import InventoryDashboard from "./app/views/inventory/inventoryDashboard/Invento
 import PurchaseOrderList from "./app/views/inventory/purchaseOrder/PurchaseOrderList";
 import SalesOrdersList from "./app/views/inventory/salesOrder/SalesOrdersList";
 import ReportingAndAnalytics from "./app/views/inventory/reportingAndAnalytics/ReportingAndAnalytics";
+import CreateQuotation from "./app/views/sales/quotations/CreateQuotation";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -69,6 +70,7 @@ function App() {
           {/* Sales Module*/}
           <Route path="sales/invoices" element={<InvoicesList />} />
           <Route path="sales/quotations" element={<QuotationsList />} />
+          <Route path="quotations/new" element={<CreateQuotation />} />
           <Route
             path="sales/recurring-invoices"
             element={<RecurringInvoicesList />}

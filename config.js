@@ -50,6 +50,9 @@ const resourceUrls = {
   user: `${resourceHost}setting/user`,
   contact: `${resourceHost}customer`,
   miscellaneous: `${resourceHost}setting/miscellaneous`,
+  //Quotation
+  quotations:`${resourceHost}offer?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,
+  quotation:`${resourceHost}offer/`
 };
 
 const checkLoginTokenIsValid = () => {
