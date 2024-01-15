@@ -30,6 +30,8 @@ import LeadOverview from "./app/views/crm/leads/LeadOverview";
 import LeadDetails from "./app/views/crm/leads/LeadDetails";
 import ContactManagementDetails from "./app/views/crm/contactManagement/ContactManagementDetails";
 import TaskDetails from "./app/views/crm/tasks/TaskDetails";
+import CrmCreateContact from "./app/views/crm/contactManagement/CrmCreateContact";
+import CreateLead from "./app/views/crm/leads/CreateLead";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -63,9 +65,14 @@ function App() {
             path="/crm/contact-management"
             element={<ContactManagement />}
           />
+          <Route
+            path="/crm/contact-management/create-contact"
+            element={<CrmCreateContact />}
+          />
           <Route path="/crm/create-form" element={<CrmCreateForm />} />
           <Route path="/crm/leads" element={<LeadOverview />} />
           <Route path="/crm/leads/:leadId" element={<LeadDetails />} />
+          <Route path="/crm/leads/create-lead" element={<CreateLead />} />
           <Route
             path="/crm/contact-management/:contactManagementId"
             element={<ContactManagementDetails />}

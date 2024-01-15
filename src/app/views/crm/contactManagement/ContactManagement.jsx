@@ -138,15 +138,7 @@ const ContactManagement = () => {
       breadCrumbData={["Home", "Crm"]}
       titleActionContent={
         <Button
-          onClick={() =>
-            navigate("/crm/create-form", {
-              state: {
-                title: "Create Contact",
-                api: "Create contact api",
-                infoTitle: "Contact Info",
-              },
-            })
-          }
+          onClick={() => navigate("/crm/contact-management/create-contact")}
           isSuccess
         >
           Create new contact
