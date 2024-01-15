@@ -81,11 +81,78 @@ const regex = {
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i,
 };
 
+const modules = {
+  sales: {
+    name: "sales",
+    heading: "Sales",
+    links: [
+      { label: "Invoices", route: "/sales/invoices" },
+      { label: "Quotations", route: "/sales/quotations" },
+      { label: "Recurring invoices", route: "/sales/recurring-invoices" },
+      { label: "Timesheets", route: "/sales/time-sheets" },
+    ],
+  },
+  accounting: {
+    name: "accounting",
+    heading: "Accounting",
+    links: [
+      { label: "Transactions", route: "/accounting/transactions" },
+      { label: "Cash and Bank", route: "/accounting/cash-and-bank" },
+      { label: "Debit Notes", route: "/accounting/debit-notes" },
+    ],
+  },
+  inventory: {
+    name: "inventory",
+    heading: "Inventory",
+    links: [
+      { label: "Dashboard", route: "/inventory/dashboard" },
+      { label: "Purchase Order", route: "/inventory/purchase-orders" },
+      { label: "Sales Order", route: "/inventory/sales-orders" },
+      {
+        label: "Reporting & Analytics",
+        route: "/inventory/reporting-and-analytics",
+      },
+    ],
+  },
+  crm: {
+    name: "crm",
+    heading: "CRM",
+    links: [
+      { label: "Leads", route: "/crm/leads" },
+      { label: "Contact Management", route: "/crm/contact-management" },
+
+      { label: "Tasks Overview", route: "/crm/tasks-overview" },
+      { label: "Deals Overview", route: "/crm/deals-overview" },
+      { label: "Task details", route: "/crm/task-details" },
+    ],
+  },
+};
+
+const getCurrentModule = () => {
+  const locationPath = window.location.pathname;
+  // console.log(locationPath);
+  const firstDepth = locationPath.split("/")[1];
+  // console.log(firstDepth);
+  switch (firstDepth) {
+    case "sales":
+      return modules.sales;
+    case "accounting":
+      return modules.accounting;
+    case "inventory":
+      return modules.inventory;
+    case "crm":
+      return modules.crm;
+    default:
+      break;
+  }
+};
+
 const config = {
   resourceHost,
   resourceUrls,
-  checkLoginTokenIsValid,
   regex,
+  checkLoginTokenIsValid,
+  getCurrentModule,
 };
 
 export default config;

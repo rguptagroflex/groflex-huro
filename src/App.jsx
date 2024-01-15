@@ -10,8 +10,8 @@ import AccountSettings from "./app/views/accountSettings/AccountSettings";
 import Preferences from "./app/views/preferences/Preferences";
 import Notifications from "./app/views/notifications/Notifications";
 import Contacts from "./app/views/contacts/Contacts";
-import Expenses from "./app/views/expenses/Expenses";
-import CashAndBank from "./app/views/cashAndBank/CashAndBank";
+import Transactions from "./app/views/accounting/transactions/Transactions";
+import CashAndBank from "./app/views/accounting/cashAndBank/CashAndBankList";
 import CreateArticle from "./app/views/articles/CreateArticle";
 import CreateContact from "./app/views/contacts/CreateContact";
 import EditContact from "./app/views/contacts/EditContact";
@@ -33,6 +33,16 @@ import TaskDetails from "./app/views/crm/tasks/TaskDetails";
 import CrmCreateContact from "./app/views/crm/contactManagement/CrmCreateContact";
 import CreateLead from "./app/views/crm/leads/CreateLead";
 
+import InvoicesList from "./app/views/sales/invoices/InvoicesList";
+import QuotationsList from "./app/views/sales/quotations/QuotationsList";
+import RecurringInvoicesList from "./app/views/sales/recurringInvoices/RecurringInvoicesList";
+import TimesheetsList from "./app/views/sales/timeTracking/TimesheetsList";
+import DebitNotesList from "./app/views/accounting/debitNote/DebitNotesList";
+import InventoryDashboard from "./app/views/inventory/inventoryDashboard/InventoryDashboard";
+import PurchaseOrderList from "./app/views/inventory/purchaseOrder/PurchaseOrderList";
+import SalesOrdersList from "./app/views/inventory/salesOrder/SalesOrdersList";
+import ReportingAndAnalytics from "./app/views/inventory/reportingAndAnalytics/ReportingAndAnalytics";
+
 store.subscribe(() => {
   // console.log(store.getState());
 });
@@ -45,22 +55,45 @@ function App() {
           <Route index element={<Home />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="estimates" element={<Estimates />} />
+
           {/* Articles */}
           <Route path="articles" element={<Articles />} />
           <Route path="article/:articleId" element={<ArticleDetail />} />
           <Route path="article/new" element={<CreateArticle />} />
           <Route path="article/edit/:articleId" element={<EditArticle />} />
+
           {/* Contacts */}
           <Route path="contacts" element={<Contacts />} />
           <Route path="contacts-create" element={<CreateContact />} />
           <Route path="contacts-edit/:contactId" element={<EditContact />} />
-          {/* Other */}
-          <Route path="expenses" element={<Expenses />} />
-          <Route path="cash-and-bank" element={<CashAndBank />} />
-          <Route path="account-settings" element={<AccountSettings />} />
-          <Route path="preferences" element={<Preferences />} />
-          <Route path="notifications" element={<Notifications />} />
-          //CRM route
+
+          {/* Sales Module*/}
+          <Route path="sales/invoices" element={<InvoicesList />} />
+          <Route path="sales/quotations" element={<QuotationsList />} />
+          <Route
+            path="sales/recurring-invoices"
+            element={<RecurringInvoicesList />}
+          />
+          <Route path="sales/time-sheets" element={<TimesheetsList />} />
+
+          {/* Accounting Module */}
+          <Route path="accounting/transactions" element={<Transactions />} />
+          <Route path="accounting/cash-and-bank" element={<CashAndBank />} />
+          <Route path="accounting/debit-notes" element={<DebitNotesList />} />
+
+          {/* Inventory Module */}
+          <Route path="inventory/dashboard" element={<InventoryDashboard />} />
+          <Route
+            path="inventory/purchase-orders"
+            element={<PurchaseOrderList />}
+          />
+          <Route path="inventory/sales-orders" element={<SalesOrdersList />} />
+          <Route
+            path="inventory/reporting-and-analytics"
+            element={<ReportingAndAnalytics />}
+          />
+
+          {/* CRM Module */}
           <Route
             path="/crm/contact-management"
             element={<ContactManagement />}
@@ -80,7 +113,14 @@ function App() {
           <Route path="/crm/deals-overview" element={<DealsOverview />} />
           <Route path="/crm/tasks-overview" element={<TasksOverview />} />
           <Route path="/crm/task-details" element={<TaskDetails />} />
+
+          {/* Miscilaneous*/}
+          <Route path="account-settings" element={<AccountSettings />} />
+          <Route path="preferences" element={<Preferences />} />
+          <Route path="notifications" element={<Notifications />} />
         </Route>
+
+        {/* Unprotected Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/email-verification" element={<EmailVerification />} />
