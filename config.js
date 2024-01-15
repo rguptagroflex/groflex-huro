@@ -50,6 +50,9 @@ const resourceUrls = {
   user: `${resourceHost}setting/user`,
   contact: `${resourceHost}customer`,
   miscellaneous: `${resourceHost}setting/miscellaneous`,
+  // Invoices
+  invoices: `${resourceHost}invoice?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,
+  invoice: `${resourceHost}invoice/`
 };
 
 const checkLoginTokenIsValid = () => {
