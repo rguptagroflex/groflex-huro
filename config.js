@@ -121,9 +121,9 @@ const modules = {
       { label: "Leads", route: "/crm/leads" },
       { label: "Contact Management", route: "/crm/contact-management" },
 
-      { label: "Tasks Overview", route: "/crm/tasks-overview" },
-      { label: "Deals Overview", route: "/crm/deals-overview" },
-      { label: "Task details", route: "/crm/task-details" },
+      { label: "Tasks", route: "/crm/tasks" },
+      { label: "Deals", route: "/crm/deals" },
+      // { label: "Task details", route: "/crm/task-details" },
     ],
   },
 };

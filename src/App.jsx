@@ -110,9 +110,10 @@ function App() {
             path="/crm/contact-management/:contactManagementId"
             element={<ContactManagementDetails />}
           />
-          <Route path="/crm/deals-overview" element={<DealsOverview />} />
-          <Route path="/crm/tasks-overview" element={<TasksOverview />} />
-          <Route path="/crm/task-details" element={<TaskDetails />} />
+          <Route path="/crm/deals" element={<DealsOverview />} />
+          <Route path="/crm/tasks" element={<TasksOverview />} />
+          <Route path="/crm/tasks/edit" element={<TaskDetails />} />
+          <Route path="/crm/tasks/edit/:taskId" element={<TaskDetails />} />
 
           {/* Miscilaneous*/}
           <Route path="account-settings" element={<AccountSettings />} />
