@@ -3,7 +3,7 @@ import Pikaday from "pikaday";
 import { InputAddons } from "../inputAddons/InputAddons";
 import { FeatherIcon } from "../../featherIcon/FeatherIcon";
 
-const DatePicker = ({ selectedDate, onDateChange = () => {} }) => {
+const DateInput = ({ selectedDate, onDateChange = () => {} }) => {
   const datePickerRef = useRef();
   const [selectedDateState, setSelectedDateState] = useState(selectedDate);
 
@@ -53,28 +53,4 @@ const DatePicker = ({ selectedDate, onDateChange = () => {} }) => {
   );
 };
 
-export default DatePicker;
-
-// import React, { useEffect, useRef } from "react";
-// import Pikaday from "pikaday";
-
-// const DateInput = () => {
-//   const dateRef = useRef();
-
-//   const onDateChange = () => {};
-
-//   useEffect(() => {
-//     new Pikaday({
-//       field: dateRef.current,
-//       format: "MM/DD/YYYY",
-//       onSelect: () => onDateChange(),
-//     });
-//   }, []);
-//   return (
-//     <div>
-//       <input type="text" ref={dateRef} />
-//     </div>
-//   );
-// };
-
-// export default DateInput;
+export default DateInput;

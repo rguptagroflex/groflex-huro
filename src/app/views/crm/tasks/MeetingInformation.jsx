@@ -1,6 +1,10 @@
 import React from "react";
 import { SelectInput } from "../../../shared/components/select/SelectInput";
 import { Input } from "../../../shared/components/input/Input";
+import TimeInput from "../../../shared/components/timePicker/TimeInput";
+
+import DateInput from "../../../shared/components/datePicker/DateInput";
+import moment from "moment";
 
 const MeetingInformation = ({
   cardInfo,
@@ -91,22 +95,31 @@ const MeetingInformation = ({
         <div className="column is-6">
           <div className="field">
             <label>Date</label>
-            <Input
+            {/* <Input
               onChange={handleDateChange}
               type={"text"}
               placeholder={"None"}
               value={cardInfo.date}
+            /> */}
+            <DateInput
+              selectedDate={cardInfo.date}
+              onDateChange={handleDateChange}
             />
           </div>
         </div>
         <div className="column is-6">
           <div className="field">
             <label>Time</label>
-            <Input
+            {/* <Input
               onChange={handleTimeChange}
               type={"text"}
               placeholder={"None"}
               value={cardInfo.time}
+            /> */}
+            <TimeInput
+              size={"small"}
+              onChange={handleTimeChange}
+              value={moment(cardInfo.time)}
             />
           </div>
         </div>
