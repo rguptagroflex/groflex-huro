@@ -18,6 +18,8 @@ import ToDoInformation from "./ToDoInformation";
 import EmailInformation from "./EmailInformation";
 import CallInformation from "./CallInformation";
 import DateInput from "../../../shared/components/datePicker/DateInput";
+import { TimePicker } from "@mui/x-date-pickers";
+import TimeInput from "../../../shared/components/timePicker/TimeInput";
 
 const TaskDetails = () => {
   const [taskType, setTaskType] = useState("task");
@@ -403,12 +405,13 @@ const TaskDetails = () => {
                   <div className="column is-6">
                     <div className="field">
                       <label>Time *</label>
-                      <Input
+                      {/* <Input
                         onChange={handleReminderTimeChange}
                         type={"text"}
                         placeholder={"None"}
                         value={reminder.reminderTime}
-                      />
+                      /> */}
+                      <TimeInput size={"small"} />
                     </div>
                   </div>
                 </div>
