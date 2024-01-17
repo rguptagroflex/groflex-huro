@@ -17,6 +17,7 @@ import MeetingInformation from "./MeetingInformation";
 import ToDoInformation from "./ToDoInformation";
 import EmailInformation from "./EmailInformation";
 import CallInformation from "./CallInformation";
+import DateInput from "../../../shared/components/datePicker/DateInput";
 
 const TaskDetails = () => {
   const [taskType, setTaskType] = useState("task");
@@ -61,10 +62,10 @@ const TaskDetails = () => {
     });
   };
 
-  const handleReminderDateChange = (e) => {
+  const handleReminderDateChange = (date) => {
     setReminder({
       ...reminder,
-      reminderDate: e.target.value,
+      reminderDate: date,
     });
   };
 
@@ -335,7 +336,7 @@ const TaskDetails = () => {
     { label: "Lead A", value: "leadA" },
     { label: "Lead B", value: "leadB" },
   ];
-  // console.log(cardInfo, "Hello");
+  console.log(reminder.reminderDate);
 
   return (
     <PageContent
@@ -387,11 +388,15 @@ const TaskDetails = () => {
                   <div className="column is-6">
                     <div className="field">
                       <label>Choose Date *</label>
-                      <Input
+                      {/* <Input
                         onChange={handleReminderDateChange}
                         type={"text"}
                         placeholder={"None"}
                         value={reminder.reminderDate}
+                      /> */}
+                      <DateInput
+                        selectedDate={reminder.reminderDate}
+                        onDateChange={handleReminderDateChange}
                       />
                     </div>
                   </div>
