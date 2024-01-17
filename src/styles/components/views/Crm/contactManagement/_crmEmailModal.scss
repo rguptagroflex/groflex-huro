@@ -1,0 +1,15 @@
+.crm-email-modal-wrapper {
+  .reminder-container {
+    .toggle-reminder {
+      display: flex;
+      justify-content: space-between;
+    }
+    .reminder-fields-container {
+      display: flex;
+      gap: 20px;
+      .reminder-fields {
+        width: 180px;
+      }
+    }
+  }
+}

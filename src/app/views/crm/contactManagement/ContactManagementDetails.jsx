@@ -12,7 +12,9 @@ import ContactManagementActivity from "./ContactManagementActivity";
 import ContactManagementEmail from "./ContactManagementEmail";
 import ContactManagementCall from "./ContactManagementCall";
 import ContactManagementMeeting from "./ContactManagementMeeting";
+import CrmEmailModal from "./CrmEmailModal";
 const ContactManagementDetails = () => {
+  const [isEmailModalVisible, setIsEmailModalVisible] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
   const contactList = [
     {
@@ -129,7 +131,11 @@ const ContactManagementDetails = () => {
                 <div className="contact-image"></div>
                 <div className="utility-icons-container">
                   {utilityIcons.map((item, id) => (
-                    <div className="utility-icons" key={`utility-icon-${id}`}>
+                    <div
+                      className="utility-icons"
+                      key={`utility-icon-${id}`}
+                      onClick={() => setIsEmailModalVisible(true)}
+                    >
                       <FeatherIcon name={item.icon} />
                       <span className="utilit-icon-label">{item.label}</span>
                     </div>
@@ -228,6 +234,10 @@ const ContactManagementDetails = () => {
             <Tabs tabList={tabList} />
           </div>
         </div>
+        <CrmEmailModal
+          setIsEmailModalVisible={setIsEmailModalVisible}
+          isEmailModalVisible={isEmailModalVisible}
+        />
       </div>
     </PageContent>
   );
