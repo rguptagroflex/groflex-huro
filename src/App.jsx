@@ -42,6 +42,7 @@ import InventoryDashboard from "./app/views/inventory/inventoryDashboard/Invento
 import PurchaseOrderList from "./app/views/inventory/purchaseOrder/PurchaseOrderList";
 import SalesOrdersList from "./app/views/inventory/salesOrder/SalesOrdersList";
 import ReportingAndAnalytics from "./app/views/inventory/reportingAndAnalytics/ReportingAndAnalytics";
+import CreateDeal from "./app/views/crm/deals/CreateDeal";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -111,6 +112,7 @@ function App() {
             element={<ContactManagementDetails />}
           />
           <Route path="/crm/deals" element={<DealsOverview />} />
+          <Route path="/crm/deals/create-deal" element={<CreateDeal />} />
           <Route path="/crm/tasks" element={<TasksOverview />} />
           <Route path="/crm/tasks/edit" element={<TaskDetails />} />
           <Route path="/crm/tasks/edit/:taskId" element={<TaskDetails />} />

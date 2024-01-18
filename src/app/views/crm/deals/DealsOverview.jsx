@@ -4,8 +4,10 @@ import { Button } from "../../../shared/components/button/Button";
 import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
 import { Input } from "../../../shared/components/input/Input";
 import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
+import { useNavigate } from "react-router-dom";
 
 const DealsOverview = () => {
+  const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
   const dealsSummary = [
     { heading: "Deal Amount", value: `₹${0}`, color: "#0071CA" },
@@ -165,18 +167,7 @@ const DealsOverview = () => {
       titleIsBreadCrumb
       breadCrumbData={["Home", "CRM", "Deals"]}
       titleActionContent={
-        <Button
-          onClick={() =>
-            navigate("/crm/createForm", {
-              state: {
-                title: "Create Lead",
-                api: "Create lead api",
-                infoTitle: "Lead Info",
-              },
-            })
-          }
-          isSuccess
-        >
+        <Button onClick={() => navigate("/crm/deals/create-deal")} isSuccess>
           Create Deal
         </Button>
       }
