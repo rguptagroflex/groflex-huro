@@ -1,0 +1,66 @@
+.deal-details-wrapper {
+  .left-card {
+    .title {
+      color: #00a353;
+    }
+    width: 370px;
+    .deal-about-card {
+      .deal-about-container {
+        margin-bottom: 16px;
+        display: flex;
+        justify-content: space-between;
+        .label {
+          width: 115px;
+          color: #888787;
+          font-weight: 500;
+        }
+        .value {
+          width: 115px;
+          color: #888787;
+          font-weight: 400;
+        }
+        .separtor {
+          display: flex;
+          width: 115px;
+          justify-content: center;
+        }
+      }
+    }
+    .deal-addtional-info-card {
+      .task-container {
+        border: 1px solid #c6c6c6;
+        margin-bottom: 16px;
+        .task-container-header {
+          padding: 16px;
+          display: flex;
+          justify-content: space-between;
+          border-bottom: 1px solid #c6c6c6;
+          .task-label {
+            color: #888787;
+            font-weight: 600;
+          }
+          .create-new-task-btn {
+            color: #00a353;
+            font-weight: 600;
+            display: flex;
+            gap: 8px;
+            cursor: pointer;
+          }
+        }
+        .task-content-container {
+          margin-top: 16px;
+
+          .task-content {
+            padding: 0px 16px 10px 16px;
+          }
+        }
+      }
+    }
+  }
+  .right-card {
+    width: 760px;
+    .list-container__sub-header {
+      display: none;
+    }
+  }
+}
