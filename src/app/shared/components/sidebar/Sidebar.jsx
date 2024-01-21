@@ -102,6 +102,7 @@ const Sidebar = () => {
               title={linkItem.name}
               placement="right"
               key={linkItem.route}
+              arrow
             >
               <li>
                 <NavLink
