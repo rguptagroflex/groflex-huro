@@ -8,11 +8,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <LocalizationProvider dateAdapter={AdapterMoment}>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </LocalizationProvider>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <LocalizationProvider dateAdapter={AdapterMoment}>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </LocalizationProvider>
+  // </React.StrictMode>
 );

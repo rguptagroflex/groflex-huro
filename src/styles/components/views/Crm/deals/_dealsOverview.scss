@@ -49,7 +49,7 @@
           justify-content: space-between;
           padding: 8px;
         }
-        .card-cards {
+        .cards {
           .service-card-top {
             display: flex;
             justify-content: space-between;
@@ -87,6 +87,66 @@
               font-weight: 600;
               color: #888787;
             }
+          }
+        }
+      }
+    }
+    .kanban-board-container {
+      .kanban-task-container {
+        border-radius: 8px;
+      }
+      .card-header {
+        border: 1px solid #ddd;
+        border-radius: 8px 8px 0px 0px;
+        padding: 8px;
+
+        color: #ffffff;
+      }
+      .card-subheader {
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        background: #ecfcf4;
+        display: flex;
+        justify-content: space-between;
+        padding: 8px;
+      }
+      .cards {
+        .service-card-top {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 10px;
+          .service-name {
+            font-size: 14px;
+            font-weight: 600;
+          }
+        }
+        .service-card-middle {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 10px;
+          .service-amount {
+            font-size: 12px;
+            font-weight: 600;
+          }
+          .service-number-of-tasks {
+            font-size: 12px;
+            font-weight: 600;
+            color: #888787;
+          }
+        }
+        .service-card-bottom {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+          .service-task-assigned-to {
+            color: #00a353;
+            font-size: 12px;
+            font-weight: 600;
+          }
+          .service-task-due-days {
+            font-size: 12px;
+            font-weight: 600;
+            color: #888787;
           }
         }
       }
