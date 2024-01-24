@@ -10,6 +10,7 @@ import { Switch } from "../../shared/components/switch/Switch";
 import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
 import { useNavigate, useParams } from "react-router-dom";
+import ArticleSearchComponent from "../../shared/components/articleSearch/ArticleSearchComponent";
 
 const EditArticle = () => {
   const navigate = useNavigate();
@@ -369,15 +370,12 @@ const EditArticle = () => {
               <div className="column is-12">
                 <div className="field">
                   <label>Article name *</label>
-                  <SelectInput
-                    options={[
-                      { label: "Article 1", value: "article1" },
-                      { label: "Article 2", value: "article2" },
-                      { label: "Article 3", value: "article3" },
-                    ]}
-                    placeholder={<p>Search or type article name</p>}
+                  <ArticleSearchComponent
+                    value={{
+                      label: editArticleFormData.articleName,
+                      key: editArticleFormData.articleName,
+                    }}
                     onChange={handleArticleNameChange}
-                    value={editArticleFormData.articleName}
                   />
                 </div>
               </div>

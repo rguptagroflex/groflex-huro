@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import FontAwesomeIcon from "../../shared/fontAwesomeIcon/FontAwesomeIcon";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
+import ArticleSearchComponent from "../../shared/components/articleSearch/ArticleSearchComponent";
 
 const CreateArticle = () => {
   const [loading, setLoading] = useState(true);
@@ -348,15 +349,12 @@ const CreateArticle = () => {
               <div className="column is-12">
                 <div className="field">
                   <label>Article name *</label>
-                  <SelectInput
-                    options={[
-                      { label: "Article 1", value: "article1" },
-                      { label: "Article 2", value: "article2" },
-                      { label: "Article 3", value: "article3" },
-                    ]}
-                    placeholder={<p>Search or type article name</p>}
+                  <ArticleSearchComponent
+                    value={{
+                      label: createArticleFormData.articleName,
+                      key: createArticleFormData.articleName,
+                    }}
                     onChange={handleArticleNameChange}
-                    value={createArticleFormData.articleName}
                   />
                 </div>
               </div>

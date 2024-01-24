@@ -46,7 +46,8 @@ const SelectMultipleInput = ({
 
   const handleOnChange = (newSelectedOptions) => {
     setSelectedWholeOptions(newSelectedOptions);
-    onChange(newSelectedOptions.map((option) => option.value));
+    // onChange(newSelectedOptions.map((option) => option.value));
+    onChange(newSelectedOptions);
   };
 
   return (
