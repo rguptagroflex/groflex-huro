@@ -5,7 +5,7 @@ import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
 import { Input } from "../../../shared/components/input/Input";
 import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
 import { useNavigate } from "react-router-dom";
-import KanbanBoard from "../../../shared/components/kanbanBoard/kanbanBoard";
+import KanbanBoard from "../../../shared/components/kanbanBoard/KanbanBoard";
 
 const DealsOverview = () => {
   const initialData = {

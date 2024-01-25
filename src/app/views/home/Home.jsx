@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PageContent from "../../shared/components/pageContent/PageContent";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
@@ -15,8 +15,78 @@ import ecommerce from "../../../assets/groflex/images/home/ecommerce.png";
 import pos from "../../../assets/groflex/images/home/pos.png";
 import crmBanner from "../../../assets/groflex/images/home/crm.png";
 import { useNavigate } from "react-router-dom";
+import KanbanBoard from "../../shared/components/kanbanBoard/KanbanBoard";
 const Home = () => {
   const navigate = useNavigate();
+  const [isEditableDisabled, setIsEditableDisbaled] = useState(true);
+  const quickLinks = {
+    tasks: {
+      "task-1": {
+        id: "task-1",
+        content: (
+          <div className="quick-link-card">
+            <FeatherIcon name={"Inbox"} size={25} color="#272d30" />
+            <p className="quick-link-text">Add Article</p>
+          </div>
+        ),
+      },
+      "task-2": {
+        id: "task-2",
+        content: (
+          <div className="quick-link-card">
+            <FeatherIcon name={"TrendingUp"} size={25} color="#272d30" />
+            <p className="quick-link-text">Create Sales</p>
+          </div>
+        ),
+      },
+      "task-3": {
+        id: "task-3",
+        content: (
+          <div className="quick-link-card">
+            <FeatherIcon name={"Clock"} size={25} color="#272d30" />
+            <p className="quick-link-text">Create Timesheets</p>
+          </div>
+        ),
+      },
+      "task-4": {
+        id: "task-4",
+        content: (
+          <div className="quick-link-card">
+            <FeatherIcon name={"User"} size={25} color="#272d30" />
+            <p className="quick-link-text">Create Contact</p>
+          </div>
+        ),
+      },
+
+      "task-5": {
+        id: "task-5",
+        content: (
+          <div className="quick-link-card">
+            <FeatherIcon name={"Users"} size={25} color="#272d30" />
+            <p className="quick-link-text">Invite Users</p>
+          </div>
+        ),
+      },
+
+      "task-6": {
+        id: "task-6",
+        content: (
+          <div className="quick-link-card">
+            <FeatherIcon name={"Book"} size={25} color="#272d30" />
+            <p className="quick-link-text">Create Quotations</p>
+          </div>
+        ),
+      },
+    },
+    columns: {
+      "column-1": {
+        id: "column-1",
+        title: "",
+        taskIds: ["task-1", "task-2", "task-3", "task-4", "task-5", "task-6"],
+      },
+    },
+    columnOrder: ["column-1"],
+  };
   return (
     <PageContent
       breadCrumbIcon={
@@ -127,10 +197,28 @@ const Home = () => {
           </div>
         </ReactSlickCarousel>
 
-        <AdvancedCard type={"s-card"}>
-          <h3 className="home-quick-links">Quick Links</h3>
-          <div></div>
-        </AdvancedCard>
+        <div className="home-quick-links-wrapper">
+          <AdvancedCard type={"s-card"}>
+            <div className="quick-links-header">
+              <h3 className="home-quick-links">Quick Links</h3>
+              <div
+                className="quick-links-edit-container"
+                onClick={() => setIsEditableDisbaled(false)}
+              >
+                <h5>Edit Links</h5>
+                <FeatherIcon name={"Edit"} size={20} color="#00A353" />
+              </div>
+            </div>
+
+            <div className="home-quick-links-container">
+              <KanbanBoard
+                initialBoard={quickLinks}
+                isDragDisabled={isEditableDisabled}
+                direction={"horizontal"}
+              />
+            </div>
+          </AdvancedCard>
+        </div>
 
         <AdvancedCard type={"s-card"}>
           <div className="coming-soon-card">

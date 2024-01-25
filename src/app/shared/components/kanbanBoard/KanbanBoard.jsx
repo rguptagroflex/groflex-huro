@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import KanbanColumn from "./KanbanColumn";
 
-const KanbanBoard = ({ initialBoard }) => {
+const KanbanBoard = ({
+  initialBoard = {},
+  isDragDisabled = false,
+  direction = "vertical",
+}) => {
   const [board, setBoard] = useState(initialBoard);
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
@@ -73,7 +77,15 @@ const KanbanBoard = ({ initialBoard }) => {
         {board.columnOrder.map((columnId) => {
           const column = board.columns[columnId];
           const tasks = column.taskIds.map((taskId) => board.tasks[taskId]);
-          return <KanbanColumn key={column.id} column={column} tasks={tasks} />;
+          return (
+            <KanbanColumn
+              key={column.id}
+              column={column}
+              tasks={tasks}
+              isDragDisabled={isDragDisabled}
+              direction={direction}
+            />
+          );
         })}
       </div>
     </DragDropContext>

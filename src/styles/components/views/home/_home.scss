@@ -153,4 +153,47 @@
       }
     }
   }
+  .home-quick-links-wrapper {
+    .quick-links-header {
+      display: flex;
+      justify-content: space-between;
+      .quick-links-edit-container {
+        color: #00a353;
+        display: flex;
+        gap: 10px;
+        cursor: pointer;
+      }
+    }
+    .home-quick-links-container {
+      display: flex;
+      .kanban-column-container {
+        width: 1078px;
+        border: 0;
+        .kanban-task-list {
+          display: flex;
+          gap: 21px 30px;
+          flex-wrap: wrap;
+
+          .kanban-task-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            width: 225px;
+            border-radius: 8px;
+            padding: 16px;
+            .quick-link-card {
+              align-items: center;
+              display: flex;
+              justify-content: center;
+              gap: 10px;
+              .quick-link-text {
+                color: #272d30;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
