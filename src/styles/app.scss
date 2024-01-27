@@ -1,0 +1,22 @@
+//Variables
+@import "../assets//scss/abstracts/variables";
+
+// SHARED
+@import "./components/shared/listAdvancedComponent/ListAdvanced";
+@import "./components/shared/otpInputComponent/otp-input-component";
+@import "./components/shared/toast/toast";
+@import "./components/shared/accordion/accordion";
+
+// VIEWS
+@import "./components/views/Articles/articleOverview";
+@import "./components/views/Crm/leads/leadsOverview";
+@import "./components//views/Crm/leads/crmLeadDetail";
+@import "./components/views/Crm/contactManagement/contactManagement";
+@import "./components/views/Crm/contactManagement/contactManagementDetails";
+@import "./components/views/Crm/contactManagement/contactManagementActivity";
+@import "./components/views/Crm/contactManagement/contactManagementEmail";
+@import "./components/views/Crm/contactManagement/contactManagementCall";
+@import "./components/views/Crm/contactManagement/contactManagementMeetings";
+@import "./components//views/Crm/deals/dealsOverview";
+@import "./components/views/Crm/tasks/tasksOverview";
+@import "./components/views/Crm/tasks/taskDetails";
