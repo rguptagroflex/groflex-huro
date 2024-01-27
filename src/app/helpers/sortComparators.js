@@ -57,6 +57,7 @@ export const dateCompare = (filterLocalDateAtMidnight, cellValue, format) => {
 	}
 };
 
+
 // Comparator for sorting date values
 export const dateCompareSort = (date1, date2, format) => {
 	const date1Obj = date1 && moment(date1, format || 'DD-MM-YYYY').toDate();
@@ -76,3 +77,4 @@ export const dateCompareSort = (date1, date2, format) => {
 
 	return date1Obj.getTime() - date2Obj.getTime();
 };
+

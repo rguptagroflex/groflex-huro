@@ -43,6 +43,7 @@ import PurchaseOrderList from "./app/views/inventory/purchaseOrder/PurchaseOrder
 import SalesOrdersList from "./app/views/inventory/salesOrder/SalesOrdersList";
 import ReportingAndAnalytics from "./app/views/inventory/reportingAndAnalytics/ReportingAndAnalytics";
 
+
 store.subscribe(() => {
   // console.log(store.getState());
 });

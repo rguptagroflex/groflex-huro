@@ -50,6 +50,20 @@ const resourceUrls = {
   user: `${resourceHost}setting/user`,
   contact: `${resourceHost}customer`,
   miscellaneous: `${resourceHost}setting/miscellaneous`,
+  //Invoices
+  invoices: `${resourceHost}invoice?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,
+
+  //Quotation
+  quotations: `${resourceHost}offer?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,
+  quotation: `${resourceHost}offer/`,
+
+  //Recurring
+  recurring: `${resourceHost}recurringinvoice?offset=0&searchText=&limit=9999999&orderBy=name&desc=true`,
+
+  //Accounting
+  //Transaction
+  transaction: `${resourceHost}bankTransaction?offset=0&searchText=&limit=9999999&orderBy=date&desc=true`,
+  bank: `${resourceHost}bank`,
 };
 
 const checkLoginTokenIsValid = () => {
@@ -146,13 +160,17 @@ const getCurrentModule = () => {
       break;
   }
 };
-
+const dateFormat = {
+  api: "YYYY-MM-DD",
+  client: "DD-MM-YYYY",
+};
 const config = {
   resourceHost,
   resourceUrls,
   regex,
   checkLoginTokenIsValid,
   getCurrentModule,
+  dateFormat,
 };
 
 export default config;
