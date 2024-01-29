@@ -124,7 +124,7 @@ const ContactManagementDetails = () => {
     >
       <div className="contact-management-details-wrapper">
         <div className="columns is-multiline">
-          <div className="column is-7 left-content">
+          <div className="column is-3 left-content">
             <div className="contact-basic-info-container">
               <AdvancedCard type={"s-card"}>
                 <h2 className="title is-5">Contact Info</h2>
@@ -230,7 +230,7 @@ const ContactManagementDetails = () => {
             </div>
           </div>
 
-          <div className="column is-5 right-content">
+          <div className="column is-7 right-content">
             <Tabs tabList={tabList} />
           </div>
         </div>

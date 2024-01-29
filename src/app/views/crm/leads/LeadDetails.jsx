@@ -32,7 +32,7 @@ const LeadDetails = () => {
     >
       <div className="crm-lead-details-wrapper">
         <div className="columns is-multiline">
-          <div className="column is-7 left-card">
+          <div className="column is-5">
             <div className="lead-basic-info-card">
               <AdvancedCard type={"s-card"}>
                 <div className="lead-image"></div>
@@ -80,7 +80,7 @@ const LeadDetails = () => {
             </div>
           </div>
 
-          <div className="column is-5 right-card">
+          <div className="column is-7 right-card">
             <AdvancedCard type={"s-card"}>
               <h2 className="title is-5">Lead History</h2>
               <ListAdvancedComponent

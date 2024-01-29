@@ -18,6 +18,7 @@ export const AdvancedCard = ({
   footerContentLeft,
   footerContentRight,
   footerContentCenter,
+  className,
 }) => {
   const getCardType = () => {
     switch (type) {
@@ -33,7 +34,7 @@ export const AdvancedCard = ({
   };
 
   const getCardClasses = () => {
-    const classes = [];
+    const classes = [className];
 
     // Elevation
     isRaised && classes.push("is-raised");

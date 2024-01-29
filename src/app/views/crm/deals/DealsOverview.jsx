@@ -301,9 +301,8 @@ const DealsOverview = () => {
       }
     >
       <div className="deals-overview-wrapper">
-        <div className="deals-overview-summary-card">
-          <AdvancedCard type={"s-card"}>
-            {dealsSummary.map((deal, id) => (
+        <div className="columns is-multiline deals-overview-summary-card">
+          {/* {dealsSummary.map((deal, id) => (
               <div className="summary-card-container" key={`deal-${id}`}>
                 <h5 className="container-heading">{deal.heading}</h5>
                 <h5
@@ -313,9 +312,23 @@ const DealsOverview = () => {
                   {deal.value}
                 </h5>
               </div>
-            ))}
-          </AdvancedCard>
+            ))} */}
+
+          {dealsSummary.map((deal, id) => (
+            <div className="column is-2 summary-card-container">
+              <AdvancedCard type={"s-card"} key={`deal-${id}`}>
+                <h5 className="container-heading">{deal.heading}</h5>
+                <h5
+                  className="container-value"
+                  style={{ color: `${deal.color}` }}
+                >
+                  {deal.value}
+                </h5>
+              </AdvancedCard>
+            </div>
+          ))}
         </div>
+
         <div className="m-t-20" />
         <div className="deals-overview-details-card">
           <AdvancedCard type={"s-card"}>

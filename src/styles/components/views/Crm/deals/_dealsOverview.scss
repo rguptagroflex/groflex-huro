@@ -1,25 +1,46 @@
 .deals-overview-wrapper {
   .deals-overview-summary-card {
-    .card-body {
-      display: flex;
-      justify-content: space-between;
-      .summary-card-container {
-        width: 200px;
-        height: 118px;
-        border-radius: 8px;
+    background: #fff;
+    &.columns {
+      margin-left: 0;
+      margin-right: 0;
+      // &.is-multiline {
+      //   flex-wrap: nowrap;
+      // }
+    }
+    .summary-card-container {
+      .s-card-advanced {
         background: #f1f8fb;
-        padding-left: 18px;
-        padding-bottom: 33px;
-        padding-top: 27px;
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
         .container-heading {
           color: #888787;
         }
       }
+      &.column {
+        &.is-2 {
+          flex: auto;
+        }
+      }
     }
   }
+  // .deals-overview-summary-card {
+  //   .card-body {
+  //     .summary-card-container {
+  //       width: 200px;
+  //       height: 118px;
+  //       border-radius: 8px;
+  //       background: #f1f8fb;
+  //       padding-left: 18px;
+  //       padding-bottom: 33px;
+  //       padding-top: 27px;
+  //       display: flex;
+  //       flex-direction: column;
+  //       gap: 5px;
+  //       .container-heading {
+  //         color: #888787;
+  //       }
+  //     }
+  //   }
+  // }
   .deals-overview-details-card {
     .services-search-container {
       width: 152px;
