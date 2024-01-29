@@ -19,24 +19,22 @@ const actions = [
   { name: "End recurring invoice", icon: "trash-alt" },
 ];
 
-const interval=(p)=>{
+const interval = (p) => {
   let val;
-  console.log(p)
+  console.log(p);
   switch (p.value) {
-    case 'quarter':
-       val="3-months"
+    case "quarter":
+      val = "3-months";
       break;
-  case 'biyearly':
-  val="half-yearly"
-  break;
+    case "biyearly":
+      val = "half-yearly";
+      break;
     default:
-      val="Weekly"
+      val = "Weekly";
       break;
   }
-  return<>
-  {val}
-  </>
-}
+  return <>{val}</>;
+};
 const createActivity = (params) => {
   let iconColor = "";
   let icon = "";
@@ -57,8 +55,8 @@ const createActivity = (params) => {
   }
   return (
     <div className="recurringInvoices-status">
-      <FeatherIcon name={icon} color={iconColor}  />
-       {/* {params.value} */}
+      <FeatherIcon name={icon} color={iconColor} />
+      {/* {params.value} */}
     </div>
   );
 };
@@ -111,7 +109,7 @@ const RecurringInvoicesList = () => {
           {
             headerName: "Interval",
             field: "recurrence",
-            cellRenderer: interval
+            cellRenderer: interval,
           },
 
           {

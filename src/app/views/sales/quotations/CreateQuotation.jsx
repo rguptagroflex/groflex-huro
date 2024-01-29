@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const CreateQuotation = () => {
-  return (
-    <div>CreateQuotation</div>
-  )
-}
+  return <div>CreateQuotation</div>;
+};
 
-export default CreateQuotation
+export default CreateQuotation;

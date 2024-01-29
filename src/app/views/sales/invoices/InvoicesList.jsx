@@ -30,12 +30,10 @@ const type = (params) => {
     case "invoice":
       res = "Invoice";
       break;
-      default:
-        res="default"
+    default:
+      res = "default";
   }
-  return<>
-  {res}
-  </>
+  return <>{res}</>;
 };
 
 const createActivity = (params) => {
@@ -138,19 +136,20 @@ const InvoicesList = () => {
           {
             field: "dueToDate",
             filter: true,
-            comparator: (date1, date2) => dateCompareSort(date1, date2, config.dateFormat.client),
+            comparator: (date1, date2) =>
+              dateCompareSort(date1, date2, config.dateFormat.client),
             headerName: "Due Date",
           },
           {
             field: "dueSince",
-								comparator: localeCompareNumeric,
-								filter: "agNumberColumnFilter",
-								filterParams: {
-									suppressAndOrCondition: true,
-								},
-								valueFormatter: (evt) => {
-									return evt.value ? evt.value + " days" : "";
-								},
+            comparator: localeCompareNumeric,
+            filter: "agNumberColumnFilter",
+            filterParams: {
+              suppressAndOrCondition: true,
+            },
+            valueFormatter: (evt) => {
+              return evt.value ? evt.value + " days" : "";
+            },
             headerName: "Due Since",
           },
 
@@ -172,7 +171,10 @@ const InvoicesList = () => {
               return formatCurrency(evt.value);
             },
             headerComponent: CustomShowHeaderSum,
-            headerComponentParams: { value: "outstandingAmount", headerName: "Total" },
+            headerComponentParams: {
+              value: "outstandingAmount",
+              headerName: "Total",
+            },
           },
           {
             field: "type",

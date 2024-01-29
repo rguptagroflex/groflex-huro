@@ -4,10 +4,12 @@ import BankListComponent from "./BankListComponent";
 import CashListComponent from "./CashListComponent";
 
 const CashAndBank = () => {
-  return <PageContent title="Cash and Bank">
-    <BankListComponent />
-    <CashListComponent />
-  </PageContent>;
+  return (
+    <PageContent title="Cash and Bank">
+      <BankListComponent />
+      <CashListComponent />
+    </PageContent>
+  );
 };
 
 export default CashAndBank;
