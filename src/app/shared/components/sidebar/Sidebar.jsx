@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import config from "../../../../../config";
 import { SET_SIDEBAR_PANEL_ACTIVE } from "../../../redux/actions/actions.types";
 import Tooltip from "@mui/material/Tooltip";
+import CustomToolTip from "../customToolTip/CustomToolTip";
 const sidebarRoutes = [
   {
     route: "/",
@@ -98,9 +99,9 @@ const Sidebar = () => {
       >
         {sidebarRoutes.map((linkItem) => {
           return (
-            <Tooltip
+            <CustomToolTip
               title={linkItem.name}
-              placement="right"
+              placement={"right"}
               key={linkItem.route}
               arrow
             >
@@ -137,7 +138,7 @@ const Sidebar = () => {
                   <FeatherIcon name={linkItem.icon} />
                 </NavLink>
               </li>
-            </Tooltip>
+            </CustomToolTip>
           );
         })}
       </ul>
