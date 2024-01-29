@@ -57,7 +57,7 @@ const createActivity = (params) => {
   }
 
   return (
-    <div className="quotations-status">
+    <div className="invoices-status">
       <FontAwesomeIcon
         name={"circle"}
         size={11}
