@@ -9,9 +9,10 @@ import { CustomShowHeaderSum } from "../../../shared/components/list-advanced/Cu
 import { useNavigate } from "react-router-dom";
 import groflexService from "../../../services/groflex.service";
 import { Button } from "../../../shared/components/button/Button";
+import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
 
-// TODO: Filter by date
-// TODO: Settings
+// Filter by date remaining
+// Settings remaining
 const InvoicesList = () => {
   const navigate = useNavigate();
 
@@ -19,9 +20,6 @@ const InvoicesList = () => {
     breadCrumbData={["Home", "Sales", "Invoices"]}
     title="Invoices"
     titleActionContent={<div style={{ display: "flex", gap: 16 }}>
-      <Button onClick={() => {/* TODO */}}>
-        Create Bulk Payment
-      </Button>
       <Button onClick={() => navigate("/invoice/new")} isSuccess>
         Create Invoice
       </Button>
@@ -70,9 +68,9 @@ const InvoicesList = () => {
             field: "type",
             headerName: "Type",
             valueFormatter: ({ value }) =>
-              // TODO: verify values
               value === "invoice" ? "Invoice" : 
-              value === "recurring-invoice" ? "Recurring Invoice" :
+              value === "recurringInvoice" ? "Recurring Invoice" :
+              value === "pos_receipt" ? "Pos Receipt" :
               undefined
           }
         ]}
@@ -108,19 +106,33 @@ const InvoicesList = () => {
 export default InvoicesList;
 
 const Status = ({ value }) => {
-  // TODO: verify the types of statuses
-  let color = 
-    value === "draft" ? "#DDDDDD" :
-    value === "locked" ? "#0071CA" :
-    value === "overdue" ? "#D94339" :
-    value === "partially-paid" ? "#FFAA2C" :
-    value === "cancelled" ? "#888787" :
-    value === "paid" ? "#00A353" :
-    undefined
+  const icon = {
+    color:
+      value === "draft" ? "#888787" :
+      value === "locked" ? "#00A353" :
+      value === "dunned" ? "#D94339" :
+      value === "partiallyPaid" ? "#FFAA2C" :
+      value === "cancelled" ? "#000000" :
+      value === "paid" ? "#00A353" :
+      undefined,
+    name: 
+      value === "draft" ? "Edit" :
+      value === "locked" ? "Clock" :
+      value === "dunned" ? "AlertCircle" :
+      value === "partiallyPaid" ? "Clock" :
+      value === "cancelled" ? "MinusCircle" :
+      value === "paid" ? "CheckCircle" :
+      undefined
+  }
 
-  return <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-    <div style={{ height: 10, width: 10, borderRadius: "50%", backgroundColor: color }}/>
-    <div>{value === "locked" ? "Open" : capitalize(value)}</div>
+  return <div style={{ display: "flex", alignItems: "center", gap: 10, width: "110px" }}>
+    <FeatherIcon {...icon} size={20} style={{ flexShrink: 0 }} />
+    <div style={{ color: "black" }}>{
+      value === "locked" ? "Open" :
+      value === "dunned" ? "Reminded" :
+      value === "partiallyPaid" ? "Partially Paid" :
+      capitalize(value)
+    }</div>
   </div>
 }
 
