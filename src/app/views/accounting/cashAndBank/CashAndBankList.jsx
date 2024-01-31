@@ -5,10 +5,14 @@ import CashListComponent from "./CashListComponent";
 
 const CashAndBank = () => {
   return (
-    <PageContent title="Cash and Bank">
-      <BankListComponent />
-      <CashListComponent />
-    </PageContent>
+    <div className="columns">
+      <div className="column is-12">
+        <PageContent title="Cash and Bank">
+          <BankListComponent />
+          <CashListComponent />
+        </PageContent>
+      </div>
+    </div>
   );
 };
 

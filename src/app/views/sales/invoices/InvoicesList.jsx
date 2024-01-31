@@ -94,7 +94,7 @@ const InvoicesList = () => {
   };
   return (
     <PageContent
-      title="Quotaiton List"
+      title="Invoices List"
       titleActionContent={<Button isSuccess>Create Invoices</Button>}
     >
       <ListAdvancedComponent
@@ -161,7 +161,7 @@ const InvoicesList = () => {
               return formatCurrency(evt.value);
             },
             headerComponent: CustomShowHeaderSum,
-            headerComponentParams: { value: "totalGross", headerName: "Total" },
+            headerComponentParams: { value: "totalGross", headerName: "Total Gross" },
           },
           {
             field: "outstandingAmount",
@@ -173,7 +173,7 @@ const InvoicesList = () => {
             headerComponent: CustomShowHeaderSum,
             headerComponentParams: {
               value: "outstandingAmount",
-              headerName: "Total",
+              headerName: "outstanding",
             },
           },
           {
