@@ -24,7 +24,10 @@ const Home = () => {
       "task-1": {
         id: "task-1",
         content: (
-          <div className="quick-link-card">
+          <div
+            className="quick-link-card"
+            onClick={() => navigate("/articles")}
+          >
             <FeatherIcon name={"Inbox"} size={25} color="#272d30" />
             <p className="quick-link-text">Add Article</p>
           </div>
@@ -33,7 +36,10 @@ const Home = () => {
       "task-2": {
         id: "task-2",
         content: (
-          <div className="quick-link-card">
+          <div
+            className="quick-link-card"
+            onClick={() => navigate("/sales/invoices")}
+          >
             <FeatherIcon name={"TrendingUp"} size={25} color="#272d30" />
             <p className="quick-link-text">Create Sales</p>
           </div>
@@ -42,7 +48,10 @@ const Home = () => {
       "task-3": {
         id: "task-3",
         content: (
-          <div className="quick-link-card">
+          <div
+            className="quick-link-card"
+            onClick={() => navigate("/sales/time-sheets")}
+          >
             <FeatherIcon name={"Clock"} size={25} color="#272d30" />
             <p className="quick-link-text">Create Timesheets</p>
           </div>
@@ -51,7 +60,10 @@ const Home = () => {
       "task-4": {
         id: "task-4",
         content: (
-          <div className="quick-link-card">
+          <div
+            className="quick-link-card"
+            onClick={() => navigate("/contacts")}
+          >
             <FeatherIcon name={"User"} size={25} color="#272d30" />
             <p className="quick-link-text">Create Contact</p>
           </div>
@@ -61,7 +73,7 @@ const Home = () => {
       "task-5": {
         id: "task-5",
         content: (
-          <div className="quick-link-card">
+          <div className="quick-link-card" onClick={() => navigate("/teams")}>
             <FeatherIcon name={"Users"} size={25} color="#272d30" />
             <p className="quick-link-text">Invite Users</p>
           </div>
@@ -71,7 +83,10 @@ const Home = () => {
       "task-6": {
         id: "task-6",
         content: (
-          <div className="quick-link-card">
+          <div
+            className="quick-link-card"
+            onClick={() => navigate("/sales/quotations")}
+          >
             <FeatherIcon name={"Book"} size={25} color="#272d30" />
             <p className="quick-link-text">Create Quotations</p>
           </div>
@@ -87,6 +102,66 @@ const Home = () => {
     },
     columnOrder: ["column-1"],
   };
+
+  const lastViewedDocuments = [
+    {
+      id: 1195,
+      type: "pos_receipt",
+      state: "cancelled",
+      name: "Walk-In Customer",
+      number: "0007",
+      value: 1,
+      updatedAt: "2023-12-12T12:48:53.072Z",
+    },
+    {
+      id: 1194,
+      type: "pos_receipt",
+      state: "paid",
+      name: "Walk-In Customer",
+      number: "0006",
+      value: 1,
+      updatedAt: "2023-12-12T12:45:40.677Z",
+    },
+    {
+      id: 1193,
+      type: "pos_receipt",
+      state: "paid",
+      name: "Walk-In Customer",
+      number: "0005",
+      value: 1,
+      updatedAt: "2023-12-12T12:44:14.606Z",
+    },
+  ];
+
+  const lastViewedCustomers = [
+    {
+      id: 703,
+      kind: "company",
+      number: 10002,
+      lastUsedAt: "2023-12-12T12:48:53.092Z",
+      salutation: "",
+      name: "Test_currency",
+      initials: "",
+    },
+    {
+      id: 711,
+      kind: "person",
+      number: -1,
+      lastUsedAt: "2023-12-04T06:54:35.425Z",
+      salutation: "",
+      name: "Walk-In Customer",
+      initials: "WC",
+    },
+    {
+      id: 701,
+      kind: "person",
+      number: 10001,
+      lastUsedAt: "2023-11-14T14:27:34.920Z",
+      salutation: "Mr",
+      name: "Keshav Sehgal",
+      initials: "KS",
+    },
+  ];
   return (
     <PageContent
       breadCrumbIcon={
@@ -107,6 +182,7 @@ const Home = () => {
               className="welcome-sub-container banner-1"
               style={{
                 backgroundImage: `url(${banner1})`,
+                backgroundRepeat: "no-repeat",
               }}
             >
               <div className="welcome-content">
@@ -124,6 +200,7 @@ const Home = () => {
               className="welcome-sub-container banner-2"
               style={{
                 backgroundImage: `url(${banner2})`,
+                backgroundRepeat: "no-repeat",
               }}
             >
               <div className="welcome-content">
@@ -149,6 +226,7 @@ const Home = () => {
               className="welcome-sub-container banner-3"
               style={{
                 backgroundImage: `url(${banner3})`,
+                backgroundRepeat: "no-repeat",
               }}
             >
               <div className="welcome-content">
@@ -176,6 +254,7 @@ const Home = () => {
               className="welcome-sub-container banner-4"
               style={{
                 backgroundImage: `url(${banner4})`,
+                backgroundRepeat: "no-repeat",
               }}
             >
               <div className="welcome-content">
@@ -197,10 +276,10 @@ const Home = () => {
           </div>
         </ReactSlickCarousel>
 
-        <div className="home-quick-links-wrapper">
-          <AdvancedCard type={"s-card"}>
-            <div className="quick-links-header">
-              <h3 className="home-quick-links">Quick Links</h3>
+        <AdvancedCard type={"s-card"} className={"home-quick-links-wrapper"}>
+          <div className="quick-links-header">
+            <h3 className="home-quick-links">Quick Links</h3>
+            {isEditableDisabled ? (
               <div
                 className="quick-links-edit-container"
                 onClick={() => setIsEditableDisbaled(false)}
@@ -208,17 +287,32 @@ const Home = () => {
                 <h5>Edit Links</h5>
                 <FeatherIcon name={"Edit"} size={20} color="#00A353" />
               </div>
-            </div>
+            ) : (
+              <div
+                className="quick-links-edit-container"
+                onClick={() => setIsEditableDisbaled(true)}
+              >
+                <h5>Save</h5>
+                <FeatherIcon name={"Check"} size={20} color="#00A353" />
+              </div>
+            )}
+            {/* <div
+                className="quick-links-edit-container"
+                onClick={() => setIsEditableDisbaled(false)}
+              >
+                <h5>Edit Links</h5>
+                <FeatherIcon name={"Edit"} size={20} color="#00A353" />
+              </div> */}
+          </div>
 
-            <div className="home-quick-links-container">
-              <KanbanBoard
-                initialBoard={quickLinks}
-                isDragDisabled={isEditableDisabled}
-                direction={"horizontal"}
-              />
-            </div>
-          </AdvancedCard>
-        </div>
+          <div className="home-quick-links-container">
+            <KanbanBoard
+              initialBoard={quickLinks}
+              isDragDisabled={isEditableDisabled}
+              direction={"horizontal"}
+            />
+          </div>
+        </AdvancedCard>
 
         <AdvancedCard type={"s-card"}>
           <div className="coming-soon-card">
@@ -368,6 +462,34 @@ const Home = () => {
                   </div>
                 </div>
               </ReactSlickCarousel>
+            </div>
+          </div>
+        </AdvancedCard>
+        <AdvancedCard type={"s-card"} className={"home-recent-activites"}>
+          <h3 className="recent-activities-heading">Recently Used</h3>
+          <div className="recent-activies-container">
+            <div className="recent-documents">
+              {lastViewedDocuments.map((document) => (
+                <div className={"recent-activites-entry"}>
+                  <div className="recent-entry-header">
+                    <div className="recent-title">{document.state}</div>
+                    <div className="recent-number">{document.number}</div>
+                  </div>
+                  <div className="recent-entry-content">
+                    <div className="recent-title">{document.name}</div>
+                    <div className="recent-number">{document.value}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="recent-activities-divider"></div>
+            <div className="recent-customers-container">
+              {lastViewedCustomers.map((customer) => (
+                <div className="recent-customer">
+                  <div className="initials">{customer.initials}</div>
+                  <div className="full-name">{customer.name}</div>
+                </div>
+              ))}
             </div>
           </div>
         </AdvancedCard>

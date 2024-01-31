@@ -113,6 +113,9 @@
       }
     }
     .kanban-board-container {
+      .kanban-column-container {
+        border: 0;
+      }
       .kanban-task-container {
         border-radius: 8px;
       }
