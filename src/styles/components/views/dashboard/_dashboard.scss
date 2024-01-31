@@ -1,0 +1,146 @@
+.dashboard-wrapper {
+  .dashboard-card-title {
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    margin-bottom: 10px;
+  }
+  .receivable-container {
+    border-bottom: 1px #dddddd solid;
+
+    .receivable-label {
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 16px;
+      color: #888787;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      .text-indicator-green {
+        display: inline-block;
+        border-radius: 3px;
+        background-color: #00a353 !important;
+        width: 11px;
+        height: 11px;
+      }
+      .text-indicator-red {
+        display: inline-block;
+        border-radius: 3px;
+        background-color: #ff5e54 !important;
+        width: 11px;
+        height: 11px;
+        margin-right: 5px;
+      }
+    }
+    .receivable-overdue-value {
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 16px;
+      color: #d94339;
+      text-align: center;
+    }
+    .receivable-value {
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 16px;
+      color: #00a353;
+    }
+  }
+  //dashboard inovice tab card
+  .dashboard-invoice-tab-wrapper {
+    .invoice-tab-header {
+      align-items: center;
+      justify-content: space-between;
+      .toggle-chart-btn {
+        border: 0.5px solid #dddddd;
+        background: #ebf5ff;
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
+    .donut-chart-wrapper {
+      min-height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .value-categories {
+      .column {
+        display: flex;
+      }
+      .value-category-text {
+        font-weight: 600;
+        font-size: 14px;
+        color: #63c2cd;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+      }
+      .value-category-dot {
+        height: 14px;
+        min-width: 14px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 10px;
+        background-color: rgb(17, 138, 178);
+      }
+    }
+  }
+  .quotation-card {
+    .is-active {
+      width: 100%;
+    }
+  }
+
+  .dashboard-sales-expense-stats-wrapper {
+    .total-sales-label {
+      text-align: center;
+      padding: 12px 0px;
+      background-color: rgb(242, 244, 246);
+    }
+    .total-sales-value {
+      text-align: center;
+      border-top: 0.92px solid rgba(0, 0, 0, 0.17);
+      padding: 10px 0px;
+      color: rgb(162, 198, 46);
+      font-weight: 600;
+      font-size: 18px;
+    }
+    .total-expense-label {
+      text-align: center;
+      padding: 12px 0px;
+      background-color: rgb(242, 244, 246);
+    }
+    .total-expense-value {
+      text-align: center;
+      border-top: 0.92px solid rgba(0, 0, 0, 0.17);
+      padding: 10px 0px;
+      color: rgb(217, 67, 57);
+      font-weight: 600;
+      font-size: 18px;
+    }
+    .category-dot {
+      height: 14px;
+      min-width: 14px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 10px;
+    }
+    .category-text {
+      font-size: 14px;
+      color: rgb(0, 121, 179);
+    }
+    .bar-chart-wrapper {
+      min-height: 260px;
+    }
+  }
+}
