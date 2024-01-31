@@ -645,7 +645,7 @@ export const request = (endpoint, options) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(fetchOptions),
+      body: JSON.stringify(fetchOptions), // TODO: here it should be fetchOptions.body
     };
     return new Promise((resolve, reject) => {
       fetch(`http://localhost:18000/serverconnect?url=${endpoint}`, options)

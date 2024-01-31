@@ -42,7 +42,7 @@ const resourceUrls = {
   articleHistory: (articleId) =>
     `${resourceHost}article/${articleId}/history?offset=0&limit=5&orderBy=date&desc=true&filter=all`, // pass article Id
   articleSearch: `${resourceHost}find/eanRecord/`, // concatenate search query
-  //Expenditure
+  //Accounting
   expenses: `${resourceHost}expense?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all`,
   expense: `${resourceHost}expense/`,
   //Customers
@@ -102,16 +102,8 @@ const modules = {
       { label: "Transactions", route: "/accounting/transactions" },
       { label: "Cash and Bank", route: "/accounting/cash-and-bank" },
       { label: "Debit Notes", route: "/accounting/debit-notes" },
+      { label: "Expenditure", route: "/accounting/expenses" }
     ],
-  },
-  expenditure: {
-    name: "expenditure",
-    heading: "Expenditure",
-    links: [
-      { label: "Expenses", route: "/expenditure/expenses" },
-      { label: "Purchase Order", route: "/expenditure/purchase-order"},
-      { label: "Debit Notes", route: "/expenditure/debit-notes" },
-    ]
   },
   inventory: {
     name: "inventory",

@@ -47,14 +47,6 @@ const sidebarRoutes = [
     moduleName: "accounting",
     name: "Accounting",
   },
-  // TODO: sidebar doesn't open for expenditure module, I don't know how to fix this
-  {
-    route: "/expenditure/expenses",
-    icon: "DollarSign",
-    isModule: true,
-    moduleName: "expenditure",
-    name: "Expenditure"
-  },
   {
     route: "/inventory/dashboard",
     icon: "Archive",

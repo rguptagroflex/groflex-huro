@@ -8,6 +8,7 @@ import { CustomShowHeaderSum } from "../../../shared/components/list-advanced/Cu
 import Modal from "../../../shared/components/modal/Modal";
 import { useState } from "react";
 import groflexService from "../../../services/groflex.service";
+import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
 
 // TODO: filter select
 // TODO: remove settings button
@@ -22,8 +23,7 @@ const ExpensesList = () => {
   return <PageContent
     breadCrumbData={["Home", "Expenditure", "Expenses"]}
     titleIsBreadCrumb
-    title="Expenses"
-    titleIcon="DollarSign">
+    title="Expenses">
       <ListAdvancedComponent
         fetchUrl={config.resourceUrls.expenses}
         columnDefs={[
@@ -67,8 +67,7 @@ const ExpensesList = () => {
           }
         ]}
         actionMenuData={[
-          { name: "Edit", icon: "edit" },
-          { name: "Copy and Edit", icon: "copy" },
+          { name: "Edit", icon: "edit" },,
           { name: "Cancel Expense", icon: "ban" },
           { name: "Delete", icon: "trash-alt" },
         ]}
@@ -76,9 +75,6 @@ const ExpensesList = () => {
           switch (action.name) {
             case "Edit":
               navigate(`/expense/edit/${row.id}`);
-              break;
-            case "Copy and Edit":
-              // TODO
               break;
             case "Cancel Expense":
               setIsCancelModalActive(true)
@@ -97,9 +93,15 @@ const ExpensesList = () => {
       submitBtnName="Cancel"
       cancelBtnName="Close"
       onSubmit={() => {
-        // TODO: I don't know how to pass body in groflexService.request
-        // TODO: I don't know how to update ag-grid row to mark it as cancelled
-        setIsCancelModalActive(false)
+        let [row, params] = cancellingRowAndParams
+        // TODO: bug in groflex.request, body doesn't get sent
+        groflexService.request(`${config.resourceUrls.expense}${row.id}/cancel`, {
+          data: { notes: cancellationReason, refundType: "debits" }
+        })
+        .then(() => {
+          // TODO: I don't know how to update ag-grid row to mark it as cancelled
+          setIsCancelModalActive(false)
+        })
       }}>
         <div className="field">
           <label className="label">Cancellation Reason (optional)</label>
@@ -134,14 +136,21 @@ const ExpensesList = () => {
 export default ExpensesList
 
 const Status = ({ value }) => {
-  let color = 
-    value === "open" ? "#0071CA" :
-    value === "paid" ? "#00A353" :
-    value === "cancelled" ? "#888787" :
-    undefined
+  let icon = {
+    name: 
+      value === "open" ? "Clock" :
+      value === "paid" ? "CheckCircle" :
+      value === "cancelled" ? "MinusCircle" :
+      undefined,
+    color:
+      value === "open" ? "#00A353" :
+      value === "paid" ? "#00A353" :
+      value === "cancelled" ? "#888787" :
+      undefined
+  }
 
-  return <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-    <div style={{ height: 10, width: 10, borderRadius: "50%", backgroundColor: color }}/>
+  return <div style={{ display: "flex", alignItems: "center", gap: 10, width: "110px" }}>
+    <FeatherIcon {...icon} size={20} style={{ flexShrink: 0 }} />
     <div>{capitalize(value)}</div>
   </div>
 }
