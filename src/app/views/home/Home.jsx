@@ -305,7 +305,11 @@ const Home = () => {
               </div> */}
           </div>
 
-          <div className="home-quick-links-container">
+          <div
+            className={`home-quick-links-container ${
+              isEditableDisabled ? "default-view" : "edit-view"
+            }`}
+          >
             <KanbanBoard
               initialBoard={quickLinks}
               isDragDisabled={isEditableDisabled}

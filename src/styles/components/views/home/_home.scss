@@ -166,13 +166,18 @@
     }
     .home-quick-links-container {
       display: flex;
+      &.default-view {
+        .kanban-task-list {
+          flex-wrap: wrap;
+        }
+      }
       .kanban-column-container {
         width: 1078px;
         border: 0;
         .kanban-task-list {
           display: flex;
           gap: 21px 30px;
-          flex-wrap: wrap;
+          // flex-wrap: wrap;
 
           .kanban-task-container {
             display: flex;
