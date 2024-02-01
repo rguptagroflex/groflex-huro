@@ -25,6 +25,10 @@
 @import "./components/views/Crm/deals/dealDetails";
 @import "./components/views/home/home";
 @import "./components/views/dashboard/dashboard";
+@import "./components/views/dashboard/dashboardInvoiceExpense";
+@import "./components/views/dashboard/dashboardSalesExpense";
+@import "./components/views/dashboard/dashboardQuotation";
 
 //EXTERNAL
 @import "../../node_modules/pikaday/css/pikaday";
+@import "../../node_modules/chartist/dist/index.css";

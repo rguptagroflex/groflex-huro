@@ -2,6 +2,7 @@ import moment from "moment";
 import React, { useState } from "react";
 import { SelectInput } from "../../shared/components/select/SelectInput";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
+import CreateChart from "../../shared/components/chartist/CreateChart";
 
 const DashboardExpenseTab = () => {
   const [date, setDate] = useState({
@@ -68,9 +69,32 @@ const DashboardExpenseTab = () => {
       },
     },
   ];
-  console.log(date);
+
+  const chartData = {
+    labels: ["Paid", "Canceled"],
+    series: chartType
+      ? [[24, 24]]
+      : [
+          { value: 24, className: "Paid" },
+          { value: 24, className: "Canceled" },
+        ],
+  };
+
+  const chartOptions = chartType
+    ? {
+        width: "400px",
+        height: "300px",
+      }
+    : {
+        width: "400px",
+        height: "300px",
+        donut: true,
+        donutWidth: 60,
+        startAngle: 270,
+        showLabel: true,
+      };
   return (
-    <div className="dashboard-invoice-tab-wrapper">
+    <div className="dashboard-invoice-expense-tab-wrapper">
       <div className="columns is-multiline invoice-tab-header">
         <div className="column is-6">
           <SelectInput
@@ -92,7 +116,14 @@ const DashboardExpenseTab = () => {
         </div>
       </div>
 
-      <div className="column is-12 donut-chart-wrapper"></div>
+      <div className="column is-12 donut-chart-wrapper">
+        <CreateChart
+          data={chartData}
+          options={chartOptions}
+          chartType={chartType ? "barChart" : "pieDonutChart"}
+          chartId={"expense"}
+        />
+      </div>
       <div className="columns is-multiline value-categories">
         <div className="column is-6">
           <span

@@ -99,7 +99,7 @@ const Dashboard = () => {
         </div>
 
         <div className="columns is-mulitline">
-          <div className="column is-5">
+          <div className="column is-5 dashboard-invoice-expense-card">
             <AdvancedCard type={"s-card"}>
               <Tabs tabList={invoicesTabList} />
             </AdvancedCard>
@@ -114,12 +114,12 @@ const Dashboard = () => {
         <DashboardSalesExpenseStats />
 
         <div className="columns is-mulitline">
-          <div className="column is-5">
+          <div className="column is-5 sale-tabs">
             <AdvancedCard type={"s-card"}>
               <Tabs tabList={salesTabList} />
             </AdvancedCard>
           </div>
-          <div className="column is-5 quotation-card">
+          <div className="column is-5 expense-tabs">
             <AdvancedCard type={"s-card"}>
               <Tabs tabList={expenseTabList} />
             </AdvancedCard>

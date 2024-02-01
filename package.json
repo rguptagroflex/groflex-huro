@@ -20,6 +20,7 @@
     "ampersand-events": "^2.0.2",
     "apexcharts": "^3.37.1",
     "axios": "^1.4.0",
+    "chartist": "^1.3.0",
     "feather-icons": "^4.29.0",
     "gulp": "^4.0.2",
     "indian-number-format": "^1.0.5",

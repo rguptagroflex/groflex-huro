@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { SelectInput } from "../../shared/components/select/SelectInput";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 
+import CreateChart from "../../shared/components/chartist/CreateChart";
+
 const DashBoardInvoiceTab = () => {
   const [date, setDate] = useState({
     startDate: "",
@@ -68,9 +70,38 @@ const DashBoardInvoiceTab = () => {
       },
     },
   ];
+
+  const chartData = {
+    labels: ["Open", "Paid", "Canceled"],
+    series: chartType
+      ? [[608, 185, 84]]
+      : [
+          { value: 608, className: "Open" },
+          { value: 185, className: "Paid" },
+          { value: 84, className: "Canceled" },
+        ],
+  };
+
+  const chartOptions = chartType
+    ? {
+        width: "400px",
+        height: "300px",
+        // donut: true,
+        // donutWidth: 60,
+        // startAngle: 270,
+        // showLabel: true,
+      }
+    : {
+        width: "400px",
+        height: "300px",
+        donut: true,
+        donutWidth: 60,
+        startAngle: 270,
+        showLabel: true,
+      };
   console.log(date);
   return (
-    <div className="dashboard-invoice-tab-wrapper">
+    <div className="dashboard-invoice-expense-tab-wrapper">
       <div className="columns is-multiline invoice-tab-header">
         <div className="column is-6">
           <SelectInput
@@ -92,14 +123,45 @@ const DashBoardInvoiceTab = () => {
         </div>
       </div>
 
-      <div className="column is-12 donut-chart-wrapper"></div>
+      <div className="column is-12 donut-chart-wrapper">
+        <CreateChart
+          data={chartData}
+          options={chartOptions}
+          chartType={chartType ? "barChart" : "pieDonutChart"}
+          chartId={"invoice"}
+        />
+      </div>
       <div className="columns is-multiline value-categories">
         <div className="column is-6">
-          <span className="value-category-dot"></span>
+          <span
+            className="value-category-dot"
+            style={{ backgroundColor: "rgb(239, 71, 111)" }}
+          ></span>
           <div>
             {" "}
             <p className="value-category-text">
-              Canceled {`(2)`}{" "}
+              Open {`(2)`}{" "}
+              <FeatherIcon
+                name={"ArrowUpRight"}
+                size={20}
+                color="rgb(17, 138, 178)"
+              />
+            </p>
+            <p className="value-category-value">
+              ₹ 84 <span>{"| "} 100 %</span>
+            </p>
+          </div>
+        </div>
+
+        <div className="column is-6">
+          <span
+            className="value-category-dot"
+            style={{ backgroundColor: "rgb(255, 209, 102)" }}
+          ></span>
+          <div>
+            {" "}
+            <p className="value-category-text">
+              Paid {`(2)`}{" "}
               <FeatherIcon
                 name={"ArrowUpRight"}
                 size={20}
@@ -112,14 +174,11 @@ const DashBoardInvoiceTab = () => {
           </div>
         </div>
         <div className="column is-6">
-          <span
-            className="value-category-dot"
-            style={{ "background-color": "rgb(239, 71, 111)" }}
-          ></span>
+          <span className="value-category-dot"></span>
           <div>
             {" "}
             <p className="value-category-text">
-              Open {`(2)`}{" "}
+              Canceled {`(2)`}{" "}
               <FeatherIcon
                 name={"ArrowUpRight"}
                 size={20}

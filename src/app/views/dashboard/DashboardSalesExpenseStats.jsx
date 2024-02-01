@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
 import { SelectInput } from "../../shared/components/select/SelectInput";
 import moment from "moment";
+import CreateChart from "../../shared/components/chartist/CreateChart";
 
 const DashboardSalesExpenseStats = () => {
   const [date, setDate] = useState({
@@ -65,6 +66,33 @@ const DashboardSalesExpenseStats = () => {
       },
     },
   ];
+
+  const chartData = {
+    labels: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
+    series: [
+      [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200],
+      [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120],
+    ],
+  };
+
+  const chartOptions = {
+    width: "100%",
+    height: "300px",
+  };
+
   return (
     <div className="dashboard-sales-expense-stats-wrapper columns is-multiline">
       <div className="column is-10">
@@ -129,7 +157,14 @@ const DashboardSalesExpenseStats = () => {
             </div>
           </div>
 
-          <div className="column is-12 bar-chart-wrapper"></div>
+          <div className="column is-12 bar-chart-wrapper">
+            <CreateChart
+              data={chartData}
+              options={chartOptions}
+              chartType={"barChart"}
+              chartId={"sales-expense"}
+            />
+          </div>
         </AdvancedCard>
       </div>
     </div>
