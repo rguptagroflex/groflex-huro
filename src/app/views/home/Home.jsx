@@ -125,65 +125,6 @@ const Home = () => {
     columnOrder: ["column-1"],
   };
 
-  // const lastViewedDocuments = [
-  //   {
-  //     id: 1195,
-  //     type: "pos_receipt",
-  //     state: "cancelled",
-  //     name: "Walk-In Customer",
-  //     number: "0007",
-  //     value: 1,
-  //     updatedAt: "2023-12-12T12:48:53.072Z",
-  //   },
-  //   {
-  //     id: 1194,
-  //     type: "pos_receipt",
-  //     state: "paid",
-  //     name: "Walk-In Customer",
-  //     number: "0006",
-  //     value: 1,
-  //     updatedAt: "2023-12-12T12:45:40.677Z",
-  //   },
-  //   {
-  //     id: 1193,
-  //     type: "pos_receipt",
-  //     state: "paid",
-  //     name: "Walk-In Customer",
-  //     number: "0005",
-  //     value: 1,
-  //     updatedAt: "2023-12-12T12:44:14.606Z",
-  //   },
-  // ];
-
-  // const lastViewedCustomers = [
-  //   {
-  //     id: 703,
-  //     kind: "company",
-  //     number: 10002,
-  //     lastUsedAt: "2023-12-12T12:48:53.092Z",
-  //     salutation: "",
-  //     name: "Test_currency",
-  //     initials: "",
-  //   },
-  //   {
-  //     id: 711,
-  //     kind: "person",
-  //     number: -1,
-  //     lastUsedAt: "2023-12-04T06:54:35.425Z",
-  //     salutation: "",
-  //     name: "Walk-In Customer",
-  //     initials: "WC",
-  //   },
-  //   {
-  //     id: 701,
-  //     kind: "person",
-  //     number: 10001,
-  //     lastUsedAt: "2023-11-14T14:27:34.920Z",
-  //     salutation: "Mr",
-  //     name: "Keshav Sehgal",
-  //     initials: "KS",
-  //   },
-  // ];
   return (
     <PageContent
       breadCrumbIcon={
