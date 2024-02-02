@@ -68,7 +68,7 @@ const DashboardSalesByArticle = () => {
       },
     },
   ];
-  console.log(date);
+
   return (
     <div className="dashboard-invoice-tab-wrapper">
       <div className="columns is-multiline invoice-tab-header">

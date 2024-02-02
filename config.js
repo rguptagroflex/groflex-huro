@@ -34,6 +34,8 @@ const resourceUrls = {
   login: `${resourceHost}session/create?type=bearer`,
   checkEmailExist: `${resourceHost}user/checkUser`,
   /* ALl in-app APIs will need Login token */
+  //Dashboard
+  recievables: `${resourceHost}/invoice`,
   //Articles
   articleNumber: `${resourceHost}article/number`, //Get Create article's number
   postArticleImage: `${resourceHost}article/image/`, //Concatenate articleId

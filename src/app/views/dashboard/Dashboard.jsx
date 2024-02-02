@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageContent from "../../shared/components/pageContent/PageContent";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
@@ -14,6 +14,8 @@ import DashboardSalesByArticle from "./DashboardSalesByArticle";
 import DashboardSalesByCustomer from "./DashboardSalesByCustomer";
 import DashboardExpenseByArticle from "./DashboardExpenseByArticle";
 import DashboardExpenseByPayee from "./DashboardExpenseByPayee";
+
+import DashBoardSummaryCard from "./DashBoardSummaryCard";
 
 const Dashboard = () => {
   const invoicesTabList = [
@@ -49,62 +51,27 @@ const Dashboard = () => {
     >
       <div className="dashboard-wrapper">
         <div className="columns is-multiline" style={{ marginBottom: "20px" }}>
-          <div className="column is-5">
-            <AdvancedCard type={"s-card"}>
-              <h4 className="dashboard-card-title">To Receive</h4>
-              <div style={{ marginBottom: "10px" }}>
-                Receivables from unpaid invoices
-              </div>
-              <div className="columns is-multiline receivable-container">
-                <div className="column is-6">
-                  <h4 className="receivable-label">
-                    <span className="text-indicator-green"></span>
-                    Total Amount
-                  </h4>
-                  <h4 className="receivable-value">₹ 782</h4>
-                </div>
-                <div className="column is-6">
-                  <h4 className="receivable-label">
-                    <span className="text-indicator-red"></span>
-                    Over Due {`(> 3)`}
-                  </h4>
-                  <h4 className="receivable-overdue-value">₹ 782</h4>
-                </div>
-              </div>
-            </AdvancedCard>
+          <div className="column is-6">
+            <DashBoardSummaryCard
+              heading={"To Receive"}
+              subHeading={" Receivables from unpaid invoices"}
+            />
           </div>
-          <div className={"column is-5"}>
-            <AdvancedCard type={"s-card"}>
-              <h4 className="dashboard-card-title">To Pay</h4>
-              <div style={{ marginBottom: "10px" }}>Unpaid bill amount</div>
-
-              <div className="columns is-multiline receivable-container">
-                <div className="column is-6">
-                  <h4 className="receivable-label">
-                    <span className="text-indicator-green"></span>
-                    Total Amount
-                  </h4>
-                  <h4 className="receivable-value">₹ 782</h4>
-                </div>
-                <div className="column is-6">
-                  <h4 className="receivable-label">
-                    <span className="text-indicator-red"></span>
-                    Over Due {`(> 3)`}
-                  </h4>
-                  <h4 className="receivable-overdue-value">₹ 782</h4>
-                </div>
-              </div>
-            </AdvancedCard>
+          <div className={"column is-6"}>
+            <DashBoardSummaryCard
+              heading={"To Pay"}
+              subHeading={"Unpaid bill amount"}
+            />
           </div>
         </div>
 
         <div className="columns is-mulitline">
-          <div className="column is-5 dashboard-invoice-expense-card">
+          <div className="column is-6 dashboard-invoice-expense-card">
             <AdvancedCard type={"s-card"}>
               <Tabs tabList={invoicesTabList} />
             </AdvancedCard>
           </div>
-          <div className="column is-5 quotation-card">
+          <div className="column is-6 quotation-card">
             <AdvancedCard type={"s-card"}>
               <Tabs tabList={quotationTabList} />
             </AdvancedCard>
@@ -114,12 +81,12 @@ const Dashboard = () => {
         <DashboardSalesExpenseStats />
 
         <div className="columns is-mulitline">
-          <div className="column is-5 sale-tabs">
+          <div className="column is-6 sale-tabs">
             <AdvancedCard type={"s-card"}>
               <Tabs tabList={salesTabList} />
             </AdvancedCard>
           </div>
-          <div className="column is-5 expense-tabs">
+          <div className="column is-6 expense-tabs">
             <AdvancedCard type={"s-card"}>
               <Tabs tabList={expenseTabList} />
             </AdvancedCard>

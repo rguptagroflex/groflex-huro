@@ -33,7 +33,6 @@ const CreateChart = ({ data, options, chartType = "barChart", chartId }) => {
     };
   }, [data]); // Re-run effect if chart instance changes
 
-  console.log(data);
   return <div className={`${chartId}-chart`}></div>;
 };
 

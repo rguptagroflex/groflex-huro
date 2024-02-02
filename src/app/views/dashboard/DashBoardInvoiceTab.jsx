@@ -99,7 +99,7 @@ const DashBoardInvoiceTab = () => {
         startAngle: 270,
         showLabel: true,
       };
-  console.log(date);
+
   return (
     <div className="dashboard-invoice-expense-tab-wrapper">
       <div className="columns is-multiline invoice-tab-header">

@@ -95,7 +95,7 @@ const DashboardSalesExpenseStats = () => {
 
   return (
     <div className="dashboard-sales-expense-stats-wrapper columns is-multiline">
-      <div className="column is-10">
+      <div className="column is-12">
         <AdvancedCard type={"s-card"}>
           <h4
             className="dashboard-card-title"
