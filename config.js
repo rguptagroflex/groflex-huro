@@ -36,6 +36,7 @@ const resourceUrls = {
   /* ALl in-app APIs will need Login token */
   //Dashboard
   recievables: `${resourceHost}/invoice`,
+  payable: `${resourceHost}/expense`,
   //Articles
   articleNumber: `${resourceHost}article/number`, //Get Create article's number
   postArticleImage: `${resourceHost}article/image/`, //Concatenate articleId
