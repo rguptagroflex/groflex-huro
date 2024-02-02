@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageContent from "../../shared/components/pageContent/PageContent";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
@@ -16,9 +16,31 @@ import pos from "../../../assets/groflex/images/home/pos.png";
 import crmBanner from "../../../assets/groflex/images/home/crm.png";
 import { useNavigate } from "react-router-dom";
 import KanbanBoard from "../../shared/components/kanbanBoard/KanbanBoard";
+import groflexService from "../../services/groflex.service";
+import config from "../../../../config";
 const Home = () => {
   const navigate = useNavigate();
   const [isEditableDisabled, setIsEditableDisbaled] = useState(true);
+  const [lastViewedDocuments, setLastViewedDocuments] = useState([]);
+  const [lastViewedCustomers, setLastViewedCustomers] = useState([]);
+  useEffect(() => {
+    //Quick Links APi
+    groflexService
+      .request(`${config.resourceUrls.quickLinks}`, { auth: true })
+      .then((res) => {
+        console.log(res);
+      });
+
+    //Last viewed Documents and Customers
+    groflexService
+      .request(`${config.resourceUrls.lastViewedDocumentsAndCustomers}`, {
+        auth: true,
+      })
+      .then((res) => {
+        setLastViewedCustomers(res.body.data.lastUsedCustomers);
+        setLastViewedDocuments(res.body.data.lastUsedDocuments);
+      });
+  }, []);
   const quickLinks = {
     tasks: {
       "task-1": {
@@ -103,65 +125,65 @@ const Home = () => {
     columnOrder: ["column-1"],
   };
 
-  const lastViewedDocuments = [
-    {
-      id: 1195,
-      type: "pos_receipt",
-      state: "cancelled",
-      name: "Walk-In Customer",
-      number: "0007",
-      value: 1,
-      updatedAt: "2023-12-12T12:48:53.072Z",
-    },
-    {
-      id: 1194,
-      type: "pos_receipt",
-      state: "paid",
-      name: "Walk-In Customer",
-      number: "0006",
-      value: 1,
-      updatedAt: "2023-12-12T12:45:40.677Z",
-    },
-    {
-      id: 1193,
-      type: "pos_receipt",
-      state: "paid",
-      name: "Walk-In Customer",
-      number: "0005",
-      value: 1,
-      updatedAt: "2023-12-12T12:44:14.606Z",
-    },
-  ];
+  // const lastViewedDocuments = [
+  //   {
+  //     id: 1195,
+  //     type: "pos_receipt",
+  //     state: "cancelled",
+  //     name: "Walk-In Customer",
+  //     number: "0007",
+  //     value: 1,
+  //     updatedAt: "2023-12-12T12:48:53.072Z",
+  //   },
+  //   {
+  //     id: 1194,
+  //     type: "pos_receipt",
+  //     state: "paid",
+  //     name: "Walk-In Customer",
+  //     number: "0006",
+  //     value: 1,
+  //     updatedAt: "2023-12-12T12:45:40.677Z",
+  //   },
+  //   {
+  //     id: 1193,
+  //     type: "pos_receipt",
+  //     state: "paid",
+  //     name: "Walk-In Customer",
+  //     number: "0005",
+  //     value: 1,
+  //     updatedAt: "2023-12-12T12:44:14.606Z",
+  //   },
+  // ];
 
-  const lastViewedCustomers = [
-    {
-      id: 703,
-      kind: "company",
-      number: 10002,
-      lastUsedAt: "2023-12-12T12:48:53.092Z",
-      salutation: "",
-      name: "Test_currency",
-      initials: "",
-    },
-    {
-      id: 711,
-      kind: "person",
-      number: -1,
-      lastUsedAt: "2023-12-04T06:54:35.425Z",
-      salutation: "",
-      name: "Walk-In Customer",
-      initials: "WC",
-    },
-    {
-      id: 701,
-      kind: "person",
-      number: 10001,
-      lastUsedAt: "2023-11-14T14:27:34.920Z",
-      salutation: "Mr",
-      name: "Keshav Sehgal",
-      initials: "KS",
-    },
-  ];
+  // const lastViewedCustomers = [
+  //   {
+  //     id: 703,
+  //     kind: "company",
+  //     number: 10002,
+  //     lastUsedAt: "2023-12-12T12:48:53.092Z",
+  //     salutation: "",
+  //     name: "Test_currency",
+  //     initials: "",
+  //   },
+  //   {
+  //     id: 711,
+  //     kind: "person",
+  //     number: -1,
+  //     lastUsedAt: "2023-12-04T06:54:35.425Z",
+  //     salutation: "",
+  //     name: "Walk-In Customer",
+  //     initials: "WC",
+  //   },
+  //   {
+  //     id: 701,
+  //     kind: "person",
+  //     number: 10001,
+  //     lastUsedAt: "2023-11-14T14:27:34.920Z",
+  //     salutation: "Mr",
+  //     name: "Keshav Sehgal",
+  //     initials: "KS",
+  //   },
+  // ];
   return (
     <PageContent
       breadCrumbIcon={
@@ -473,8 +495,11 @@ const Home = () => {
           <h3 className="recent-activities-heading">Recently Used</h3>
           <div className="recent-activies-container">
             <div className="recent-documents">
-              {lastViewedDocuments.map((document) => (
-                <div className={"recent-activites-entry"}>
+              {lastViewedDocuments.map((document, id) => (
+                <div
+                  className={"recent-activites-entry"}
+                  key={`document-${id}`}
+                >
                   <div className="recent-entry-header">
                     <div className="recent-title">{document.state}</div>
                     <div className="recent-number">{document.number}</div>
@@ -488,8 +513,8 @@ const Home = () => {
             </div>
             <div className="recent-activities-divider"></div>
             <div className="recent-customers-container">
-              {lastViewedCustomers.map((customer) => (
-                <div className="recent-customer">
+              {lastViewedCustomers.map((customer, id) => (
+                <div className="recent-customer" key={`customer-${id}`}>
                   <div className="initials">{customer.initials}</div>
                   <div className="full-name">{customer.name}</div>
                 </div>

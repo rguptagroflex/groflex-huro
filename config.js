@@ -34,6 +34,9 @@ const resourceUrls = {
   login: `${resourceHost}session/create?type=bearer`,
   checkEmailExist: `${resourceHost}user/checkUser`,
   /* ALl in-app APIs will need Login token */
+  //Home
+  quickLinks: `${resourceHost}quick-links`,
+  lastViewedDocumentsAndCustomers: `${resourceHost}/dashboard/lastDocumentsAndCustomers`,
   //Articles
   articleNumber: `${resourceHost}article/number`, //Get Create article's number
   postArticleImage: `${resourceHost}article/image/`, //Concatenate articleId
