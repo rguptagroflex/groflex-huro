@@ -1,5 +1,8 @@
 export const AdvancedCard = ({
+  containerStyle,
+  containerClassName,
   style,
+  className,
   children,
   type,
   heading,
@@ -54,7 +57,10 @@ export const AdvancedCard = ({
   };
 
   return (
-    <div className={`${getCardType()} ${getCardClasses()}`}>
+    <div
+      style={containerStyle}
+      className={`${getCardType()} ${getCardClasses()} ${containerClassName}`}
+    >
       {heading ? (
         <div className="card-head">
           {/* Card Heading */}
@@ -66,7 +72,7 @@ export const AdvancedCard = ({
         </div>
       ) : null}
 
-      <div style={style} className="card-body">
+      <div style={style} className={`card-body ${className}`}>
         {/* Card Content */}
         {children}
       </div>

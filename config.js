@@ -41,6 +41,7 @@ const resourceUrls = {
   article: `${resourceHost}article/`, // concatenate article Id
   articleHistory: (articleId) =>
     `${resourceHost}article/${articleId}/history?offset=0&limit=5&orderBy=date&desc=true&filter=all`, // pass article Id
+
   articleSearch: `${resourceHost}find/eanRecord/`, // concatenate search query
   //Customers
   customers: `${resourceHost}customer?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
@@ -50,8 +51,10 @@ const resourceUrls = {
   user: `${resourceHost}setting/user`,
   contact: `${resourceHost}customer`,
   miscellaneous: `${resourceHost}setting/miscellaneous`,
+
   //Invoices
   invoices: `${resourceHost}invoice?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,
+  invoiceDetail: `${resourceHost}invoice/`, // Contatenate invoiceId
 
   //Quotation
   quotations: `${resourceHost}offer?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,

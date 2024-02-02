@@ -1,5 +1,6 @@
 //Variables
 @import "../assets//scss/abstracts/variables";
+@import "../styles/helperClasses/helperClasses.scss";
 
 // SHARED
 @import "./components/shared/listAdvancedComponent/ListAdvanced";
@@ -23,3 +24,4 @@
 @import "./components/views/Sales/Quotations/quotationList";
 @import "./components/views/Accounting/transactionList";
 @import "./components/views/Sales/RecurringInvoices/recurringInvoicesList";
+@import "./components/views/Sales/Invoices/invoiceDetail";

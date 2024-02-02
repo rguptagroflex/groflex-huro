@@ -16,6 +16,7 @@ import {
 } from "../../../helpers/sortComparators";
 import groflexService from "../../../services/groflex.service";
 import FontAwesomeIcon from "../../../shared/fontAwesomeIcon/FontAwesomeIcon";
+import { formatDateforUi } from "../../../helpers/dateFormatters";
 const actions = [
   { name: "edit", icon: "edit" },
   { name: "delete", icon: "trash-alt" },
@@ -49,8 +50,13 @@ const createActivity = (params) => {
       val = "Draft";
       iconColor = "#DDDDDD";
       break;
+    case "cancelled":
+      val = "Cancelled";
+      iconColor = "#888787";
+      break;
     default:
       iconColor = "#D94339";
+      val = "Overdue";
       break;
   }
 
@@ -88,27 +94,32 @@ const InvoicesList = () => {
             }
           });
         break;
-      // case "Edit":
-      //   navigate(`/article/edit/${row.id}`);
+      case "Edit":
+        navigate(`/sales/invoices/${row.id}`);
     }
   };
   return (
     <PageContent
-      title="Quotaiton List"
+      title="Invoices List"
       titleActionContent={<Button isSuccess>Create Invoices</Button>}
     >
       <ListAdvancedComponent
-        // onRowClicked={(e) => {
-        //   navigate(`/article/${e.data.id}`);
-        // }}
+        onRowClicked={(e) => {
+          navigate(`/sales/invoices/${e.data.id}`);
+        }}
         onActionClick={handleActionClick}
         columnDefs={[
           {
             field: "state",
             headerName: "status",
             cellRenderer: createActivity,
+            minWidth: ListAdvancedDefaultSettings.COLUMN_MIN_WIDTH,
           },
-          { field: "customerData.name", headerName: "Customer Name" },
+          {
+            field: "customerData.name",
+            headerName: "Customer Name",
+            minWidth: 170,
+          },
           {
             headerName: "Currency",
             field: "baseCurrency",
@@ -126,32 +137,45 @@ const InvoicesList = () => {
             },
           },
           {
+            minWidth: ListAdvancedDefaultSettings.COLUMN_MIN_WIDTH,
             headerName: "Date created",
             field: "date",
             filter: true,
             comparator: (date1, date2) =>
               dateCompareSort(date1, date2, config.dateFormat.client),
+            cellRenderer: (params) => {
+              return formatDateforUi(new String(params.value));
+            },
           },
 
           {
+            minWidth: ListAdvancedDefaultSettings.COLUMN_MIN_WIDTH,
             field: "dueToDate",
             filter: true,
             comparator: (date1, date2) =>
               dateCompareSort(date1, date2, config.dateFormat.client),
             headerName: "Due Date",
-          },
-          {
-            field: "dueSince",
-            comparator: localeCompareNumeric,
-            filter: "agNumberColumnFilter",
-            filterParams: {
-              suppressAndOrCondition: true,
+            cellRenderer: (params) => {
+              return params.value
+                ? formatDateforUi(new String(params.value))
+                : "-";
             },
-            valueFormatter: (evt) => {
-              return evt.value ? evt.value + " days" : "";
-            },
-            headerName: "Due Since",
           },
+
+          // {
+          //   field: "dueSince",
+          //   comparator: localeCompareNumeric,
+          //   filter: "agNumberColumnFilter",
+          //   filterParams: {
+          //     suppressAndOrCondition: true,
+          //   },
+          //   valueFormatter: (evt) => {
+          //     console.log(evt, "MY VALUE");
+          //     return evt.value ? evt.value + " days" : "";
+          //   },
+          //   headerName: "Due Since",
+          //   minWidth: ListAdvancedDefaultSettings.COLUMN_MIN_WIDTH,
+          // },
 
           {
             field: "totalGross",
@@ -162,6 +186,7 @@ const InvoicesList = () => {
             },
             headerComponent: CustomShowHeaderSum,
             headerComponentParams: { value: "totalGross", headerName: "Total" },
+            minWidth: ListAdvancedDefaultSettings.COLUMN_MIN_WIDTH,
           },
           {
             field: "outstandingAmount",
@@ -175,6 +200,7 @@ const InvoicesList = () => {
               value: "outstandingAmount",
               headerName: "Total",
             },
+            minWidth: ListAdvancedDefaultSettings.COLUMN_MIN_WIDTH,
           },
           {
             field: "type",
