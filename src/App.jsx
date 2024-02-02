@@ -42,6 +42,7 @@ import InventoryDashboard from "./app/views/inventory/inventoryDashboard/Invento
 import PurchaseOrderList from "./app/views/inventory/purchaseOrder/PurchaseOrderList";
 import SalesOrdersList from "./app/views/inventory/salesOrder/SalesOrdersList";
 import ReportingAndAnalytics from "./app/views/inventory/reportingAndAnalytics/ReportingAndAnalytics";
+import ChartOfAccounts from "./app/views/accounting/chartOfAccounts/ChartOfAccountsList";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -80,6 +81,7 @@ function App() {
           <Route path="accounting/transactions" element={<Transactions />} />
           <Route path="accounting/cash-and-bank" element={<CashAndBank />} />
           <Route path="accounting/debit-notes" element={<DebitNotesList />} />
+          <Route path="accounting/chart-of-accounts" element={<ChartOfAccounts/>}/>
 
           {/* Inventory Module */}
           <Route path="inventory/dashboard" element={<InventoryDashboard />} />

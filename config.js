@@ -42,6 +42,10 @@ const resourceUrls = {
   articleHistory: (articleId) =>
     `${resourceHost}article/${articleId}/history?offset=0&limit=5&orderBy=date&desc=true&filter=all`, // pass article Id
   articleSearch: `${resourceHost}find/eanRecord/`, // concatenate search query
+  // Chart of Accounts
+  chartOfAccounts: `${resourceHost}chartofaccount?offset=0&searchText=&limit=9999999&orderBy=accountName&desc=false`,
+  chartOfAccount: `${resourceHost}chartofaccount/`,
+  accountType: `${resourceHost}accountType?offset=0&searchText=&limit=9999999&orderBy=name&desc=false`,
   //Customers
   customers: `${resourceHost}customer?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
   tenant: `${resourceHost}tenant`,
@@ -99,6 +103,7 @@ const modules = {
       { label: "Transactions", route: "/accounting/transactions" },
       { label: "Cash and Bank", route: "/accounting/cash-and-bank" },
       { label: "Debit Notes", route: "/accounting/debit-notes" },
+      { label: "Chart of Accounts", route: "/accounting/chart-of-accounts" }
     ],
   },
   inventory: {

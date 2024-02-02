@@ -33,7 +33,7 @@ export const SelectInput = ({
         setSelectedOption(options.find((option) => option.value === value));
       }
     }
-  }, [value]);
+  }, [value, options]);
 
   // console.log(selectedOption);
 
