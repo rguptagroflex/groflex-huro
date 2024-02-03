@@ -63,7 +63,7 @@ const CashListComponent = () => {
                     />
                   }
                 >
-                  Add new bank
+                  Add cash type
                 </Button>
               </div>
             </th>
