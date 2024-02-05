@@ -46,6 +46,9 @@ const resourceUrls = {
   chartOfAccounts: `${resourceHost}chartofaccount?offset=0&searchText=&limit=9999999&orderBy=accountName&desc=false`,
   chartOfAccount: `${resourceHost}chartofaccount/`,
   accountType: `${resourceHost}accountType?offset=0&searchText=&limit=9999999&orderBy=name&desc=false`,
+  // Debit notes
+  expenseCancellation: `${resourceHost}expenseCancellation?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=debitsAndBalance&trigger=true`,
+  invoice: `${resourceHost}invoice/`,
   //Customers
   customers: `${resourceHost}customer?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
   tenant: `${resourceHost}tenant`,
