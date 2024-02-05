@@ -13,6 +13,7 @@ import {
   localeCompare,
 } from "../../../helpers/sortComparators";
 import groflexService from "../../../services/groflex.service";
+import FontAwesomeIcon from "../../../shared/fontAwesomeIcon/FontAwesomeIcon";
 const actions = [
   { name: "edit", icon: "edit" },
   { name: "delete", icon: "trash-alt" },
@@ -20,26 +21,30 @@ const actions = [
 
 const createActivity = (params) => {
   let iconColor = "";
-  let icon = "";
+  let val = "";
 
   switch (params.value.toLowerCase()) {
     case "accepted":
-      icon = "CheckCircle";
-      iconColor = "#5FAF3A";
+      iconColor = "#BEF9DC";
+      val = "Accepted";
       break;
     case "open":
-      icon = "Clock";
-      iconColor = "#5FAF3A";
+      iconColor = "#0071CA";
+      val = "Open";
       break;
-    default:
-      icon = "Phone";
-      iconColor = "#d94339";
+    case "invoiced":
+      iconColor = "#00A353";
+      val = "Invoiced";
+      break;
+    case "rejected":
+      iconColor = "#888787";
+      val = "Declined";
       break;
   }
   return (
     <div className="quotations-status">
-      <FeatherIcon name={icon} color={iconColor} />
-      {params.value}
+      <FontAwesomeIcon name={"circle"} size={11} color={iconColor} />
+      {val}
     </div>
   );
 };
@@ -77,9 +82,9 @@ const QuotationsList = () => {
       }
     >
       <ListAdvancedComponent
-        // onRowClicked={(e) => {
-        //   navigate(`/article/${e.data.id}`);
-        // }}
+        onRowClicked={(e) => {
+          navigate(`/sales/quotations/${e.data.id}`);
+        }}
         onActionClick={handleActionClick}
         columnDefs={[
           {

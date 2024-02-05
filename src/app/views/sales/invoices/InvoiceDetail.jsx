@@ -10,33 +10,90 @@ import { formatCurrency } from "../../../helpers/formatCurrency";
 import InvoiceHistoryComponent from "./InvoiceHistoryComponent";
 import InvoiceState from "../../../enums/invoice/invoice-state.enum";
 import resources from "../../../shared/resources/resources";
+import { multiFetchHandler } from "../../../helpers/multiFetchHandler";
 
 const InvoicesDetail = () => {
   const [invoiceData, setInvoiceData] = useState();
+  const [pdfLink, setPdfLink] = useState();
   const [letterElements, setLetterElements] = useState();
   const { invoiceId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (invoiceId) {
-      groflexService
-        .request(`${config.resourceUrls.invoiceDetail}${invoiceId}`, {
+      const calls = [
+        groflexService.request(`${config.resourceUrls.invoice}${invoiceId}`, {
           auth: true,
-        })
-        .then((res) => {
-          if (!res.body.data) {
-            navigate("/sales/invoices");
-            return;
+        }),
+        groflexService.request(
+          `${config.resourceUrls.invoice}${invoiceId}/document`,
+          {
+            auth: true,
+            method: "POST",
+            data: {
+              isPrint: false,
+            },
           }
-          setInvoiceData({
-            ...res.body.data.invoice,
-          });
-          setLetterElements({
-            ...res.body.data.letterElements,
-          });
+        ),
+      ];
+
+      multiFetchHandler(calls).then((responses) => {
+        const invoiceResponse = responses[0];
+        const pdfDocumentResponse = responses[1];
+        // console.log(responses, "HERE ARE the responses in invoice detail");
+        setInvoiceData({
+          ...invoiceResponse.body.data.invoice,
         });
+        setLetterElements({
+          ...invoiceResponse.body.data.letterElements,
+        });
+        setPdfLink(
+          `${config.imageResourceHost}${pdfDocumentResponse.body.data.path}`
+        );
+        // fetch(
+        //   `${config.imageResourceHost}${pdfDocumentResponse.body.data.path}`
+        // );
+      });
     }
   }, [invoiceId]);
+
+  const renderPdf = () => {
+    let currentPage = 1;
+    const { pdf } = this.state;
+    const numPages = pdf.numPages;
+    const myPDF = pdf;
+    const wrapper = this.pdfWrapper && this.pdfWrapper.current;
+    wrapper.innerHTML = "";
+
+    const handlePages = (page) => {
+      if (wrapper) {
+        const canvas = document.createElement("canvas");
+        // canvas.width = wrapper.getBoundingClientRect().width;
+        canvas.width = "658";
+        const context = canvas.getContext("2d");
+        const viewport = page.getViewport(
+          canvas.width / page.getViewport(1.0).width
+        );
+        canvas.height = viewport.height;
+        page.render({
+          canvasContext: context,
+          viewport,
+        });
+        wrapper.appendChild(canvas);
+        if (currentPage === 1) {
+          this.setState({
+            canvasWidth: canvas.width,
+          });
+        }
+        currentPage++;
+        if (currentPage <= numPages) {
+          myPDF.getPage(currentPage).then(handlePages);
+        }
+      }
+    };
+
+    myPDF.getPage(currentPage).then(handlePages);
+  };
 
   const getInvoiceInfo = () => {
     const invoiceInfo = [];
@@ -102,13 +159,7 @@ const InvoicesDetail = () => {
       invoiceData?.state !== InvoiceState.CANCELLED
     ) {
       invoiceInfo.push(
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            color: "#ffaa2c",
-          }}
-        >
+        <div className="flex-space-between color-warning">
           <span className="is-weight-600">Due to Date</span>
           <span className="is-weight-600">
             {abbreviationDateFormat(invoiceData?.dueToDate)}
@@ -131,31 +182,69 @@ const InvoicesDetail = () => {
     return invoiceInfo;
   };
 
+  const getPageButtons = () => {
+    let buttonsFragment = "";
+
+    switch (invoiceData?.state) {
+      case InvoiceState.DRAFT:
+        buttonsFragment = (
+          <>
+            <Button className="m-r-15" isSuccess isOutlined>
+              Edit
+            </Button>
+            <Button isSuccess>Finalize</Button>
+          </>
+        );
+        break;
+      case InvoiceState.LOCKED:
+        buttonsFragment = (
+          <>
+            <Button className="m-r-15" isSuccess isOutlined>
+              Create reminder
+            </Button>
+            <Button isSuccess>Register payment</Button>
+          </>
+        );
+        break;
+      default:
+        break;
+    }
+    return buttonsFragment;
+  };
+
+  const getPageTitle = () => {
+    let pageTitle = "";
+    if (invoiceData?.state === InvoiceState.DRAFT) {
+      pageTitle = "Invoice Draft";
+    } else {
+      pageTitle = `Invoice No. ${invoiceData?.number}`;
+    }
+    return pageTitle;
+  };
+
   const amount = formatCurrency(invoiceData?.totalGross);
   const outstandingAmount = formatCurrency(invoiceData?.outstandingAmount);
   const paidAmount = formatCurrency(
     invoiceData?.totalGross - invoiceData?.outstandingAmount
   );
   const invoiceInfoArr = getInvoiceInfo();
+  const pageButtons = getPageButtons();
+  const pageTitle = getPageTitle();
 
-  console.log(invoiceData);
+  console.log(invoiceData, "Invoice detail");
+  console.log(pdfLink, "PDF link");
+
   return (
     <PageContent
       navigateBackTo={"/sales/invoices"}
       loading={!invoiceData?.id}
-      title={invoiceData?.number ? `Invoice No. ${invoiceData?.number}` : ""}
-      titleActionContent={
-        <>
-          <Button className="m-r-15" isSuccess isOutlined>
-            Edit
-          </Button>
-          <Button isSuccess>Finalize</Button>
-        </>
-      }
+      title={invoiceData?.id ? pageTitle : ""}
+      titleActionContent={pageButtons}
     >
       <div className="columns">
         <div className="column is-7">
           <div
+            id="invoice-pdf-container"
             style={{
               background: "white",
               height: "900px",
@@ -164,7 +253,9 @@ const InvoicesDetail = () => {
               border: "1px solid #c6c6c6",
             }}
           >
-            {/* hi */}
+            {/* PDF bruh */}
+            {/* {pdfObject} */}
+            <img id="invoice-pdf-img" src={pdfLink} />
           </div>
         </div>
         <div className="column is-5">

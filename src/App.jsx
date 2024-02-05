@@ -42,7 +42,8 @@ import InventoryDashboard from "./app/views/inventory/inventoryDashboard/Invento
 import PurchaseOrderList from "./app/views/inventory/purchaseOrder/PurchaseOrderList";
 import SalesOrdersList from "./app/views/inventory/salesOrder/SalesOrdersList";
 import ReportingAndAnalytics from "./app/views/inventory/reportingAndAnalytics/ReportingAndAnalytics";
-import InvoicesDetail from "./app/views/sales/invoices/InvoicesDetail";
+import InvoiceDetail from "./app/views/sales/invoices/InvoiceDetail";
+import QuotationDetail from "./app/views/sales/quotations/QuotationDetail";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -63,27 +64,37 @@ function App() {
           <Route path="article/new" element={<CreateArticle />} />
           <Route path="article/edit/:articleId" element={<EditArticle />} />
 
-          {/* Contacts */}
+          {/* ---------------------------Contacts-------------------------------- */}
           <Route path="contacts" element={<Contacts />} />
           <Route path="contacts-create" element={<CreateContact />} />
           <Route path="contacts-edit/:contactId" element={<EditContact />} />
 
-          {/* Sales Module*/}
+          {/* -------------------------Sales Module-------------------------*/}
+          {/* Invoice */}
           <Route path="sales/invoices" element={<InvoicesList />} />
-          <Route path="sales/invoices/:invoiceId" element={<InvoicesDetail />} />
+          <Route
+            path="sales/invoices/:invoiceId"
+            element={<InvoiceDetail />}
+          />
+          {/* Quotation */}
           <Route path="sales/quotations" element={<QuotationsList />} />
+          <Route
+            path="/sales/quotations/:quotationId"
+            element={<QuotationDetail />}
+          />
+          {/* Recurring invoice */}
           <Route
             path="sales/recurring-invoices"
             element={<RecurringInvoicesList />}
           />
           <Route path="sales/time-sheets" element={<TimesheetsList />} />
 
-          {/* Accounting Module */}
+          {/* --------------------Accounting Module-------------------- */}
           <Route path="accounting/transactions" element={<Transactions />} />
           <Route path="accounting/cash-and-bank" element={<CashAndBank />} />
           <Route path="accounting/debit-notes" element={<DebitNotesList />} />
 
-          {/* Inventory Module */}
+          {/* ---------------------Inventory Module------------------------- */}
           <Route path="inventory/dashboard" element={<InventoryDashboard />} />
           <Route
             path="inventory/purchase-orders"
@@ -95,7 +106,7 @@ function App() {
             element={<ReportingAndAnalytics />}
           />
 
-          {/* CRM Module */}
+          {/* -------------------------CRM Module----------------------- */}
           <Route
             path="/crm/contact-management"
             element={<ContactManagement />}
@@ -116,13 +127,13 @@ function App() {
           <Route path="/crm/tasks-overview" element={<TasksOverview />} />
           <Route path="/crm/task-details" element={<TaskDetails />} />
 
-          {/* Miscilaneous*/}
+          {/* ---------------------Miscilaneous----------------------*/}
           <Route path="account-settings" element={<AccountSettings />} />
           <Route path="preferences" element={<Preferences />} />
           <Route path="notifications" element={<Notifications />} />
         </Route>
 
-        {/* Unprotected Routes */}
+        {/* -------------------Unprotected Routes------------------- */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/email-verification" element={<EmailVerification />} />

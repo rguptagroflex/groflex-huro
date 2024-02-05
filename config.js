@@ -17,7 +17,13 @@ const baseUrl = apiServers.local;
 const setResourceHost = () => {
   return `${baseUrl}/api/`;
 };
+const setAssetResourceHost = () => {
+  return `${baseUrl}/api`;
+};
+
 const resourceHost = setResourceHost();
+const imageResourceHost = setAssetResourceHost();
+const assetResourceHost = setAssetResourceHost();
 
 const resourceUrls = {
   //1st Registration token
@@ -54,11 +60,11 @@ const resourceUrls = {
 
   //Invoices
   invoices: `${resourceHost}invoice?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,
-  invoiceDetail: `${resourceHost}invoice/`, // Contatenate invoiceId
+  invoice: `${resourceHost}invoice/`, // Contatenate invoiceId
 
   //Quotation
   quotations: `${resourceHost}offer?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,
-  quotation: `${resourceHost}offer/`,
+  quotation: `${resourceHost}offer/`, //Concatenate QuotationId
 
   //Recurring
   recurring: `${resourceHost}recurringinvoice?offset=0&searchText=&limit=9999999&orderBy=name&desc=true`,
@@ -169,6 +175,8 @@ const dateFormat = {
 };
 const config = {
   resourceHost,
+  imageResourceHost,
+  assetResourceHost,
   resourceUrls,
   regex,
   checkLoginTokenIsValid,

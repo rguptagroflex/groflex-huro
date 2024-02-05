@@ -43,8 +43,8 @@ const createActivity = (params) => {
 
   switch (params.value.toLowerCase()) {
     case "locked":
-      iconColor = "#0071CA";
       val = "Open";
+      iconColor = "#0071CA";
       break;
     case "draft":
       val = "Draft";
@@ -54,6 +54,10 @@ const createActivity = (params) => {
       val = "Cancelled";
       iconColor = "#888787";
       break;
+    case "paid":
+      val = "Paid";
+      iconColor = "#00A353";
+      break;
     default:
       iconColor = "#D94339";
       val = "Overdue";
@@ -62,14 +66,7 @@ const createActivity = (params) => {
 
   return (
     <div className="quotations-status">
-      <FontAwesomeIcon
-        name={"circle"}
-        size={11}
-        color={iconColor}
-        // style={{
-        //   display: "inline-block",
-        // }}
-      />
+      <FontAwesomeIcon name={"circle"} size={11} color={iconColor} />
       {val}
     </div>
   );
@@ -81,7 +78,7 @@ const InvoicesList = () => {
     switch (action.name) {
       case "Delete":
         groflexService
-          .request(`${config.resourceUrls.quotation}${row.id}`, {
+          .request(`${config.resourceUrls.invoice}${row.id}`, {
             auth: true,
             method: "DELETE",
           })
