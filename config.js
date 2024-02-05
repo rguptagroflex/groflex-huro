@@ -35,8 +35,10 @@ const resourceUrls = {
   checkEmailExist: `${resourceHost}user/checkUser`,
   /* ALl in-app APIs will need Login token */
   //Dashboard
-  recievables: `${resourceHost}/invoice`,
-  payable: `${resourceHost}/expense`,
+  recievables: `${resourceHost}invoice`,
+  payable: `${resourceHost}expense`,
+  invoiceChartData: (startDate, endDate) =>
+    `${resourceHost}invoice?startDate=${startDate}&endDate=${endDate}`,
   //Articles
   articleNumber: `${resourceHost}article/number`, //Get Create article's number
   postArticleImage: `${resourceHost}article/image/`, //Concatenate articleId
