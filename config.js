@@ -41,6 +41,8 @@ const resourceUrls = {
     `${resourceHost}invoice?startDate=${startDate}&endDate=${endDate}`,
   expenseChartData: (startDate, endDate) =>
     `${resourceHost}expense?startDate=${startDate}&endDate=${endDate}`,
+  quotationChartData: (startDate, endDate) =>
+    `${resourceHost}offer?startDate=${startDate}&endDate=${endDate}`,
   //Articles
   articleNumber: `${resourceHost}article/number`, //Get Create article's number
   postArticleImage: `${resourceHost}article/image/`, //Concatenate articleId
