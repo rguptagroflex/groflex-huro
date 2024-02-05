@@ -16,7 +16,7 @@ import groflexService from "../../../services/groflex.service";
 
 const actions = [
   { name: "Copy and edit", icon: "edit" },
-  { name: "End recurring invoice", icon: "trash-alt" },
+  { name: "Delete", icon: "trash-alt" },
 ];
 
 const interval = (p) => {
@@ -35,6 +35,25 @@ const interval = (p) => {
   }
   return <>{val}</>;
 };
+const handleActionClick = (action, row, params) => {
+  switch (action.name) {
+    case "Delete":
+      groflexService
+        .request(`${config.resourceUrls.recurring}${row.id}`, {
+          auth: true,
+          method: "DELETE",
+        })
+        .then((res) => {
+          if (res?.body?.message) {
+            console.log(res, "Delete Failed");
+          } else {
+            params.api.applyTransaction({ remove: [row] });
+            console.log(res, "Deleted Succesfullyyy");
+          }
+        });
+      break;
+  }
+};
 const createActivity = (params) => {
   let iconColor = "";
   let icon = "";
@@ -45,6 +64,10 @@ const createActivity = (params) => {
       iconColor = "#181d1f";
       break;
     case "started":
+      icon = "CheckCircle";
+      iconColor = "#181d1f";
+      break;
+    case "finished":
       icon = "CheckCircle";
       iconColor = "#181d1f";
       break;
@@ -62,38 +85,13 @@ const createActivity = (params) => {
 };
 
 const RecurringInvoicesList = () => {
-  // const navigate = useNavigate();
-  // const handleActionClick = (action, row, params) => {
-  //   switch (action.name) {
-  //     case "Delete":
-  //       groflexService
-  //         .request(`${config.resourceUrls.quotation}${row.id}`, {
-  //           auth: true,
-  //           method: "DELETE",
-  //         })
-  //         .then((res) => {
-  //           if (res?.body?.message) {
-  //             console.log(res, "Delete Failed");
-  //           } else {
-  //             params.api.applyTransaction({ remove: [row] });
-  //             console.log(res, "Deleted Succesfullyyy");
-  //           }
-  //         });
-  //       break;
-  //     // case "Edit":
-  //     //   navigate(`/article/edit/${row.id}`);
-  //   }
-  // };
   return (
     <PageContent
       title="Recurring Invoices List"
       titleActionContent={<Button isSuccess>Create recurring invoice</Button>}
     >
       <ListAdvancedComponent
-        // onRowClicked={(e) => {
-        //   navigate(`/article/${e.data.id}`);
-        // }}
-        //onActionClick={handleActionClick}
+        onActionClick={handleActionClick}
         columnDefs={[
           {
             field: "name",
@@ -122,13 +120,6 @@ const RecurringInvoicesList = () => {
             field: "nextDate",
             headerName: "next date",
           },
-          // {
-          //   field: "date",
-          //   headerName: "Date Created",
-          //   valueFormatter: (evt) => {
-          //     return formatCurrency(evt.value);
-          //   },
-          // },
 
           {
             field: "totalGross",

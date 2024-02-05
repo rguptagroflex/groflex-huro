@@ -35,20 +35,20 @@ const CashListComponent = () => {
     <div className="s-card demo-table" id="custom">
       <table className="table is-hoverable is-fullwidth ">
         <tbody>
-          <tr id="table-heading">
-            <th>Cash</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
+          <tr id="table-sup-heading">
+            <td>Cash</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
             <th className="is-end">
               <div className="dark-inverted">
                 <Button
@@ -69,20 +69,20 @@ const CashListComponent = () => {
             </th>
           </tr>
           <tr id="table-sub-heading">
-            <th>Balance</th>
-            <th></th>
-            <th>Cash type</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
+            <td>Balance</td>
+            <td></td>
+            <td>Cash type</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
           </tr>
           {banks.map((bank, index) => {
             // Check if IFSC code contains a number

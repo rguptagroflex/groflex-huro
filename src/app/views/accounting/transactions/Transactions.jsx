@@ -14,7 +14,7 @@ import {
 } from "../../../helpers/sortComparators";
 import groflexService from "../../../services/groflex.service";
 
-const actions = [{ name: "Delete", icon: "edit" }];
+const actions = [{ name: "Delete", icon: "trash" }];
 const reconcile = (p) => {
   console.log(p);
   return <>{p.val ? "Reconcile" : "Not reconcile"}</>;
@@ -22,27 +22,27 @@ const reconcile = (p) => {
 
 const Transactions = () => {
   // const navigate = useNavigate();
-  //  const handleActionClick = (action, row, params) => {
-  //   switch (action.name) {
-  //     case "Delete":
-  //       groflexService
-  //         .request(`${config.resourceUrls.quotation}${row.id}`, {
-  //           auth: true,
-  //           method: "DELETE",
-  //         })
-  //         .then((res) => {
-  //           if (res?.body?.message) {
-  //             console.log(res, "Delete Failed");
-  //           } else {
-  //             params.api.applyTransaction({ remove: [row] });
-  //             console.log(res, "Deleted Succesfullyyy");
-  //           }
-  //         });
-  //       break;
-  //     // case "Edit":
-  //     //   navigate(`/article/edit/${row.id}`);
-  //   }
-  // };
+   const handleActionClick = (action, row, params) => {
+    switch (action.name) {
+      case "Delete":
+        groflexService
+          .request(`${config.resourceUrls.transaction}${row.id}`, {
+            auth: true,
+            method: "DELETE",
+          })
+          .then((res) => {
+            if (res?.body?.message) {
+              console.log(res, "Delete Failed");
+            } else {
+              params.api.applyTransaction({ remove: [row] });
+              console.log(res, "Deleted Succesfullyyy");
+            }
+          });
+        break;
+      // case "Edit":
+      //   navigate(`/article/edit/${row.id}`);
+    }
+  };
   return (
     <PageContent
       title="Transactions"
@@ -52,7 +52,7 @@ const Transactions = () => {
         // onRowClicked={(e) => {
         //   navigate(`/article/${e.data.id}`);
         // }}
-        //onActionClick={handleActionClick}
+        onActionClick={handleActionClick}
         columnDefs={[
           {
             headerName: "Date",
