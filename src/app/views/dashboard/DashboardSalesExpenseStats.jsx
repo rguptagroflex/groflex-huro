@@ -1,97 +1,197 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
 import { SelectInput } from "../../shared/components/select/SelectInput";
 import moment from "moment";
 import CreateChart from "../../shared/components/chartist/CreateChart";
+import groflexService from "../../services/groflex.service";
+import config from "../../../../config";
 
+const dateFilterTypes = {
+  fiscalYear: "Fiscal Year",
+  currentMonth: moment().format("MMMM"),
+  lastMonth: moment().subtract(1, "months").format("MMMM"),
+  secondLastMonth: moment().subtract(2, "months").format("MMMM"),
+  currentQuarter: moment().startOf("quarter").format("Q/YYYY"),
+  lastQuarter: moment()
+    .subtract(3, "months")
+    .startOf("quarter")
+    .format("Q/YYYY"),
+  secondLastQuarter: moment()
+    .subtract(6, "months")
+    .startOf("quarter")
+    .format("Q/YYYY"),
+};
 const DashboardSalesExpenseStats = () => {
   const [date, setDate] = useState({
     startDate: "",
     endDate: "",
   });
+
+  const [salesExpenses, setSalesExpenses] = useState([]);
+  const [totalValues, setTotalValues] = useState({
+    totalSales: 0,
+    totalExpenses: 0,
+  });
+
+  const [dateDropDown, setDateDropDown] = useState({
+    label: dateFilterTypes.fiscalYear,
+    value: "fiscalYear",
+  });
+
+  const [series, setSeries] = useState({
+    sales: [],
+    expenses: [],
+  });
+  const [labels, setLabels] = useState([]);
+
+  useEffect(() => {
+    groflexService
+      .request(
+        `${config.resourceUrls.salesExpensesChartData(
+          date.startDate,
+          date.endDate
+        )}`,
+        { auth: true }
+      )
+      .then((res) => {
+        let totalSales = 0;
+        let totalExpenses = 0;
+        let sales = [];
+        let expenses = [];
+        res.body.data.expensesMonthly.forEach((item) => {
+          totalExpenses += item.value;
+          expenses.push(item.value);
+        });
+        res.body.data.turnoverMonthly.forEach((item) => {
+          totalSales += item.value;
+          sales.push(item.value);
+        });
+
+        setTotalValues({
+          totalSales: totalSales,
+          totalExpenses: totalExpenses,
+        });
+
+        setSeries({
+          sales: sales,
+          expenses: expenses,
+        });
+      });
+  }, [date]);
+
   const handleDateDropDown = (option) => {
-    setDate(option.value);
+    // setDate(option.value);
+    setDateDropDown(option.value);
+    let startDate = "";
+    let endDate = "";
+    let labels = [];
+    switch (option.value) {
+      case "currMonth":
+        startDate = moment().startOf("month");
+        endDate = moment().endOf("month");
+        labels = [dateFilterTypes.currentMonth];
+        break;
+      case "lastMonth":
+        startDate = moment().subtract(1, "months").startOf("month");
+        endDate = moment().subtract(1, "months").endOf("month");
+        labels = [dateFilterTypes.lastMonth];
+        break;
+      case "secondLastMonth":
+        startDate = moment().subtract(2, "months").startOf("month");
+        endDate = moment().subtract(2, "months").endOf("month");
+        labels = [dateFilterTypes.secondLastMonth];
+        break;
+      case "currQuarter":
+        startDate = moment().startOf("quarter");
+        endDate = moment().endOf("quarter");
+        break;
+      case "lastQuarter":
+        startDate = moment().subtract(3, "months").startOf("quarter");
+        endDate = moment()
+          .subtract(3, "months")
+          .endOf("quarter")
+          .format("DD MMMM YYYY");
+        break;
+      case "secondLastQuarter":
+        startDate = moment().subtract(6, "months").startOf("quarter");
+        endDate = moment().subtract(6, "months").endOf("quarter");
+        break;
+      case "fiscalYear":
+        const financialYearMonthStart = moment()
+          .utc()
+          .set("month", 2)
+          .set("date", 31);
+        startDate =
+          financialYearMonthStart < moment().utc()
+            ? financialYearMonthStart
+            : financialYearMonthStart.set("year", moment().utc().year() - 1);
+        endDate = endDate ? moment(endDate).utc() : moment().utc();
+        labels = [
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+          "Jan",
+          "Feb",
+        ];
+        break;
+    }
+
+    setLabels(labels);
+
+    setDate({
+      startDate: startDate.toJSON(),
+      endDate: endDate.toJSON(),
+    });
   };
 
   const dateOptions = [
     {
-      label: moment().format("MMMM"),
-      value: {
-        startDate: moment().startOf("month").format(),
-        endDate: moment().endOf("month").format(),
-      },
+      label: dateFilterTypes.currentMonth,
+      value: "currMonth",
     },
     {
-      label: moment().subtract(1, "months").format("MMMM"),
-      value: {
-        startDate: moment().subtract(1, "months").startOf("month").format(),
-        endDate: moment().subtract(1, "months").endOf("month").format(),
-      },
+      label: dateFilterTypes.lastMonth,
+      value: "lastMonth",
     },
     {
-      label: moment().subtract(2, "months").format("MMMM"),
-      value: {
-        startDate: moment().subtract(2, "months").startOf("month").format(),
-        endDate: moment().subtract(2, "months").endOf("month").format(),
-      },
+      label: dateFilterTypes.secondLastMonth,
+      value: "secondLastMonth",
     },
     {
-      label: `Quarter ${moment().startOf("quarter").format("Q/YYYY")}`,
-      value: {
-        startDate: moment().startOf("quarter").format(),
-        endDate: moment().endOf("quarter").format(),
-      },
+      label: `Quarter ${dateFilterTypes.currentQuarter}`,
+      value: "currQuarter",
     },
     {
-      label: `Quarter ${moment()
-        .subtract(3, "months")
-        .startOf("quarter")
-        .format("Q/YYYY")}`,
-      value: {
-        startDate: moment().subtract(3, "months").startOf("quarter").format(),
-        endDate: moment()
-          .subtract(3, "months")
-          .endOf("quarter")
-          .format("DD MMMM YYYY"),
-      },
+      label: `Quarter ${dateFilterTypes.lastQuarter}`,
+      value: "lastQuarter",
     },
     {
-      label: `Quarter ${moment()
-        .subtract(6, "months")
-        .startOf("quarter")
-        .format("Q/YYYY")}`,
-      value: {
-        startDate: moment().subtract(6, "months").startOf("quarter").format(),
-        endDate: moment().subtract(6, "months").endOf("quarter").format(),
-      },
+      label: `Quarter ${dateFilterTypes.secondLastQuarter}`,
+      value: "secondLastQuarter",
+    },
+    {
+      label: dateFilterTypes.fiscalYear,
+      value: "fiscalYear",
     },
   ];
 
   const chartData = {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
-    series: [
-      [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200],
-      [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120],
-    ],
+    labels: labels,
+    series: [series.sales, series.expenses],
   };
 
   const chartOptions = {
     width: "100%",
     height: "300px",
   };
+  console.log("label", dateDropDown);
 
   return (
     <div className="dashboard-sales-expense-stats-wrapper columns is-multiline">
@@ -109,7 +209,7 @@ const DashboardSalesExpenseStats = () => {
                 options={dateOptions}
                 placeholder={"None"}
                 onChange={handleDateDropDown}
-                value={date}
+                value={dateDropDown}
               />
             </div>
             <div
@@ -119,13 +219,17 @@ const DashboardSalesExpenseStats = () => {
               <div className="column is-4">
                 <AdvancedCard type={"s-card"} style={{ padding: "0" }}>
                   <div className="total-sales-label">Total Sales</div>
-                  <div className="total-sales-value">₹ 769</div>
+                  <div className="total-sales-value">
+                    ₹ {parseFloat(totalValues.totalSales).toFixed(0)}
+                  </div>
                 </AdvancedCard>
               </div>
               <div className="column is-4">
                 <AdvancedCard type={"s-card"} style={{ padding: "0" }}>
                   <div className="total-expense-label">Total Expenses</div>
-                  <div className="total-expense-value">₹ 40</div>
+                  <div className="total-expense-value">
+                    ₹ {parseFloat(totalValues.totalExpenses).toFixed(0)}
+                  </div>
                 </AdvancedCard>
               </div>
             </div>
