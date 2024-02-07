@@ -28,8 +28,10 @@ const DashboardChartCard = ({
   chartEntries = [],
   chartType,
   setChartType,
-
   setDate,
+  filterOptions,
+  handleFilterChange,
+  filter,
 }) => {
   const [dateDropDown, setDateDropDown] = useState({
     label: dateFilterTypes.fiscalYear,
@@ -142,6 +144,19 @@ const DashboardChartCard = ({
           />
         </div>
       </div>
+      {filter && (
+        <div className="columns is-multiline">
+          <div className="column is-6">
+            <SelectInput
+              options={filterOptions}
+              placeholder={"None"}
+              onChange={handleFilterChange}
+              value={filter}
+              defaultValue={"filterByName"}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="column is-12 donut-chart-wrapper">
         <CreateChart
@@ -161,7 +176,7 @@ const DashboardChartCard = ({
             <div>
               {" "}
               <p className="value-category-text">
-                {`${entry.label} (${entry.count})`}
+                {`${entry.label} ${entry.count ? `(${entry.count})` : ""}`}
                 <FeatherIcon
                   name={"ArrowUpRight"}
                   size={20}
