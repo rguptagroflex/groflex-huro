@@ -9,7 +9,6 @@ import { CustomShowHeaderSum } from "../../../shared/components/list-advanced/Cu
 import { useNavigate } from "react-router-dom";
 import groflexService from "../../../services/groflex.service";
 import { Button } from "../../../shared/components/button/Button";
-import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
 
 // Filter by date remaining
 // Settings remaining
@@ -106,28 +105,19 @@ const InvoicesList = () => {
 export default InvoicesList;
 
 const Status = ({ value }) => {
-  const icon = {
-    color:
-      value === "draft" ? "#888787" :
-      value === "locked" ? "#00A353" :
-      value === "dunned" ? "#D94339" :
-      value === "partiallyPaid" ? "#FFAA2C" :
-      value === "cancelled" ? "#000000" :
-      value === "paid" ? "#00A353" :
-      undefined,
-    name: 
-      value === "draft" ? "Edit" :
-      value === "locked" ? "Clock" :
-      value === "dunned" ? "AlertCircle" :
-      value === "partiallyPaid" ? "Clock" :
-      value === "cancelled" ? "MinusCircle" :
-      value === "paid" ? "CheckCircle" :
-      undefined
-  }
+  // TODO: verify the types of statuses
+  let color = 
+    value === "draft" ? "#DDDDDD" :
+    value === "locked" ? "#0071CA" :
+    value === "dunned" ? "#D94339" :
+    value === "partiallyPaid" ? "#FFAA2C" :
+    value === "cancelled" ? "#888787" :
+    value === "paid" ? "#00A353" :
+    undefined
 
-  return <div style={{ display: "flex", alignItems: "center", gap: 10, width: "110px" }}>
-    <FeatherIcon {...icon} size={20} style={{ flexShrink: 0 }} />
-    <div style={{ color: "black" }}>{
+  return <div style={{ display: "flex", alignItems: "center", gap: 5, width: 110 }}>
+    <div style={{ height: 10, width: 10, borderRadius: "50%", backgroundColor: color, flexShrink: 0 }}/>
+    <div>{
       value === "locked" ? "Open" :
       value === "dunned" ? "Reminded" :
       value === "partiallyPaid" ? "Partially Paid" :
