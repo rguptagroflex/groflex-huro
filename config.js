@@ -49,6 +49,8 @@ const resourceUrls = {
   // Debit notes
   expenseCancellation: `${resourceHost}expenseCancellation?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=debitsAndBalance&trigger=true`,
   invoice: `${resourceHost}invoice/`,
+  // Credit notes
+  cancellation: `${resourceHost}cancellation?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=creditsAndBalance&trigger=true`,
   //Customers
   customers: `${resourceHost}customer?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
   tenant: `${resourceHost}tenant`,
@@ -106,6 +108,7 @@ const modules = {
       { label: "Transactions", route: "/accounting/transactions" },
       { label: "Cash and Bank", route: "/accounting/cash-and-bank" },
       { label: "Debit Notes", route: "/accounting/debit-notes" },
+      { label: "Credit Notes", route: "/accounting/credit-notes" },
       { label: "Chart of Accounts", route: "/accounting/chart-of-accounts" }
     ],
   },
