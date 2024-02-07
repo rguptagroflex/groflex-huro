@@ -5,32 +5,14 @@ import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import CreateChart from "../../shared/components/chartist/CreateChart";
 import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
+import DashboardChartCard from "./DashboardChartCard";
 
-const dateFilterTypes = {
-  fiscalYear: "Fiscal Year",
-  currentMonth: moment().format("MMMM"),
-  lastMonth: moment().subtract(1, "months").format("MMMM"),
-  secondLastMonth: moment().subtract(2, "months").format("MMMM"),
-  currentQuarter: moment().startOf("quarter").format("Q/YYYY"),
-  lastQuarter: moment()
-    .subtract(3, "months")
-    .startOf("quarter")
-    .format("Q/YYYY"),
-  secondLastQuarter: moment()
-    .subtract(6, "months")
-    .startOf("quarter")
-    .format("Q/YYYY"),
-};
 const DashboardExpenseTab = () => {
   const [date, setDate] = useState({
     startDate: "",
     endDate: "",
   });
 
-  const [dateDropDown, setDateDropDown] = useState({
-    label: dateFilterTypes.fiscalYear,
-    value: "fiscalYear",
-  });
   const [expense, setExpenses] = useState([]);
 
   const [series, setSeries] = useState({
@@ -54,7 +36,7 @@ const DashboardExpenseTab = () => {
           amount: 0,
         };
         setExpenses(res.body.data);
-        expense.forEach((item) => {
+        res.body.data.forEach((item) => {
           if (item.status === "paid") {
             // paid += item.totalGross;
             paid.count = paid.count + 1;
@@ -82,90 +64,6 @@ const DashboardExpenseTab = () => {
 
   const [chartType, setChartType] = useState(true);
 
-  const handleDateDropDown = (option) => {
-    // setDate(option.value);
-    setDateDropDown(option.value);
-    let startDate = "";
-    let endDate = "";
-    switch (option.value) {
-      case "currMonth":
-        startDate = moment().startOf("month");
-        endDate = moment().endOf("month");
-
-        break;
-      case "lastMonth":
-        startDate = moment().subtract(1, "months").startOf("month");
-        endDate = moment().subtract(1, "months").endOf("month");
-        break;
-      case "secondLastMonth":
-        startDate = moment().subtract(2, "months").startOf("month");
-        endDate = moment().subtract(2, "months").endOf("month");
-        break;
-      case "currQuarter":
-        startDate = moment().startOf("quarter");
-        endDate = moment().endOf("quarter");
-        break;
-      case "lastQuarter":
-        startDate = moment().subtract(3, "months").startOf("quarter");
-        endDate = moment()
-          .subtract(3, "months")
-          .endOf("quarter")
-          .format("DD MMMM YYYY");
-        break;
-      case "secondLastQuarter":
-        startDate = moment().subtract(6, "months").startOf("quarter");
-        endDate = moment().subtract(6, "months").endOf("quarter");
-        break;
-      case "fiscalYear":
-        const financialYearMonthStart = moment()
-          .utc()
-          .set("month", 2)
-          .set("date", 31);
-        startDate =
-          financialYearMonthStart < moment().utc()
-            ? financialYearMonthStart
-            : financialYearMonthStart.set("year", moment().utc().year() - 1);
-        endDate = endDate ? moment(endDate).utc() : moment().utc();
-        break;
-    }
-
-    setDate({
-      startDate: startDate.toJSON(),
-      endDate: endDate.toJSON(),
-    });
-  };
-
-  const dateOptions = [
-    {
-      label: dateFilterTypes.currentMonth,
-      value: "currMonth",
-    },
-    {
-      label: dateFilterTypes.lastMonth,
-      value: "lastMonth",
-    },
-    {
-      label: dateFilterTypes.secondLastMonth,
-      value: "secondLastMonth",
-    },
-    {
-      label: `Quarter ${dateFilterTypes.currentQuarter}`,
-      value: "currQuarter",
-    },
-    {
-      label: `Quarter ${dateFilterTypes.lastQuarter}`,
-      value: "lastQuarter",
-    },
-    {
-      label: `Quarter ${dateFilterTypes.secondLastQuarter}`,
-      value: "secondLastQuarter",
-    },
-    {
-      label: dateFilterTypes.fiscalYear,
-      value: "fiscalYear",
-    },
-  ];
-
   const chartData = {
     labels: ["Paid", "Canceled"],
     series: chartType
@@ -190,81 +88,32 @@ const DashboardExpenseTab = () => {
         showLabel: true,
       };
 
-  console.log("called");
   return (
-    <div className="dashboard-invoice-expense-tab-wrapper">
-      <div className="columns is-multiline invoice-tab-header">
-        <div className="column is-6">
-          <SelectInput
-            options={dateOptions}
-            placeholder={"None"}
-            onChange={handleDateDropDown}
-            value={dateDropDown}
-            defaultValue={"fiscalYear"}
-          />
-        </div>
-        <div
-          className="column is-1 toggle-chart-btn"
-          onClick={() => setChartType(!chartType)}
-        >
-          <FeatherIcon
-            name={chartType ? "PieChart" : "BarChart"}
-            size={20}
-            color="rgb(17, 138, 178)"
-          />
-        </div>
-      </div>
+    <DashboardChartCard
+      className={"dashboard-invoice-expense-tab-wrapper"}
+      headerClassName={"invoice-tab-header"}
+      chartData={chartData}
+      chartOptions={chartOptions}
+      chartId={"expense"}
+      chartType={chartType}
+      setChartType={setChartType}
+      chartEntries={[
+        {
+          label: "Paid",
+          value: series.paid.amount,
+          count: series.paid.count,
+          color: "rgb(255, 209, 102)",
+        },
 
-      <div className="column is-12 donut-chart-wrapper">
-        <CreateChart
-          data={chartData}
-          options={chartOptions}
-          chartType={chartType ? "barChart" : "pieDonutChart"}
-          chartId={"expense"}
-        />
-      </div>
-      <div className="columns is-multiline value-categories">
-        <div className="column is-6">
-          <span
-            className="value-category-dot"
-            style={{ backgroundColor: "rgb(255, 209, 102)" }}
-          ></span>
-          <div>
-            {" "}
-            <p className="value-category-text">
-              Paid {`(${series.paid.count})`}{" "}
-              <FeatherIcon
-                name={"ArrowUpRight"}
-                size={20}
-                color="rgb(17, 138, 178)"
-              />
-            </p>
-            <p className="value-category-value">
-              ₹ {parseFloat(series.paid.amount).toFixed(0)}{" "}
-              <span>{"| "} 100 %</span>
-            </p>
-          </div>
-        </div>
-        <div className="column is-6">
-          <span className="value-category-dot"></span>
-          <div>
-            {" "}
-            <p className="value-category-text">
-              Canceled {`(${series.cancelled.count})`}{" "}
-              <FeatherIcon
-                name={"ArrowUpRight"}
-                size={20}
-                color="rgb(17, 138, 178)"
-              />
-            </p>
-            <p className="value-category-value">
-              ₹ {parseFloat(series.cancelled.amount).toFixed(0)}{" "}
-              <span>{"| "} 100 %</span>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+        {
+          label: "Cancelled",
+          value: series.cancelled.amount,
+          count: series.cancelled.count,
+          color: "rgb(17, 138, 178)",
+        },
+      ]}
+      setDate={setDate}
+    />
   );
 };
 
