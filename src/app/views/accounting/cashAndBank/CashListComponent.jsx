@@ -5,31 +5,112 @@ import { formatCurrency } from "../../../helpers/formatCurrency";
 import { Link } from "react-router-dom";
 import groflexService from "../../../services/groflex.service";
 import config from "../../../../../config";
+import Modal from "../../../shared/components/modal/Modal";
+import { Input } from "../../../../app/shared/components/input/Input";
+import PopOver from "../../../shared/components/popOver/PopOver";
+import DeleteBankModal from "./DeleteBankModal";
 
 const CashListComponent = () => {
   const [banks, setBanks] = useState([]);
-  const [clickedRows, setClickedRows] = useState(
-    new Array(banks.length).fill(false)
-  );
-
-  // Function to toggle the dropdown for a specific row
-  const toggleDropdown = (index) => {
-    setClickedRows((prevClickedRows) => {
-      const newClickedRows = [...prevClickedRows];
-      newClickedRows[index] = !newClickedRows[index];
-      return newClickedRows;
-    });
-  };
-
+  const [deleteCashVisibility, setDeleteCashVisibility] = useState(false);
+  const [selectedCashId, setSelectedCashId] = useState(null); // State to hold the selected bank ID for deletions
+  const [addNewCashVisibility, setAddNewCashVisibility] = useState(false);
+  const [newCashData, setNewCashData] = useState({
+    openingBalance: "",
+    description: "",
+  });
+  const [formErrors, setFormErrors] = useState({
+    openingBalanceError: "",
+  });
   useEffect(() => {
+    getBanksList();
+  }, []);
+
+  const getBanksList = () => {
     groflexService
-      .request(`${config.resourceHost}bank`, { auth: true })
+      .request(`${config.resourceUrls.bank}`, { auth: true })
       .then((res) => {
         console.log(res);
 
         setBanks(res.body.data);
       });
-  }, []);
+  };
+
+  const handleEditCash = () => {};
+  const handleDeleteBank = () => {
+    groflexService
+      .request(`${config.resourceHost}bank/${selectedCashId}`, {
+        auth: true,
+        method: "DELETE",
+      })
+      .then((res) => {
+        console.log(res, "DELETE KIYA BANK");
+        setDeleteCashVisibility(false);
+        getBanksList();
+      });
+  };
+  const handleAddCashSubmit = (newCashData, setNewCashData) => {
+    groflexService
+      .request(`${config.resourceUrls.bank}`, {
+        auth: true,
+        method: "POST",
+        data: { ...newCashData },
+      })
+      .then((res) => {
+        getBanksList();
+        setAddNewCashVisibility(false);
+        setNewCashData({
+          openingBalance: "",
+          description: "",
+        });
+      });
+
+    console.log("Working");
+  };
+
+  const checkForEmptyFields = () => {
+    let emptyFlag = false;
+
+    if (!newCashData.openingBalance) {
+      setFormErrors({
+        ...formErrors,
+        openingBalanceError: "This is a mandatory field",
+      });
+      emptyFlag = true;
+    }
+    return emptyFlag;
+  };
+
+  const handleSave = () => {
+    //Check for empty fields
+    if (checkForEmptyFields()) return;
+
+    //Finally submitting if no errors of any type
+    // if (Object.values(formErrors).every((error) => error === "")) {
+    //   handleAddCashSubmit(newCashData, setNewCashData);
+    // }
+    if (Object.values(formErrors).some((error) => error === "")) {
+      console.log("Working");
+
+      handleAddCashSubmit(newCashData, setNewCashData);
+    }
+
+    console.log(newCashData);
+  };
+  const handleOpeningBalanceChange = (value) => {
+    if (!value) {
+      setNewCashData({ ...newCashData, openingBalance: "" });
+      return;
+    }
+    setNewCashData({ ...newCashData, openingBalance: event.target.value });
+    setFormErrors({
+      ...formErrors,
+      openingBalanceError: "",
+    });
+  };
+  const handleDescriptionChange = (event) => {
+    setNewCashData({ ...newCashData, description: event.target.value });
+  };
 
   return (
     <div className="s-card demo-table" id="custom">
@@ -49,9 +130,17 @@ const CashListComponent = () => {
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
             <th className="is-end">
               <div className="dark-inverted">
                 <Button
+                  onClick={() => setAddNewCashVisibility(true)}
                   isOutlined
                   isPrimary
                   icon={
@@ -63,15 +152,60 @@ const CashListComponent = () => {
                     />
                   }
                 >
-                  Add cash type
+                  Add opening balance
                 </Button>
+                <Modal
+                  isActive={addNewCashVisibility}
+                  setIsAcive={setAddNewCashVisibility}
+                  onSubmit={handleSave}
+                  title={"Add opening balance"}
+                >
+                  <form onSubmit={handleSave}>
+                    <div className="columns">
+                      <div className="column is-12">
+                        <div className="field">
+                          <label>Opening balance*</label>
+                          <div style={{ fontWeight: "400", fontSize: "14px" }}>
+                            <Input
+                              placeholder={"₹0.00"}
+                              hasError={formErrors.openingBalanceError}
+                              value={newCashData.openingBalance}
+                              onChange={handleOpeningBalanceChange}
+                              helpText={formErrors.openingBalanceError}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="columns">
+                      <div className="column is-12">
+                        <div className="field">
+                          <label>Description</label>
+                          <div style={{ fontWeight: "400", fontSize: "14px" }}>
+                            <Input
+                              value={newCashData.description}
+                              onChange={handleDescriptionChange}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </Modal>
               </div>
             </th>
           </tr>
           <tr id="table-sub-heading">
             <td>Balance</td>
             <td></td>
-            <td>Cash type</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -89,11 +223,18 @@ const CashListComponent = () => {
             if (/[a-zA-Z]/.test(bank.IFSCCode)) {
               return (
                 <tr key={index}>
-                  <td>{bank.openingBalance}</td>
+                  <td>{formatCurrency(bank.openingBalance)}</td>
                   <td></td>
-                  <td>{bank.accountNumber}</td>
                   <td></td>
-                  <td> </td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
                   <td></td>
                   <td></td>
                   <td></td>
@@ -116,44 +257,28 @@ const CashListComponent = () => {
                   </td>
                   <td className="is-end">
                     <div>
-                      <div
-                        key={index}
-                        className={`${"dropdown is-spaced  is-right dropdown-trigger is-pushed-mobile is-up"}  ${
-                          clickedRows[index] && "is-active"
-                        }`}
-                        onClick={() => toggleDropdown(index)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <div className="is-trigger" aria-haspopup="true">
-                          <FeatherIcon primaryColor name={"MoreVertical"} />
-                        </div>
-                        <div
-                        style={{ minWidth: "118px" }}
-                          className="dropdown-menu"
-                          role="menu"
-                          
-                        >
-                          <div className="dropdown-content">
-                            <a href="#" className="dropdown-item is-media">
-                              <div class="icon">
-                                <FeatherIcon name={"Edit"} />
-                              </div>
-                              <div className="meta">
-                                <span>edit</span>
-                              </div>
-                            </a>
-
-                            <a href="#" className="dropdown-item is-media">
-                              <div class="icon">
-                                <FeatherIcon name={"Trash2"} />
-                              </div>
-                              <div className="meta">
-                                <span>delete</span>
-                              </div>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
+                      <PopOver
+                        elements={[
+                          {
+                            title: "Edit",
+                            handleClick: () => handleEditBank(bank.id),
+                          },
+                          {
+                            title: "Delete",
+                            handleClick: () => {
+                              setSelectedCashId(bank.id); // Set selected bank ID for deletion
+                              setDeleteCashVisibility(true);
+                            },
+                          },
+                        ]}
+                      />
+                      <DeleteBankModal
+                        isActive={deleteCashVisibility}
+                        setIsActive={setDeleteCashVisibility}
+                        title={"Delete cash account"}
+                        onConfirmDelete={handleDeleteBank} // Remove bank.id from here
+                        text={"cash account"}
+                      />
                     </div>
                   </td>
                 </tr>

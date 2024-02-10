@@ -31,7 +31,7 @@ const EditBankModal = ({ isActive, setIsActive, onConfirm }) => {
     openingBalance: "",
     branch: "",
     customerId: "",
-    notes: "",
+    description: "",
     cashType: "cash",
   });
   const [formErrors, setFormErrors] = useState({
@@ -134,7 +134,7 @@ const EditBankModal = ({ isActive, setIsActive, onConfirm }) => {
   };
 
   const handleDescriptionChange = (event) => {
-    setNewBankData({ ...newBankData, notes: event.target.value });
+    setNewBankData({ ...newBankData, description: event.target.value });
   };
 
   const checkForEmptyFields = () => {
@@ -160,10 +160,7 @@ const EditBankModal = ({ isActive, setIsActive, onConfirm }) => {
       });
       emptyFlag = true;
     }
-    // if (!newBankData.accountType) {
-    // 	setFormErrors({ ...formErrors, accountTypeError: "This is a mandatory field" });
-    // 	emptyFlag = true;
-    // }
+
     if (!newBankData.IFSCCode) {
       setFormErrors({
         ...formErrors,
@@ -196,7 +193,7 @@ const EditBankModal = ({ isActive, setIsActive, onConfirm }) => {
 
     //Finally submitting if no errors of any type
     if (Object.values(formErrors).every((error) => error === "")) {
-      onConfirm(newBankData);
+      onConfirm(newBankData, setNewBankData, setReEnteredAccountNumber);
     }
   };
 

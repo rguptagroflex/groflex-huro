@@ -6,14 +6,16 @@ import { Link } from "react-router-dom";
 import config from "../../../../../config";
 import groflexService from "../../../services/groflex.service";
 import EditBankModal from "./EditBankModal";
+import { formatCurrency } from "../../../helpers/formatCurrency";
+import DeleteBankModal from "./DeleteBankModal";
+import PopOver from "../../../shared/components/popOver/PopOver";
 
 const BankListComponent = () => {
   const [banks, setBanks] = useState([]);
   const [addNewBankVisibility, setAddNewBankVisibility] = useState(false);
+  const [deleteBankVisibility, setDeleteBankVisibility] = useState(false);
+  const [selectedBankId, setSelectedBankId] = useState(null); // State to hold the selected bank ID for deletions
 
-  const [clickedRows, setClickedRows] = useState(
-    new Array(banks.length).fill(false)
-  );
   useEffect(() => {
     getBanksList();
   }, []);
@@ -27,18 +29,26 @@ const BankListComponent = () => {
         setBanks(res.body.data);
       });
   };
-  const handleDeleteBank = (id) => {
-    groflexService.request(`${config.resourceHost}bank/${id}`, { auth: true, method: "DELETE" }).then((res) => {
-      // console.log(res, "DELETE KIYA BANK");
-      // const newBankList = banksList.filter((bank) => {
-      // 	return bank.id !== id;
-      // });
-      // setBanksList([...newBankList]);
-      getBanksList();
-    });
-    ModalService.close();
+  const handleEditBank = () => {};
+  const handleDeleteBank = () => {
+    groflexService
+      .request(`${config.resourceHost}bank/${selectedBankId}`, {
+        auth: true,
+        method: "DELETE",
+      })
+      .then((res) => {
+        console.log(res, "DELETE KIYA BANK");
+
+        getBanksList();
+        setDeleteBankVisibility(false);
+      });
+    console.log(id);
   };
-  const handleAddBankSubmit = (newBankData) => {
+  const handleAddBankSubmit = (
+    newBankData,
+    setNewBankData,
+    setReEnteredAccountNumber
+  ) => {
     groflexService
       .request(`${config.resourceUrls.bank}`, {
         auth: true,
@@ -48,16 +58,21 @@ const BankListComponent = () => {
       .then((res) => {
         getBanksList();
         setAddNewBankVisibility(false);
+        setNewBankData({
+          type: "bank",
+          bankName: "",
+          accountNumber: "",
+          accountType: "",
+          accountName: "",
+          IFSCCode: "",
+          openingBalance: "",
+          branch: "",
+          customerId: "",
+          description: "",
+          cashType: "cash",
+        });
+        setReEnteredAccountNumber("");
       });
-  };
-
-  // Function to toggle the dropdown for a specific row
-  const toggleDropdown = (index) => {
-    setClickedRows((prevClickedRows) => {
-      const newClickedRows = [...prevClickedRows];
-      newClickedRows[index] = !newClickedRows[index];
-      return newClickedRows;
-    });
   };
 
   return (
@@ -65,7 +80,7 @@ const BankListComponent = () => {
       <table className="table is-hove rable is-fullwidth">
         <tbody>
           <tr id="table-sup-heading">
-            <td>Bank Details</td>
+            <td>Bank</td>
             <td></td>
             <td></td>
             <td></td>
@@ -112,9 +127,11 @@ const BankListComponent = () => {
                 <tr key={index}>
                   <td>{bank.bankName}</td>
                   <td>{bank.accountNumber}</td>
-                  <td>{bank.accountType}</td>
-                  <td>{bank.IFSCCode}</td>
-                  <td>{bank.openingBalance}</td>
+                  <td style={{ textTransform: "capitalize" }}>
+                    {bank.accountType}
+                  </td>
+                  <td>{bank.IFSCCode.toUpperCase()}</td>
+                  <td>{formatCurrency(bank.openingBalance)}</td>
 
                   <td>
                     <Link>
@@ -125,43 +142,29 @@ const BankListComponent = () => {
                   </td>
                   <td className="is-end">
                     <div>
-                      <div
-                        key={index}
-                        className={`${"dropdown is-spaced   is-right dropdown-trigger is-pushed-mobile is-up"}  ${
-                          clickedRows[index] && "is-active"
-                        }`}
-                        onClick={() => toggleDropdown(index)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <div className="is-trigger" aria-haspopup="true">
-                          <FeatherIcon primaryColor name={"MoreVertical"} />
-                        </div>
-                        <div
-                          className="dropdown-menu"
-                          role="menu"
-                          style={{ minWidth: "118px" }}
-                        >
-                          <div className="dropdown-content">
-                            <a href="#" className="dropdown-item is-media">
-                              <div className="icon">
-                                <FeatherIcon name={"Edit"} />
-                              </div>
-                              <div className="meta">
-                                <span>edit</span>
-                              </div>
-                            </a>
-                            <hr className="dropdown-divider" />
-                            <a href="#" className="dropdown-item is-media">
-                              <div class="icon">
-                                <FeatherIcon name={"Trash2"} />
-                              </div>
-                              <div onClick={() => handleDeleteBank(bank.id)} className="meta" >
-                                <span>delete</span>
-                              </div>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
+                      <PopOver
+                        elements={[
+                          {
+                            title: "Edit",
+                            handleClick: () => handleEditBank(bank.id),
+                          },
+                          {
+                            title: "Delete",
+                            handleClick: () => {
+                              setSelectedBankId(bank.id); // Set selected bank ID for deletion
+                              setDeleteBankVisibility(true);
+                            },
+                          },
+                        ]}
+                      />
+                      <DeleteBankModal
+                        isActive={deleteBankVisibility}
+                        setIsActive={setDeleteBankVisibility}
+                        title={"Delete bank account"}
+                        onConfirmDelete={handleDeleteBank} // Remove bank.id from here
+                        text={"bank account"}
+                        // Pass bank.id as a prop
+                      />
                     </div>
                   </td>
                 </tr>
