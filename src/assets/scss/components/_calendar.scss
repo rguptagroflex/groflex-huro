@@ -1,0 +1,305 @@
+/*! _calendar.scss | Huro | Css Ninja 2020-2021 */
+
+/*
+    1. Event Calendar
+    2. Event Calendar Dark mode
+*/
+
+.event-calendar {
+  font-family: $font;
+
+  .calendar-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+
+    .title-mobile {
+      display: none;
+    }
+
+    .buttons {
+      margin-bottom: 0;
+    }
+  }
+
+  .days,
+  .dates {
+    li {
+      float: left;
+      width: 14.28%;
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    &::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+  }
+
+  .days {
+    li {
+      color: $light-text;
+      border-bottom: 1px solid $border;
+      padding: 0.25rem 0;
+      text-transform: uppercase;
+      font-weight: 500;
+      font-size: 0.8rem;
+    }
+  }
+
+  .dates {
+    border-right: 1px solid $border;
+
+    .date-cell {
+      border: 1px solid $border;
+      border-width: 0 0 1px 1px;
+      height: 110px;
+      margin: 0;
+      overflow-y: auto;
+      background: $white;
+
+      .date {
+        padding: 0.1rem;
+      }
+
+      .calendar-event {
+        display: block;
+        padding: 0.5rem;
+        text-align: right;
+        font-size: 0.8rem;
+        text-align: left;
+        text-decoration: none;
+        color: $dark-text;
+        border-radius: 0.5rem;
+        margin: 4px 4px 0 4px;
+
+        b {
+          display: block;
+          font-size: 0.8rem;
+          font-weight: 500;
+        }
+
+        &.expand {
+          display: block;
+          background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0) 26%,
+            rgba(0, 0, 0, 0.5) 100%
+          );
+          position: absolute;
+          bottom: 0px;
+          left: 0;
+          width: 100%;
+          text-align: left;
+          padding: 4px 0 0 0;
+          margin: 0;
+          border-radius: 0;
+
+          span {
+            display: block;
+            float: right;
+            padding: 4px 8px;
+            transition: transform 1s ease-in-out;
+          }
+
+          &.open span {
+            transform: rotate(45deg);
+            color: #333;
+          }
+        }
+      }
+
+      &.fade {
+        color: $light-text;
+        background: $widget-grey;
+      }
+
+      &::-webkit-scrollbar {
+        width: 3px !important;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        border-radius: 10px !important;
+        background: rgba(0, 0, 0, 0.2) !important;
+      }
+    }
+  }
+
+  .generic-event,
+  .generic-event:before {
+    background: $widget-grey;
+  }
+
+  .personal-event,
+  .personal-event:before {
+    background: $success;
+    color: $white !important;
+  }
+
+  .meeting,
+  .meeting:before {
+    background: $primary;
+    color: $white !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .event-calendar {
+    .calendar-toolbar {
+      flex-direction: column;
+      align-items: baseline;
+
+      .title-desktop {
+        display: none;
+      }
+
+      .title-mobile {
+        display: block;
+      }
+
+      .field {
+        margin-top: 1rem;
+      }
+    }
+
+    .days,
+    .dates li,
+    .dates li a.expand {
+      display: none;
+    }
+
+    .dates li.current {
+      display: block;
+      position: static;
+      width: auto;
+    }
+
+    .date {
+      text-align: left;
+      position: absolute;
+      top: -46px;
+      left: 0px;
+      font-size: 21px;
+    }
+
+    .dates {
+      border: none;
+
+      .date-cell {
+        .calendar-event {
+          background: none;
+          color: $light-text !important;
+          position: relative;
+          font-size: 14px;
+          padding: 1.75rem 2rem 1.75rem 4rem;
+          margin: 5px 0;
+          min-height: 45px;
+          border-radius: 0;
+
+          &:not(:last-child) {
+            border-bottom: 1px solid $border;
+          }
+
+          &:last-child {
+            margin-bottom: 0 !important;
+          }
+
+          b {
+            display: block;
+            margin-bottom: 4px;
+          }
+
+          &::after {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 42%;
+            right: 20px;
+            border: 1px solid $border;
+            border-width: 2px 2px 0 0;
+            width: 12px;
+            height: 12px;
+            transform: rotate(45deg);
+          }
+
+          &::before {
+            content: "";
+            display: block;
+            width: 17px;
+            height: 17px;
+            border-radius: 17px;
+            position: absolute;
+            top: 30%;
+            left: 1.5rem;
+          }
+        }
+
+        &.current {
+          width: 100%;
+          height: auto;
+          border: none;
+          position: relative;
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+.is-dark {
+  .event-calendar {
+    .calendar-toolbar {
+      .h-button:not(.is-primary) {
+        background: lighten($dark-sidebar, 2%) !important;
+      }
+    }
+
+    .days {
+      li {
+        border-color: lighten($dark-sidebar, 12%);
+      }
+    }
+
+    .dates {
+      border-color: lighten($dark-sidebar, 12%);
+
+      .date-cell {
+        background: lighten($dark-sidebar, 5%);
+        border-color: lighten($dark-sidebar, 12%);
+
+        .date {
+          color: $dark-dark-text;
+        }
+
+        &.fade {
+          background: lighten($dark-sidebar, 2%);
+        }
+      }
+    }
+  }
+
+  .generic-event,
+  .generic-event:before {
+    background: lighten($dark-sidebar, 2%);
+    color: $white !important;
+  }
+
+  .meeting,
+  .meeting:before {
+    background: $accent !important;
+  }
+
+  @media (max-width: 767px) {
+    .event-calendar {
+      .date-cell {
+        .calendar-event {
+          border-bottom-color: lighten($dark-sidebar, 12%) !important;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+const RegistrationOnboardingValues = {
+	1: 'Sole Proprietorship',
+	2: 'Partnership',
+	3: 'Private Limited Company',
+	4: 'Limited Liability Partnership',
+	5: 'Limited Company',
+	6: '0 - 5 lacs',
+	7: '5 lacs - 50 lacs',
+	8: '50 lacs - 1 Cr',
+	9: '1 Cr +',
+	10: 'e-Commerce',
+	11: 'Transport',
+	12: 'Computer/I.T',
+	13: 'Telecommunication',
+	14: 'Agriculture',
+	15: 'Construction',
+	16: 'Education',
+	17: 'Pharmaceutical',
+	18: 'Food',
+	19: 'Health Care',
+	20: 'Hospitality',
+	21: 'Entertainment',
+	22: 'Media',
+	23: 'Manufacturing',
+	24: 'Music',
+	25: 'Electronics',
+	26: 'Aviation',
+	27: 'Marketing',
+	28: 'Banking',
+	29: 'Automobile'
+};
+
+export default Object.freeze(RegistrationOnboardingValues);
