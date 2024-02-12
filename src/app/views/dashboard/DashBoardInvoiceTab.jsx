@@ -1,9 +1,5 @@
-import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { SelectInput } from "../../shared/components/select/SelectInput";
-import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 
-import CreateChart from "../../shared/components/chartist/CreateChart";
 import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
 import DashboardChartCard from "./DashboardChartCard";
@@ -23,7 +19,6 @@ const DashBoardInvoiceTab = () => {
   const [totalValue, setTotalValue] = useState(0);
 
   const fetchInvoiceList = () => {
-    console.log(moment());
     groflexService
       .request(
         `${config.resourceUrls.invoiceChartData(date.startDate, date.endDate)}`,
@@ -44,7 +39,7 @@ const DashBoardInvoiceTab = () => {
           count: 0,
           amount: 0,
         };
-        console.log("Invoice List", res);
+
         setInvoiceList(res.body.data);
         res.body.data.forEach((item) => {
           if (item.state === "paid" || item.state === "locked") {
@@ -79,38 +74,42 @@ const DashBoardInvoiceTab = () => {
     fetchInvoiceList();
   }, [date]);
 
-  const [chartType, setChartType] = useState(true);
+  const [isBarChart, setIsBarChart] = useState(true);
 
   const chartData = {
-    labels: ["Open", "Paid", "Canceled"],
-    series: chartType
-      ? [[series.open.amount, series.paid.amount, series.canceled.amount]]
-      : [
-          { value: series.open.amount, className: "Open" },
-          { value: series.paid.amount, className: "Paid" },
-          { value: series.canceled.amount, className: "Canceled" },
+    labels: ["Paid", "Canceled", "Open"],
+
+    datasets: [
+      {
+        label: "",
+        data: [series.paid.amount, series.canceled.amount, series.open.amount],
+        backgroundColor: [
+          "rgb(255, 209, 102)",
+          "rgb(17, 138, 178)",
+          "rgb(239, 71, 111)",
         ],
+      },
+    ],
   };
 
-  const chartOptions = chartType
+  const chartOptions = isBarChart
     ? {
-        width: "400px",
-        height: "300px",
-        // donut: true,
-        // donutWidth: 60,
-        // startAngle: 270,
-        // showLabel: true,
+        barThickness: 40,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
       }
     : {
-        width: "400px",
-        height: "300px",
-        donut: true,
-        donutWidth: 60,
-        startAngle: 270,
-        showLabel: true,
+        radius: "60%",
+        spacing: 7,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
       };
-
-  console.log("total", series);
 
   return (
     <DashboardChartCard
@@ -119,8 +118,8 @@ const DashBoardInvoiceTab = () => {
       chartData={chartData}
       chartOptions={chartOptions}
       chartId={"invoice"}
-      chartType={chartType}
-      setChartType={setChartType}
+      chartType={isBarChart}
+      setChartType={setIsBarChart}
       chartEntries={[
         {
           label: "Paid",
@@ -129,17 +128,16 @@ const DashBoardInvoiceTab = () => {
           color: "rgb(255, 209, 102)",
         },
         {
-          label: "Paid",
-          value: series.open.amount,
-          count: series.open.count,
-          color: "rgb(255, 209, 102)",
-        },
-
-        {
           label: "Cancelled",
           value: series.canceled.amount,
           count: series.canceled.count,
           color: "rgb(17, 138, 178)",
+        },
+        {
+          label: "Open",
+          value: series.open.amount,
+          count: series.open.count,
+          color: "rgb(239, 71, 111)",
         },
       ]}
       setDate={setDate}

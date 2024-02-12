@@ -1,8 +1,5 @@
-import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { SelectInput } from "../../shared/components/select/SelectInput";
-import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
-import CreateChart from "../../shared/components/chartist/CreateChart";
+
 import config from "../../../../config";
 import groflexService from "../../services/groflex.service";
 import DashboardChartCard from "./DashboardChartCard";
@@ -67,8 +64,6 @@ const DashboardQuotation = () => {
           accepted: accepted,
           open: open,
         });
-
-        // console.log("expense", res.body.data);
       });
   };
 
@@ -76,35 +71,44 @@ const DashboardQuotation = () => {
     fetchQuotations();
   }, [date]);
 
-  const [chartType, setChartType] = useState(true);
+  const [isBarChart, setIsBarChart] = useState(true);
 
   const chartData = {
     labels: ["Invoiced", "Accepted", "Open"],
-    series: chartType
-      ? [[series.invoiced.amount, series.accepted.amount, series.open.amount]]
-      : [
-          { value: series.invoiced.amount, className: "Invoiced" },
-          { value: series.accepted.amount, className: "Accepted" },
-          { value: series.open.amount, className: "Open" },
-        ],
-  };
 
-  const chartOptions = chartType
+    datasets: [
+      {
+        label: "",
+        data: [
+          series.invoiced.amount,
+          series.accepted.amount,
+          series.open.amount,
+        ],
+        backgroundColor: [
+          "rgb(255, 209, 102)",
+          "rgb(6, 214, 160)",
+          "rgb(239, 71, 111)",
+        ],
+      },
+    ],
+  };
+  const chartOptions = isBarChart
     ? {
-        width: "400px",
-        height: "300px",
-        // donut: true,
-        // donutWidth: 60,
-        // startAngle: 270,
-        // showLabel: true,
+        barThickness: 40,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
       }
     : {
-        width: "400px",
-        height: "300px",
-        donut: true,
-        donutWidth: 60,
-        startAngle: 270,
-        showLabel: true,
+        radius: "60%",
+        spacing: 7,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
       };
   return (
     <DashboardChartCard
@@ -113,8 +117,8 @@ const DashboardQuotation = () => {
       chartData={chartData}
       chartOptions={chartOptions}
       chartId={"quotation"}
-      chartType={chartType}
-      setChartType={setChartType}
+      chartType={isBarChart}
+      setChartType={setIsBarChart}
       chartEntries={[
         {
           label: "Invoiced",

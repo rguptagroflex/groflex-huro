@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
 import { SelectInput } from "../../shared/components/select/SelectInput";
 import moment from "moment";
-import CreateChart from "../../shared/components/chartist/CreateChart";
+
 import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
+import CreateChart from "../../shared/components/chartjs/CreateChart";
 
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
@@ -182,16 +183,35 @@ const DashboardSalesExpenseStats = () => {
     },
   ];
 
+  // const chartData = {
+  //   labels: labels,
+  //   series: [series.sales, series.expenses],
+  // };
   const chartData = {
     labels: labels,
-    series: [series.sales, series.expenses],
+
+    datasets: [
+      {
+        label: "",
+        data: series.sales,
+        backgroundColor: ["rgb(0, 163, 83)"],
+      },
+      {
+        label: "",
+        data: series.expenses,
+        backgroundColor: ["rgb(0, 113, 202)"],
+      },
+    ],
   };
 
   const chartOptions = {
-    width: "100%",
-    height: "300px",
+    barThickness: 40,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
   };
-  console.log("label", dateDropDown);
 
   return (
     <div className="dashboard-sales-expense-stats-wrapper columns is-multiline">
@@ -262,11 +282,16 @@ const DashboardSalesExpenseStats = () => {
           </div>
 
           <div className="column is-12 bar-chart-wrapper">
-            <CreateChart
+            {/* <CreateChart
               data={chartData}
               options={chartOptions}
               chartType={"barChart"}
               chartId={"sales-expense"}
+            /> */}
+            <CreateChart
+              chartData={chartData}
+              chartOptions={chartOptions}
+              chartType={"barChart"}
             />
           </div>
         </AdvancedCard>

@@ -1,8 +1,6 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { SelectInput } from "../../shared/components/select/SelectInput";
-import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
-import CreateChart from "../../shared/components/chartist/CreateChart";
+
 import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
 import DashboardChartCard from "./DashboardChartCard";
@@ -18,6 +16,7 @@ const DashboardExpenseTab = () => {
   const [series, setSeries] = useState({
     paid: { count: 0, amount: 0 },
     cancelled: { count: 0, amount: 0 },
+    open: { count: 0, amount: 0 },
   });
 
   const fetchExpenses = () => {
@@ -35,6 +34,10 @@ const DashboardExpenseTab = () => {
           count: 0,
           amount: 0,
         };
+        let open = {
+          count: 0,
+          amount: 0,
+        };
         setExpenses(res.body.data);
         res.body.data.forEach((item) => {
           if (item.status === "paid") {
@@ -47,14 +50,17 @@ const DashboardExpenseTab = () => {
             cancelled.count = cancelled.count + 1;
             cancelled.amount += item.totalGross;
           }
+          if (item.status === "open") {
+            open.count = open.count + 1;
+            open.amount += item.totalGross;
+          }
         });
 
         setSeries({
           paid: paid,
           cancelled: cancelled,
+          open: open,
         });
-
-        // console.log("expense", res.body.data);
       });
   };
 
@@ -62,30 +68,41 @@ const DashboardExpenseTab = () => {
     fetchExpenses();
   }, [date]);
 
-  const [chartType, setChartType] = useState(true);
+  const [isBarChart, setIsBarChart] = useState(true);
 
   const chartData = {
-    labels: ["Paid", "Canceled"],
-    series: chartType
-      ? [[series.paid.amount, series.cancelled.amount]]
-      : [
-          { value: series.paid.amount, className: "Paid" },
-          { value: series.cancelled.amount, className: "Canceled" },
+    labels: ["Open", "Paid", "Canceled"],
+
+    datasets: [
+      {
+        label: "",
+        data: [series.open.amount, series.paid.amount, series.cancelled.amount],
+        backgroundColor: [
+          "rgb(239, 71, 111)",
+          "rgb(255, 209, 102)",
+          "rgb(17, 138, 178)",
         ],
+      },
+    ],
   };
 
-  const chartOptions = chartType
+  const chartOptions = isBarChart
     ? {
-        width: "400px",
-        height: "300px",
+        barThickness: 40,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
       }
     : {
-        width: "400px",
-        height: "300px",
-        donut: true,
-        donutWidth: 60,
-        startAngle: 270,
-        showLabel: true,
+        radius: "60%",
+        spacing: 7,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
       };
 
   return (
@@ -95,9 +112,15 @@ const DashboardExpenseTab = () => {
       chartData={chartData}
       chartOptions={chartOptions}
       chartId={"expense"}
-      chartType={chartType}
-      setChartType={setChartType}
+      chartType={isBarChart}
+      setChartType={setIsBarChart}
       chartEntries={[
+        {
+          label: "Open",
+          value: series.open.amount,
+          count: series.open.count,
+          color: "rgb(239, 71, 111)",
+        },
         {
           label: "Paid",
           value: series.paid.amount,

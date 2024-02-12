@@ -1,17 +1,22 @@
-import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { SelectInput } from "../../shared/components/select/SelectInput";
-import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
+
 import DashboardChartCard from "./DashboardChartCard";
 import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
 
+const colors = [
+  "rgb(251, 195, 177)",
+  "rgb(247, 140, 107)",
+  "rgb(245, 104, 61)",
+  "rgb(233, 64, 12)",
+  "rgb(194, 53, 10)",
+];
 const DashboardSalesByArticle = () => {
   const [date, setDate] = useState({
     startDate: "",
     endDate: "",
   });
-  const [chartType, setChartType] = useState(true);
+  const [isBarChart, setIsBarChart] = useState(true);
   const [filter, setFilter] = useState("filterByName");
   const [response, setResponse] = useState(null);
   const [labels, setLabels] = useState([]);
@@ -51,18 +56,12 @@ const DashboardSalesByArticle = () => {
     let labels = [];
     let series = [];
     let entries = [];
-    const colors = [
-      "rgb(251, 195, 177)",
-      "rgb(247, 140, 107)",
-      "rgb(245, 104, 61)",
-      "rgb(233, 64, 12)",
-      "rgb(194, 53, 10)",
-    ];
+
     // if (response && response?.articles) {
     if (value === "filterByName") {
       response.articles.custom.forEach((article, id) => {
         labels.push(article.name);
-        series.push({ value: article.value, className: `pie-${id}` });
+        series.push(article.value);
         // series.push(article.value);
         entries.push({
           label: article.name,
@@ -75,7 +74,7 @@ const DashboardSalesByArticle = () => {
     if (value === "filterByCategory") {
       response.articleCategories.custom.forEach((category, id) => {
         labels.push(category.name);
-        series.push({ value: category.value, className: `pie-${id}` });
+        series.push(category.value);
         entries.push({
           label: category.name,
           value: category.value,
@@ -90,23 +89,68 @@ const DashboardSalesByArticle = () => {
     setEntries(entries);
   };
 
-  const chartData = {
-    labels: labels,
-    series: chartType ? [series] : series,
+  const breakString = (str) => {
+    const words = str.split(" ");
+    let lines = [];
+    let currentLine = "";
+
+    words.forEach((word) => {
+      if (currentLine.length + word.length <= 15) {
+        // Adjust the character limit per line as needed
+        currentLine += word + " ";
+      } else {
+        lines.push(currentLine.trim());
+        currentLine = word + " ";
+      }
+    });
+
+    if (currentLine.trim() !== "") {
+      lines.push(currentLine.trim());
+    }
+
+    return lines;
   };
 
-  const chartOptions = chartType
+  const chartData = {
+    labels: labels,
+
+    datasets: [
+      {
+        label: "",
+        data: series,
+        backgroundColor: colors,
+      },
+    ],
+  };
+
+  const chartOptions = isBarChart
     ? {
-        width: "400px",
-        height: "300px",
+        scales: {
+          x: {
+            ticks: {
+              callback(val, index) {
+                // Hide the label of every 2nd dataset
+
+                return breakString(this.getLabelForValue(val));
+              },
+            },
+          },
+        },
+        barThickness: 40,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
       }
     : {
-        width: "400px",
-        height: "300px",
-        donut: true,
-        donutWidth: 60,
-        startAngle: 270,
-        showLabel: true,
+        radius: "60%",
+        spacing: 7,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
       };
   const filterOptions = [
     {
@@ -118,7 +162,6 @@ const DashboardSalesByArticle = () => {
       value: "filterByName",
     },
   ];
-  console.log("tag", filter);
 
   return (
     <DashboardChartCard
@@ -127,80 +170,14 @@ const DashboardSalesByArticle = () => {
       chartData={chartData}
       chartOptions={chartOptions}
       chartId={"salesByArticle"}
-      chartType={chartType}
-      setChartType={setChartType}
+      chartType={isBarChart}
+      setChartType={setIsBarChart}
       chartEntries={entries}
       setDate={setDate}
       filterOptions={filterOptions}
       handleFilterChange={handleFilterChange}
       filter={filter}
     />
-    // <div className="dashboard-invoice-tab-wrapper">
-    //   <div className="columns is-multiline invoice-tab-header">
-    //     <div className="column is-6">
-    //       <SelectInput
-    //         options={dateOptions}
-    //         placeholder={"None"}
-    //         onChange={handleDateDropDown}
-    //         value={date}
-    //       />
-    //     </div>
-    //     <div
-    //       className="column is-1 toggle-chart-btn"
-    //       onClick={() => setChartType(!chartType)}
-    //     >
-    //       <FeatherIcon
-    //         name={chartType ? "PieChart" : "BarChart"}
-    //         size={20}
-    //         color="rgb(17, 138, 178)"
-    //       />
-    //     </div>
-    //   </div>
-
-    //   <div className="column is-12 donut-chart-wrapper"></div>
-    //   <div className="columns is-multiline value-categories">
-    //     <div className="column is-6">
-    //       <span
-    //         className="value-category-dot"
-    //         style={{ backgroundColor: "rgb(251, 195, 177)" }}
-    //       ></span>
-    //       <div>
-    //         {" "}
-    //         <p className="value-category-text">
-    //           Non Food {`(2)`}{" "}
-    //           <FeatherIcon
-    //             name={"ArrowUpRight"}
-    //             size={20}
-    //             color="rgb(17, 138, 178)"
-    //           />
-    //         </p>
-    //         <p className="value-category-value">
-    //           ₹ 84 <span>{"| "} 100 %</span>
-    //         </p>
-    //       </div>
-    //     </div>
-    //     <div className="column is-6">
-    //       <span
-    //         className="value-category-dot"
-    //         style={{ backgroundColor: "rgb(247, 140, 107" }}
-    //       ></span>
-    //       <div>
-    //         {" "}
-    //         <p className="value-category-text">
-    //           Not Specified {`(2)`}{" "}
-    //           <FeatherIcon
-    //             name={"ArrowUpRight"}
-    //             size={20}
-    //             color="rgb(17, 138, 178)"
-    //           />
-    //         </p>
-    //         <p className="value-category-value">
-    //           ₹ 84 <span>{"| "} 100 %</span>
-    //         </p>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </div>
   );
 };
 

@@ -3,9 +3,7 @@ import PageContent from "../../shared/components/pageContent/PageContent";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
 import Tabs from "../../shared/components/tabs/Tabs";
-import DateInput from "../../shared/components/datePicker/DateInput";
 
-import { SelectInput } from "../../shared/components/select/SelectInput";
 import DashBoardInvoiceTab from "./DashBoardInvoiceTab";
 import DashboardExpenseTab from "./DashboardExpenseTab";
 import DashboardQuotation from "./DashboardQuotationTab";
@@ -50,7 +48,7 @@ const Dashboard = () => {
       `${config.resourceUrls.recievables}`,
       { auth: true }
     );
-    console.log("Api: ", response);
+
     const invoices = response.body.data;
     const lockedInvoices = invoices.filter(
       (invoice) => invoice.state === "locked"
@@ -143,7 +141,6 @@ const Dashboard = () => {
     { label: "Expense By Article", content: <DashboardExpenseByArticle /> },
     { label: "Expense By Payee", content: <DashboardExpenseByPayee /> },
   ];
-  console.log("Cards", payableCard.expenses.length > 0);
 
   return (
     <PageContent

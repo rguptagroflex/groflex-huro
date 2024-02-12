@@ -1,9 +1,31 @@
 import React, { useState } from "react";
 import { SelectInput } from "../../shared/components/select/SelectInput";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
-import CreateChart from "../../shared/components/chartist/CreateChart";
+
 import moment from "moment";
 
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
+
+import CreateChart from "../../shared/components/chartjs/CreateChart";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
   currentMonth: moment().format("MMMM"),
@@ -121,6 +143,7 @@ const DashboardChartCard = ({
       value: "fiscalYear",
     },
   ];
+
   return (
     <div className={className}>
       <div className={`columns is-multiline ${headerClassName}`}>
@@ -159,16 +182,17 @@ const DashboardChartCard = ({
       )}
 
       <div className="column is-12 donut-chart-wrapper">
-        <CreateChart
-          data={chartData}
-          options={chartOptions}
-          chartType={chartType ? "barChart" : "pieDonutChart"}
-          chartId={chartId}
-        />
+        {chartData.datasets.length > 0 && (
+          <CreateChart
+            chartData={chartData}
+            chartOptions={chartOptions}
+            chartType={chartType ? "barChart" : "doughnutChart"}
+          />
+        )}
       </div>
       <div className="columns is-multiline value-categories">
-        {chartEntries.map((entry) => (
-          <div className="column is-6">
+        {chartEntries.map((entry, id) => (
+          <div className="column is-6" key={`category-${id}`}>
             <span
               className="value-category-dot"
               style={{ backgroundColor: entry.color }}

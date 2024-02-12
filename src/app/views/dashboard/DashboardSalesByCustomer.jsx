@@ -1,17 +1,23 @@
-import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { SelectInput } from "../../shared/components/select/SelectInput";
-import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
+
 import DashboardChartCard from "./DashboardChartCard";
 
 import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
+
+const colors = [
+  "rgb(251, 195, 177)",
+  "rgb(247, 140, 107)",
+  "rgb(245, 104, 61)",
+  "rgb(233, 64, 12)",
+  "rgb(194, 53, 10)",
+];
 const DashboardSalesByCustomer = () => {
   const [date, setDate] = useState({
     startDate: "",
     endDate: "",
   });
-  const [chartType, setChartType] = useState(true);
+  const [isBarChart, setIsBarChart] = useState(true);
   const [filter, setFilter] = useState("filterByName");
   const [response, setResponse] = useState(null);
   const [labels, setLabels] = useState([]);
@@ -48,19 +54,13 @@ const DashboardSalesByCustomer = () => {
     let labels = [];
     let series = [];
     let entries = [];
-    const colors = [
-      "rgb(251, 195, 177)",
-      "rgb(247, 140, 107)",
-      "rgb(245, 104, 61)",
-      "rgb(233, 64, 12)",
-      "rgb(194, 53, 10)",
-    ];
+
     // if (response && response?.articles) {
     if (value === "filterByName") {
       response.customers.custom.forEach((customer, id) => {
         labels.push(customer.name);
-        series.push({ value: customer.value, className: `pie-${id}` });
-        // series.push(article.value);
+        series.push(customer.value);
+
         entries.push({
           label: customer.name,
           value: customer.value,
@@ -72,7 +72,7 @@ const DashboardSalesByCustomer = () => {
     if (value === "filterByCategory") {
       response.customerCategories.custom.forEach((category, id) => {
         labels.push(category.name);
-        series.push({ value: category.value, className: `pie-${id}` });
+        series.push(category.value);
         entries.push({
           label: category.name,
           value: category.value,
@@ -87,23 +87,39 @@ const DashboardSalesByCustomer = () => {
     setEntries(entries);
   };
 
+  // const chartData = {
+  //   labels: labels,
+  //   series: chartType ? [series] : series,
+  // };
   const chartData = {
     labels: labels,
-    series: chartType ? [series] : series,
+
+    datasets: [
+      {
+        label: "",
+        data: series,
+        backgroundColor: colors,
+      },
+    ],
   };
 
-  const chartOptions = chartType
+  const chartOptions = isBarChart
     ? {
-        width: "400px",
-        height: "300px",
+        barThickness: 40,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
       }
     : {
-        width: "400px",
-        height: "300px",
-        donut: true,
-        donutWidth: 60,
-        startAngle: 270,
-        showLabel: true,
+        radius: "60%",
+        spacing: 7,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
       };
   const filterOptions = [
     {
@@ -123,8 +139,8 @@ const DashboardSalesByCustomer = () => {
       chartData={chartData}
       chartOptions={chartOptions}
       chartId={"salesByCustomer"}
-      chartType={chartType}
-      setChartType={setChartType}
+      chartType={isBarChart}
+      setChartType={setIsBarChart}
       chartEntries={entries}
       setDate={setDate}
       filterOptions={filterOptions}

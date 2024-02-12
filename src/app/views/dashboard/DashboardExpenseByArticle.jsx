@@ -1,30 +1,33 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { SelectInput } from "../../shared/components/select/SelectInput";
-import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 
 import DashboardChartCard from "./DashboardChartCard";
 import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
+
+const colors = [
+  "rgb(251, 195, 177)",
+  "rgb(247, 140, 107)",
+  "rgb(245, 104, 61)",
+  "rgb(233, 64, 12)",
+  "rgb(194, 53, 10)",
+];
 const DashboardExpenseByArticle = () => {
   const [date, setDate] = useState({
     startDate: "",
     endDate: "",
   });
-  const [chartType, setChartType] = useState(true);
+  const [isBarChart, setIsBarChart] = useState(true);
   const [filter, setFilter] = useState("filterByName");
   const [response, setResponse] = useState(null);
   const [labels, setLabels] = useState([]);
   const [series, setSeries] = useState([]);
   const [entries, setEntries] = useState([]);
 
-  const fetchSalesByArticles = () => {
-    let labels = [];
-    let series = [];
-    let entries = [];
+  const fetchExpenseBy = () => {
     groflexService
       .request(
-        `${config.resourceUrls.salesByArticles(date.startDate, date.endDate)}`,
+        `${config.resourceUrls.expenseBy(date.startDate, date.endDate)}`,
         { auth: true }
       )
       .then((res) => {
@@ -33,7 +36,7 @@ const DashboardExpenseByArticle = () => {
   };
 
   useEffect(() => {
-    fetchSalesByArticles();
+    fetchExpenseBy();
   }, [date]);
 
   useEffect(() => {
@@ -51,62 +54,117 @@ const DashboardExpenseByArticle = () => {
     let labels = [];
     let series = [];
     let entries = [];
-    const colors = [
-      "rgb(251, 195, 177)",
-      "rgb(247, 140, 107)",
-      "rgb(245, 104, 61)",
-      "rgb(233, 64, 12)",
-      "rgb(194, 53, 10)",
-    ];
-    // if (response && response?.articles) {
+
     if (value === "filterByName") {
-      response.articles.custom.forEach((article, id) => {
-        labels.push(article.name);
-        series.push({ value: article.value, className: `pie-${id}` });
-        // series.push(article.value);
+      response.expensesByArticle.forEach((article, id) => {
+        labels.push(article.title);
+        series.push(article.totalGross);
+
         entries.push({
-          label: article.name,
-          value: article.value,
+          label: article.title,
+          value: article.totalGross,
           color: colors[id],
         });
       });
+      setLabels(labels);
+      setSeries(series);
+      setEntries(entries);
     }
 
     if (value === "filterByCategory") {
-      response.articleCategories.custom.forEach((category, id) => {
-        labels.push(category.name);
-        series.push({ value: category.value, className: `pie-${id}` });
+      response.expensesByArticle.forEach((item, id) => {
+        if (!labels.includes(item.category)) {
+          labels.push(item.category);
+          series.push(0);
+        }
+      });
+
+      response.expensesByArticle.forEach((item) => {
+        if (labels.includes(item.category)) {
+          const index = labels.findIndex((val) => {
+            return val === item.category;
+          });
+
+          series[index] = series[index] + item.totalGross;
+        }
+      });
+
+      labels.forEach((item, id) => {
         entries.push({
-          label: category.name,
-          value: category.value,
+          label: item,
+          value: series[id],
           color: colors[id],
         });
       });
-    }
-    // }
 
-    setLabels(labels);
-    setSeries(series);
-    setEntries(entries);
+      setLabels(labels);
+      setSeries(series);
+      setEntries(entries);
+    }
   };
 
+  const breakString = (str) => {
+    const words = str.split(" ");
+    let lines = [];
+    let currentLine = "";
+
+    words.forEach((word) => {
+      if (currentLine.length + word.length <= 15) {
+        // Adjust the character limit per line as needed
+        currentLine += word + " ";
+      } else {
+        lines.push(currentLine.trim());
+        currentLine = word + " ";
+      }
+    });
+
+    if (currentLine.trim() !== "") {
+      lines.push(currentLine.trim());
+    }
+
+    return lines;
+  };
   const chartData = {
     labels: labels,
-    series: chartType ? [series] : series,
+
+    datasets: [
+      {
+        label: "",
+        data: series,
+        backgroundColor: colors,
+      },
+    ],
   };
 
-  const chartOptions = chartType
+  const chartOptions = isBarChart
     ? {
-        width: "400px",
-        height: "300px",
+        scales: {
+          x: {
+            ticks: {
+              callback(val, index) {
+                // Hide the label of every 2nd dataset
+
+                return breakString(this.getLabelForValue(val));
+              },
+            },
+          },
+        },
+        barPercentage: 0.1,
+        barThickness: 40,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
       }
     : {
-        width: "400px",
-        height: "300px",
-        donut: true,
-        donutWidth: 60,
-        startAngle: 270,
-        showLabel: true,
+        radius: "60%",
+        spacing: 7,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
       };
   const filterOptions = [
     {
@@ -118,6 +176,7 @@ const DashboardExpenseByArticle = () => {
       value: "filterByName",
     },
   ];
+
   return (
     <DashboardChartCard
       className={"dashboard-expense-by-tab-wrapper"}
@@ -125,8 +184,8 @@ const DashboardExpenseByArticle = () => {
       chartData={chartData}
       chartOptions={chartOptions}
       chartId={"expenseByArticle"}
-      chartType={chartType}
-      setChartType={setChartType}
+      chartType={isBarChart}
+      setChartType={setIsBarChart}
       chartEntries={entries}
       setDate={setDate}
       filterOptions={filterOptions}
