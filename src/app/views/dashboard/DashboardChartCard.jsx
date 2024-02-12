@@ -146,8 +146,11 @@ const DashboardChartCard = ({
 
   return (
     <div className={className}>
-      <div className={`columns is-multiline ${headerClassName}`}>
-        <div className="column is-6">
+      <div
+        className={`${headerClassName}`}
+        style={{ display: "flex", marginBottom: "30px" }}
+      >
+        <div style={{ width: "168px" }}>
           <SelectInput
             options={dateOptions}
             placeholder={"None"}
@@ -157,19 +160,26 @@ const DashboardChartCard = ({
           />
         </div>
         <div
-          className="column is-1 toggle-chart-btn"
+          className="toggle-chart-btn"
           onClick={() => setChartType(!chartType)}
+          style={{
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
           <FeatherIcon
             name={chartType ? "PieChart" : "BarChart"}
-            size={20}
+            size={25}
             color="rgb(17, 138, 178)"
           />
         </div>
       </div>
       {filter && (
         <div className="columns is-multiline">
-          <div className="column is-6">
+          <div style={{ width: "168px", marginLeft: "10px" }}>
             <SelectInput
               options={filterOptions}
               placeholder={"None"}

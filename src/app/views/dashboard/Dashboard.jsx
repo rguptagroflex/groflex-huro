@@ -90,6 +90,7 @@ const Dashboard = () => {
       (sum, item) => sum + item.totalGross,
       0
     );
+
     const overdue3Days = findOverdueByDaysExpenses(3, expenses);
     const overdue15Days =
       findOverdueByDaysExpenses(15, expenses) - overdue3Days;
@@ -105,6 +106,7 @@ const Dashboard = () => {
       overdue15Days: overdue15Days,
       overdue45days: overdue45Days,
       overdueAbove45days: overdueAbove45days,
+      totalAmount: totalAmount,
     });
   };
 
