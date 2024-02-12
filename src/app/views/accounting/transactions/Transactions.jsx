@@ -22,7 +22,7 @@ const reconcile = (p) => {
 
 const Transactions = () => {
   // const navigate = useNavigate();
-   const handleActionClick = (action, row, params) => {
+  const handleActionClick = (action, row, params) => {
     switch (action.name) {
       case "Delete":
         groflexService

@@ -120,59 +120,56 @@ const BankListComponent = () => {
             <td></td>
             <td></td>
           </tr>
-          {
-            banks.length?banks.map((bank, index) => {
-            
+          {banks.length
+            ? banks.map((bank, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{bank.bankName}</td>
+                    <td>{bank.accountNumber}</td>
+                    <td style={{ textTransform: "capitalize" }}>
+                      {bank.accountType}
+                    </td>
+                    <td>{bank.IFSCCode.toUpperCase()}</td>
+                    <td>{formatCurrency(bank.openingBalance)}</td>
 
-              return (
-                <tr key={index}>
-                  <td>{bank.bankName}</td>
-                  <td>{bank.accountNumber}</td>
-                  <td style={{ textTransform: "capitalize" }}>
-                    {bank.accountType}
-                  </td>
-                  <td>{bank.IFSCCode.toUpperCase()}</td>
-                  <td>{formatCurrency(bank.openingBalance)}</td>
-
-                  <td>
-                    <Link>
-                      <Button isPrimary isOutlined style={{ border: "none" }}>
-                        View Transactions
-                      </Button>
-                    </Link>
-                  </td>
-                  <td className="is-end">
-                    <div>
-                      <PopOver
-                        elements={[
-                          {
-                            title: "Edit",
-                            handleClick: () => handleEditBank(bank.id),
-                          },
-                          {
-                            title: "Delete",
-                            handleClick: () => {
-                              setSelectedBankId(bank.id); // Set selected bank ID for deletion
-                              setDeleteBankVisibility(true);
+                    <td>
+                      <Link>
+                        <Button isPrimary isOutlined style={{ border: "none" }}>
+                          View Transactions
+                        </Button>
+                      </Link>
+                    </td>
+                    <td className="is-end">
+                      <div>
+                        <PopOver
+                          elements={[
+                            {
+                              title: "Edit",
+                              handleClick: () => handleEditBank(bank.id),
                             },
-                          },
-                        ]}
-                      />
-                      <DeleteBankModal
-                        isActive={deleteBankVisibility}
-                        setIsActive={setDeleteBankVisibility}
-                        title={"Delete bank account"}
-                        onConfirmDelete={handleDeleteBank} // Remove bank.id from here
-                        text={"bank account"}
-                        // Pass bank.id as a prop
-                      />
-                    </div>
-                  </td>
-                </tr>
-              );
-            })
-           :null
-          }
+                            {
+                              title: "Delete",
+                              handleClick: () => {
+                                setSelectedBankId(bank.id); // Set selected bank ID for deletion
+                                setDeleteBankVisibility(true);
+                              },
+                            },
+                          ]}
+                        />
+                        <DeleteBankModal
+                          isActive={deleteBankVisibility}
+                          setIsActive={setDeleteBankVisibility}
+                          title={"Delete bank account"}
+                          onConfirmDelete={handleDeleteBank} // Remove bank.id from here
+                          text={"bank account"}
+                          // Pass bank.id as a prop
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            : null}
         </tbody>
       </table>
     </div>

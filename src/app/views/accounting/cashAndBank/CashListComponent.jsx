@@ -232,74 +232,74 @@ const CashListComponent = () => {
             <td></td>
             <td></td>
           </tr>
-          {cashList.length?cashList.map((bank, index) => {
-          
+          {cashList.length
+            ? cashList.map((bank, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{formatCurrency(bank.openingBalance)}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td> </td>
+                    <td></td>
+                    <td> </td>
+                    <td></td>
+                    <td
+                      style={{
+                        display: "flex",
+                        flexDirection: "row-reverse",
+                        textAlign: "right",
+                      }}
+                    >
+                      <Link>
+                        <Button isPrimary isOutlined style={{ border: "none" }}>
+                          View Transactions
+                        </Button>
+                      </Link>
+                    </td>
+                    <td className="is-end">
+                      <div>
+                        <PopOver
+                          elements={[
+                            {
+                              title: "Edit",
+                              handleClick: () => handleEditBank(bank.id),
+                            },
+                            {
+                              title: "Delete",
+                              handleClick: () => {
+                                setSelectedCashId(bank.id); // Set selected bank ID for deletion
+                                setDeleteCashVisibility(true);
+                              },
+                            },
+                          ]}
+                        />
+                        <DeleteBankModal
+                          isActive={deleteCashVisibility}
+                          setIsActive={setDeleteCashVisibility}
+                          title={"Delete cash account"}
+                          onConfirmDelete={handleDeleteBank} // Remove bank.id from here
+                          text={"cash account"}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                );
 
-            return (
-              <tr key={index}>
-                <td>{formatCurrency(bank.openingBalance)}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td> </td>
-                <td></td>
-                <td> </td>
-                <td></td>
-                <td
-                  style={{
-                    display: "flex",
-                    flexDirection: "row-reverse",
-                    textAlign: "right",
-                  }}
-                >
-                  <Link>
-                    <Button isPrimary isOutlined style={{ border: "none" }}>
-                      View Transactions
-                    </Button>
-                  </Link>
-                </td>
-                <td className="is-end">
-                  <div>
-                    <PopOver
-                      elements={[
-                        {
-                          title: "Edit",
-                          handleClick: () => handleEditBank(bank.id),
-                        },
-                        {
-                          title: "Delete",
-                          handleClick: () => {
-                            setSelectedCashId(bank.id); // Set selected bank ID for deletion
-                            setDeleteCashVisibility(true);
-                          },
-                        },
-                      ]}
-                    />
-                    <DeleteBankModal
-                      isActive={deleteCashVisibility}
-                      setIsActive={setDeleteCashVisibility}
-                      title={"Delete cash account"}
-                      onConfirmDelete={handleDeleteBank} // Remove bank.id from here
-                      text={"cash account"}
-                    />
-                  </div>
-                </td>
-              </tr>
-            );
-
-             // Skip rendering if IFSC code doesn't contain a number
-          }):null}
+                // Skip rendering if IFSC code doesn't contain a number
+              })
+            : null}
         </tbody>
       </table>
     </div>
