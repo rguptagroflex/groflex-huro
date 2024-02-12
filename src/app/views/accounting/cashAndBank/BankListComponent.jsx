@@ -26,7 +26,7 @@ const BankListComponent = () => {
       .then((res) => {
         console.log(res);
 
-        setBanks(res.body.data);
+        setBanks([...res.body.data].filter((bank) => bank.type === "bank"));
       });
   };
   const handleEditBank = () => {};
@@ -120,9 +120,10 @@ const BankListComponent = () => {
             <td></td>
             <td></td>
           </tr>
-          {banks.map((bank, index) => {
-            // Check if IFSC code contains a number
-            if (/\d/.test(bank.IFSCCode)) {
+          {
+            banks.length?banks.map((bank, index) => {
+            
+
               return (
                 <tr key={index}>
                   <td>{bank.bankName}</td>
@@ -169,9 +170,9 @@ const BankListComponent = () => {
                   </td>
                 </tr>
               );
-            }
-            return null; // Skip rendering if IFSC code doesn't contain a number
-          })}
+            })
+           :null
+          }
         </tbody>
       </table>
     </div>

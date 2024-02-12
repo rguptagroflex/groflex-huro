@@ -11,7 +11,7 @@ import PopOver from "../../../shared/components/popOver/PopOver";
 import DeleteBankModal from "./DeleteBankModal";
 
 const CashListComponent = () => {
-  const [banks, setBanks] = useState([]);
+  const [cashList, setCashList] = useState([]);
   const [deleteCashVisibility, setDeleteCashVisibility] = useState(false);
   const [selectedCashId, setSelectedCashId] = useState(null); // State to hold the selected bank ID for deletions
   const [addNewCashVisibility, setAddNewCashVisibility] = useState(false);
@@ -32,7 +32,7 @@ const CashListComponent = () => {
       .then((res) => {
         console.log(res);
 
-        setBanks(res.body.data);
+        setCashList([...res.body.data.filter((bank) => bank.type === "cash")]);
       });
   };
 
@@ -140,15 +140,29 @@ const CashListComponent = () => {
             <th className="is-end">
               <div className="dark-inverted">
                 <Button
-                  onClick={() => setAddNewCashVisibility(true)}
+                  onClick={
+                    cashList.length < 2
+                      ? () => setAddNewCashVisibility(true)
+                      : null
+                  }
                   isOutlined
-                  isPrimary
+                  style={{
+                    color: cashList.length < 2 ? "#00A353" : "#C6C6C6",
+                    border: `1px solid ${
+                      cashList.length < 2 ? "#00A353" : "#C6C6C6"
+                    }`,
+                    cursor: cashList.length < 2 ? "pointer" : "default",
+                    ...(cashList.length < 2 ? { isPrimary: "color" } : {}),
+                  }}
                   icon={
                     <FeatherIcon
-                      primaryColor
                       name="Plus"
                       size={18}
-                      style={{ height: "18px", width: "18px" }}
+                      style={{
+                        height: "18px",
+                        width: "18px",
+                        color: cashList.length < 2 ? "#00A353" : "#C6C6C6",
+                      }}
                     />
                   }
                 >
@@ -218,74 +232,74 @@ const CashListComponent = () => {
             <td></td>
             <td></td>
           </tr>
-          {banks.map((bank, index) => {
-            // Check if IFSC code contains a number
-            if (/[a-zA-Z]/.test(bank.IFSCCode)) {
-              return (
-                <tr key={index}>
-                  <td>{formatCurrency(bank.openingBalance)}</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td> </td>
-                  <td></td>
-                  <td> </td>
-                  <td></td>
-                  <td
-                    style={{
-                      display: "flex",
-                      flexDirection: "row-reverse",
-                      textAlign: "right",
-                    }}
-                  >
-                    <Link>
-                      <Button isPrimary isOutlined style={{ border: "none" }}>
-                        View Transactions
-                      </Button>
-                    </Link>
-                  </td>
-                  <td className="is-end">
-                    <div>
-                      <PopOver
-                        elements={[
-                          {
-                            title: "Edit",
-                            handleClick: () => handleEditBank(bank.id),
+          {cashList.length?cashList.map((bank, index) => {
+          
+
+            return (
+              <tr key={index}>
+                <td>{formatCurrency(bank.openingBalance)}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td> </td>
+                <td></td>
+                <td> </td>
+                <td></td>
+                <td
+                  style={{
+                    display: "flex",
+                    flexDirection: "row-reverse",
+                    textAlign: "right",
+                  }}
+                >
+                  <Link>
+                    <Button isPrimary isOutlined style={{ border: "none" }}>
+                      View Transactions
+                    </Button>
+                  </Link>
+                </td>
+                <td className="is-end">
+                  <div>
+                    <PopOver
+                      elements={[
+                        {
+                          title: "Edit",
+                          handleClick: () => handleEditBank(bank.id),
+                        },
+                        {
+                          title: "Delete",
+                          handleClick: () => {
+                            setSelectedCashId(bank.id); // Set selected bank ID for deletion
+                            setDeleteCashVisibility(true);
                           },
-                          {
-                            title: "Delete",
-                            handleClick: () => {
-                              setSelectedCashId(bank.id); // Set selected bank ID for deletion
-                              setDeleteCashVisibility(true);
-                            },
-                          },
-                        ]}
-                      />
-                      <DeleteBankModal
-                        isActive={deleteCashVisibility}
-                        setIsActive={setDeleteCashVisibility}
-                        title={"Delete cash account"}
-                        onConfirmDelete={handleDeleteBank} // Remove bank.id from here
-                        text={"cash account"}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              );
-            }
-            return null; // Skip rendering if IFSC code doesn't contain a number
-          })}
+                        },
+                      ]}
+                    />
+                    <DeleteBankModal
+                      isActive={deleteCashVisibility}
+                      setIsActive={setDeleteCashVisibility}
+                      title={"Delete cash account"}
+                      onConfirmDelete={handleDeleteBank} // Remove bank.id from here
+                      text={"cash account"}
+                    />
+                  </div>
+                </td>
+              </tr>
+            );
+
+             // Skip rendering if IFSC code doesn't contain a number
+          }):null}
         </tbody>
       </table>
     </div>
