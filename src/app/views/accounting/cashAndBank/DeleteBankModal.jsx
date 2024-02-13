@@ -19,7 +19,7 @@ const DeleteBankModal = ({
       title={title}
       submitBtnName="Delete"
       isActive={isActive}
-      setIsActive={setIsActive}
+      setIsAcive={setIsActive}
       onSubmit={handleConfirmDelete}
       isSmall
     >

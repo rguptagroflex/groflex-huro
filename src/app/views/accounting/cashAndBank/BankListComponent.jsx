@@ -12,8 +12,10 @@ import PopOver from "../../../shared/components/popOver/PopOver";
 
 const BankListComponent = () => {
   const [banks, setBanks] = useState([]);
-  const [addNewBankVisibility, setAddNewBankVisibility] = useState(false);
+  const [bankModalVisibility, setBankModalVisibility] = useState(false);
   const [deleteBankVisibility, setDeleteBankVisibility] = useState(false);
+  const [modeToEdit, setModeToEdit] = useState(false);
+  const [editBankDetail, setEditBankDetail] = useState([]);
   const [selectedBankId, setSelectedBankId] = useState(null); // State to hold the selected bank ID for deletions
 
   useEffect(() => {
@@ -29,7 +31,45 @@ const BankListComponent = () => {
         setBanks([...res.body.data].filter((bank) => bank.type === "bank"));
       });
   };
-  const handleEditBank = () => {};
+
+  const getBankDetails = (id) => {
+    return groflexService.request(`${config.resourceHost}bank/${id}`, {
+      auth: true,
+    });
+  };
+
+  const handleEditBankSubmit = (
+    editedBankData,
+    setNewBankData,
+    setReEnteredAccountNumber
+  ) => {
+    groflexService
+      .request(`${config.resourceHost}bank/${selectedBankId}`, {
+        auth: true,
+        method: "PUT",
+        data: { ...editedBankData },
+      })
+      .then((res) => {
+        getBanksList();
+        setBankModalVisibility(false);
+        setModeToEdit(false);
+        setEditBankDetail({});
+        setReEnteredAccountNumber("");
+        groflexService.toast.success("Bank Edited successfully");
+      });
+  };
+
+  const openEditBankModal = (id) => {
+    console.log("editing");
+    console.log(id);
+
+    getBankDetails(id).then((res) => {
+      console.log(res);
+      setEditBankDetail(res.body.data);
+      setBankModalVisibility(true);
+    });
+  };
+
   const handleDeleteBank = () => {
     groflexService
       .request(`${config.resourceHost}bank/${selectedBankId}`, {
@@ -41,9 +81,11 @@ const BankListComponent = () => {
 
         getBanksList();
         setDeleteBankVisibility(false);
+        groflexService.toast.success("Bank deleted successfully");
       });
-    console.log(id);
+    console.log(selectedBankId);
   };
+
   const handleAddBankSubmit = (
     newBankData,
     setNewBankData,
@@ -57,7 +99,7 @@ const BankListComponent = () => {
       })
       .then((res) => {
         getBanksList();
-        setAddNewBankVisibility(false);
+        setBankModalVisibility(false);
         setNewBankData({
           type: "bank",
           bankName: "",
@@ -72,11 +114,20 @@ const BankListComponent = () => {
           cashType: "cash",
         });
         setReEnteredAccountNumber("");
+
+        groflexService.toast.success("Bank added successfully");
       });
   };
 
   return (
     <div className="s-card demo-table" id="custom">
+      <EditBankModal
+        isActive={bankModalVisibility}
+        setIsActive={setBankModalVisibility}
+        onConfirm={modeToEdit ? handleEditBankSubmit : handleAddBankSubmit}
+        initialBankData={editBankDetail}
+        modeToEdit={modeToEdit}
+      />
       <table className="table is-hove rable is-fullwidth">
         <tbody>
           <tr id="table-sup-heading">
@@ -89,7 +140,10 @@ const BankListComponent = () => {
             <td className="is-end">
               <div className="dark-inverted">
                 <Button
-                  onClick={() => setAddNewBankVisibility(true)}
+                  onClick={() => {
+                    setBankModalVisibility(true);
+                    setModeToEdit(false);
+                  }}
                   isOutlined
                   isPrimary
                   icon={
@@ -103,20 +157,15 @@ const BankListComponent = () => {
                 >
                   Add new bank
                 </Button>
-                <EditBankModal
-                  isActive={addNewBankVisibility}
-                  setIsActive={setAddNewBankVisibility}
-                  onConfirm={handleAddBankSubmit}
-                />
               </div>
             </td>
           </tr>
           <tr id="table-sub-heading">
-            <td>Bank name</td>
-            <td>Account number</td>
-            <td>Account type</td>
-            <td>IFSC code</td>
-            <td>Balance</td>
+            <td>BANK NAME</td>
+            <td>ACCOUNT NUMBER</td>
+            <td>ACCOUNT TYPE</td>
+            <td>IFSC CODE</td>
+            <td>BALANCE</td>
             <td></td>
             <td></td>
           </tr>
@@ -145,7 +194,11 @@ const BankListComponent = () => {
                           elements={[
                             {
                               title: "Edit",
-                              handleClick: () => handleEditBank(bank.id),
+                              handleClick: () => {
+                                setSelectedBankId(bank.id);
+                                setModeToEdit(true);
+                                openEditBankModal(bank.id);
+                              },
                             },
                             {
                               title: "Delete",
@@ -162,7 +215,6 @@ const BankListComponent = () => {
                           title={"Delete bank account"}
                           onConfirmDelete={handleDeleteBank} // Remove bank.id from here
                           text={"bank account"}
-                          // Pass bank.id as a prop
                         />
                       </div>
                     </td>

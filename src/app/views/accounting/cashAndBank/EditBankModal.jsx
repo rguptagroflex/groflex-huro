@@ -6,32 +6,40 @@ import { TextArea } from "../../../shared/components/textArea/TextArea";
 import ErrorText from "../../../shared/components/errorText/ErrorText";
 import { SelectInput } from "../../../shared/components/select/SelectInput";
 
-const bankNamesList = [
-  { label: "Bank Of Baroda", value: "Bank Of Baroda" },
-  { label: "Bank of Maharashtra", value: "Bank of Maharashtra" },
-  { label: "Canara Bank", value: "Canara Bank" },
-  { label: "Central Bank of India", value: "Central Bank of India" },
-  { label: "Indian Overseas Bank", value: "Indian Overseas Bank" },
-  { label: "Bank of India", value: "Bank of India" },
-  { label: "Indian Bank", value: "Indian Bank" },
-];
+// const bankNamesList = [
+//   { label: "Bank Of Baroda", value: "Bank Of Baroda" },
+//   { label: "Bank of Maharashtra", value: "Bank of Maharashtra" },
+//   { label: "Canara Bank", value: "Canara Bank" },
+//   { label: "Central Bank of India", value: "Central Bank of India" },
+//   { label: "Indian Overseas Bank", value: "Indian Overseas Bank" },
+//   { label: "Bank of India", value: "Bank of India" },
+//   { label: "Indian Bank", value: "Indian Bank" },
+// ];
 const accountTypesList = [
   { label: "Savings", value: "savings" },
   { label: "Current", value: "current" },
 ];
-const EditBankModal = ({ isActive, setIsActive, onConfirm }) => {
-  const [reEnteredAccountNumber, setReEnteredAccountNumber] = useState("");
+const EditBankModal = ({
+  isActive,
+  setIsActive,
+  onConfirm,
+  initialBankData,
+  modeToEdit,
+}) => {
+  const [reEnteredAccountNumber, setReEnteredAccountNumber] = useState(
+    initialBankData.accountNumber || ""
+  );
   const [newBankData, setNewBankData] = useState({
     type: "bank",
-    bankName: "",
-    accountNumber: "",
-    accountType: "",
-    accountName: "",
-    IFSCCode: "",
-    openingBalance: "",
-    branch: "",
-    customerId: "",
-    description: "",
+    bankName: initialBankData.bankName || "",
+    accountNumber: initialBankData.accountNumber || "",
+    accountType: initialBankData.accountType || "",
+    accountName: initialBankData.accountName || "",
+    IFSCCode: initialBankData.IFSCCode || "",
+    openingBalance: initialBankData.openingBalance || "",
+    branch: initialBankData.branch || "",
+    customerId: initialBankData.customerId || "",
+    notes: initialBankData.notes || "",
     cashType: "cash",
   });
   const [formErrors, setFormErrors] = useState({
@@ -43,12 +51,25 @@ const EditBankModal = ({ isActive, setIsActive, onConfirm }) => {
     IFSCCodeError: "",
     openingBalanceError: "",
   });
+  useEffect(() => {
+    setReEnteredAccountNumber(initialBankData.accountNumber);
+    setNewBankData({
+      type: "bank",
+      bankName: initialBankData.bankName || "",
+      accountNumber: initialBankData.accountNumber || "",
+      accountType: initialBankData.accountType || "",
+      accountName: initialBankData.accountName || "",
+      IFSCCode: initialBankData.IFSCCode || "",
+      openingBalance: initialBankData.openingBalance || "",
+      branch: initialBankData.branch || "",
+      customerId: initialBankData.customerId || "",
+      notes: initialBankData.notes || "",
+      cashType: "cash",
+    });
+  }, [initialBankData]);
 
   const handleBankNameChange = (event) => {
-    // if (!option) {
-    // 	return;
-    // }
-    setNewBankData({ ...newBankData, bankName: event.value });
+    setNewBankData({ ...newBankData, bankName: event.target.value });
     setFormErrors({ ...formErrors, bankNameError: "" });
   };
 
@@ -113,12 +134,15 @@ const EditBankModal = ({ isActive, setIsActive, onConfirm }) => {
       accountType: option.value,
       accountName: option.value,
     });
-    // setFormErrors({ ...formErrors, accountTypeError: "" });
   };
 
   const handleOpeningBalanceChange = (value) => {
-    if (!value) {
-      setNewBankData({ ...newBankData, openingBalance: 0 });
+    let enteredOpeningBalance = event.target.value;
+
+    if (/[^0-9]/.test(enteredOpeningBalance)) return;
+
+    if (!enteredOpeningBalance) {
+      setNewBankData({ ...newBankData, openingBalance: "" });
       return;
     }
     setNewBankData({ ...newBankData, openingBalance: event.target.value });
@@ -134,7 +158,7 @@ const EditBankModal = ({ isActive, setIsActive, onConfirm }) => {
   };
 
   const handleDescriptionChange = (event) => {
-    setNewBankData({ ...newBankData, description: event.target.value });
+    setNewBankData({ ...newBankData, notes: event.target.value });
   };
 
   const checkForEmptyFields = () => {
@@ -144,6 +168,7 @@ const EditBankModal = ({ isActive, setIsActive, onConfirm }) => {
         ...formErrors,
         bankNameError: "This is a mandatory field",
       });
+      console.log(newBankData.bankName);
       emptyFlag = true;
     }
     if (!newBankData.accountNumber) {
@@ -200,9 +225,10 @@ const EditBankModal = ({ isActive, setIsActive, onConfirm }) => {
   console.log("Add bank Form data", newBankData);
   // console.log("Add bank Form errors", formErrors);
   console.log(newBankData.openingBalance);
+  console.log(initialBankData);
   return (
     <Modal
-      title="Add bank account details"
+      title={modeToEdit ? "Edit bank details" : "Add bank account details"}
       submitBtnName="Save"
       isActive={isActive}
       setIsAcive={setIsActive}
@@ -215,10 +241,11 @@ const EditBankModal = ({ isActive, setIsActive, onConfirm }) => {
             <div className="field">
               <label>Bank Name*</label>
               <div style={{ fontWeight: "400", fontSize: "14px" }}>
-                <SelectInput
+                <Input
+                  hasError={formErrors.bankNameError}
                   value={newBankData.bankName}
-                  options={bankNamesList}
                   onChange={handleBankNameChange}
+                  disabled={modeToEdit}
                 />
               </div>
               <ErrorText
@@ -297,6 +324,7 @@ const EditBankModal = ({ isActive, setIsActive, onConfirm }) => {
             onChange={handleOpeningBalanceChange}
             value={newBankData.openingBalance}
             helpText={formErrors.openingBalanceError}
+            disabled={modeToEdit}
           />
         </div>
 
@@ -321,7 +349,7 @@ const EditBankModal = ({ isActive, setIsActive, onConfirm }) => {
         <div className=" field">
           <label>Description</label>
           <TextArea
-            value={newBankData.description}
+            value={newBankData.notes}
             onChange={handleDescriptionChange}
           />
         </div>

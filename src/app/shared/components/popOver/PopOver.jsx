@@ -5,9 +5,9 @@ import { FeatherIcon } from "../../featherIcon/FeatherIcon";
 const PopOver = ({ elements }) => {
   const [isActive, setIsActive] = useState(false);
 
-  const handleFunction = (handleDelete) => {
+  const handleFunction = (handleOperation) => {
     closePopOver();
-    handleDelete();
+    handleOperation();
     console.log("Function");
   };
   const closePopOver = () => {
@@ -27,7 +27,10 @@ const PopOver = ({ elements }) => {
         }`}
       >
         <FeatherIcon primaryColor name={"MoreVertical"} />
-        <div className="dropdown-menu no-padding-bottom">
+        <div
+          className="dropdown-menu no-padding-bottom"
+          style={{ minWidth: "65px", bottom: "0" }}
+        >
           <div style={{ cursor: "pointer" }} className="dropdown-content">
             {elements.map((item, index) => {
               return (
@@ -37,7 +40,6 @@ const PopOver = ({ elements }) => {
                     className="dropdown-item is-media"
                     key={item?.title.toLowerCase()}
                   >
-                    <div className="icon">{item?.icon}</div>
                     <div className="meta">
                       <span>{item?.title}</span>
                       <span>{item?.subTitle}</span>

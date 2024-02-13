@@ -36,7 +36,6 @@ const CashListComponent = () => {
       });
   };
 
-  const handleEditCash = () => {};
   const handleDeleteBank = () => {
     groflexService
       .request(`${config.resourceHost}bank/${selectedCashId}`, {
@@ -47,6 +46,7 @@ const CashListComponent = () => {
         console.log(res, "DELETE KIYA BANK");
         setDeleteCashVisibility(false);
         getBanksList();
+        groflexService.toast.success("Cash deleted successfully");
       });
   };
   const handleAddCashSubmit = (newCashData, setNewCashData) => {
@@ -63,6 +63,7 @@ const CashListComponent = () => {
           openingBalance: "",
           description: "",
         });
+        groflexService.toast.success("Cash added successfully");
       });
 
     console.log("Working");
@@ -210,7 +211,7 @@ const CashListComponent = () => {
             </th>
           </tr>
           <tr id="table-sub-heading">
-            <td>Balance</td>
+            <td>BALANCE</td>
             <td></td>
             <td></td>
             <td></td>
@@ -272,10 +273,6 @@ const CashListComponent = () => {
                       <div>
                         <PopOver
                           elements={[
-                            {
-                              title: "Edit",
-                              handleClick: () => handleEditBank(bank.id),
-                            },
                             {
                               title: "Delete",
                               handleClick: () => {

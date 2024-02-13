@@ -39,8 +39,6 @@ const Transactions = () => {
             }
           });
         break;
-      // case "Edit":
-      //   navigate(`/article/edit/${row.id}`);
     }
   };
   return (
