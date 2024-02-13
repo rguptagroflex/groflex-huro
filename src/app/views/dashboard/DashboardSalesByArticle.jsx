@@ -16,6 +16,7 @@ const DashboardSalesByArticle = () => {
     startDate: "",
     endDate: "",
   });
+  const [totalvalue, setTotalValue] = useState({ label: "Total", value: 0 });
   const [isBarChart, setIsBarChart] = useState(true);
   const [filter, setFilter] = useState("filterByName");
   const [response, setResponse] = useState(null);
@@ -24,9 +25,6 @@ const DashboardSalesByArticle = () => {
   const [entries, setEntries] = useState([]);
 
   const fetchSalesByArticles = () => {
-    let labels = [];
-    let series = [];
-    let entries = [];
     groflexService
       .request(
         `${config.resourceUrls.salesByArticles(date.startDate, date.endDate)}`,
@@ -53,6 +51,7 @@ const DashboardSalesByArticle = () => {
   };
 
   const createChartData = (value) => {
+    let total = 0;
     let labels = [];
     let series = [];
     let entries = [];
@@ -60,6 +59,7 @@ const DashboardSalesByArticle = () => {
     // if (response && response?.articles) {
     if (value === "filterByName") {
       response.articles.custom.forEach((article, id) => {
+        total += article.value;
         labels.push(article.name);
         series.push(article.value);
         // series.push(article.value);
@@ -73,6 +73,7 @@ const DashboardSalesByArticle = () => {
 
     if (value === "filterByCategory") {
       response.articleCategories.custom.forEach((category, id) => {
+        total += category.value;
         labels.push(category.name);
         series.push(category.value);
         entries.push({
@@ -83,6 +84,10 @@ const DashboardSalesByArticle = () => {
       });
     }
     // }
+    setTotalValue({
+      label: "Total Sales",
+      value: parseFloat(total).toFixed(0),
+    });
 
     setLabels(labels);
     setSeries(series);
@@ -165,6 +170,7 @@ const DashboardSalesByArticle = () => {
 
   return (
     <DashboardChartCard
+      pieChartSummary={totalvalue}
       className={"dashboard-sales-by-article-tab-wrapper"}
       headerClassName={"sales-by-article-tab-header"}
       chartData={chartData}

@@ -54,6 +54,10 @@ const DashboardChartCard = ({
   filterOptions,
   handleFilterChange,
   filter,
+  pieChartSummary = {
+    label: "",
+    value: 0,
+  },
 }) => {
   const [dateDropDown, setDateDropDown] = useState({
     label: dateFilterTypes.fiscalYear,
@@ -192,6 +196,13 @@ const DashboardChartCard = ({
       )}
 
       <div className="column is-12 donut-chart-wrapper">
+        {chartType === false && (
+          <div className="pie-chart-label-container">
+            <div className="container-text">{pieChartSummary.label}</div>
+            <div className="contianer-value">₹ {pieChartSummary.value}</div>
+          </div>
+        )}
+
         {chartData.datasets.length > 0 && (
           <CreateChart
             chartData={chartData}

@@ -22,6 +22,10 @@ const DashboardExpenseByPayee = () => {
   const [labels, setLabels] = useState([]);
   const [series, setSeries] = useState([]);
   const [entries, setEntries] = useState([]);
+  const [totalValue, setTotalValue] = useState({
+    label: "",
+    value: 0,
+  });
 
   const fetchExpenseBy = () => {
     groflexService
@@ -55,9 +59,11 @@ const DashboardExpenseByPayee = () => {
     let labels = [];
     let series = [];
     let entries = [];
+    let total = 0;
 
     if (value === "filterByName") {
       response.expensesByPayee.forEach((payee, id) => {
+        total += payee.totalGross;
         labels.push(payee.customerData.name);
         series.push(payee.totalGross);
 
@@ -67,6 +73,10 @@ const DashboardExpenseByPayee = () => {
           color: colors[id],
         });
       });
+      setTotalValue({
+        label: "Total Expense",
+        value: parseFloat(total).toFixed(0),
+      });
       setLabels(labels);
       setSeries(series);
       setEntries(entries);
@@ -74,6 +84,7 @@ const DashboardExpenseByPayee = () => {
 
     if (value === "filterByCategory") {
       response.expensesByPayee.forEach((item, id) => {
+        total += item.totalGross;
         if (!labels.includes(item.category)) {
           labels.push(item.category);
           series.push(0);
@@ -96,6 +107,10 @@ const DashboardExpenseByPayee = () => {
           value: series[id],
           color: colors[id],
         });
+      });
+      setTotalValue({
+        label: "Total Expense",
+        value: parseFloat(total).toFixed(0),
       });
 
       setLabels(labels);
@@ -179,6 +194,7 @@ const DashboardExpenseByPayee = () => {
   ];
   return (
     <DashboardChartCard
+      pieChartSummary={totalValue}
       className={"dashboard-expense-by-tab-wrapper"}
       headerClassName={"expense-by-tab-header"}
       chartData={chartData}

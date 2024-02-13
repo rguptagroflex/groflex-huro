@@ -17,6 +17,10 @@ const DashboardSalesByCustomer = () => {
     startDate: "",
     endDate: "",
   });
+  const [totalValue, setToalValue] = useState({
+    label: "",
+    value: 0,
+  });
   const [isBarChart, setIsBarChart] = useState(true);
   const [filter, setFilter] = useState("filterByName");
   const [response, setResponse] = useState(null);
@@ -54,10 +58,12 @@ const DashboardSalesByCustomer = () => {
     let labels = [];
     let series = [];
     let entries = [];
+    let total = 0;
 
     // if (response && response?.articles) {
     if (value === "filterByName") {
       response.customers.custom.forEach((customer, id) => {
+        total += customer.value;
         labels.push(customer.name);
         series.push(customer.value);
 
@@ -71,6 +77,7 @@ const DashboardSalesByCustomer = () => {
 
     if (value === "filterByCategory") {
       response.customerCategories.custom.forEach((category, id) => {
+        total += category.value;
         labels.push(category.name);
         series.push(category.value);
         entries.push({
@@ -82,6 +89,10 @@ const DashboardSalesByCustomer = () => {
     }
     // }
 
+    setToalValue({
+      label: "Total Sales",
+      value: parseFloat(total).toFixed(0),
+    });
     setLabels(labels);
     setSeries(series);
     setEntries(entries);
@@ -134,6 +145,7 @@ const DashboardSalesByCustomer = () => {
 
   return (
     <DashboardChartCard
+      pieChartSummary={totalValue}
       className={"dashboard-sales-by-article-tab-wrapper"}
       headerClassName={"sales-by-article-tab-header"}
       chartData={chartData}

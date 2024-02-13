@@ -17,6 +17,10 @@ const DashboardExpenseByArticle = () => {
     startDate: "",
     endDate: "",
   });
+  const [totalValue, setTotalValue] = useState({
+    label: "",
+    value: 0,
+  });
   const [isBarChart, setIsBarChart] = useState(true);
   const [filter, setFilter] = useState("filterByName");
   const [response, setResponse] = useState(null);
@@ -54,9 +58,11 @@ const DashboardExpenseByArticle = () => {
     let labels = [];
     let series = [];
     let entries = [];
+    let total = 0;
 
     if (value === "filterByName") {
       response.expensesByArticle.forEach((article, id) => {
+        total += article.totalGross;
         labels.push(article.title);
         series.push(article.totalGross);
 
@@ -66,6 +72,10 @@ const DashboardExpenseByArticle = () => {
           color: colors[id],
         });
       });
+      setTotalValue({
+        label: "Total Expense",
+        value: total,
+      });
       setLabels(labels);
       setSeries(series);
       setEntries(entries);
@@ -73,6 +83,7 @@ const DashboardExpenseByArticle = () => {
 
     if (value === "filterByCategory") {
       response.expensesByArticle.forEach((item, id) => {
+        total += item.totalGross;
         if (!labels.includes(item.category)) {
           labels.push(item.category);
           series.push(0);
@@ -95,6 +106,10 @@ const DashboardExpenseByArticle = () => {
           value: series[id],
           color: colors[id],
         });
+      });
+      setTotalValue({
+        label: "Total Expense",
+        value: parseFloat(total).toFixed(0),
       });
 
       setLabels(labels);
@@ -179,6 +194,7 @@ const DashboardExpenseByArticle = () => {
 
   return (
     <DashboardChartCard
+      pieChartSummary={totalValue}
       className={"dashboard-expense-by-tab-wrapper"}
       headerClassName={"expense-by-tab-header"}
       chartData={chartData}

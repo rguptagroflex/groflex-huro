@@ -61,6 +61,24 @@
     }
   }
   //dashboard inovice tab card
+  .donut-chart-wrapper {
+    .pie-chart-label-container {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      align-items: center;
+      justify-content: center;
+      .container-text {
+        font-size: 16px;
+        color: #747474;
+      }
+      .contianer-value {
+        font-weight: 600;
+        font-size: 22px;
+        color: black;
+      }
+    }
+  }
 
   .quotation-card {
     .is-active {

@@ -16,7 +16,7 @@ const DashBoardInvoiceTab = () => {
     open: { count: 0, amount: 0 },
   });
   const [invoiceList, setInvoiceList] = useState([]);
-  const [totalValue, setTotalValue] = useState(0);
+  const [totalValue, setTotalValue] = useState({});
 
   const fetchInvoiceList = () => {
     groflexService
@@ -67,7 +67,10 @@ const DashBoardInvoiceTab = () => {
           canceled: canceled,
         });
 
-        setTotalValue(total);
+        setTotalValue({
+          label: "Total Sales",
+          value: parseFloat(total).toFixed(0),
+        });
       });
   };
   useEffect(() => {
@@ -113,6 +116,7 @@ const DashBoardInvoiceTab = () => {
 
   return (
     <DashboardChartCard
+      pieChartSummary={totalValue}
       className={"dashboard-invoice-expense-tab-wrapper"}
       headerClassName={"invoice-tab-header"}
       chartData={chartData}

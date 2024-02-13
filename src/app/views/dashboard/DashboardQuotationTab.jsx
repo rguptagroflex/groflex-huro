@@ -9,6 +9,7 @@ const DashboardQuotation = () => {
     startDate: "",
     endDate: "",
   });
+  const [totalValue, setTotalValue] = useState({});
 
   const [quotations, setQuotations] = useState([]);
 
@@ -28,6 +29,7 @@ const DashboardQuotation = () => {
         { auth: true, method: "GET" }
       )
       .then((res) => {
+        let total = 0;
         let invoiced = {
           count: 0,
           amount: 0,
@@ -43,6 +45,13 @@ const DashboardQuotation = () => {
 
         setQuotations(res.body.data);
         res.body.data.forEach((item) => {
+          if (
+            item.state === "invoiced" ||
+            item.state === "accepted" ||
+            item.state === "open"
+          ) {
+            total += item.totalGross;
+          }
           if (item.state === "invoiced") {
             invoiced.count = invoiced.count + 1;
             invoiced.amount += item.totalGross;
@@ -57,6 +66,10 @@ const DashboardQuotation = () => {
             open.count = open.count + 1;
             open.amount += item.totalGross;
           }
+        });
+        setTotalValue({
+          label: "Quotations",
+          value: parseFloat(total).toFixed(0),
         });
 
         setSeries({
@@ -112,6 +125,7 @@ const DashboardQuotation = () => {
       };
   return (
     <DashboardChartCard
+      pieChartSummary={totalValue}
       className={"dashboard-quotation-tab-wrapper"}
       headerClassName={"quotation-tab-header"}
       chartData={chartData}

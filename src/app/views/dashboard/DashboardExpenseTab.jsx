@@ -10,6 +10,7 @@ const DashboardExpenseTab = () => {
     startDate: "",
     endDate: "",
   });
+  const [totalValue, setTotalValue] = useState({});
 
   const [expense, setExpenses] = useState([]);
 
@@ -26,6 +27,7 @@ const DashboardExpenseTab = () => {
         { auth: true, method: "GET" }
       )
       .then((res) => {
+        let total = 0;
         let paid = {
           count: 0,
           amount: 0,
@@ -40,6 +42,9 @@ const DashboardExpenseTab = () => {
         };
         setExpenses(res.body.data);
         res.body.data.forEach((item) => {
+          if (item.status === "paid" || item.status === "open") {
+            total += item.totalGross;
+          }
           if (item.status === "paid") {
             // paid += item.totalGross;
             paid.count = paid.count + 1;
@@ -54,6 +59,10 @@ const DashboardExpenseTab = () => {
             open.count = open.count + 1;
             open.amount += item.totalGross;
           }
+        });
+        setTotalValue({
+          label: "Total Expenditure",
+          value: parseFloat(total).toFixed(0),
         });
 
         setSeries({
@@ -107,6 +116,7 @@ const DashboardExpenseTab = () => {
 
   return (
     <DashboardChartCard
+      pieChartSummary={totalValue}
       className={"dashboard-invoice-expense-tab-wrapper"}
       headerClassName={"invoice-tab-header"}
       chartData={chartData}
