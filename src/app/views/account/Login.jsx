@@ -99,7 +99,7 @@ const Login = () => {
     // Check email exists or not
     if (!emailExistsFlag) {
       groflexService.checkEmailExist(email).then((res) => {
-        console.log(res, "RESPONSE of check user in hurovvv");
+        // console.log(res, "RESPONSE of check user in hurovvv");
         if (res?.registrationStep === "code") {
           webstorageService.setItem(
             webStorageKeyEnum.REGISTRATION_EMAIL,

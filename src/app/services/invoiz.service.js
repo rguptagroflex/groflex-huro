@@ -104,10 +104,10 @@ class InvoizService {
   }
 }
 
-assign(InvoizService.prototype, {
-  off: Events.off,
-  on: Events.on,
-  trigger: Events.trigger,
-});
+// assign(InvoizService.prototype, {
+//   off: Events.off,
+//   on: Events.on,
+//   trigger: Events.trigger,
+// });
 
 export default new InvoizService();

@@ -44,7 +44,7 @@ import SalesOrdersList from "./app/views/inventory/salesOrder/SalesOrdersList";
 import ReportingAndAnalytics from "./app/views/inventory/reportingAndAnalytics/ReportingAndAnalytics";
 import InvoiceDetail from "./app/views/sales/invoices/InvoiceDetail";
 import QuotationDetail from "./app/views/sales/quotations/QuotationDetail";
-import InvoiceEditComponent from "./app/views/sales/invoices/InvoiceEditPage";
+import InvoiceEditWrapper from "./app/views/sales/invoices/InvoiceEditWrapper";
 import config from "oldConfig";
 
 store.subscribe(() => {
@@ -77,7 +77,7 @@ function App() {
           <Route path="sales/invoices/:invoiceId" element={<InvoiceDetail />} />
           <Route
             path="sales/invoices/edit/:invoiceId"
-            element={<InvoiceEditComponent />}
+            element={<InvoiceEditWrapper />}
           />
           {/* Quotation */}
           <Route path="sales/quotations" element={<QuotationsList />} />

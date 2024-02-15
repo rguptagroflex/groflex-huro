@@ -29,10 +29,9 @@ const TransactionEditComponent = ({
   const { navigateBackTo, pageTitle } = getPageInfo();
 
   return (
-    <PageContent
-      navigateBackTo={navigateBackTo}
-      title={pageTitle}
-    ></PageContent>
+    <PageContent navigateBackTo={navigateBackTo} title={pageTitle}>
+      {/*  */}
+    </PageContent>
   );
 };
 
