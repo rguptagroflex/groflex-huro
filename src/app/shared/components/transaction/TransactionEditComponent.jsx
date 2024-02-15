@@ -3,6 +3,13 @@ import PageContent from "../pageContent/PageContent";
 
 const TransactionEditComponent = ({
   transaction,
+  letter,
+  numerationOptions,
+  miscOptions,
+  payConditions,
+  paymentSetting,
+  isDeposit,
+  isClosing,
   isInvoice,
   isQuotation,
   isProforma,
