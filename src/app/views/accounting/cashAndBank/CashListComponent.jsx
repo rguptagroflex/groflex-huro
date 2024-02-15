@@ -264,7 +264,15 @@ const CashListComponent = () => {
                       }}
                     >
                       <Link>
-                        <Button isPrimary isOutlined style={{ border: "none" }}>
+                        <Button
+                          isPrimary
+                          isOutlined
+                          style={{
+                            border: "none",
+                            fontWeight: "600",
+                            size: "14px",
+                          }}
+                        >
                           View Transactions
                         </Button>
                       </Link>
