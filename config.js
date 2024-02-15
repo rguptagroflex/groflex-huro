@@ -65,6 +65,8 @@ const resourceUrls = {
   user: `${resourceHost}setting/user`,
   contact: `${resourceHost}customer`,
   miscellaneous: `${resourceHost}setting/miscellaneous`,
+  //Teams
+  teams: `${resourceHost}user/list`,
 };
 
 const checkLoginTokenIsValid = () => {

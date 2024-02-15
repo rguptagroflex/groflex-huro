@@ -99,7 +99,7 @@ const ProfileMenu = ({ profileMenuIsActive, setProfileMenuIsActive }) => {
               <FeatherIcon name={"Settings"} size={15} />
               <span style={{ marginLeft: "8px" }}>Account Settings </span>
             </Link>
-            <Link className="dropdown-item is-media">
+            <Link className="dropdown-item is-media" to="/teams">
               <FeatherIcon name={"Users"} size={15} />
               <span style={{ marginLeft: "8px" }}>Team </span>
             </Link>

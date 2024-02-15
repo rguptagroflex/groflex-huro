@@ -19,6 +19,7 @@ export const ListAdvancedComponent = ({
   fetchUrl,
   onCellClicked,
   customRowData,
+  responseDataMapFunc,
 }) => {
   const [dataIsEmptyFlag, setDataIsEmptyFlag] = useState(false);
   const [gridApi, setGridApi] = useState();
@@ -121,9 +122,14 @@ export const ListAdvancedComponent = ({
     } else {
       groflexService
         .request(fetchUrl, { auth: true })
-        .then((res) => res.body.data)
         .then((res) => {
-          // console.log(res, "LIST ADVANCED RESPONSE");
+          let rowData = responseDataMapFunc
+            ? responseDataMapFunc(res.body.data)
+            : res.body.data;
+          return rowData;
+        })
+        .then((res) => {
+          console.log(res, "LIST ADVANCED RESPONSE");
           if (res.length === 0) {
             setDataIsEmptyFlag(true);
             return;

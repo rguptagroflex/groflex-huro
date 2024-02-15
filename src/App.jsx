@@ -44,6 +44,7 @@ import SalesOrdersList from "./app/views/inventory/salesOrder/SalesOrdersList";
 import ReportingAndAnalytics from "./app/views/inventory/reportingAndAnalytics/ReportingAndAnalytics";
 import CreateDeal from "./app/views/crm/deals/CreateDeal";
 import DealDetails from "./app/views/crm/deals/DealDetails";
+import Teams from "./app/views/teams/Teams";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -123,6 +124,7 @@ function App() {
           <Route path="account-settings" element={<AccountSettings />} />
           <Route path="preferences" element={<Preferences />} />
           <Route path="notifications" element={<Notifications />} />
+          <Route path="teams" element={<Teams />} />
         </Route>
 
         {/* Unprotected Routes */}
