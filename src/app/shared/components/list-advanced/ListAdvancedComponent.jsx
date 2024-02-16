@@ -129,7 +129,7 @@ export const ListAdvancedComponent = ({
           return rowData;
         })
         .then((res) => {
-          console.log(res, "LIST ADVANCED RESPONSE");
+          // console.log(res, "LIST ADVANCED RESPONSE");
           if (res.length === 0) {
             setDataIsEmptyFlag(true);
             return;

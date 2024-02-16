@@ -66,7 +66,11 @@ const resourceUrls = {
   contact: `${resourceHost}customer`,
   miscellaneous: `${resourceHost}setting/miscellaneous`,
   //Teams
-  teams: `${resourceHost}user/list`,
+  teamsList: `${resourceHost}user/list`,
+  inviteNewUser: `${resourceHost}user/tenant`,
+  inviteCa: `${resourceHost}user/cadetails`,
+  updateUserRole: (userId) => `${resourceHost}user/${userId}/role`,
+  deleteUser: `${resourceHost}tenant/user/`,
 };
 
 const checkLoginTokenIsValid = () => {

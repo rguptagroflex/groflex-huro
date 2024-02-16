@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageContent from "../../shared/components/pageContent/PageContent";
 import { Button } from "../../shared/components/button/Button";
 import { ListAdvancedComponent } from "../../shared/components/list-advanced/ListAdvancedComponent";
@@ -6,6 +6,10 @@ import { useNavigate } from "react-router-dom";
 import config from "../../../../config";
 import InviteCaModal from "./InviteCaModal";
 import InviteNewUserModal from "./InviteNewUserModal";
+import groflexService from "../../services/groflex.service";
+
+import EditRoleModal from "./EditRoleModal";
+import DeleteUserModal from "./DeleteUserModal";
 const actions = [
   { name: "Edit", icon: "edit" },
   { name: "Delete", icon: "trash-alt" },
@@ -13,39 +17,58 @@ const actions = [
 const Teams = () => {
   const [isCaModalVisible, setIsCaModalVisible] = useState(false);
   const [isNewUserModalVisible, setIsNewUserModalVisible] = useState(false);
+  const [isEditRoleModalVisible, setIsEditRoleModalVisible] = useState(false);
+  const [isDeleteUserModalVisible, setIsDeleteUserModalVisible] =
+    useState(false);
+  const [caExists, setCaExists] = useState(false);
+  const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
+  useEffect(() => {
+    fetchUserList();
+  }, []);
+
+  const deleteUser = () => {};
+
+  const handleActionClick = (action, row, params) => {
+    switch (action.name) {
+      case "Delete":
+        setUserData(row);
+        setIsDeleteUserModalVisible(true);
+        break;
+      case "Edit":
+        setUserData(row);
+        setIsEditRoleModalVisible(true);
+    }
+  };
+
+  const fetchUserList = () => {
+    groflexService
+      .request(config.resourceUrls.teamsList, { auth: true })
+      .then((res) => {
+        const roles = res.body.data.roles;
+        const caRole = roles.filter(
+          (name) => name.role === "charteredaccountant"
+        );
+        if (caRole[0].users.length > 0) {
+          setCaExists(true);
+        }
+      });
+  };
+
   const createTopbarButtons = () => {
     return (
       <div className="task-overview-buttons">
-        <Button onClick={() => setIsCaModalVisible(true)} isSuccess>
-          Invite CA
-        </Button>
+        {!caExists && (
+          <Button onClick={() => setIsCaModalVisible(true)} isSuccess>
+            Invite CA
+          </Button>
+        )}
+
         <Button onClick={() => setIsNewUserModalVisible(true)} isSuccess>
           Invite New User
         </Button>
       </div>
     );
-  };
-  const handleActionClick = (action, row, params) => {
-    switch (action.name) {
-      case "Delete":
-        groflexService
-          .request(`${config.resourceUrls.article}${row.id}`, {
-            auth: true,
-            method: "DELETE",
-          })
-          .then((res) => {
-            if (res?.body?.message) {
-              console.log(res, "Delete Failed");
-            } else {
-              params.api.applyTransaction({ remove: [row] });
-              console.log(res, "Deleted Succesfullyyy");
-            }
-          });
-        break;
-      case "Edit":
-        navigate(`/article/edit/${row.id}`);
-    }
   };
   return (
     <PageContent
@@ -70,7 +93,7 @@ const Teams = () => {
                 isExpired,
                 email,
               } = evt.data;
-              // console.log(evt, "evt from cellRenderer");
+
               if (isCurrent) {
                 return `<b>${firstName} ${lastName} (You)</b>`;
               } else if (!hasConfirmedEmail) {
@@ -112,7 +135,7 @@ const Teams = () => {
             },
           },
         ]}
-        fetchUrl={config.resourceUrls.teams}
+        fetchUrl={config.resourceUrls.teamsList}
         actionMenuData={actions}
         responseDataMapFunc={(userList) => {
           const rolesList = userList.roles;
@@ -139,6 +162,18 @@ const Teams = () => {
       <InviteNewUserModal
         isNewUserModalVisible={isNewUserModalVisible}
         setIsNewUserModalVisible={setIsNewUserModalVisible}
+      />
+
+      <EditRoleModal
+        isEditRoleModalVisible={isEditRoleModalVisible}
+        setIsEditRoleModalVisible={setIsEditRoleModalVisible}
+        userData={userData}
+      />
+
+      <DeleteUserModal
+        isDeleteUserModalVisible={isDeleteUserModalVisible}
+        setIsDeleteUserModalVisible={setIsDeleteUserModalVisible}
+        userData={userData}
       />
     </PageContent>
   );

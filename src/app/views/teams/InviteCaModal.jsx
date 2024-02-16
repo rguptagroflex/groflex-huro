@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Modal from "../../shared/components/modal/Modal";
 import { Input } from "../../shared/components/input/Input";
+import groflexService from "../../services/groflex.service";
+import config from "../../../../config";
 
 const InviteCaModal = ({ isCaModalVisible, setIsCaModalVisible }) => {
   const [sendCaInviteFormData, setSendCaInviteFormData] = useState({
@@ -53,6 +55,42 @@ const InviteCaModal = ({ isCaModalVisible, setIsCaModalVisible }) => {
       officeAddress: e.target.value,
     });
   };
+
+  const handleSendInvite = () => {
+    const inviteUserPayload = {
+      email: sendCaInviteFormData.email,
+      role: "charteredaccountant",
+    };
+    const inviteCaPayload = {
+      caRoleAddress: sendCaInviteFormData.officeAddress,
+      caRoleCompanyName: sendCaInviteFormData.companyName,
+      caRoleFirstName: sendCaInviteFormData.firstName,
+      caRoleLastName: sendCaInviteFormData.lastName,
+      caRolePhone: sendCaInviteFormData.phone,
+      email: sendCaInviteFormData.email,
+      role: "charteredaccountant",
+    };
+    Promise.all([
+      groflexService.request(config.resourceUrls.inviteNewUser, {
+        auth: true,
+        data: inviteUserPayload,
+        method: "POST",
+      }),
+      groflexService.request(config.resourceUrls.inviteCa, {
+        auth: true,
+        data: inviteCaPayload,
+        method: "POST",
+      }),
+    ]).then((newUserResponse, caResponse) => {
+      if (newUserResponse.body) {
+        groflexService.toast.error("Something went wrong");
+      } else {
+        groflexService.toast.success("Invitation Successfully sent");
+      }
+      console.log(res);
+      setIsCaModalVisible(false);
+    });
+  };
   return (
     <div className="teams-invite-ca-wrapper">
       <Modal
@@ -69,6 +107,7 @@ const InviteCaModal = ({ isCaModalVisible, setIsCaModalVisible }) => {
           </div>
         }
         ModalHeaderButton={" "}
+        onSubmit={handleSendInvite}
       >
         <div className="columns is-multiline m-b-5">
           <div className="column is-12">

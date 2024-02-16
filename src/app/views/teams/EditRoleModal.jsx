@@ -1,52 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "../../shared/components/modal/Modal";
 import { Input } from "../../shared/components/input/Input";
 import RadioButton from "../../shared/components/button/RadioButton";
 import groflexService from "../../services/groflex.service";
 import config from "../../../../config";
 
-const InviteNewUserModal = ({
-  isNewUserModalVisible,
-  setIsNewUserModalVisible,
+const EditRoleModal = ({
+  isEditRoleModalVisible,
+  setIsEditRoleModalVisible,
+  userData,
 }) => {
-  const [newUserInviteFormData, setNewUserInviteFormData] = useState({
-    email: "",
-    userType: "",
-  });
-
-  const handleEmailChange = (e) => {
-    setNewUserInviteFormData({
-      ...newUserInviteFormData,
-      email: e.target.value,
-    });
+  const [userRole, setUserRole] = useState("");
+  const handleUserRoleChange = (e) => {
+    setUserRole(e);
   };
 
-  const handleUserTypeChange = (e) => {
-    setNewUserInviteFormData({
-      ...newUserInviteFormData,
-      userType: e,
-    });
-  };
-
-  const handleSendInvite = () => {
+  useEffect(() => {
+    if (userData) setUserRole(userData.role[0]);
+  }, [isEditRoleModalVisible]);
+  const handleSubmit = () => {
     const payload = {
-      email: newUserInviteFormData.email,
-      role: newUserInviteFormData.userType,
+      role: userRole,
     };
     groflexService
-      .request(config.resourceUrls.inviteNewUser, {
+      .request(config.resourceUrls.updateUserRole(userData.id), {
         auth: true,
         data: payload,
         method: "POST",
       })
       .then((res) => {
-        if (res.body) {
-          groflexService.toast.error("Something went wrong");
-        } else {
-          groflexService.toast.success("Invitation Successfully sent");
-        }
-        console.log(res);
-        setIsNewUserModalVisible(false);
+        setIsEditRoleModalVisible(false);
       });
   };
 
@@ -96,40 +79,28 @@ const InviteNewUserModal = ({
   return (
     <div className="teams-invite-new-user-wrapper">
       <Modal
-        isActive={isNewUserModalVisible}
-        setIsAcive={setIsNewUserModalVisible}
-        submitBtnName={"Send Invitation"}
+        isActive={isEditRoleModalVisible}
+        setIsAcive={setIsEditRoleModalVisible}
+        submitBtnName={"Save"}
         title={
           <div className="teams-invite-title-container">
-            <div className="invite-heading">Invite an additional user</div>
+            <div className="invite-heading">Change role</div>
             <div className="invite-subheading">
-              Invite a user to join your Groflex account as one of the roles
-              below by sending them an invitation by e-mail.
+              Determine the permissions for the user{" "}
+              <span style={{ color: "#00a353", fontWeight: "600" }}>
+                {userData && userData.firstName + " " + userData.lastName}
+              </span>
             </div>
           </div>
         }
         ModalHeaderButton={" "}
-        onSubmit={handleSendInvite}
+        onSubmit={handleSubmit}
       >
-        <div className="columns is-multiline m-b-15">
-          <div className="column is-12">
-            <div className="field">
-              <label>Email *</label>
-              <Input
-                onChange={handleEmailChange}
-                placeholder={"Email"}
-                type={"text"}
-                value={newUserInviteFormData.email}
-              />
-            </div>
-          </div>
-        </div>
-
         <div className="columns is-multiline m-b-5 user-type-container">
           <RadioButton
             choices={userTypes}
-            selectedOption={newUserInviteFormData.userType}
-            onChange={handleUserTypeChange}
+            selectedOption={userRole}
+            onChange={handleUserRoleChange}
             name="kind"
           />
         </div>
@@ -138,4 +109,4 @@ const InviteNewUserModal = ({
   );
 };
 
-export default InviteNewUserModal;
+export default EditRoleModal;
