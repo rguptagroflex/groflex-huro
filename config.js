@@ -123,6 +123,7 @@ const modules = {
       { label: "Transactions", route: "/accounting/transactions" },
       { label: "Cash and Bank", route: "/accounting/cash-and-bank" },
       { label: "Debit Notes", route: "/accounting/debit-notes" },
+      { label: "Reports", route: "/accounting/reports" },
     ],
   },
   inventory: {

@@ -1,0 +1,25 @@
+.reports-wrapper {
+  .sub-cards-container {
+    justify-content: center;
+    gap: 50px;
+    margin-bottom: 50px;
+    .report-card {
+      .report-card-heading-container {
+        display: flex;
+        color: #00a353;
+        gap: 10px;
+        margin-bottom: 20px;
+        .report-card-heading {
+          font-weight: 600;
+          font-size: 16px;
+          line-height: 20px;
+        }
+      }
+      .reports-description {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 18px;
+      }
+    }
+  }
+}
