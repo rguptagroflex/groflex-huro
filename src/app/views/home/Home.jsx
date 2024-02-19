@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageContent from "../../shared/components/pageContent/PageContent";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
@@ -16,152 +16,119 @@ import pos from "../../../assets/groflex/images/home/pos.png";
 import crmBanner from "../../../assets/groflex/images/home/crm.png";
 import { useNavigate } from "react-router-dom";
 import KanbanBoard from "../../shared/components/kanbanBoard/KanbanBoard";
+import groflexService from "../../services/groflex.service";
+import config from "../../../../config";
+
+const quickLinks = {
+  tasks: {
+    "add-articles": {
+      id: "add-articles",
+      content: (
+        <div className="quick-link-card" onClick={() => navigate("/articles")}>
+          <FeatherIcon name={"Inbox"} size={25} color="#272d30" />
+          <p className="quick-link-text">Add Article</p>
+        </div>
+      ),
+    },
+    "create-sales": {
+      id: "create-sales",
+      content: (
+        <div
+          className="quick-link-card"
+          onClick={() => navigate("/sales/invoices")}
+        >
+          <FeatherIcon name={"TrendingUp"} size={25} color="#272d30" />
+          <p className="quick-link-text">Create Sales</p>
+        </div>
+      ),
+    },
+    "create-timesheets": {
+      id: "create-timesheets",
+      content: (
+        <div
+          className="quick-link-card"
+          onClick={() => navigate("/sales/time-sheets")}
+        >
+          <FeatherIcon name={"Clock"} size={25} color="#272d30" />
+          <p className="quick-link-text">Create Timesheets</p>
+        </div>
+      ),
+    },
+    "create-contacts": {
+      id: "create-contacts",
+      content: (
+        <div className="quick-link-card" onClick={() => navigate("/contacts")}>
+          <FeatherIcon name={"User"} size={25} color="#272d30" />
+          <p className="quick-link-text">Create Contact</p>
+        </div>
+      ),
+    },
+
+    "invite-users": {
+      id: "invite-users",
+      content: (
+        <div className="quick-link-card" onClick={() => navigate("/teams")}>
+          <FeatherIcon name={"Users"} size={25} color="#272d30" />
+          <p className="quick-link-text">Invite Users</p>
+        </div>
+      ),
+    },
+
+    "create-quotations": {
+      id: "create-quotations",
+      content: (
+        <div
+          className="quick-link-card"
+          onClick={() => navigate("/sales/quotations")}
+        >
+          <FeatherIcon name={"Book"} size={25} color="#272d30" />
+          <p className="quick-link-text">Create Quotations</p>
+        </div>
+      ),
+    },
+  },
+  columns: {
+    "column-1": {
+      id: "column-1",
+      title: "",
+      taskIds: [
+        "add-articles",
+        "create-sales",
+        "create-timesheets",
+        "create-contacts",
+        "invite-users",
+        "create-quotations",
+      ],
+    },
+  },
+  columnOrder: ["column-1"],
+};
 const Home = () => {
   const navigate = useNavigate();
   const [isEditableDisabled, setIsEditableDisbaled] = useState(true);
-  const quickLinks = {
-    tasks: {
-      "task-1": {
-        id: "task-1",
-        content: (
-          <div
-            className="quick-link-card"
-            onClick={() => navigate("/articles")}
-          >
-            <FeatherIcon name={"Inbox"} size={25} color="#272d30" />
-            <p className="quick-link-text">Add Article</p>
-          </div>
-        ),
-      },
-      "task-2": {
-        id: "task-2",
-        content: (
-          <div
-            className="quick-link-card"
-            onClick={() => navigate("/sales/invoices")}
-          >
-            <FeatherIcon name={"TrendingUp"} size={25} color="#272d30" />
-            <p className="quick-link-text">Create Sales</p>
-          </div>
-        ),
-      },
-      "task-3": {
-        id: "task-3",
-        content: (
-          <div
-            className="quick-link-card"
-            onClick={() => navigate("/sales/time-sheets")}
-          >
-            <FeatherIcon name={"Clock"} size={25} color="#272d30" />
-            <p className="quick-link-text">Create Timesheets</p>
-          </div>
-        ),
-      },
-      "task-4": {
-        id: "task-4",
-        content: (
-          <div
-            className="quick-link-card"
-            onClick={() => navigate("/contacts")}
-          >
-            <FeatherIcon name={"User"} size={25} color="#272d30" />
-            <p className="quick-link-text">Create Contact</p>
-          </div>
-        ),
-      },
+  const [lastViewedDocuments, setLastViewedDocuments] = useState([]);
+  const [lastViewedCustomers, setLastViewedCustomers] = useState([]);
+  const [board, setBoard] = useState(quickLinks);
+  useEffect(() => {
+    //Quick Links APi
+    groflexService
+      .request(`${config.resourceUrls.quickLinks}`, { auth: true })
+      .then((res) => {
+        console.log(res);
+      });
 
-      "task-5": {
-        id: "task-5",
-        content: (
-          <div className="quick-link-card" onClick={() => navigate("/teams")}>
-            <FeatherIcon name={"Users"} size={25} color="#272d30" />
-            <p className="quick-link-text">Invite Users</p>
-          </div>
-        ),
-      },
+    //Last viewed Documents and Customers
+    groflexService
+      .request(`${config.resourceUrls.lastViewedDocumentsAndCustomers}`, {
+        auth: true,
+      })
+      .then((res) => {
+        setLastViewedCustomers(res.body.data.lastUsedCustomers);
+        setLastViewedDocuments(res.body.data.lastUsedDocuments);
+      });
+  }, []);
+  console.log(board);
 
-      "task-6": {
-        id: "task-6",
-        content: (
-          <div
-            className="quick-link-card"
-            onClick={() => navigate("/sales/quotations")}
-          >
-            <FeatherIcon name={"Book"} size={25} color="#272d30" />
-            <p className="quick-link-text">Create Quotations</p>
-          </div>
-        ),
-      },
-    },
-    columns: {
-      "column-1": {
-        id: "column-1",
-        title: "",
-        taskIds: ["task-1", "task-2", "task-3", "task-4", "task-5", "task-6"],
-      },
-    },
-    columnOrder: ["column-1"],
-  };
-
-  const lastViewedDocuments = [
-    {
-      id: 1195,
-      type: "pos_receipt",
-      state: "cancelled",
-      name: "Walk-In Customer",
-      number: "0007",
-      value: 1,
-      updatedAt: "2023-12-12T12:48:53.072Z",
-    },
-    {
-      id: 1194,
-      type: "pos_receipt",
-      state: "paid",
-      name: "Walk-In Customer",
-      number: "0006",
-      value: 1,
-      updatedAt: "2023-12-12T12:45:40.677Z",
-    },
-    {
-      id: 1193,
-      type: "pos_receipt",
-      state: "paid",
-      name: "Walk-In Customer",
-      number: "0005",
-      value: 1,
-      updatedAt: "2023-12-12T12:44:14.606Z",
-    },
-  ];
-
-  const lastViewedCustomers = [
-    {
-      id: 703,
-      kind: "company",
-      number: 10002,
-      lastUsedAt: "2023-12-12T12:48:53.092Z",
-      salutation: "",
-      name: "Test_currency",
-      initials: "",
-    },
-    {
-      id: 711,
-      kind: "person",
-      number: -1,
-      lastUsedAt: "2023-12-04T06:54:35.425Z",
-      salutation: "",
-      name: "Walk-In Customer",
-      initials: "WC",
-    },
-    {
-      id: 701,
-      kind: "person",
-      number: 10001,
-      lastUsedAt: "2023-11-14T14:27:34.920Z",
-      salutation: "Mr",
-      name: "Keshav Sehgal",
-      initials: "KS",
-    },
-  ];
   return (
     <PageContent
       breadCrumbIcon={
@@ -305,11 +272,17 @@ const Home = () => {
               </div> */}
           </div>
 
-          <div className="home-quick-links-container">
+          <div
+            className={`home-quick-links-container ${
+              isEditableDisabled ? "default-view" : "edit-view"
+            }`}
+          >
             <KanbanBoard
               initialBoard={quickLinks}
               isDragDisabled={isEditableDisabled}
               direction={"horizontal"}
+              board={board}
+              setBoard={setBoard}
             />
           </div>
         </AdvancedCard>
@@ -469,8 +442,11 @@ const Home = () => {
           <h3 className="recent-activities-heading">Recently Used</h3>
           <div className="recent-activies-container">
             <div className="recent-documents">
-              {lastViewedDocuments.map((document) => (
-                <div className={"recent-activites-entry"}>
+              {lastViewedDocuments.map((document, id) => (
+                <div
+                  className={"recent-activites-entry"}
+                  key={`document-${id}`}
+                >
                   <div className="recent-entry-header">
                     <div className="recent-title">{document.state}</div>
                     <div className="recent-number">{document.number}</div>
@@ -484,8 +460,8 @@ const Home = () => {
             </div>
             <div className="recent-activities-divider"></div>
             <div className="recent-customers-container">
-              {lastViewedCustomers.map((customer) => (
-                <div className="recent-customer">
+              {lastViewedCustomers.map((customer, id) => (
+                <div className="recent-customer" key={`customer-${id}`}>
                   <div className="initials">{customer.initials}</div>
                   <div className="full-name">{customer.name}</div>
                 </div>

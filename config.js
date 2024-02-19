@@ -49,6 +49,9 @@ const resourceUrls = {
     `${resourceHost}dashboard/stats/turnoverCustomersArticles?startDate=${startDate}&endDate=${endDate}`,
   expenseBy: (startDate, endDate) =>
     `${resourceHost}dashboard/stats/expenseByArticle?startDate=${startDate}&endDate=${endDate}`,
+  //Home
+  quickLinks: `${resourceHost}quick-links`,
+  lastViewedDocumentsAndCustomers: `${resourceHost}/dashboard/lastDocumentsAndCustomers`,
   //Articles
   articleNumber: `${resourceHost}article/number`, //Get Create article's number
   postArticleImage: `${resourceHost}article/image/`, //Concatenate articleId

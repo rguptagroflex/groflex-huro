@@ -3,11 +3,13 @@ import { DragDropContext } from "react-beautiful-dnd";
 import KanbanColumn from "./KanbanColumn";
 
 const KanbanBoard = ({
-  initialBoard = {},
+  board,
+  setBoard,
+  // initialBoard = {},
   isDragDisabled = false,
   direction = "vertical",
 }) => {
-  const [board, setBoard] = useState(initialBoard);
+  // const [board, setBoard] = useState(initialBoard);
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
     if (!destination) {
