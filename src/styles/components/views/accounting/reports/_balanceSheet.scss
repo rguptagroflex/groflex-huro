@@ -1,0 +1,64 @@
+.balance-sheet-wrapper {
+  .balance-sheet-summary {
+    margin-left: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .balance-sheet-header {
+    padding: 20px;
+    justify-content: space-between;
+    align-items: center;
+    .utility-buttons {
+      margin-right: 20px;
+      .utility-btn {
+        width: 120px;
+      }
+    }
+  }
+
+  .balance-sheet-table-header {
+    display: flex;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    // border: 1px solid #ddd;
+    // border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    background: #f0f8fb;
+    color: #888787;
+    .header-left {
+      color: #888787;
+    }
+    .header-right {
+      color: #888787;
+    }
+  }
+  .balance-sheet-table {
+    .collapse {
+      border-radius: 0px;
+      margin-bottom: 0;
+      border: 0;
+    }
+    .collapse-header {
+      border-bottom: 1px solid #ddd;
+    }
+    .collapse-content {
+      padding: 0;
+    }
+    .accordian-header-left-container {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .accordian-body {
+      .accordian-body-row-entry {
+        border-bottom: 1px solid #ddd;
+        font-weight: initial;
+        padding: 20px 16px 30px;
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+}

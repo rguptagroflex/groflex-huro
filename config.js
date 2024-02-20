@@ -68,6 +68,12 @@ const resourceUrls = {
   user: `${resourceHost}setting/user`,
   contact: `${resourceHost}customer`,
   miscellaneous: `${resourceHost}setting/miscellaneous`,
+
+  //Accounting
+  //Reports Balance Sheet
+  balanceSheet: (startDate, endDate, fileType) =>
+    `${resourceHost}accountingReport/balanceSheet/${startDate}/${endDate}?type=${fileType}`,
+
   //Teams
   teamsList: `${resourceHost}user/list`,
   inviteNewUser: `${resourceHost}user/tenant`,

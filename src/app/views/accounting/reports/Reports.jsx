@@ -2,8 +2,10 @@ import React from "react";
 import PageContent from "../../../shared/components/pageContent/PageContent";
 import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
 import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
+import { useNavigate } from "react-router-dom";
 
 const Reports = () => {
+  const navigate = useNavigate();
   return (
     <PageContent title={"Reports"}>
       <AdvancedCard
@@ -12,7 +14,11 @@ const Reports = () => {
         style={{ marginTop: "30px" }}
       >
         <div className="columns is-multiline sub-cards-container">
-          <AdvancedCard type={"s-card"} className="column is-5 report-card">
+          <AdvancedCard
+            type={"s-card"}
+            className="column is-5 report-card"
+            onClick={() => navigate("/accounting/reports/balance-sheet")}
+          >
             <div className="report-card-heading-container">
               <FeatherIcon name={"Book"} color="#00A353" />
               <h5 className="report-card-heading">Balance sheet</h5>

@@ -46,6 +46,7 @@ import CreateDeal from "./app/views/crm/deals/CreateDeal";
 import DealDetails from "./app/views/crm/deals/DealDetails";
 import Teams from "./app/views/teams/Teams";
 import Reports from "./app/views/accounting/reports/Reports";
+import BalanceSheet from "./app/views/accounting/reports/BalanceSheet";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -85,6 +86,10 @@ function App() {
           <Route path="accounting/cash-and-bank" element={<CashAndBank />} />
           <Route path="accounting/debit-notes" element={<DebitNotesList />} />
           <Route path="accounting/reports" element={<Reports />} />
+          <Route
+            path="accounting/reports/balance-sheet"
+            element={<BalanceSheet />}
+          />
 
           {/* Inventory Module */}
           <Route path="inventory/dashboard" element={<InventoryDashboard />} />
