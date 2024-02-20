@@ -101,7 +101,7 @@ const PageContent = ({
             </div>
           )}
           {loading ? (
-            <LoaderSpinner />
+            <LoaderSpinner visible={loading} />
           ) : (
             <div className="page-content-inner">{children}</div>
           )}

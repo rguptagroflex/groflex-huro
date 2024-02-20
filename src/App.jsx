@@ -45,7 +45,7 @@ import ReportingAndAnalytics from "./app/views/inventory/reportingAndAnalytics/R
 import InvoiceDetail from "./app/views/sales/invoices/InvoiceDetail";
 import QuotationDetail from "./app/views/sales/quotations/QuotationDetail";
 import InvoiceEditWrapper from "./app/views/sales/invoices/InvoiceEditWrapper";
-import config from "oldConfig";
+// import CreateInvoiceWrapper from "./app/views/sales/invoices/CreateInvoiceWrapper";
 
 store.subscribe(() => {
   // console.log(store.getState());

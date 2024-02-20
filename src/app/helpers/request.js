@@ -1,4 +1,3 @@
-
 import _ from "lodash";
 import config from "../../../newConfig";
 import webStorageKeyEnum from "../enums/web-storage-key.enum";
@@ -9,6 +8,16 @@ import qs from "qs";
 const environment = "local";
 const localHost = "http://localhost:18000/serverconnect?url=";
 
+const blobTypes = ["pdf", "csv"];
+const textTypes = ["json", "text"];
+
+const isMatching = (header, types) => {
+  if (!header) return header;
+  for (let type of types)
+    if (header.includes(type))
+      // need to modify in future
+      return true;
+};
 const getEndpoint = (endpoint) => {
   return environment === "local" ? `${localHost}${endpoint}` : endpoint;
 };
@@ -66,51 +75,6 @@ export const logout = () => {
 };
 
 /* Registration APIs */
-//Check email exist
-export const checkEmailExist2 = (email, password = "lSlSlS@3") => {
-  if (environment === "local") {
-    return new Promise((resolve, reject) => {
-      fetch(getEndpoint(config.resourceUrls.login), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          body: JSON.stringify({ email, password }),
-          headers: { "Content-Type": "application/json" },
-          method: "POST",
-          url: config.resourceUrls.login,
-        }),
-      }).then((response) => {
-        if (response.ok) {
-          response.json().then((data) => {
-            resolve(data);
-          });
-        } else {
-          reject(response);
-        }
-      });
-    });
-  } else {
-    return new Promise((resolve, reject) => {
-      fetch(getEndpoint(config.resourceUrls.login), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      }).then((response) => {
-        if (response.ok) {
-          response.json().then((data) => {
-            resolve(data);
-          });
-        } else {
-          reject(response);
-        }
-      });
-    });
-  }
-};
 
 export const checkEmailExist = (email) => {
   if (environment === "local") {
@@ -499,87 +463,7 @@ export const verifyMobileOtp = (mobileOtp) => {
   }
 };
 
-//Requests after login
-export const request2 = (
-  endpoint,
-  options = { data, auth, authCustomBearerToken, method, headers }
-) => {
-  const token = options.authCustomBearerToken
-    ? options.authCustomBearerToken
-    : WebStorageService.getItem(webStorageKeyEnum.LOGIN_TOKEN_KEY);
-  // console.log(token, options.auth);
-
-  if (!options?.auth || !token) {
-    console.error("No token provided for request");
-    return new Promise((resolve, reject) => {});
-  }
-
-  // This options object is to be sent to the fetch function
-  const fetchOptions = {
-    method: options.method || "GET",
-    headers: options.headers || { "Content-Type": "application/json" },
-    url: endpoint,
-  };
-
-  fetchOptions.headers.Authorization = `Bearer ${token}`;
-  if (fetchOptions.method !== "GET" && !!options.data) {
-    fetchOptions.body = JSON.stringify(options.data);
-  }
-
-  // Local only accepts POST requests but the options body can be any method
-  if (environment === "local") {
-    // console.log(endpoint, fetchOptions);
-    const defaultLocalhostOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(fetchOptions),
-    };
-    return new Promise((resolve, reject) => {
-      fetch(`${localHost}${endpoint}`, defaultLocalhostOptions).then(
-        (response) => {
-          console.log(response, "RAW response from req.js");
-
-          resolve(response);
-          // if (response.ok) {
-          //   response.json().then((data) => {
-          //     resolve(data);
-          //   });
-          // } else {
-          //   reject(response);
-          // }
-        }
-      );
-    });
-  } else {
-    // on non local environment
-    return new Promise((resolve, reject) => {
-      fetch(endpoint, fetchOptions).then((response) => {
-        if (response.ok) {
-          response.json().then((data) => {
-            resolve(data);
-          });
-        } else {
-          reject(response);
-        }
-      });
-    });
-  }
-};
-
-//Request function from old groflex
-
-const blobTypes = ["pdf", "csv"];
-const textTypes = ["json", "text"];
-const isMatching = (header, types) => {
-  if (!header) return header;
-  for (let type of types)
-    if (header.includes(type))
-      // need to modify in future
-      return true;
-};
-
+//Request function for post login
 export const request = (endpoint, options) => {
   options = options || {};
 
@@ -744,201 +628,3 @@ export const request = (endpoint, options) => {
     });
   }
 };
-
-
-
-/*
-This is the old one
-*/
-
-// import _ from "lodash";
-// import qs from "qs";
-// import invoiz from "services/invoiz.service";
-// import config from "oldConfig";
-
-// const blobTypes = ["pdf", "csv"];
-// const textTypes = ["json", "text"];
-
-// const isMatching = (header, types) => {
-//   if (!header) return header;
-//   for (let type of types)
-//     if (header.includes(type))
-//       // need to modify in future
-//       return true;
-// };
-
-// export const request = (endpoint, options) => {
-//   options = options || {};
-
-//   const fetchOptions = {
-//     method: options.method || "GET",
-//     headers: options.headers || { "Content-Type": "application/json" },
-//     url: endpoint,
-//   };
-
-//   if (
-//     options.auth === true &&
-//     (options.authCustomBearerToken || (invoiz.user && invoiz.user.token))
-//   ) {
-//     if (options.authCustomBearerToken) {
-//       fetchOptions.headers.authtoken = options.authCustomBearerToken;
-//       fetchOptions.headers["api-version"] = "1";
-
-//       if (options.requestId) {
-//         fetchOptions.headers["logLevel"] = "Debug";
-//         fetchOptions.headers["requestId"] = options.requestId;
-//       }
-//     } else {
-//       fetchOptions.headers.authorization = `Bearer ${invoiz.user.token}`;
-//     }
-//   }
-
-//   if (
-//     options.customHeaders &&
-//     options.customHeaders &&
-//     Object.keys(options.customHeaders).length > 0
-//   ) {
-//     Object.keys(options.customHeaders).forEach((key) => {
-//       fetchOptions.headers[key] = options.customHeaders[key];
-//     });
-//   }
-
-//   if (fetchOptions.method === "GET" && options.data) {
-//     const forXDataOptimizedParams = _.reduce(
-//       options.data,
-//       (result, value, key) => {
-//         result[key] = _.isString(value) ? `${value}` : value;
-//         return result;
-//       },
-//       {}
-//     );
-
-//     endpoint = `${fetchOptions.url}?${qs.stringify(forXDataOptimizedParams)}`;
-//   } else if (fetchOptions.method !== "GET" && options.data) {
-//     fetchOptions.body = JSON.stringify(options.data);
-//   }
-
-//   if (fetchOptions.method !== "GET" && options.responseType) {
-//     fetchOptions.responseType = options.responseType;
-//   }
-//   // console.log(endpoint, fetchOptions, config.releaseStage)
-
-//   if (
-//     !endpoint.includes("/lang/lang_en.json") &&
-//     config.releaseStage == "local" &&
-//     config.byPassCors
-//   ) {
-//     var options = {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(fetchOptions),
-//     };
-//     return new Promise((resolve, reject) => {
-//       fetch(`http://localhost:18000/serverconnect?url=${endpoint}`, options)
-//         .then((res) => {
-//           if (!res.ok) {
-//             if (
-//               res.status === 401 &&
-//               res.url !== config.account.endpoints.login
-//             ) {
-//               invoiz.user.logout();
-//             } else {
-//               if (res.status === 404) {
-//                 const error = {
-//                   body: res.statusText,
-//                 };
-
-//                 reject(error);
-//               } else if (res.status === 500) {
-//                 const error = {
-//                   body: res.statusText,
-//                 };
-
-//                 reject(error);
-//               } else {
-//                 res.json().then((err) => {
-//                   const error = {
-//                     body: err,
-//                   };
-
-//                   reject(error);
-//                 });
-//               }
-//             }
-
-//             throw Error(res.statusText);
-//           }
-//           if (isMatching(fetchOptions.headers["Content-Type"], textTypes))
-//             return res.text();
-//           if (isMatching(fetchOptions.headers["Content-Type"], blobTypes))
-//             return res.blob();
-//           return res;
-//         })
-//         .then((data) => {
-//           try {
-//             if (isMatching(fetchOptions.headers["Content-Type"], textTypes))
-//               data = JSON.parse(data);
-//             resolve({ body: data });
-//           } catch (err) {
-//             resolve(true);
-//           }
-//         })
-//         .catch((reason) => {});
-//     });
-//   } else {
-//     return new Promise((resolve, reject) => {
-//       fetch(endpoint, fetchOptions)
-//         .then((res) => {
-//           if (!res.ok) {
-//             if (
-//               res.status === 401 &&
-//               res.url !== config.account.endpoints.login
-//             ) {
-//               invoiz.user.logout();
-//             } else {
-//               if (res.status === 404) {
-//                 const error = {
-//                   body: res.statusText,
-//                 };
-
-//                 reject(error);
-//               } else if (res.status === 500) {
-//                 const error = {
-//                   body: res.statusText,
-//                 };
-
-//                 reject(error);
-//               } else {
-//                 res.json().then((err) => {
-//                   const error = {
-//                     body: err,
-//                   };
-
-//                   reject(error);
-//                 });
-//               }
-//             }
-
-//             throw Error(res.statusText);
-//           }
-//           if (isMatching(fetchOptions.headers["Content-Type"], textTypes))
-//             return res.text();
-//           if (isMatching(fetchOptions.headers["Content-Type"], blobTypes))
-//             return res.blob();
-//           return res;
-//         })
-//         .then((data) => {
-//           try {
-//             if (isMatching(fetchOptions.headers["Content-Type"], textTypes))
-//               data = JSON.parse(data);
-//             resolve({ body: data });
-//           } catch (err) {
-//             resolve(true);
-//           }
-//         })
-//         .catch((reason) => {});
-//     });
-//   }
-// };

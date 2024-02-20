@@ -1,0 +1,29 @@
+.transaction-edit-component {
+  border: 1px solid $font-grey-dark;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 8px;
+  height: 100%;
+  width: 1000px;
+  background-color: #ffffff;
+  padding: 30px;
+
+  .letter-header-component {
+    width: 100%;
+
+    .active-header {
+      // height: 200px;
+      border: 1px solid $font-grey-dark;
+    }
+
+    .canvas-action-buttons {
+      display: flex;
+      margin-top: 10px;
+      .text-formatter-btns {
+      }
+      .element-action-btns {
+        margin-top: 10px;
+      }
+    }
+  }
+}

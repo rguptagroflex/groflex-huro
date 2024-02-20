@@ -6,7 +6,7 @@ import { request } from "../helpers/request";
 import PendoService from "../services/pendo.service";
 import WebStorageService from "../services/webstorage.service";
 import WebStorageKey from "../enums/web-storage-key.enum";
-import { checkAchievementNotification } from "helpers/checkAchievementNotification";
+import { checkAchievementNotification } from "../helpers/checkAchievementNotification";
 import { updateUserPermissions } from "../helpers/updateUserPermissions";
 import { updatePlanPermissions } from "../helpers/updatePlanPermissions";
 const TOKEN_REFRESH_TIME = 15 * 1000 * 60;

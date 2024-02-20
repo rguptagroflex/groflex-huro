@@ -29,11 +29,11 @@ export const SelectInput = ({
 
   useEffect(() => {
     if (value !== undefined || value !== null) {
-      if (!isAsync && !isCreatable) {
+      if (!isAsync) {
         setSelectedOption(options.find((option) => option.value === value));
       }
     }
-  }, [value]);
+  }, [value, options]);
 
   // console.log(selectedOption);
 
@@ -42,9 +42,10 @@ export const SelectInput = ({
       <CreatableSelect
         isClearable
         options={options}
-        value={value}
+        value={selectedOption}
         onInputChange={onInputChange}
         onChange={onChange}
+        placeholder={placeholder}
       />
     );
   }
@@ -59,6 +60,7 @@ export const SelectInput = ({
         value={value}
         onInputChange={onInputChange}
         isClearable
+        placeholder={placeholder}
       />
     );
   }
@@ -73,6 +75,7 @@ export const SelectInput = ({
         value={value}
         onInputChange={onInputChange}
         isClearable
+        placeholder={placeholder}
       />
     );
   }

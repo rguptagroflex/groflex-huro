@@ -1,6 +1,7 @@
 import invoiz from "services/invoiz.service";
 import config from "oldConfig";
 import NotificationService from "services/notification.service";
+import groflexService from "../services/groflex.service";
 
 const getNotificationIcon = (serverIcon) => {
   let svgIconName = "";
@@ -50,7 +51,8 @@ const getNotificationIcon = (serverIcon) => {
 };
 
 export const checkAchievementNotification = () => {
-  invoiz
+  // invoiz
+  groflexService
     .request(`${config.resourceHost}tenant/awards/notifications`, {
       auth: true,
     })
@@ -68,7 +70,10 @@ export const checkAchievementNotification = () => {
               points: notification.points,
               svgIcon: getNotificationIcon(notification.icon),
               onClick: () => {
-                invoiz.router.redirectTo("/settings/account#achievements");
+                // invoiz.router.redirectTo("/settings/account#achievements");
+                groflexService.router.redirectTo(
+                  "/settings/account#achievements"
+                );
               },
             });
           });

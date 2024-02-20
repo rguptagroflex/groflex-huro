@@ -1,7 +1,8 @@
 import { assign, isString } from "lodash";
+import EventEmitter from "eventemitter3";
 import Events from "ampersand-events";
 import config from "oldConfig";
-import User from "models/user.model";
+import User from "../models/user.model";
 import { request } from "helpers/request";
 // import history from "../helpers/history";
 import PendoService from "./pendo.service";
@@ -9,7 +10,8 @@ import PendoService from "./pendo.service";
 
 class InvoizService {
   constructor() {
-    this.user = User;
+    // Fixme: User can't be accesed before intilization :(
+    // this.user = User;
     this.releaseStage = config.releaseStage;
     this.request = request;
     // this.offerListNaviagtion = false;
@@ -38,11 +40,13 @@ class InvoizService {
         }
       },
     };
+    // Fixme: Same thing here
+    // const { pendoData } = this.user;
+    // PendoService.init(pendoData);
 
-    const { pendoData } = this.user;
-    PendoService.init(pendoData);
-
-    if (this.user.loggedIn) {
+    //Fixme
+    // if (this.user.loggedIn) {
+    if (false) {
       // if (this.user.registrationStep === 'legal_form') {
       // 	this.router.redirectTo('/account/register/legalform');
       // } else
@@ -109,5 +113,13 @@ class InvoizService {
 //   on: Events.on,
 //   trigger: Events.trigger,
 // });
+
+const eventEmitter = new EventEmitter();
+
+assign(InvoizService.prototype, {
+  off: eventEmitter.off.bind(eventEmitter),
+  on: eventEmitter.on.bind(eventEmitter),
+  trigger: eventEmitter.emit.bind(eventEmitter),
+});
 
 export default new InvoizService();
