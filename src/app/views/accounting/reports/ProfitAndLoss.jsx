@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import PageContent from "../../../shared/components/pageContent/PageContent";
-import Accordion from "../../../shared/components/accordion/Accordion";
 import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
-import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
+import { SelectInput } from "../../../shared/components/select/SelectInput";
+import { Button } from "../../../shared/components/button/Button";
+import moment from "moment";
+import ReportsTable from "./ReportsTable";
 import groflexService from "../../../services/groflex.service";
 import config from "../../../../../config";
-import { SelectInput } from "../../../shared/components/select/SelectInput";
-import moment from "moment";
-import { Button } from "../../../shared/components/button/Button";
 import { useSelector } from "react-redux";
-import ReportsTable from "./ReportsTable";
 
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
@@ -26,9 +24,10 @@ const dateFilterTypes = {
     .startOf("quarter")
     .format("Q/YYYY"),
 };
-
-const BalanceSheet = () => {
-  const userName = "";
+const ProfitAndLoss = () => {
+  const { companyAddress } = useSelector(
+    (state) => state?.accountData?.tenantData || ""
+  );
   const [date, setDate] = useState({
     startDate: "",
     endDate: "",
@@ -37,12 +36,51 @@ const BalanceSheet = () => {
     label: dateFilterTypes.fiscalYear,
     value: "fiscalYear",
   });
-
   const [rowData, setRowData] = useState([]);
-
   useEffect(() => {
-    fetchBalanceSheet();
+    fetchProfitAndLossStatement();
   }, [date]);
+
+  const fetchProfitAndLossStatement = () => {
+    groflexService
+      .request(
+        `${config.resourceUrls.profitAndLoss(
+          date.startDate,
+          date.endDate,
+          "json"
+        )}`,
+        { auth: true }
+      )
+      .then((res) => {
+        let rowData = [];
+        if (res && res.body) {
+          const transcatios = res.body.data.summaryData.transactions;
+          transcatios.forEach((item, index) => {
+            let total =
+              item.debits === 0
+                ? parseFloat(item.credits).toFixed(2)
+                : parseFloat(item.debits).toFixed(2);
+            rowData.push({
+              id: index + 1,
+              groupColumn:
+                item.accountTypeId.charAt(0).toUpperCase() +
+                item.accountTypeId.slice(1),
+              column1:
+                item.accountSubTypeId
+                  .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+                  .charAt(0)
+                  .toUpperCase() +
+                item.accountSubTypeId
+                  .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+                  .slice(1),
+              column2: "-",
+              column3: "₹" + " " + total.toString(),
+            });
+          });
+          setRowData(rowData);
+        }
+      });
+  };
 
   const handleDateDropDown = (option) => {
     // setDate(option.value);
@@ -97,53 +135,6 @@ const BalanceSheet = () => {
     });
   };
 
-  const fetchBalanceSheet = () => {
-    let tableHeaders = [];
-    let rowData = [];
-    groflexService
-      .request(
-        `${config.resourceUrls.balanceSheet(
-          date.startDate,
-          date.endDate,
-          "json"
-        )}`,
-        { auth: true }
-      )
-      .then((res) => {
-        // console.log(res);
-        if (res && res.body) {
-          const transcations = res.body.data.summaryData.transactions;
-          transcations.forEach((transcation) => {
-            if (!tableHeaders.includes(transcation.accountTypeId)) {
-              tableHeaders.push(transcation.accountTypeId);
-            }
-          });
-          transcations.forEach((item, index) => {
-            let total =
-              item.debits === 0
-                ? parseFloat(item.credits).toFixed(2)
-                : parseFloat(item.debits).toFixed(2);
-            rowData.push({
-              id: index + 1,
-              groupColumn:
-                item.accountTypeId.charAt(0).toUpperCase() +
-                item.accountTypeId.slice(1),
-              column1:
-                item.accountSubTypeId
-                  .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
-                  .charAt(0)
-                  .toUpperCase() +
-                item.accountSubTypeId
-                  .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
-                  .slice(1),
-              column2: "₹" + " " + total.toString(),
-            });
-          });
-          setRowData(rowData);
-        }
-      });
-  };
-
   const dateOptions = [
     {
       label: dateFilterTypes.currentMonth,
@@ -174,14 +165,13 @@ const BalanceSheet = () => {
       value: "fiscalYear",
     },
   ];
-  // console.log(rowData);
 
   return (
-    <PageContent title={"Balance Sheet"}>
+    <PageContent title={"Profit and loss"}>
       <AdvancedCard
         type={"s-card"}
         style={{ padding: "0px" }}
-        className={"balance-sheet-wrapper"}
+        className={"profit-and-loss-wrapper"}
       >
         <div className="columns is-multiline reports-header">
           <div className="column is-2">
@@ -217,7 +207,7 @@ const BalanceSheet = () => {
 
         <div className="reports-summary">
           <h3 style={{ fontSize: "25px", fontWeight: "500" }}>
-            {userName} Balance Sheet
+            {companyAddress?.companyName}
           </h3>
           <span style={{ color: "rgb(136, 135, 135)", fontWeight: "500" }}>
             From {moment(date.startDate).format("DD MMMM YYYY")} to{" "}
@@ -225,12 +215,15 @@ const BalanceSheet = () => {
           </span>
         </div>
 
-        <div className="balance-sheet-table">
-          <ReportsTable rowData={rowData} tableHeaders={["Account", "Total"]} />
+        <div className="profit-and-loss-table">
+          <ReportsTable
+            rowData={rowData}
+            tableHeaders={["Account", "Account Code", "Total"]}
+          />
         </div>
       </AdvancedCard>
     </PageContent>
   );
 };
 
-export default BalanceSheet;
+export default ProfitAndLoss;

@@ -29,8 +29,8 @@ const ReportsTable = ({ rowData, tableHeaders }) => {
     return Object.entries(groupedData).map(([groupKey, groupItems]) => (
       <React.Fragment key={groupKey}>
         <tr onClick={() => toggleGroup(groupKey)} className="table-accordian">
-          <th>{groupKey}</th> {/* Render group header */}
-          <th colSpan={2} style={{ textAlign: "right" }}>
+          <th>{groupKey}</th>
+          <th colSpan={tableHeaders.length} style={{ textAlign: "right" }}>
             {expandedGroups[groupKey] ? (
               <FeatherIcon name={"ChevronUp"} />
             ) : (
@@ -44,14 +44,11 @@ const ReportsTable = ({ rowData, tableHeaders }) => {
           groupItems.map((item) => (
             <tr key={item.id} className="row-entry">
               <td></td>
-              <td>
-                {item.column1
-                  .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
-                  .charAt(0)
-                  .toUpperCase() +
-                  item.column1.replace(/([a-z0-9])([A-Z])/g, "$1 $2").slice(1)}
-              </td>
-              <td>{item.column2}</td>
+              {Object.keys(item).map((subItem, index) =>
+                index > 1 ? (
+                  <td key={`row-data-${index}`}>{item[subItem]}</td>
+                ) : null
+              )}
             </tr>
           ))}
       </React.Fragment>
@@ -63,9 +60,11 @@ const ReportsTable = ({ rowData, tableHeaders }) => {
       <table className="table  is-fullwidth">
         <tbody>
           <tr className="reports-table-header">
-            <th>Group</th>
-            {tableHeaders.map((heading) => (
-              <th style={{ width: "413px" }}>{heading}</th>
+            <th style={{ width: "413px" }}>Group</th>
+            {tableHeaders.map((heading, id) => (
+              <th style={{ width: "413px" }} key={`heading-${id}`}>
+                {heading}
+              </th>
             ))}
           </tr>
           {renderRows()}

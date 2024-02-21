@@ -41,7 +41,11 @@ const Reports = () => {
         </div>
 
         <div className="columns is-multiline sub-cards-container">
-          <AdvancedCard type={"s-card"} className="column is-5 report-card">
+          <AdvancedCard
+            type={"s-card"}
+            className="column is-5 report-card"
+            onClick={() => navigate("/accounting/reports/profit-and-loss")}
+          >
             <div className="report-card-heading-container">
               <FeatherIcon name={"Book"} color="#00A353" />
               <h5 className="report-card-heading">Profit and loss statement</h5>

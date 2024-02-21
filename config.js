@@ -73,6 +73,8 @@ const resourceUrls = {
   //Reports Balance Sheet
   balanceSheet: (startDate, endDate, fileType) =>
     `${resourceHost}accountingReport/balanceSheet/${startDate}/${endDate}?type=${fileType}`,
+  profitAndLoss: (startDate, endDate, fileType) =>
+    `${resourceHost}accountingReport/profitandloss/${startDate}/${endDate}?type=${fileType}`,
 
   //Teams
   teamsList: `${resourceHost}user/list`,
