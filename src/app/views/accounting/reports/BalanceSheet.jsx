@@ -9,6 +9,7 @@ import { SelectInput } from "../../../shared/components/select/SelectInput";
 import moment from "moment";
 import { Button } from "../../../shared/components/button/Button";
 import { useSelector } from "react-redux";
+import ReportsTable from "./ReportsTable";
 
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
@@ -27,9 +28,7 @@ const dateFilterTypes = {
 };
 
 const BalanceSheet = () => {
-  const userName = useSelector(
-    (state) => state.accountData.tenantData.companyAddress.companyName
-  );
+  const userName = "";
   const [date, setDate] = useState({
     startDate: "",
     endDate: "",
@@ -40,7 +39,6 @@ const BalanceSheet = () => {
   });
 
   const [rowData, setRowData] = useState([]);
-  const [tableHeaders, setTableHeaders] = useState([]);
 
   useEffect(() => {
     fetchBalanceSheet();
@@ -101,6 +99,7 @@ const BalanceSheet = () => {
 
   const fetchBalanceSheet = () => {
     let tableHeaders = [];
+    let rowData = [];
     groflexService
       .request(
         `${config.resourceUrls.balanceSheet(
@@ -111,7 +110,7 @@ const BalanceSheet = () => {
         { auth: true }
       )
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         if (res && res.body) {
           const transcations = res.body.data.summaryData.transactions;
           transcations.forEach((transcation) => {
@@ -119,10 +118,27 @@ const BalanceSheet = () => {
               tableHeaders.push(transcation.accountTypeId);
             }
           });
-          setRowData(transcations);
-          setTableHeaders(tableHeaders);
-
-          console.log(tableHeaders);
+          transcations.forEach((item, index) => {
+            let total = item.credits
+              ? parseFloat(item.credits).toFixed(2)
+              : parseFloat(item.debits).toFixed(2);
+            rowData.push({
+              id: index + 1,
+              groupColumn:
+                item.accountTypeId.charAt(0).toUpperCase() +
+                item.accountTypeId.slice(1),
+              column1:
+                item.accountSubTypeId
+                  .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+                  .charAt(0)
+                  .toUpperCase() +
+                item.accountSubTypeId
+                  .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+                  .slice(1),
+              column2: "₹" + " " + total.toString(),
+            });
+          });
+          setRowData(rowData);
         }
       });
   };
@@ -157,7 +173,7 @@ const BalanceSheet = () => {
       value: "fiscalYear",
     },
   ];
-  console.log(userName);
+  // console.log(rowData);
 
   return (
     <PageContent title={"Balance Sheet"}>
@@ -208,48 +224,8 @@ const BalanceSheet = () => {
           </span>
         </div>
 
-        <div className="balance-sheet-table-header">
-          <div className="column is-6 header-left">Account</div>
-          <div className="column is-6 header-right">| Total</div>
-        </div>
         <div className="balance-sheet-table">
-          {tableHeaders.map((item, id) => (
-            <Accordion
-              key={`accordian-${id}`}
-              accordionLeftHeader={item.charAt(0).toUpperCase() + item.slice(1)}
-              accordionBody={
-                <div className="accordian-body">
-                  {rowData
-                    .filter(
-                      (filteredItem) => filteredItem.accountTypeId === item
-                    )
-                    .map((subItem, subIndex) => (
-                      <React.Fragment key={subIndex}>
-                        <div className="accordian-body-row-entry">
-                          <div className="row-title">
-                            {subItem.accountSubTypeId
-                              .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
-                              .charAt(0)
-                              .toUpperCase() +
-                              subItem.accountSubTypeId
-                                .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
-                                .slice(1)}
-                          </div>
-                          <div className="row-value">
-                            <div className="currency-container">
-                              ₹
-                              {subItem.credits === 0
-                                ? parseFloat(subItem.debits).toFixed(2)
-                                : parseFloat(subItem.credits).toFixed(2)}
-                            </div>
-                          </div>
-                        </div>
-                      </React.Fragment>
-                    ))}
-                </div>
-              }
-            />
-          ))}
+          <ReportsTable rowData={rowData} tableHeaders={["Account", "Total"]} />
         </div>
       </AdvancedCard>
     </PageContent>

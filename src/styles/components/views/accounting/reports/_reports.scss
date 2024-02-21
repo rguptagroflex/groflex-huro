@@ -24,3 +24,30 @@
     }
   }
 }
+
+.reports-table {
+  overflow-x: auto;
+  .reports-table-header {
+    background: #f0f8fb;
+    th {
+      color: #888787;
+      font-weight: 500;
+      font-size: 15px;
+    }
+  }
+  .row-entry {
+    td {
+      color: black !important;
+    }
+  }
+  .table-accordian {
+    cursor: pointer;
+    th {
+      font-weight: 600;
+      font-size: 14px;
+    }
+  }
+}
+.reports-table table {
+  white-space: nowrap;
+}
