@@ -22,9 +22,8 @@
       flex-direction: column;
       .letter-header-font-tools {
         .font-tool-btns {
-          .color-picker-btn {
-            height: 40px;
-            width: 40px;
+          .has-addons {
+            margin-bottom: 0;
           }
         }
       }
