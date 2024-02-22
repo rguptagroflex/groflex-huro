@@ -76,8 +76,6 @@ const GeneralLedger = () => {
         { auth: true }
       )
       .then((res) => {
-        console.log(res);
-
         const transcatios = res.body.data.summaryData.transactions;
         transcatios.forEach((item, index) => {
           if (item.chartOfAccount) {
@@ -104,7 +102,7 @@ const GeneralLedger = () => {
             });
           }
         });
-        console.log(rowData);
+
         setRowData(rowData);
       });
   };
@@ -196,12 +194,14 @@ const GeneralLedger = () => {
       value: "fiscalYear",
     },
   ];
-  console.log(customerID);
+
   return (
     <PageContent title={"General Ledger"}>
       <AdvancedCard
         type={"s-card"}
-        style={{ padding: "0px" }}
+        style={{
+          padding: "0px",
+        }}
         className={"general-ledger-wrapper"}
       >
         <div className="columns is-multiline reports-header">
@@ -209,20 +209,19 @@ const GeneralLedger = () => {
             className="columns is-mulitline"
             style={{ marginTop: "10px", marginLeft: "10px" }}
           >
-            <div className="column is-7">
+            <div className="column is-8" style={{ minWidth: "170px" }}>
               <SelectInput
                 options={dateOptions}
-                placeholder={"None"}
+                placeholder={"Select Date"}
                 onChange={handleDateDropDown}
                 value={dateDropDown}
-                defaultValue={"fiscalYear"}
               />
             </div>
 
-            <div className="column is-7">
+            <div className="column is-8" style={{ minWidth: "170px" }}>
               <SelectInput
                 options={customerDropDown}
-                placeholder={"None"}
+                placeholder={"Select Customer"}
                 onChange={handleCustomerDropDown}
                 value={customerID}
               />
@@ -251,28 +250,34 @@ const GeneralLedger = () => {
           </div>
         </div>
 
-        <div className="reports-summary">
-          <h3 style={{ fontSize: "25px", fontWeight: "500" }}>
-            {companyAddress?.companyName} General Ledger
-          </h3>
-          <span style={{ color: "rgb(136, 135, 135)", fontWeight: "500" }}>
-            From {moment(date.startDate).format("DD MMMM YYYY")} to{" "}
-            {moment(date.endDate).format("DD MMMM YYYY")}
-          </span>
-        </div>
+        {rowData.length > 0 ? (
+          <div>
+            <div className="reports-summary">
+              <h3 style={{ fontSize: "25px", fontWeight: "500" }}>
+                {companyAddress?.companyName} General Ledger
+              </h3>
+              <span style={{ color: "rgb(136, 135, 135)", fontWeight: "500" }}>
+                From {moment(date.startDate).format("DD MMMM YYYY")} to{" "}
+                {moment(date.endDate).format("DD MMMM YYYY")}
+              </span>
+            </div>
 
-        <div className="general-ledger-table">
-          <ReportsTable
-            rowData={rowData}
-            tableHeaders={[
-              "| Date",
-              "| Account",
-              "| Debit",
-              "| Credit",
-              "| Balance",
-            ]}
-          />
-        </div>
+            <div className="general-ledger-table">
+              <ReportsTable
+                rowData={rowData}
+                tableHeaders={[
+                  "| Date",
+                  "| Account",
+                  "| Debit",
+                  "| Credit",
+                  "| Balance",
+                ]}
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="reports-empty-table">No data to show</div>
+        )}
       </AdvancedCard>
     </PageContent>
   );

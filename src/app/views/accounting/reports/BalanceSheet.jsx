@@ -187,10 +187,9 @@ const BalanceSheet = () => {
           <div className="column is-2">
             <SelectInput
               options={dateOptions}
-              placeholder={"None"}
+              placeholder={"Select Date"}
               onChange={handleDateDropDown}
               value={dateDropDown}
-              defaultValue={"fiscalYear"}
             />
           </div>
           <div className="columns is-multiline utility-buttons">
@@ -215,19 +214,28 @@ const BalanceSheet = () => {
           </div>
         </div>
 
-        <div className="reports-summary">
-          <h3 style={{ fontSize: "25px", fontWeight: "500" }}>
-            {userName} Balance Sheet
-          </h3>
-          <span style={{ color: "rgb(136, 135, 135)", fontWeight: "500" }}>
-            From {moment(date.startDate).format("DD MMMM YYYY")} to{" "}
-            {moment(date.endDate).format("DD MMMM YYYY")}
-          </span>
-        </div>
+        {rowData.length > 0 ? (
+          <div>
+            <div className="reports-summary">
+              <h3 style={{ fontSize: "25px", fontWeight: "500" }}>
+                {userName} Balance Sheet
+              </h3>
+              <span style={{ color: "rgb(136, 135, 135)", fontWeight: "500" }}>
+                From {moment(date.startDate).format("DD MMMM YYYY")} to{" "}
+                {moment(date.endDate).format("DD MMMM YYYY")}
+              </span>
+            </div>
 
-        <div className="balance-sheet-table">
-          <ReportsTable rowData={rowData} tableHeaders={["Account", "Total"]} />
-        </div>
+            <div className="balance-sheet-table">
+              <ReportsTable
+                rowData={rowData}
+                tableHeaders={["| Account", "| Total"]}
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="reports-empty-table">No data to show</div>
+        )}
       </AdvancedCard>
     </PageContent>
   );

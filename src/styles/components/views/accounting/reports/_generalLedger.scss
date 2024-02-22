@@ -1,4 +1,12 @@
 .general-ledger-wrapper {
+  min-height: 500px;
+  .reports-header {
+    .utility-buttons {
+      @media screen and (max-width: 480px) {
+        margin-left: 20px;
+      }
+    }
+  }
   .general-ledger-table {
     .reports-table {
       .row-entry td:nth-child(4) {
