@@ -28,6 +28,16 @@
   text-align: right;
 }
 
+.font-italic {
+  font-style: italic;
+}
+.font-bold {
+  font-weight: bold;
+}
+.text-underline {
+  text-decoration: underline;
+}
+
 // Color classes
 .color-secondary {
   color: $font-color-secondary;
@@ -40,6 +50,16 @@
 }
 .color-danger {
   color: $danger;
+}
+.color-light-green {
+  color: $light-green;
+}
+
+.bg-light-green {
+  background-color: $light-green;
+}
+.bg-primary {
+  background-color: $primary;
 }
 
 .scrollable {
@@ -111,6 +131,16 @@
   justify-content: space-between;
 }
 
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
 .content-flex-center {
   display: flex;
   justify-content: center;
@@ -118,6 +148,6 @@
 }
 
 //Display
-.display-none {
-  display: none;
+.u_hidden {
+  display: none !important;
 }

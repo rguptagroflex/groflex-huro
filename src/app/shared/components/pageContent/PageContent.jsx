@@ -101,7 +101,11 @@ const PageContent = ({
             </div>
           )}
           {loading ? (
-            <LoaderSpinner visible={loading} />
+            <LoaderSpinner
+              visible={loading}
+              containerStyle={{ height: "calc(100vh - 285px)" }}
+              // message={"Loading"}
+            />
           ) : (
             <div className="page-content-inner">{children}</div>
           )}

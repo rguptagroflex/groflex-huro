@@ -1,6 +1,6 @@
 import _ from "lodash";
 import q from "q";
-import config from "oldConfig";
+import config from "../../../oldConfig";
 import { fabric } from "fabric";
 import LetterElement from "models/letter/letter-element.model";
 
@@ -121,14 +121,26 @@ const LetterFabricText = fabric.util.createClass(fabric.IText, {
 const getTextOptions = function getTextOptions(letterElement) {
   return _.assign(
     {
-      fontFamily: letterElement.metaData.font,
-      fontWeight: letterElement.metaData.fontWeight,
-      color: letterElement.metaData.color,
-      fontSize: letterElement.metaData.fontSize,
-      fontStyle: letterElement.metaData.italic ? "italic" : "normal",
-      textDecoration: letterElement.metaData.underline ? "underline" : "",
+      // color: letterElement.metaData.color,
+      // fontWeight: letterElement.metaData.fontWeight,
+
+      lockScalingX: true,
+      lockScalingY: true,
+      lockUniScaling: true,
+      hasControls: false,
+      lockRotation: true,
+      hasRotatingPoint: false,
       left: parseFloat(letterElement.x),
       top: parseFloat(letterElement.y),
+      fill: letterElement.metaData.color,
+      // textDecoration: letterElement.metaData.underline ? "underline" : "",
+      underline: letterElement.metaData.underline,
+      fontFamily: letterElement.metaData.font,
+      fontSize: letterElement.metaData.fontSize,
+      fontStyle: letterElement.metaData.italic ? "italic" : "normal",
+      fontWeight: letterElement.metaData.bold
+        ? "700"
+        : letterElement.metaData.fontWeight,
     },
     config.letter.fabricOptions
   );
@@ -168,8 +180,8 @@ const buildImage = function buildImage(letterElement) {
   const url = `${config.imageResourceHost}${letterElement.metaData.imageUrl}`;
   const imageOptions = _.assign(
     {
-      width: letterElement.metaData.width,
-      height: letterElement.metaData.height,
+      // width: letterElement.metaData.width,
+      // height: letterElement.metaData.height,
       left: parseFloat(letterElement.x),
       top: parseFloat(letterElement.y),
     },
@@ -179,6 +191,15 @@ const buildImage = function buildImage(letterElement) {
   fabric.Image.fromURL(
     url,
     function (image) {
+      // image.lockScalingX = true;
+      // image.sendToBack
+      image.hasRotatingPoint = false;
+      image.lockSkewingX = true;
+      image.lockSkewingY = true;
+      image.lockRotation = true;
+      image.lockUniScaling = true;
+      image.scaleToHeight(letterElement.metaData.height);
+      image.scaleToWidth(letterElement.metaData.width);
       if (!image) {
         deferred.reject(`Could not retrieve image from url: ${url}`);
       }

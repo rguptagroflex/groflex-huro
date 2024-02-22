@@ -2,6 +2,7 @@ import React from "react";
 import { RotatingLines } from "react-loader-spinner";
 
 const LoaderSpinner = ({
+  message,
   visible,
   containerClass,
   containerStyle,
@@ -12,7 +13,7 @@ const LoaderSpinner = ({
       className={containerClass}
       style={{
         width: "100%",
-        height: "55vh",
+        height: "100%",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -27,6 +28,7 @@ const LoaderSpinner = ({
         height={size}
         visible={visible}
       />
+      {message && visible && <div className="m-l-5">{message}</div>}
     </div>
   );
 };

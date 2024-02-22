@@ -10,19 +10,23 @@
 
   .letter-header-component {
     width: 100%;
-
-    .active-header {
+    outline: none;
+    .header-edit {
       // height: 200px;
       border: 1px solid $font-grey-dark;
+      position: relative;
     }
 
     .canvas-action-buttons {
       display: flex;
-      margin-top: 10px;
-      .text-formatter-btns {
-      }
-      .element-action-btns {
-        margin-top: 10px;
+      flex-direction: column;
+      .letter-header-font-tools {
+        .font-tool-btns {
+          .color-picker-btn {
+            height: 40px;
+            width: 40px;
+          }
+        }
       }
     }
   }

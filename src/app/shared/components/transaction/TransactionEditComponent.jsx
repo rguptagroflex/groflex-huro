@@ -128,7 +128,11 @@ const TransactionEditComponent = ({
   const { navigateBackTo, pageTitle } = getPageInfo();
 
   return (
-    <PageContent navigateBackTo={navigateBackTo} title={pageTitle}>
+    <PageContent
+      navigateBackTo={navigateBackTo}
+      title={pageTitle}
+      breadCrumbData={["Home", "Sales", "Invoices"]}
+    >
       <div className="transaction-edit-component">
         <LetterHeaderComponent
           items={transactionStates.letter.header}

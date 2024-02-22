@@ -37,14 +37,25 @@ class GroflexService {
     this.verifyMobileOtp = verifyMobileOtp;
     this.getRegistartionToken = getRegistrationToken;
     this.toast = toastService;
+    this.emitter = new EventEmitter();
+  }
+
+  //Event handlers
+  on(eventName, listener) {
+    this.emitter.on(eventName, listener);
+  }
+  off(eventName, listener) {
+    this.emitter.off(eventName, listener);
+  }
+  trigger(eventName, ...args) {
+    this.emitter.emit(eventName, ...args);
   }
 }
 
-const eventEmitter = new EventEmitter();
-assign(GroflexService.prototype, {
-  off: eventEmitter.off.bind(eventEmitter),
-  on: eventEmitter.on.bind(eventEmitter),
-  trigger: eventEmitter.emit.bind(eventEmitter),
-});
+// assign(GroflexService.prototype, {
+//   off: eventEmitter.off.bind(eventEmitter),
+//   on: eventEmitter.on.bind(eventEmitter),
+//   trigger: eventEmitter.emit.bind(eventEmitter),
+// });
 
 export default new GroflexService();

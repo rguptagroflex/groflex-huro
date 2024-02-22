@@ -8,8 +8,14 @@ import config from "../../../../oldConfig";
 import { Button } from "../components/button/Button";
 import _ from "lodash";
 import LetterHeaderState from "../../enums/letter/letter-header-state.enum";
-import { LetterFabricText } from "../../helpers/letterHeaderHelpers";
+import {
+  LetterFabricText,
+  letterElementsToFabricObjects,
+} from "../../helpers/letterHeaderHelpers";
 import CanvasColorPickerComponent from "../canvasColorPicker/CanvasColorPickerComponent";
+import OnClickOutside from "../components/onClickOutside/OnClickOutside";
+import LoaderSpinner from "../components/loaderSpinner/LoaderSpinner";
+import { ButtonAddons } from "../components/button/btn-addons/ButtonAddons";
 
 const DEFAULT_FONT_SIZE = 18;
 const KEY_CODES = config.KEY_CODES;
@@ -33,9 +39,10 @@ const H_SNAP_POINTS = [OFFSET, CENTER.y, CANVAS_WIDTH - OFFSET, CENTER.y];
 const V_SNAP_POINTS = [CENTER.x, OFFSET, CENTER.x, CANVAS_HEIGHT - OFFSET];
 
 const LetterHeaderComponent = ({ items }) => {
-  //States
-  const [imageUrl, setImageUrl] = useState();
-  const [selectedElement, setSelectedElement] = useState();
+  //
+  const [canvasEditMode, setCanvasEditMode] = useState();
+  // const [colorPicker, setImageUrl] = useState();
+  const [selectedObject, setSelectedObject] = useState();
   const [letterHeaderStates, setLetterHeaderStates] = useState({
     items,
     headerState:
@@ -75,13 +82,16 @@ const LetterHeaderComponent = ({ items }) => {
   const canvasRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  //Initializing canvas
+  //Initializing empty canvas
   useEffect(() => {
+    // initializeFabricCanvas();
+    setLetterHeaderStates({ ...letterHeaderStates, loading: true });
     if (canvasRef.current) {
       const newCanvas = new fabric.Canvas(canvasRef.current, {
         selection: false,
         height: CANVAS_HEIGHT,
         width: CANVAS_WIDTH,
+        uniformScaling: true,
       });
       const lineOptions = {
         stroke: "#ddd",
@@ -103,59 +113,242 @@ const LetterHeaderComponent = ({ items }) => {
       const hSnap = new fabric.Line(H_SNAP_POINTS, snapOptions);
       newCanvas
         .add(wrapper, hSnap, vSnap)
-        .on("selection:created", handleSelection)
         .on("selection:updated", handleSelection)
+        .on("selection:created", handleSelection)
         .on("selection:cleared", handleDeSelection)
         .on("object:moving", onCanvasObjectMoving);
+      // .on("object:selected", handleSelection)
 
       canvasRef.current = newCanvas;
 
+      if (!items.length) {
+        setLetterHeaderStates({ ...letterHeaderStates, loading: false });
+      }
+
       return () => {
+        document.removeEventListener("keydown", onDocumentKeydown);
+        // groflexService.off("keydown", onDocumentKeydown);
         newCanvas.removeListeners();
         newCanvas.dispose();
       };
     }
   }, []);
 
-  //useEffect For imageUrl
+  //Effect for filling canvas elements from props
   useEffect(() => {
-    if (imageUrl) {
-      const canvas = canvasRef.current;
-      fabric.Image.fromURL(imageUrl, (img) => {
-        img.scaleToWidth(160);
-        img.lockUniScaling = true;
-        canvas.add(img);
-        canvas.centerObject(img);
-      });
+    if (letterHeaderStates.items?.length) {
+      getContentForCanvas();
     }
-  }, [imageUrl]);
+  }, [letterHeaderStates.items]);
+
+  const initializeFabricCanvas = () => {
+    setLetterHeaderStates({ ...letterHeaderStates, loading: true });
+    if (canvasRef.current) {
+      const newCanvas = new fabric.Canvas(canvasRef.current, {
+        selection: false,
+        height: CANVAS_HEIGHT,
+        width: CANVAS_WIDTH,
+        uniformScaling: true,
+      });
+      const lineOptions = {
+        stroke: "#ddd",
+        fill: "transparent",
+        selectable: false,
+        opacity: 0,
+      };
+      const wrapperOptions = Object.assign({}, BOUNDING_BOX, lineOptions);
+      // Hack: Show border from wrapper container (Canvas renders 0.5 pixels)
+      wrapperOptions.width--;
+      wrapperOptions.height--;
+      const snapOptions = Object.assign(
+        {},
+        { strokeDashArray: [5] },
+        lineOptions
+      );
+      const wrapper = new fabric.Rect(wrapperOptions);
+      const vSnap = new fabric.Line(V_SNAP_POINTS, snapOptions);
+      const hSnap = new fabric.Line(H_SNAP_POINTS, snapOptions);
+      newCanvas
+        .add(wrapper, hSnap, vSnap)
+        .on("selection:updated", handleSelection)
+        .on("selection:created", handleSelection)
+        .on("selection:cleared", handleDeSelection)
+        .on("object:moving", onCanvasObjectMoving);
+      // .on("object:selected", handleSelection)
+
+      canvasRef.current = newCanvas;
+
+      if (!items.length) {
+        setLetterHeaderStates({ ...letterHeaderStates, loading: false });
+      }
+
+      return () => {
+        document.removeEventListener("keydown", onDocumentKeydown);
+        // groflexService.off("keydown", onDocumentKeydown);
+        newCanvas.removeListeners();
+        newCanvas.dispose();
+      };
+    }
+  };
+
+  const onDocumentKeydown = (event) => {
+    const canvas = canvasRef.current;
+
+    const { keyCode } = event;
+    const obj = canvas?.getActiveObject();
+    if (keyCode === KEY_CODES.ESCAPE) {
+      return onEscapePress();
+    }
+    if (!obj) {
+      return;
+    }
+    switch (keyCode) {
+      case KEY_CODES.ENTER:
+        if (obj instanceof fabric.IText) {
+          obj.enterEditing().selectAll();
+          event.preventDefault();
+        }
+        break;
+      case KEY_CODES.DELETE:
+        removeSelectedObjectFromCanvas();
+        break;
+      case KEY_CODES.LEFT:
+        obj.left -= event.shiftKey ? SHIFT_STEP : 1;
+        break;
+      case KEY_CODES.TOP:
+        obj.top -= event.shiftKey ? SHIFT_STEP : 1;
+        break;
+      case KEY_CODES.RIGHT:
+        obj.left += event.shiftKey ? SHIFT_STEP : 1;
+        break;
+      case KEY_CODES.DOWN:
+        obj.top += event.shiftKey ? SHIFT_STEP : 1;
+        break;
+      case KEY_CODES.BACKSPACE:
+        removeSelectedObjectFromCanvas();
+    }
+    obj.setCoords();
+    canvas.renderAll();
+  };
+
+  const onEscapePress = () => {
+    setLetterHeaderStates({
+      ...letterHeaderStates,
+      headerState:
+        this.state.items.length > 0
+          ? LetterHeaderState.DISPLAY
+          : LetterHeaderState.EMPTY,
+    });
+    exitEditMode();
+  };
+
+  const getContentForCanvas = () => {
+    letterElementsToFabricObjects(letterHeaderStates.items).then(
+      (fabricObjects) => {
+        setLetterHeaderStates({ ...letterHeaderStates, fabricObjects });
+        addFabricObjectsToCanvas(fabricObjects);
+      }
+    );
+  };
+
+  const addFabricObjectsToCanvas = (fabricObjects) => {
+    const canvas = canvasRef.current;
+    fabricObjects.forEach((fabricObject) => {
+      // console.log(fabricObject, "FABRIC OBJECT ");
+      canvas.insertAt(fabricObject, fabricObject._sortId, false);
+    });
+    canvas.renderAll();
+    setLetterHeaderStates({ ...letterHeaderStates, loading: false });
+  };
 
   const handleUploadBtnClick = () => {
     fileInputRef.current.click();
   };
 
   const handleImageUpload = (event) => {
+    let imageUrl;
     const canvas = canvasRef.current;
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = (e) => {
-        canvas.getObjects("image").forEach((obj) => {
-          canvas.remove(obj);
+        canvas.getObjects("image").forEach((img) => {
+          img.setSrc("");
+          canvas.remove(img);
         });
-        setImageUrl(e.target.result);
+        imageUrl = e.target.result;
+        fabric.Image.fromURL(imageUrl, (image) => {
+          image.scaleToWidth(160);
+          image.lockUniScaling = true;
+          image.lockSkewingX = true;
+          image.lockSkewingY = true;
+          image.lockRotation = true;
+          image.hasRotatingPoint = false;
+          image.selectable = true;
+          image._sortId = 3;
+          // image.cornerColor = "#5a9ff5";
+          // image.lockScalingFlip = true;
+          // image.minScaleLimit = 0.25;
+          // image.padding = 10;
+          // image.strokeWidth = 0;
+          // image.transparentCorners = false;
+
+          canvas.insertAt(image, 3, true);
+          canvas.centerObject(image);
+          // canvas.setActiveObject(canvas.item(image._sortId));
+          // canvas.renderAll();
+          // adjustImage(image);
+        });
       };
     }
   };
 
+  const adjustImage = (image) => {
+    const canvas = canvasRef.current;
+    const maxWidth = CANVAS_WIDTH - OFFSET * 2 - 40;
+    const maxHeight = CANVAS_HEIGHT - OFFSET * 2 - 40;
+
+    if (image.width > maxWidth || image.height > maxHeight) {
+      const fitToWidth = image.width / maxWidth > image.height / maxHeight;
+      image
+        .set({
+          width: fitToWidth
+            ? maxWidth
+            : (image.width / image.height) * maxHeight,
+          height: fitToWidth
+            ? (image.height / image.width) * maxWidth
+            : maxHeight,
+        })
+        .setCoords();
+    }
+
+    image
+      .set({
+        left: (CANVAS_WIDTH - image.width) / 2,
+        top: (CANVAS_HEIGHT - image.height) / 2,
+      })
+      .setCoords();
+
+    canvas.renderAll();
+  };
+
   const handleSelection = (event) => {
-    const selectedObject = event.selected[0];
-    setSelectedElement(selectedObject);
+    const canvas = canvasRef.current;
+    const activeObject = canvas.getActiveObject();
+
+    if (activeObject.type === "i-text") {
+      setLetterHeaderStates({ ...letterHeaderStates, textSelected: true });
+    }
+
+    console.log("SELECTED object", activeObject);
+    setSelectedObject(activeObject);
+    setCanvasEditMode(true);
   };
 
   const handleDeSelection = (event) => {
-    setSelectedElement();
+    setSelectedObject(null);
+    setLetterHeaderStates({ ...letterHeaderStates, textSelected: false });
   };
 
   const onCanvasObjectMoving = (obj) => {
@@ -165,7 +358,7 @@ const LetterHeaderComponent = ({ items }) => {
     const object = obj.target;
     object.set({
       padding: 0,
-      backgroundColor: "rgba(255, 255, 255, 0.7)",
+      // backgroundColor: "rgba(255, 255, 255, 0.7)",
     });
 
     // snap to center
@@ -265,248 +458,187 @@ const LetterHeaderComponent = ({ items }) => {
     text.enterEditing().selectAll();
   };
 
-  const handleDeleteElementFromCanvas = () => {
+  const removeSelectedObjectFromCanvas = () => {
     const canvas = canvasRef.current;
-    canvas.remove(selectedElement);
+    const activeObject = canvas.getActiveObject();
+    // canvas.remove(selectedElement);
+    canvas.remove(activeObject);
+    // console.log(activeObject, "DELETE Active object");
+
+    canvas.renderAll();
   };
 
   const handleClearALlElements = () => {
     canvasRef.current.clear();
   };
 
-  const ContentForHeader = () => {
-    let content;
-
-    switch (letterHeaderStates.headerState) {
-      case LetterHeaderState.DISPLAY:
-        const displayItems = letterHeaderStates.items.map((item, index) => {
-          const {
-            type,
-            x,
-            y,
-            sortId,
-            metaData: {
-              font,
-              fontSize,
-              fontWeight,
-              italic,
-              underline,
-              color,
-              width,
-              height,
-              html,
-              imageUrl,
-            },
-          } = item;
-
-          const position = buildLetterHeaderPosition({
-            x,
-            y,
-            width,
-            height,
-            sortId,
-            type,
-          });
-
-          let styles;
-
-          switch (item.type) {
-            case "image":
-              styles = position;
-              return (
-                <img
-                  src={`${config.imageResourceHost}${imageUrl}`}
-                  style={styles}
-                  key={`letter-header-item-${index}`}
-                />
-              );
-            case "text":
-              const styling = buildLetterHeaderStyles({
-                font,
-                fontSize,
-                fontWeight,
-                italic,
-                underline,
-                color,
-              });
-              styles = Object.assign({}, position, styling);
-              return (
-                <span style={styles} key={`letter-header-item-${index}`}>
-                  {html}
-                </span>
-              );
-            case "rectangle":
-              styles = Object.assign({}, position, {
-                "background-color": color,
-              });
-              return <div style={styles} key={`letter-header-item-${index}`} />;
-          }
-        });
-
-        content = (
-          <div
-            className="headerDisplay"
-            onClick={() => this.onHeaderDisplayClick()}
-          >
-            {displayItems}
-          </div>
-        );
-        break;
-      case LetterHeaderState.EMPTY:
-        content = (
-          <div
-            className="headerEmpty"
-            onClick={() => this.onHeaderEmptyClick()}
-          >
-            {/* <div className="headerEmpty_title">
-								<b>{resources.str_logo}</b>
-							{resources.str_hereSmall}
-						</div>
-						<span className="headerEmpty_subtitle">{resources.letterHeaderUploadCreateText}</span> */}
-            <div className="logo-upload-area letter-headerEmpty_title">
-              <label>
-                <h5 className="row1">
-                  {/* <img src="/assets/images/svg/impress_bild.svg" height="50" /> */}
-                  Add logo or text
-                </h5>
-                <p className="row2">
-                  {/* <span>{resources.str_logo}</span>
-									{resources.str_hereSmall} */}
-                  Upload company logo or add a text
-                </p>
-                <p className="row3">
-                  {/* <span className="headerEmpty_subtitle">
-										{resources.letterHeaderUploadCreateText}
-									</span> */}
-                  <div className="btn1">
-                    <div className="btn1-name">
-                      <SVGInline
-                        width="17px"
-                        height="17px"
-                        svg={editSvgGreen}
-                        className="vertically-middle u_mr_6"
-                      />
-                      <span>Upload</span>
-                    </div>
-                    <div className="btn1-subname">Or Drop a file</div>
-                  </div>
-                  <div className="or-div">OR</div>
-                  <div className="btn2">
-                    <div>
-                      <SVGInline
-                        width="17px"
-                        height="17px"
-                        svg={plusSvgGreen}
-                        className="vertically-middle u_mr_6"
-                      />
-                      <span>Enter text</span>
-                    </div>
-                  </div>
-                </p>
-              </label>
-            </div>
-          </div>
-        );
-        break;
-      case LetterHeaderState.EDIT:
-        const uploadButton = (
-          <div
-            ref="uploadButton"
-            className="button button-primary button-small button-icon-picture button-rounded"
-            disabled={letterHeaderStates.loading}
-          >
-            {resources.letterHeaderUploadLogoText}
-          </div>
-        );
-
-        this.setOpacity("hSnap", +letterHeaderStates.hSnapVisible);
-        this.setOpacity("vSnap", +letterHeaderStates.vSnapVisible);
-        this.setOpacity("wrapper", +letterHeaderStates.wrapperVisible);
-
-        const fontBoldControl = this.createFontBoldControl();
-        const fontUnderlineControl = this.createFontUnderlineControl();
-        const fontItalicControl = this.createFontItalicControl();
-        const fontFamilyControl = this.createFontFamilyControl();
-        const fontSizeControl = this.createFontSizeControl();
-
-        content = (
-          <div>
-            <LoaderComponent text="" visible={letterHeaderStates.loading} />
-            <div
-              className={`headerEdit document-edit ${
-                letterHeaderStates.wrapperVisible ? "headerEdit-active" : ""
-              }`}
-            >
-              <canvas ref="canvas" />
-            </div>
-            <form ref="form" className="form letterHeader_tools">
-              <button ref="formSubmit" className="u_hidden" />
-              <div className={"letterHeaderFontTools"}>
-                <div className="letterHeaderTools_fontStyle">
-                  {fontBoldControl}
-                  {fontUnderlineControl}
-                  {fontItalicControl}
-                </div>
-                {fontFamilyControl}
-                {fontSizeControl}
-                <CanvasColorPickerComponent
-                  canvas={this.canvas}
-                  visible={
-                    letterHeaderStates.canHaveColor ||
-                    letterHeaderStates.textSelected
-                  }
-                  value={letterHeaderStates.selectedFontColor}
-                />
-              </div>
-
-              <div className="buttonRow">
-                <div className="u_vc">
-                  {uploadButton}
-                  <button
-                    type="button"
-                    onClick={() => this.addText()}
-                    className="button button-primary button-small button-icon-font button-rounded"
-                  >
-                    {resources.str_text}
-                  </button>
-                  <button
-                    type="button"
-                    disabled={!transactionStates.deleteButtonActive}
-                    onClick={() => this.removeObject()}
-                    className="button button-primary button-small button-rounded"
-                  >
-                    {resources.str_clear}
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        );
-        break;
-    }
+  const exitEditMode = () => {
+    console.log("EXIT EDIT MODE");
+    const canvas = canvasRef.current;
+    canvas.discardActiveObject();
+    canvas.renderAll();
+    setCanvasEditMode(false);
+    document.removeEventListener("keydown", onDocumentKeydown);
+    // groflexService.on("keydown", onDocumentKeydown);
   };
 
+  const enterEditMode = () => {
+    if (canvasEditMode) return;
+    console.log("ENTERED EDIT MODE");
+    document.addEventListener("keydown", onDocumentKeydown);
+    // groflexService.on("keydown", onDocumentKeydown);
+    setCanvasEditMode(true);
+  };
+
+  //Font formatting components
+  const FontTools = () => {
+    const canvas = canvasRef.current;
+    const activeObj = canvas?.getActiveObject();
+    let disabled;
+    if (activeObj?.type !== "i-text") {
+      disabled = true;
+    }
+    const isBold = activeObj?.fontWeight === "700";
+    const isItalics = activeObj?.fontStyle === "italic";
+    const isUnderline = activeObj?.underline;
+    console.log(isBold, isUnderline, isItalics);
+
+    const setBold = () => {
+      if (isBold) {
+        activeObj.set({ fontWeight: "400" });
+        setLetterHeaderStates({ ...letterHeaderStates, textIsBold: false });
+      } else {
+        activeObj.set({ fontWeight: "700" });
+        setLetterHeaderStates({ ...letterHeaderStates, textIsBold: true });
+      }
+      canvas.renderAll();
+    };
+
+    const setUnderline = () => {
+      if (isUnderline) {
+        activeObj.set({ underline: false, textDecoration: "" });
+        setLetterHeaderStates({
+          ...letterHeaderStates,
+          textIsUnderlined: false,
+        });
+      } else {
+        activeObj.set({ underline: true, textDecoration: "underline" });
+        setLetterHeaderStates({
+          ...letterHeaderStates,
+          textIsUnderlined: true,
+        });
+      }
+      canvas.renderAll();
+    };
+
+    const setItalic = () => {
+      if (isItalics) {
+        activeObj.set({
+          fontStyle: "normal",
+        });
+        setLetterHeaderStates({ ...letterHeaderStates, textIsItalic: true });
+      } else {
+        activeObj.set({
+          fontStyle: "italic",
+        });
+        setLetterHeaderStates({ ...letterHeaderStates, textIsItalic: false });
+      }
+      canvas.renderAll();
+    };
+
+    const handleColorPickerChange = (color) => {
+      // console.log(color.target.value);
+
+      activeObj.set({
+        fill: color.target.value,
+      });
+      // setLetterHeaderStates({
+      //   ...letterHeaderStates,
+      //   selectedFontColor: color.target.value,
+      // });
+      canvas.renderAll();
+    };
+
+    return (
+      <div className="font-tool-btns flex-row">
+        <ButtonAddons>
+          <p className="control">
+            <Button onClick={setBold} isPrimary={isBold} isDisabled={disabled}>
+              <div className="font-18px font-bold">B</div>
+            </Button>
+          </p>
+          <p className="control">
+            <Button
+              onClick={setUnderline}
+              isPrimary={isUnderline}
+              isDisabled={disabled}
+            >
+              <div className="font-18px text-underline">U</div>
+            </Button>
+          </p>
+          <p className="control">
+            <Button
+              onClick={setItalic}
+              isPrimary={isItalics}
+              isDisabled={disabled}
+            >
+              <div className="font-18px font-italic">i</div>
+            </Button>
+          </p>
+        </ButtonAddons>
+        <div className="display-flex m-l-10">
+          <input
+            style={{
+              width: "45px",
+              height: "38px",
+              backgroundColor: "none",
+            }}
+            type="color"
+            value={activeObj?.fill}
+            onChange={handleColorPickerChange}
+            disabled={disabled}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  // console.log(letterHeaderStates.fabricObjects, "FABRIC OBJECTS AFTER CONVERT");
+  // console.log(letterHeaderStates.items, "LETTER RAW ITEMS FROM STATE");
+  // console.log(canvasRef?.current?.getObjects("image"), "GET IMAGE ALL OBJECTS");
+  // console.log(canvasRef?.current?.getObjects("i-text"), "GET TEXT ALL OBJECTS");
+  // console.log(selectedObject, "SELECTEDS");
+  // console.log(letterHeaderStates.textSelected, "TEXT SELECTEDS");
+
   return (
-    <div className={"letter-header-component"}>
+    <OnClickOutside
+      onClickOutside={exitEditMode}
+      onCLickInside={enterEditMode}
+      className={"letter-header-component"}
+    >
       <input
         ref={fileInputRef}
-        hidden
+        className="is-hidden"
         type="file"
         accept="image/jpg,image/jpeg,image/png"
         onChange={handleImageUpload}
       />
-      <div className="active-header">
+      <div className="header-edit">
+        <LoaderSpinner
+          containerStyle={{ position: "absolute" }}
+          visible={letterHeaderStates.loading}
+          message={"Loading canvas"}
+          size="30"
+        />
         <canvas ref={canvasRef} />
       </div>
-      <div className="canvas-action-buttons">
+      <div
+        className={`canvas-action-buttons m-t-10 ${
+          !canvasEditMode && "is-hidden"
+        }`}
+      >
         <div className="letter-header-font-tools">
-          {/* <CanvasColorPickerComponent
-            canvas={canvasRef}
-            visible={
-              letterHeaderStates.canHaveColor || letterHeaderStates.textSelected
-            }
-            value={letterHeaderStates.selectedFontColor}
-          /> */}
+          <FontTools />
         </div>
         <div className="canvas-tools m-t-10">
           <Button isPrimary onClick={handleUploadBtnClick}>
@@ -528,15 +660,15 @@ const LetterHeaderComponent = ({ items }) => {
           </Button>
           <Button
             className={"m-l-10"}
-            isPrimary={selectedElement}
-            isDisabled={!selectedElement}
-            onClick={handleDeleteElementFromCanvas}
+            isPrimary={selectedObject}
+            isDisabled={!selectedObject}
+            onClick={removeSelectedObjectFromCanvas}
           >
             Delete
           </Button>
         </div>
       </div>
-    </div>
+    </OnClickOutside>
   );
 };
 

@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 
 export default function OnClickOutside({
   onClickOutside,
+  onCLickInside,
   children,
   className,
   style,
@@ -21,7 +22,7 @@ export default function OnClickOutside({
   }, [onClickOutside]);
 
   return (
-    <div ref={ref} style={style} className={className}>
+    <div ref={ref} style={style} className={className} onClick={onCLickInside}>
       {children}
     </div>
   );
