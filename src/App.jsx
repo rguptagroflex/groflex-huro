@@ -48,6 +48,7 @@ import Teams from "./app/views/teams/Teams";
 import Reports from "./app/views/accounting/reports/Reports";
 import BalanceSheet from "./app/views/accounting/reports/BalanceSheet";
 import ProfitAndLoss from "./app/views/accounting/reports/ProfitAndLoss";
+import GeneralLedger from "./app/views/accounting/reports/GeneralLedger";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -94,6 +95,10 @@ function App() {
           <Route
             path="accounting/reports/profit-and-loss"
             element={<ProfitAndLoss />}
+          />
+          <Route
+            path="accounting/reports/general-ledger"
+            element={<GeneralLedger />}
           />
 
           {/* Inventory Module */}

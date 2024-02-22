@@ -28,7 +28,11 @@ const Reports = () => {
               point in time showing assets, liabilities, and equity.
             </div>
           </AdvancedCard>
-          <AdvancedCard type={"s-card"} className="column is-5 report-card">
+          <AdvancedCard
+            type={"s-card"}
+            className="column is-5 report-card"
+            onClick={() => navigate("/accounting/reports/general-ledger")}
+          >
             <div className="report-card-heading-container">
               <FeatherIcon name={"Book"} color="#00A353" />
               <h5 className="report-card-heading">General ledger</h5>

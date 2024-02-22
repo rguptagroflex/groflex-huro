@@ -75,6 +75,9 @@ const resourceUrls = {
     `${resourceHost}accountingReport/balanceSheet/${startDate}/${endDate}?type=${fileType}`,
   profitAndLoss: (startDate, endDate, fileType) =>
     `${resourceHost}accountingReport/profitandloss/${startDate}/${endDate}?type=${fileType}`,
+  generalLedger: (startDate, endDate, fileType, customerID) =>
+    `${resourceHost}accountingReport/generalLedger/${startDate}/${endDate}?type=${fileType}&customerId=${customerID}`,
+  generalLedgerCustomers: `${resourceHost}customer?offset=0`,
 
   //Teams
   teamsList: `${resourceHost}user/list`,

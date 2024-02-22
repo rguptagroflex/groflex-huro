@@ -60,9 +60,12 @@ const ReportsTable = ({ rowData, tableHeaders }) => {
       <table className="table  is-fullwidth">
         <tbody>
           <tr className="reports-table-header">
-            <th style={{ width: "413px" }}>Group</th>
+            <th style={{ width: "413px", paddingTop: "15px" }}>Group</th>
             {tableHeaders.map((heading, id) => (
-              <th style={{ width: "413px" }} key={`heading-${id}`}>
+              <th
+                style={{ width: "413px", paddingTop: "15px" }}
+                key={`heading-${id}`}
+              >
                 {heading}
               </th>
             ))}

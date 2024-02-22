@@ -1,0 +1,15 @@
+.general-ledger-wrapper {
+  .general-ledger-table {
+    .reports-table {
+      .row-entry td:nth-child(4) {
+        text-align: right;
+      }
+      .row-entry td:nth-child(5) {
+        text-align: right;
+      }
+      .row-entry td:nth-child(6) {
+        text-align: right;
+      }
+    }
+  }
+}
