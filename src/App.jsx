@@ -41,7 +41,7 @@ import InventoryDashboard from "./app/views/inventory/inventoryDashboard/Invento
 import PurchaseOrderList from "./app/views/inventory/purchaseOrder/PurchaseOrderList";
 import SalesOrdersList from "./app/views/inventory/salesOrder/SalesOrdersList";
 import ReportingAndAnalytics from "./app/views/inventory/reportingAndAnalytics/ReportingAndAnalytics";
-
+import StockMovement from "./app/views/inventory/stockMovement/StockMovement";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -87,6 +87,7 @@ function App() {
             path="inventory/purchase-orders"
             element={<PurchaseOrderList />}
           />
+          <Route path="inventory/stock-movement" element={<StockMovement />} />
           <Route path="inventory/sales-orders" element={<SalesOrdersList />} />
           <Route
             path="inventory/reporting-and-analytics"

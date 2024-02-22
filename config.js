@@ -64,6 +64,10 @@ const resourceUrls = {
   //Transaction
   transaction: `${resourceHost}bankTransaction?offset=0&searchText=&limit=9999999&orderBy=date&desc=true`,
   bank: `${resourceHost}bank`,
+
+  //Inventory
+  inventory1: `${resourceHost}inventory/history?offset=0&searchText=&limit=9999999&orderBy=itemModifiedDate&desc=false`,
+  inventory2: `${resourceHost}inventory/?offset=0&searchText=&limit=9999999&orderBy=articleId&desc=false`,
 };
 
 const checkLoginTokenIsValid = () => {
@@ -121,6 +125,7 @@ const modules = {
     links: [
       { label: "Dashboard", route: "/inventory/dashboard" },
       { label: "Purchase Order", route: "/inventory/purchase-orders" },
+      { label: "Stock Movement", route: "inventory/stock-movement" },
       { label: "Sales Order", route: "/inventory/sales-orders" },
       {
         label: "Reporting & Analytics",
