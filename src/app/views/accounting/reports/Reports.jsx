@@ -59,7 +59,11 @@ const Reports = () => {
               losses over a specified period of time.
             </div>
           </AdvancedCard>
-          <AdvancedCard type={"s-card"} className="column is-5 report-card">
+          <AdvancedCard
+            type={"s-card"}
+            className="column is-5 report-card"
+            onClick={() => navigate("/accounting/reports/cash-flow")}
+          >
             <div className="report-card-heading-container">
               <FeatherIcon name={"Book"} color="#00A353" />
               <h5 className="report-card-heading">Cash Flow Statement</h5>

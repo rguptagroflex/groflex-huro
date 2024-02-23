@@ -78,6 +78,8 @@ const resourceUrls = {
   generalLedger: (startDate, endDate, fileType, customerID) =>
     `${resourceHost}accountingReport/generalLedger/${startDate}/${endDate}?type=${fileType}&customerId=${customerID}`,
   generalLedgerCustomers: `${resourceHost}customer?offset=0`,
+  cashFlow: (starDate, endDate, fileType) =>
+    `${resourceHost}accountingReport/cashflow/${starDate}/${endDate}?type=${fileType}`,
 
   //Teams
   teamsList: `${resourceHost}user/list`,
