@@ -10,7 +10,9 @@ import moment from "moment";
 import { Button } from "../../../shared/components/button/Button";
 import { useSelector } from "react-redux";
 import ReportsTable from "./ReportsTable";
-
+import { DatePicker } from "@mui/x-date-pickers";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import DateInput from "../../../shared/components/datePicker/DateInput";
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
   currentMonth: moment().format("MMMM"),
@@ -33,6 +35,9 @@ const BalanceSheet = () => {
     startDate: "",
     endDate: "",
   });
+  const [showCustomDateRangeSelector, setShowCustomDateRangeSelector] =
+    useState(false);
+
   const [dateDropDown, setDateDropDown] = useState({
     label: dateFilterTypes.fiscalYear,
     value: "fiscalYear",
@@ -41,7 +46,9 @@ const BalanceSheet = () => {
   const [rowData, setRowData] = useState([]);
 
   useEffect(() => {
-    fetchBalanceSheet();
+    if (date.startDate && date.endDate) {
+      fetchBalanceSheet();
+    }
   }, [date]);
 
   const handleDateDropDown = (option) => {
@@ -51,23 +58,28 @@ const BalanceSheet = () => {
     let endDate = "";
     switch (option.value) {
       case "currMonth":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().startOf("month");
         endDate = moment().endOf("month");
 
         break;
       case "lastMonth":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().subtract(1, "months").startOf("month");
         endDate = moment().subtract(1, "months").endOf("month");
         break;
       case "secondLastMonth":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().subtract(2, "months").startOf("month");
         endDate = moment().subtract(2, "months").endOf("month");
         break;
       case "currQuarter":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().startOf("quarter");
         endDate = moment().endOf("quarter");
         break;
       case "lastQuarter":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().subtract(3, "months").startOf("quarter");
         endDate = moment()
           .subtract(3, "months")
@@ -75,10 +87,12 @@ const BalanceSheet = () => {
           .format("DD MMMM YYYY");
         break;
       case "secondLastQuarter":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().subtract(6, "months").startOf("quarter");
         endDate = moment().subtract(6, "months").endOf("quarter");
         break;
       case "fiscalYear":
+        setShowCustomDateRangeSelector(false);
         const financialYearMonthStart = moment()
           .utc()
           .set("month", 2)
@@ -89,12 +103,17 @@ const BalanceSheet = () => {
             : financialYearMonthStart.set("year", moment().utc().year() - 1);
         endDate = endDate ? moment(endDate).utc() : moment().utc();
         break;
+      case "custom":
+        setShowCustomDateRangeSelector(true);
+        break;
     }
 
-    setDate({
-      startDate: startDate.toJSON(),
-      endDate: endDate.toJSON(),
-    });
+    if (option.value !== "custom") {
+      setDate({
+        startDate: startDate.toJSON(),
+        endDate: endDate.toJSON(),
+      });
+    }
   };
 
   const fetchBalanceSheet = () => {
@@ -144,6 +163,19 @@ const BalanceSheet = () => {
       });
   };
 
+  const handleCustomStartDateChange = (value) => {
+    setDate({
+      ...date,
+      startDate: value.toJSON(),
+    });
+  };
+  const handleCustomEndDateChange = (value) => {
+    setDate({
+      ...date,
+      endDate: value.toJSON(),
+    });
+  };
+
   const dateOptions = [
     {
       label: dateFilterTypes.currentMonth,
@@ -173,8 +205,11 @@ const BalanceSheet = () => {
       label: dateFilterTypes.fiscalYear,
       value: "fiscalYear",
     },
+    {
+      label: "Custom",
+      value: "custom",
+    },
   ];
-  // console.log(rowData);
 
   return (
     <PageContent title={"Balance Sheet"}>
@@ -192,6 +227,23 @@ const BalanceSheet = () => {
               value={dateDropDown}
             />
           </div>
+          {showCustomDateRangeSelector && (
+            <div className="columns is-multiline" style={{ marginTop: "10px" }}>
+              <div className="column is-6">
+                <DateInput
+                  selectedDate={moment(date.startDate)}
+                  onDateChange={handleCustomStartDateChange}
+                />
+              </div>
+              <div className="column is-6">
+                <DateInput
+                  selectedDate={moment(date.endDate)}
+                  onDateChange={handleCustomEndDateChange}
+                />
+              </div>
+            </div>
+          )}
+
           <div className="columns is-multiline utility-buttons">
             <Button
               icon={<i className={`fa-solid fa-envelope`}></i>}
