@@ -40,6 +40,7 @@ const CashFlow = () => {
     value: "fiscalYear",
   });
   const [rowData, setRowData] = useState([]);
+  const [totalValue, setTotalValue] = useState("");
 
   const [tableHeaders, setTableHeaders] = useState([]);
   useEffect(() => {
@@ -57,8 +58,8 @@ const CashFlow = () => {
         { auth: true }
       )
       .then((res) => {
-        console.log(res);
         if (res && res.body) {
+          setTotalValue(res.body.data.summaryData.finalCashFlowTotal);
           const transactions = res.body.data.summaryData.transactions;
           transactions.forEach((item) => {
             if (!tableHeaders.includes(item.accountTypeId)) {
@@ -257,8 +258,8 @@ const CashFlow = () => {
                       <th></th>
                       <th></th>
                     </tr>
-                    {tableHeaders.map((heading) => (
-                      <React.Fragment>
+                    {tableHeaders.map((heading, id) => (
+                      <React.Fragment key={id}>
                         <tr style={{ height: "54px" }}>
                           <td colSpan={2} className="row-heading">
                             {heading
@@ -270,11 +271,11 @@ const CashFlow = () => {
                                 .slice(1)}
                           </td>
                         </tr>
-                        {rowData.map((row) => {
+                        {rowData.map((row, id) => {
                           if (row.accountTypeId === heading) {
                             let total = parseFloat(row.total).toFixed(2);
                             return (
-                              <tr style={{ height: "54px" }}>
+                              <tr style={{ height: "54px" }} key={id}>
                                 <td>
                                   {row.accountSubTypeId
                                     .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
@@ -293,6 +294,23 @@ const CashFlow = () => {
                         })}
                       </React.Fragment>
                     ))}
+                    <tr
+                      style={{
+                        height: "54px",
+                        fontSize: "15px",
+                        fontWeight: "600",
+                      }}
+                    >
+                      <td>TOTAL CASH IN FLOW</td>
+                      <td
+                        style={{
+                          textAlign: "right",
+                          color: "black",
+                        }}
+                      >
+                        ₹{totalValue}
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>

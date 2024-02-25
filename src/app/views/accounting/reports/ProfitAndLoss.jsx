@@ -42,6 +42,7 @@ const ProfitAndLoss = () => {
     useState(false);
 
   const [rowData, setRowData] = useState([]);
+  const [rowTotals, setRowTotals] = useState({});
 
   useEffect(() => {
     if (date.startDate && date.endDate) {
@@ -61,7 +62,38 @@ const ProfitAndLoss = () => {
       )
       .then((res) => {
         let rowData = [];
+        let rowTotals = {};
         if (res && res.body) {
+          rowTotals = {
+            AssetsTotal: [
+              "",
+              "",
+              parseFloat(res.body.data.summaryData.assetsTotal).toFixed(2),
+            ],
+            EquityTotal: [
+              "",
+              "",
+              parseFloat(res.body.data.summaryData.equityTotal).toFixed(2),
+            ],
+            ExpensesTotal: [
+              "",
+              "",
+              parseFloat(res.body.data.summaryData.expensesTotal).toFixed(2),
+            ],
+            LiabilityTotal: [
+              "",
+              "",
+              parseFloat(res.body.data.summaryData.liabilityTotal).toFixed(2),
+            ],
+            netValue: {
+              label: "Net Profit",
+              value: [
+                "",
+                "",
+                parseFloat(res.body.data.summaryData.netProfitTotal).toFixed(2),
+              ],
+            },
+          };
           const transcatios = res.body.data.summaryData.transactions;
           transcatios.forEach((item, index) => {
             let total =
@@ -85,6 +117,7 @@ const ProfitAndLoss = () => {
               column3: "₹" + " " + total.toString(),
             });
           });
+          setRowTotals(rowTotals);
           setRowData(rowData);
         }
       });
@@ -274,6 +307,7 @@ const ProfitAndLoss = () => {
               <ReportsTable
                 rowData={rowData}
                 tableHeaders={["| Account", "| Account Code", "| Total"]}
+                rowTotals={rowTotals}
               />
             </div>
           </div>

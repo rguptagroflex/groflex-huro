@@ -59,6 +59,11 @@ const DateInput = ({ selectedDate, onDateChange }) => {
       slotProps={{
         textField: { size: "small" },
         inputAdornment: { position: "start" },
+        popper: {
+          sx: {
+            "& .Mui-selected": { backgroundColor: "#00a353 !important" },
+          },
+        },
       }}
       components={{
         OpenPickerIcon: CalendarMonthIcon,

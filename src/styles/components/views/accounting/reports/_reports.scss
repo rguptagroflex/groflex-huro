@@ -43,12 +43,33 @@
       color: black !important;
     }
   }
+  .accordian-total {
+    height: 54px;
+    background: #ecfcf4;
+    font-size: 15px;
+    font-weight: 600;
+
+    .total-value {
+      color: black !important;
+      text-align: right;
+    }
+  }
   .table-accordian {
     height: 54px;
     cursor: pointer;
     th {
       font-weight: 600;
       font-size: 14px;
+    }
+  }
+  .net-container {
+    height: 54px;
+    font-size: 15px;
+    font-weight: 600;
+
+    .net-value {
+      color: black !important;
+      text-align: right;
     }
   }
 }

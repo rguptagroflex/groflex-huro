@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
 
-const ReportsTable = ({ rowData, tableHeaders }) => {
+const ReportsTable = ({ rowData, tableHeaders, rowTotals }) => {
   // State to manage the visibility of each group
   const [expandedGroups, setExpandedGroups] = useState({});
 
@@ -51,6 +51,16 @@ const ReportsTable = ({ rowData, tableHeaders }) => {
               )}
             </tr>
           ))}
+
+        <tr className="accordian-total">
+          <td className="total-label">Total {groupKey}</td>
+
+          {rowTotals[groupKey + "Total"].map((item, id) => (
+            <td className="total-value" key={id}>
+              {item && "₹"} {item}
+            </td>
+          ))}
+        </tr>
       </React.Fragment>
     ));
   };
@@ -71,6 +81,15 @@ const ReportsTable = ({ rowData, tableHeaders }) => {
             ))}
           </tr>
           {renderRows()}
+          <tr className="net-container">
+            <td className="net-label">{rowTotals.netValue.label}</td>
+            {rowTotals.netValue.value.map((item, id) => (
+              <td className="net-value" key={id}>
+                {item && "₹"}
+                {item}
+              </td>
+            ))}
+          </tr>
         </tbody>
       </table>
     </div>

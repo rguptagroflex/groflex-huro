@@ -44,6 +44,7 @@ const BalanceSheet = () => {
   });
 
   const [rowData, setRowData] = useState([]);
+  const [rowTotals, setRowTotals] = useState({});
 
   useEffect(() => {
     if (date.startDate && date.endDate) {
@@ -119,6 +120,7 @@ const BalanceSheet = () => {
   const fetchBalanceSheet = () => {
     let tableHeaders = [];
     let rowData = [];
+    let rowTotals = {};
     groflexService
       .request(
         `${config.resourceUrls.balanceSheet(
@@ -132,6 +134,34 @@ const BalanceSheet = () => {
         // console.log(res);
         if (res && res.body) {
           const transcations = res.body.data.summaryData.transactions;
+          rowTotals = {
+            AssetsTotal: [
+              "",
+              parseFloat(res.body.data.summaryData.assetsTotal).toFixed(2),
+            ],
+            EquityTotal: [
+              "",
+              parseFloat(res.body.data.summaryData.equityTotal).toFixed(2),
+            ],
+            ExpensesTotal: [
+              "",
+              parseFloat(res.body.data.summaryData.expensesTotal).toFixed(2),
+            ],
+            LiabilityTotal: [
+              "",
+              parseFloat(res.body.data.summaryData.liabilityTotal).toFixed(2),
+            ],
+            netValue: {
+              label: "Total Balance",
+              value: [
+                "",
+                parseFloat(res.body.data.summaryData.finalBalanceTotal).toFixed(
+                  2
+                ),
+              ],
+            },
+          };
+
           transcations.forEach((transcation) => {
             if (!tableHeaders.includes(transcation.accountTypeId)) {
               tableHeaders.push(transcation.accountTypeId);
@@ -158,6 +188,7 @@ const BalanceSheet = () => {
               column2: "₹" + " " + total.toString(),
             });
           });
+          setRowTotals(rowTotals);
           setRowData(rowData);
         }
       });
@@ -282,6 +313,7 @@ const BalanceSheet = () => {
               <ReportsTable
                 rowData={rowData}
                 tableHeaders={["| Account", "| Total"]}
+                rowTotals={rowTotals}
               />
             </div>
           </div>
