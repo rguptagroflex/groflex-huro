@@ -80,6 +80,8 @@ const resourceUrls = {
   generalLedgerCustomers: `${resourceHost}customer?offset=0`,
   cashFlow: (starDate, endDate, fileType) =>
     `${resourceHost}accountingReport/cashflow/${starDate}/${endDate}?type=${fileType}`,
+  sendAccountingReport: (reportType, startDate, endDate) =>
+    `${resourceHost}accountingReport/sendAccountingReportEmail/${reportType}/${startDate}/${endDate}`,
 
   //Teams
   teamsList: `${resourceHost}user/list`,

@@ -13,6 +13,8 @@ import ReportsTable from "./ReportsTable";
 import { DatePicker } from "@mui/x-date-pickers";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import DateInput from "../../../shared/components/datePicker/DateInput";
+import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
+import { ButtonGroup } from "../../../shared/components/button/buttonGroup/ButtonGroup";
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
   currentMonth: moment().format("MMMM"),
@@ -37,6 +39,7 @@ const BalanceSheet = () => {
   });
   const [showCustomDateRangeSelector, setShowCustomDateRangeSelector] =
     useState(false);
+  const [isEmailModalVisible, setIsEmailModalVisible] = useState(false);
 
   const [dateDropDown, setDateDropDown] = useState({
     label: dateFilterTypes.fiscalYear,
@@ -45,6 +48,13 @@ const BalanceSheet = () => {
 
   const [rowData, setRowData] = useState([]);
   const [rowTotals, setRowTotals] = useState({});
+  const [sendEmailFormData, setSendEmailFormData] = useState({
+    emails: "",
+    subject: "",
+    message: "",
+    pdf: false,
+    csv: false,
+  });
 
   useEffect(() => {
     if (date.startDate && date.endDate) {
@@ -207,6 +217,45 @@ const BalanceSheet = () => {
     });
   };
 
+  const handleSendEmail = () => {
+    let sendType = "";
+    if (sendEmailFormData.pdf && sendEmailFormData.csv) {
+      sendType = "both";
+    } else if (sendEmailFormData.pdf) {
+      sendType = "pdf";
+    } else if (sendEmailFormData.csv) {
+      sendType = "both";
+    }
+
+    let payload = {
+      recipients: [sendEmailFormData.emails],
+      subject: sendEmailFormData.subject,
+      text: sendEmailFormData.message,
+      sendCopy: false,
+      sendType: sendType,
+    };
+    groflexService
+      .request(
+        `${config.resourceUrls.sendAccountingReport(
+          "BalanceSheet",
+          date.startDate,
+          date.endDate
+        )}`,
+        { auth: true, data: payload, method: "POST" }
+      )
+      .then((res) => {
+        if (res.body?.message) {
+          groflexService.toast.error("Something went wrong");
+        } else {
+          groflexService.toast.success(
+            "Balance sheet has beend successfully sent"
+          );
+        }
+        setIsEmailModalVisible(false);
+        console.log(res);
+      });
+  };
+
   const dateOptions = [
     {
       label: dateFilterTypes.currentMonth,
@@ -275,10 +324,11 @@ const BalanceSheet = () => {
             </div>
           )}
 
-          <div className="columns is-multiline utility-buttons">
+          <ButtonGroup>
             <Button
               icon={<i className={`fa-solid fa-envelope`}></i>}
               className={"utility-btn"}
+              onClick={() => setIsEmailModalVisible(true)}
             >
               Send Email
             </Button>
@@ -294,7 +344,7 @@ const BalanceSheet = () => {
             >
               Print
             </Button>
-          </div>
+          </ButtonGroup>
         </div>
 
         {rowData.length > 0 ? (
@@ -321,6 +371,20 @@ const BalanceSheet = () => {
           <div className="reports-empty-table">No data to show</div>
         )}
       </AdvancedCard>
+      <SendEmailModal
+        isEmailModalVisible={isEmailModalVisible}
+        setIsEmailModalVisible={setIsEmailModalVisible}
+        handleSendEmail={handleSendEmail}
+        api={`${config.resourceUrls.balanceSheet(
+          date.startDate,
+          date.endDate,
+          "json"
+        )}`}
+        sendEmailFormData={sendEmailFormData}
+        setSendEmailFormData={setSendEmailFormData}
+        fileName={"BalanceSheet"}
+        title={"Send Balance Sheet"}
+      />
     </PageContent>
   );
 };
