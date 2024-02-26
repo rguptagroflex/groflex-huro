@@ -51,16 +51,18 @@ const ReportsTable = ({ rowData, tableHeaders, rowTotals }) => {
               )}
             </tr>
           ))}
+        {rowTotals && (
+          <tr className="accordian-total">
+            <td className="total-label">Total {groupKey}</td>
 
-        <tr className="accordian-total">
-          <td className="total-label">Total {groupKey}</td>
-
-          {rowTotals[groupKey + "Total"].map((item, id) => (
-            <td className="total-value" key={id}>
-              {item && "₹"} {item}
-            </td>
-          ))}
-        </tr>
+            {rowTotals &&
+              rowTotals[groupKey + "Total"].map((item, id) => (
+                <td className="total-value" key={id}>
+                  {item && "₹"} {item}
+                </td>
+              ))}
+          </tr>
+        )}
       </React.Fragment>
     ));
   };
@@ -81,15 +83,17 @@ const ReportsTable = ({ rowData, tableHeaders, rowTotals }) => {
             ))}
           </tr>
           {renderRows()}
-          <tr className="net-container">
-            <td className="net-label">{rowTotals.netValue.label}</td>
-            {rowTotals.netValue.value.map((item, id) => (
-              <td className="net-value" key={id}>
-                {item && "₹"}
-                {item}
-              </td>
-            ))}
-          </tr>
+          {rowTotals && (
+            <tr className="net-container">
+              <td className="net-label">{rowTotals.netValue.label}</td>
+              {rowTotals.netValue.value.map((item, id) => (
+                <td className="net-value" key={id}>
+                  {item && "₹"}
+                  {item}
+                </td>
+              ))}
+            </tr>
+          )}
         </tbody>
       </table>
     </div>

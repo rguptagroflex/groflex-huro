@@ -8,6 +8,7 @@ import { Button } from "../../../shared/components/button/Button";
 import groflexService from "../../../services/groflex.service";
 import config from "../../../../../config";
 import ReportsTable from "./ReportsTable";
+import DateInput from "../../../shared/components/datePicker/DateInput";
 
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
@@ -28,6 +29,9 @@ const GeneralLedger = () => {
   const { companyAddress } = useSelector(
     (state) => state?.accountData?.tenantData || ""
   );
+
+  const [showCustomDateRangeSelector, setShowCustomDateRangeSelector] =
+    useState(false);
   const [customerID, setCustomerID] = useState(null);
   const [customerDropDown, setCustomerDropDown] = useState([]);
 
@@ -42,7 +46,7 @@ const GeneralLedger = () => {
 
   const [rowData, setRowData] = useState([]);
   useEffect(() => {
-    if (customerID) {
+    if (customerID && date.startDate && date.endDate) {
       fetchGeneralLedger();
     }
   }, [date, customerID]);
@@ -118,23 +122,28 @@ const GeneralLedger = () => {
     let endDate = "";
     switch (option.value) {
       case "currMonth":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().startOf("month");
         endDate = moment().endOf("month");
 
         break;
       case "lastMonth":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().subtract(1, "months").startOf("month");
         endDate = moment().subtract(1, "months").endOf("month");
         break;
       case "secondLastMonth":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().subtract(2, "months").startOf("month");
         endDate = moment().subtract(2, "months").endOf("month");
         break;
       case "currQuarter":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().startOf("quarter");
         endDate = moment().endOf("quarter");
         break;
       case "lastQuarter":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().subtract(3, "months").startOf("quarter");
         endDate = moment()
           .subtract(3, "months")
@@ -142,10 +151,12 @@ const GeneralLedger = () => {
           .format("DD MMMM YYYY");
         break;
       case "secondLastQuarter":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().subtract(6, "months").startOf("quarter");
         endDate = moment().subtract(6, "months").endOf("quarter");
         break;
       case "fiscalYear":
+        setShowCustomDateRangeSelector(false);
         const financialYearMonthStart = moment()
           .utc()
           .set("month", 2)
@@ -156,11 +167,29 @@ const GeneralLedger = () => {
             : financialYearMonthStart.set("year", moment().utc().year() - 1);
         endDate = endDate ? moment(endDate).utc() : moment().utc();
         break;
+      case "custom":
+        setShowCustomDateRangeSelector(true);
+        break;
     }
 
+    if (option.value !== "custom") {
+      setDate({
+        startDate: startDate.toJSON(),
+        endDate: endDate.toJSON(),
+      });
+    }
+  };
+
+  const handleCustomStartDateChange = (value) => {
     setDate({
-      startDate: moment(startDate).format("YYYY-MM-DD"),
-      endDate: moment(endDate).format("YYYY-MM-DD"),
+      ...date,
+      startDate: value.toJSON(),
+    });
+  };
+  const handleCustomEndDateChange = (value) => {
+    setDate({
+      ...date,
+      endDate: value.toJSON(),
     });
   };
 
@@ -193,6 +222,10 @@ const GeneralLedger = () => {
       label: dateFilterTypes.fiscalYear,
       value: "fiscalYear",
     },
+    {
+      label: "Custom",
+      value: "custom",
+    },
   ];
 
   return (
@@ -205,28 +238,31 @@ const GeneralLedger = () => {
         className={"general-ledger-wrapper"}
       >
         <div className="columns is-multiline reports-header">
-          <div
-            className="columns is-mulitline"
-            style={{ marginTop: "10px", marginLeft: "10px" }}
-          >
-            <div className="column is-8" style={{ minWidth: "170px" }}>
-              <SelectInput
-                options={dateOptions}
-                placeholder={"Select Date"}
-                onChange={handleDateDropDown}
-                value={dateDropDown}
-              />
-            </div>
-
-            <div className="column is-8" style={{ minWidth: "170px" }}>
-              <SelectInput
-                options={customerDropDown}
-                placeholder={"Select Customer"}
-                onChange={handleCustomerDropDown}
-                value={customerID}
-              />
-            </div>
+          <div className="column is-2">
+            <SelectInput
+              options={dateOptions}
+              placeholder={"Select Date"}
+              onChange={handleDateDropDown}
+              value={dateDropDown}
+            />
           </div>
+
+          {showCustomDateRangeSelector && (
+            <div className="columns is-multiline" style={{ marginTop: "10px" }}>
+              <div className="column is-6">
+                <DateInput
+                  selectedDate={moment(date.startDate)}
+                  onDateChange={handleCustomStartDateChange}
+                />
+              </div>
+              <div className="column is-6">
+                <DateInput
+                  selectedDate={moment(date.endDate)}
+                  onDateChange={handleCustomEndDateChange}
+                />
+              </div>
+            </div>
+          )}
 
           <div className="columns is-multiline utility-buttons">
             <Button
@@ -247,6 +283,23 @@ const GeneralLedger = () => {
             >
               Print
             </Button>
+          </div>
+        </div>
+        <div className="columns is-mulitline">
+          <div
+            className="column is-2"
+            style={{
+              marginTop: "-20px",
+              marginBottom: "30px",
+              marginLeft: "20px",
+            }}
+          >
+            <SelectInput
+              options={customerDropDown}
+              placeholder={"Select Customer"}
+              onChange={handleCustomerDropDown}
+              value={customerID}
+            />
           </div>
         </div>
 
