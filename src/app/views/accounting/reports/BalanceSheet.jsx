@@ -15,6 +15,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import DateInput from "../../../shared/components/datePicker/DateInput";
 import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
 import { ButtonGroup } from "../../../shared/components/button/buttonGroup/ButtonGroup";
+import ContextMenu from "../../../shared/components/contextMenu/ContextMenu";
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
   currentMonth: moment().format("MMMM"),
@@ -248,10 +249,29 @@ const BalanceSheet = () => {
           groflexService.toast.error("Something went wrong");
         } else {
           groflexService.toast.success(
-            "Balance sheet has beend successfully sent"
+            "Balance sheet has been sent successfully "
           );
         }
         setIsEmailModalVisible(false);
+      });
+  };
+
+  const onExportButtonClick = (label) => {
+    const exportType = label.toLowerCase();
+    groflexService
+      .request(
+        `${config.resourceUrls.balanceSheet(
+          date.startDate,
+          date.endDate,
+          exportType
+        )}`,
+        {
+          auth: true,
+          method: "GET",
+          headers: { "Content-Type": `application/${exportType}` },
+        }
+      )
+      .then((res) => {
         console.log(res);
       });
   };
@@ -332,12 +352,22 @@ const BalanceSheet = () => {
             >
               Send Email
             </Button>
-            <Button
-              icon={<i className="fa-solid fa-download"></i>}
-              className={"utility-btn"}
-            >
-              Export
-            </Button>
+
+            <ContextMenu
+              classes={["button", "h-button"]}
+              iconText={"Export"}
+              contextMenuItems={[
+                {
+                  label: "PDF",
+                  onContextMenuItemClick: (e) => onExportButtonClick(e),
+                },
+                {
+                  label: "CSV",
+                  onContextMenuItemClick: (e) => onExportButtonClick(e),
+                },
+              ]}
+            />
+
             <Button
               icon={<i className="fa-solid fa-print"></i>}
               className={"utility-btn"}
@@ -375,11 +405,6 @@ const BalanceSheet = () => {
         isEmailModalVisible={isEmailModalVisible}
         setIsEmailModalVisible={setIsEmailModalVisible}
         handleSendEmail={handleSendEmail}
-        api={`${config.resourceUrls.balanceSheet(
-          date.startDate,
-          date.endDate,
-          "json"
-        )}`}
         sendEmailFormData={sendEmailFormData}
         setSendEmailFormData={setSendEmailFormData}
         fileName={"BalanceSheet"}

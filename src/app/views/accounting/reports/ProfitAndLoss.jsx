@@ -9,6 +9,9 @@ import groflexService from "../../../services/groflex.service";
 import config from "../../../../../config";
 import { useSelector } from "react-redux";
 import DateInput from "../../../shared/components/datePicker/DateInput";
+import { ButtonGroup } from "../../../shared/components/button/buttonGroup/ButtonGroup";
+import ContextMenu from "../../../shared/components/contextMenu/ContextMenu";
+import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
 
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
@@ -40,9 +43,18 @@ const ProfitAndLoss = () => {
 
   const [showCustomDateRangeSelector, setShowCustomDateRangeSelector] =
     useState(false);
+  const [isEmailModalVisible, setIsEmailModalVisible] = useState(false);
 
   const [rowData, setRowData] = useState([]);
   const [rowTotals, setRowTotals] = useState({});
+
+  const [sendEmailFormData, setSendEmailFormData] = useState({
+    emails: "",
+    subject: "",
+    message: "",
+    pdf: false,
+    csv: false,
+  });
 
   useEffect(() => {
     if (date.startDate && date.endDate) {
@@ -120,6 +132,64 @@ const ProfitAndLoss = () => {
           setRowTotals(rowTotals);
           setRowData(rowData);
         }
+      });
+  };
+
+  const handleSendEmail = () => {
+    let sendType = "";
+    if (sendEmailFormData.pdf && sendEmailFormData.csv) {
+      sendType = "both";
+    } else if (sendEmailFormData.pdf) {
+      sendType = "pdf";
+    } else if (sendEmailFormData.csv) {
+      sendType = "both";
+    }
+
+    let payload = {
+      recipients: [sendEmailFormData.emails],
+      subject: sendEmailFormData.subject,
+      text: sendEmailFormData.message,
+      sendCopy: false,
+      sendType: sendType,
+    };
+    groflexService
+      .request(
+        `${config.resourceUrls.sendAccountingReport(
+          "ProfitAndLoss",
+          date.startDate,
+          date.endDate
+        )}`,
+        { auth: true, data: payload, method: "POST" }
+      )
+      .then((res) => {
+        if (res.body?.message) {
+          groflexService.toast.error("Something went wrong");
+        } else {
+          groflexService.toast.success(
+            "Profit and loss statement has been sent successfully "
+          );
+        }
+        setIsEmailModalVisible(false);
+      });
+  };
+
+  const onExportButtonClick = (label) => {
+    const exportType = label.toLowerCase();
+    groflexService
+      .request(
+        `${config.resourceUrls.profitAndLoss(
+          date.startDate,
+          date.endDate,
+          exportType
+        )}`,
+        {
+          auth: true,
+          method: "GET",
+          headers: { "Content-Type": `application/${exportType}` },
+        }
+      )
+      .then((res) => {
+        console.log(res);
       });
   };
 
@@ -269,26 +339,37 @@ const ProfitAndLoss = () => {
               </div>
             </div>
           )}
-          <div className="columns is-multiline utility-buttons">
+          <ButtonGroup>
             <Button
               icon={<i className={`fa-solid fa-envelope`}></i>}
               className={"utility-btn"}
+              onClick={() => setIsEmailModalVisible(true)}
             >
               Send Email
             </Button>
-            <Button
-              icon={<i className="fa-solid fa-download"></i>}
-              className={"utility-btn"}
-            >
-              Export
-            </Button>
+
+            <ContextMenu
+              classes={["button", "h-button"]}
+              iconText={"Export"}
+              contextMenuItems={[
+                {
+                  label: "PDF",
+                  onContextMenuItemClick: (e) => onExportButtonClick(e),
+                },
+                {
+                  label: "CSV",
+                  onContextMenuItemClick: (e) => onExportButtonClick(e),
+                },
+              ]}
+            />
+
             <Button
               icon={<i className="fa-solid fa-print"></i>}
               className={"utility-btn"}
             >
               Print
             </Button>
-          </div>
+          </ButtonGroup>
         </div>
 
         {rowData.length > 0 ? (
@@ -315,6 +396,15 @@ const ProfitAndLoss = () => {
           <div className="reports-empty-table">No data to show</div>
         )}
       </AdvancedCard>
+      <SendEmailModal
+        isEmailModalVisible={isEmailModalVisible}
+        setIsEmailModalVisible={setIsEmailModalVisible}
+        handleSendEmail={handleSendEmail}
+        sendEmailFormData={sendEmailFormData}
+        setSendEmailFormData={setSendEmailFormData}
+        fileName={"BalanceSheet"}
+        title={"Send Balance Sheet"}
+      />
     </PageContent>
   );
 };

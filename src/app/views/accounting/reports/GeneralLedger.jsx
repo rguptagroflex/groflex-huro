@@ -9,6 +9,9 @@ import groflexService from "../../../services/groflex.service";
 import config from "../../../../../config";
 import ReportsTable from "./ReportsTable";
 import DateInput from "../../../shared/components/datePicker/DateInput";
+import { ButtonGroup } from "../../../shared/components/button/buttonGroup/ButtonGroup";
+import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
+import ContextMenu from "../../../shared/components/contextMenu/ContextMenu";
 
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
@@ -32,6 +35,8 @@ const GeneralLedger = () => {
 
   const [showCustomDateRangeSelector, setShowCustomDateRangeSelector] =
     useState(false);
+  const [isEmailModalVisible, setIsEmailModalVisible] = useState(false);
+
   const [customerID, setCustomerID] = useState(null);
   const [customerDropDown, setCustomerDropDown] = useState([]);
 
@@ -45,6 +50,14 @@ const GeneralLedger = () => {
   });
 
   const [rowData, setRowData] = useState([]);
+  const [sendEmailFormData, setSendEmailFormData] = useState({
+    emails: "",
+    subject: "",
+    message: "",
+    pdf: false,
+    csv: false,
+  });
+
   useEffect(() => {
     if (customerID && date.startDate && date.endDate) {
       fetchGeneralLedger();
@@ -108,6 +121,45 @@ const GeneralLedger = () => {
         });
 
         setRowData(rowData);
+      });
+  };
+
+  const handleSendEmail = () => {
+    let sendType = "";
+    if (sendEmailFormData.pdf && sendEmailFormData.csv) {
+      sendType = "both";
+    } else if (sendEmailFormData.pdf) {
+      sendType = "pdf";
+    } else if (sendEmailFormData.csv) {
+      sendType = "both";
+    }
+
+    let payload = {
+      recipients: [sendEmailFormData.emails],
+      subject: sendEmailFormData.subject,
+      text: sendEmailFormData.message,
+      sendCopy: false,
+      sendType: sendType,
+      customerId: customerID,
+    };
+    groflexService
+      .request(
+        `${config.resourceUrls.sendAccountingReport(
+          "GeneralLedger",
+          date.startDate,
+          date.endDate
+        )}`,
+        { auth: true, data: payload, method: "POST" }
+      )
+      .then((res) => {
+        if (res.body?.message) {
+          groflexService.toast.error("Something went wrong");
+        } else {
+          groflexService.toast.success(
+            "Balance sheet has been sent successfully "
+          );
+        }
+        setIsEmailModalVisible(false);
       });
   };
 
@@ -178,6 +230,27 @@ const GeneralLedger = () => {
         endDate: endDate.toJSON(),
       });
     }
+  };
+
+  const onExportButtonClick = (label) => {
+    const exportType = label.toLowerCase();
+    groflexService
+      .request(
+        `${config.resourceUrls.generalLedger(
+          date.startDate,
+          date.endDate,
+          exportType,
+          customerID
+        )}`,
+        {
+          auth: true,
+          method: "GET",
+          headers: { "Content-Type": `application/${exportType}` },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+      });
   };
 
   const handleCustomStartDateChange = (value) => {
@@ -264,26 +337,37 @@ const GeneralLedger = () => {
             </div>
           )}
 
-          <div className="columns is-multiline utility-buttons">
+          <ButtonGroup>
             <Button
               icon={<i className={`fa-solid fa-envelope`}></i>}
               className={"utility-btn"}
+              onClick={() => setIsEmailModalVisible(true)}
             >
               Send Email
             </Button>
-            <Button
-              icon={<i className="fa-solid fa-download"></i>}
-              className={"utility-btn"}
-            >
-              Export
-            </Button>
+
+            <ContextMenu
+              classes={["button", "h-button"]}
+              iconText={"Export"}
+              contextMenuItems={[
+                {
+                  label: "PDF",
+                  onContextMenuItemClick: (e) => onExportButtonClick(e),
+                },
+                {
+                  label: "CSV",
+                  onContextMenuItemClick: (e) => onExportButtonClick(e),
+                },
+              ]}
+            />
+
             <Button
               icon={<i className="fa-solid fa-print"></i>}
               className={"utility-btn"}
             >
               Print
             </Button>
-          </div>
+          </ButtonGroup>
         </div>
         <div className="columns is-mulitline">
           <div
@@ -332,6 +416,15 @@ const GeneralLedger = () => {
           <div className="reports-empty-table">No data to show</div>
         )}
       </AdvancedCard>
+      <SendEmailModal
+        isEmailModalVisible={isEmailModalVisible}
+        setIsEmailModalVisible={setIsEmailModalVisible}
+        handleSendEmail={handleSendEmail}
+        sendEmailFormData={sendEmailFormData}
+        setSendEmailFormData={setSendEmailFormData}
+        fileName={"GeneralLedger"}
+        title={"Send General Ledger"}
+      />
     </PageContent>
   );
 };
