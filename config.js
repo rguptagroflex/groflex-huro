@@ -66,8 +66,11 @@ const resourceUrls = {
   bank: `${resourceHost}bank`,
 
   //Inventory
-  inventory1: `${resourceHost}inventory/history?offset=0&searchText=&limit=9999999&orderBy=itemModifiedDate&desc=false`,
-  inventory2: `${resourceHost}inventory/?offset=0&searchText=&limit=9999999&orderBy=articleId&desc=false`,
+  //Stock Movement
+  stockMovement1: `${resourceHost}inventory/history?offset=0&searchText=&limit=9999999&orderBy=itemModifiedDate&desc=false`,
+  stockMovement2: `${resourceHost}inventory/?offset=0&searchText=&limit=9999999&orderBy=articleId&desc=false`,
+  //Purchase Orders
+  purchase: `${resourceHost}purchaseOrder?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,
 };
 
 const checkLoginTokenIsValid = () => {
