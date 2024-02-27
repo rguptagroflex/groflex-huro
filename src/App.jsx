@@ -50,6 +50,7 @@ import BalanceSheet from "./app/views/accounting/reports/BalanceSheet";
 import ProfitAndLoss from "./app/views/accounting/reports/ProfitAndLoss";
 import GeneralLedger from "./app/views/accounting/reports/GeneralLedger";
 import CashFlow from "./app/views/accounting/reports/CashFlow";
+import GstReports from "./app/views/accounting/reports/GstReports";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -102,6 +103,10 @@ function App() {
             element={<GeneralLedger />}
           />
           <Route path="accounting/reports/cash-flow" element={<CashFlow />} />
+          <Route
+            path="accounting/reports/gst-reports"
+            element={<GstReports />}
+          />
 
           {/* Inventory Module */}
           <Route path="inventory/dashboard" element={<InventoryDashboard />} />
