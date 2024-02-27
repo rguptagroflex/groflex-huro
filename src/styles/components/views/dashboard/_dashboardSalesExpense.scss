@@ -1,0 +1,59 @@
+.dashboard-sales-expense-stats-wrapper {
+  .total-sales-label {
+    text-align: center;
+    padding: 12px 0px;
+    background-color: rgb(242, 244, 246);
+  }
+  .total-sales-value {
+    text-align: center;
+    border-top: 0.92px solid rgba(0, 0, 0, 0.17);
+    padding: 10px 0px;
+    color: rgb(162, 198, 46);
+    font-weight: 600;
+    font-size: 18px;
+  }
+  .total-expense-label {
+    text-align: center;
+    padding: 12px 0px;
+    background-color: rgb(242, 244, 246);
+  }
+  .total-expense-value {
+    text-align: center;
+    border-top: 0.92px solid rgba(0, 0, 0, 0.17);
+    padding: 10px 0px;
+    color: rgb(217, 67, 57);
+    font-weight: 600;
+    font-size: 18px;
+  }
+  .category-dot {
+    height: 14px;
+    min-width: 14px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 10px;
+  }
+  .category-text {
+    font-size: 14px;
+    color: rgb(0, 121, 179);
+  }
+  .bar-chart-wrapper {
+    min-height: 260px;
+    .sales-expense-chart {
+      .ct-series-a {
+        .ct-bar {
+          stroke: rgb(0, 163, 83);
+        }
+      }
+      .ct-series-b {
+        .ct-bar {
+          stroke: rgb(0, 113, 202);
+        }
+      }
+      .ct-labels {
+        .ct-label {
+          font-size: 15px;
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,7 @@
 .collapse {
+  &.is-active {
+    background: #ecfcf4;
+  }
   .collapse-header {
     .accordian-header-left-container {
       min-width: 280.4px;

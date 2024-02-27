@@ -34,6 +34,21 @@ const resourceUrls = {
   login: `${resourceHost}session/create?type=bearer`,
   checkEmailExist: `${resourceHost}user/checkUser`,
   /* ALl in-app APIs will need Login token */
+  //Dashboard
+  recievables: `${resourceHost}invoice`,
+  payable: `${resourceHost}expense`,
+  invoiceChartData: (startDate, endDate) =>
+    `${resourceHost}invoice?startDate=${startDate}&endDate=${endDate}`,
+  expenseChartData: (startDate, endDate) =>
+    `${resourceHost}expense?startDate=${startDate}&endDate=${endDate}`,
+  quotationChartData: (startDate, endDate) =>
+    `${resourceHost}offer?startDate=${startDate}&endDate=${endDate}`,
+  salesExpensesChartData: (starDate, endDate) =>
+    `${resourceHost}dashboard/stats/turnoverExpenses?startDate=${starDate}&endDate=${endDate}`,
+  salesByArticles: (startDate, endDate) =>
+    `${resourceHost}dashboard/stats/turnoverCustomersArticles?startDate=${startDate}&endDate=${endDate}`,
+  expenseBy: (startDate, endDate) =>
+    `${resourceHost}dashboard/stats/expenseByArticle?startDate=${startDate}&endDate=${endDate}`,
   //Articles
   articleNumber: `${resourceHost}article/number`, //Get Create article's number
   postArticleImage: `${resourceHost}article/image/`, //Concatenate articleId
@@ -141,8 +156,11 @@ const modules = {
     heading: "CRM",
     links: [
       { label: "Leads", route: "/crm/leads" },
-      { label: "Contact Management", route: "/crm/contactManagement" },
-      { label: "Deals Overview", route: "/crm/dealsOverview" },
+      { label: "Contact Management", route: "/crm/contact-management" },
+
+      { label: "Tasks", route: "/crm/tasks" },
+      { label: "Deals", route: "/crm/deals" },
+      // { label: "Task details", route: "/crm/task-details" },
     ],
   },
 };

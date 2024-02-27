@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Tabs = ({ tabList = [] }) => {
   const [selectedTab, setSelectedTab] = useState(0);
-  console.log(tabList);
+  // console.log(tabList);
 
   return (
     <div className="tabs-wrapper">

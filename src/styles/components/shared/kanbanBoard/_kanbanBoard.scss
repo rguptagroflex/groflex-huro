@@ -1,0 +1,27 @@
+.kanban-board-container {
+  display: flex;
+  .kanban-column-container {
+    margin: 8px;
+    border: 1px solid lightgray;
+    border-radius: 2px;
+    width: 220px;
+
+    display: flex;
+    flex-direction: column;
+    .kanban-column-title {
+      padding: 8px;
+    }
+    .kanban-task-list {
+      padding: 8px;
+      flex-grow: 1;
+      min-height: 100px;
+      .kanban-task-container {
+        border: 1px solid lightgray;
+        border-radius: 2px;
+        padding: 8px;
+        margin-bottom: 8px;
+        background-color: white;
+      }
+    }
+  }
+}

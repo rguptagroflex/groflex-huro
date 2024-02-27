@@ -1,9 +1,9 @@
 import React from "react";
-import PageContent from "../../shared/components/pageContent/PageContent";
-import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
-import { Button } from "../../shared/components/button/Button";
-import { ListAdvancedComponent } from "../../shared/components/list-advanced/ListAdvancedComponent";
-import config from "../../../../config";
+import PageContent from "../../../shared/components/pageContent/PageContent";
+import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
+import { Button } from "../../../shared/components/button/Button";
+import { ListAdvancedComponent } from "../../../shared/components/list-advanced/ListAdvancedComponent";
+import config from "../../../../../config";
 const LeadDetails = () => {
   const leadDetails = {
     Mobile: "1234567891",
@@ -32,7 +32,7 @@ const LeadDetails = () => {
     >
       <div className="crm-lead-details-wrapper">
         <div className="columns is-multiline">
-          <div className="column is-7 left-card">
+          <div className="column is-5">
             <div className="lead-basic-info-card">
               <AdvancedCard type={"s-card"}>
                 <div className="lead-image"></div>
@@ -80,7 +80,7 @@ const LeadDetails = () => {
             </div>
           </div>
 
-          <div className="column is-5 right-card">
+          <div className="column is-7 right-card">
             <AdvancedCard type={"s-card"}>
               <h2 className="title is-5">Lead History</h2>
               <ListAdvancedComponent

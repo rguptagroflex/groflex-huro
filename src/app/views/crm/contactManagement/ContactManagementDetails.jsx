@@ -1,18 +1,20 @@
 import React, { useState } from "react";
-import PageContent from "../../shared/components/pageContent/PageContent";
-import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
-import { Button } from "../../shared/components/button/Button";
-import { ListAdvancedComponent } from "../../shared/components/list-advanced/ListAdvancedComponent";
+import PageContent from "../../../shared/components/pageContent/PageContent";
+import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
+import { Button } from "../../../shared/components/button/Button";
+import { ListAdvancedComponent } from "../../../shared/components/list-advanced/ListAdvancedComponent";
 
-import { Input } from "../../shared/components/input/Input";
+import { Input } from "../../../shared/components/input/Input";
 
-import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
-import Tabs from "../../shared/components/tabs/Tabs";
+import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
+import Tabs from "../../../shared/components/tabs/Tabs";
 import ContactManagementActivity from "./ContactManagementActivity";
 import ContactManagementEmail from "./ContactManagementEmail";
 import ContactManagementCall from "./ContactManagementCall";
 import ContactManagementMeeting from "./ContactManagementMeeting";
+import CrmEmailModal from "./CrmEmailModal";
 const ContactManagementDetails = () => {
+  const [isEmailModalVisible, setIsEmailModalVisible] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
   const contactList = [
     {
@@ -122,14 +124,18 @@ const ContactManagementDetails = () => {
     >
       <div className="contact-management-details-wrapper">
         <div className="columns is-multiline">
-          <div className="column is-7 left-content">
+          <div className="column is-3 left-content">
             <div className="contact-basic-info-container">
               <AdvancedCard type={"s-card"}>
                 <h2 className="title is-5">Contact Info</h2>
                 <div className="contact-image"></div>
                 <div className="utility-icons-container">
                   {utilityIcons.map((item, id) => (
-                    <div className="utility-icons" key={`utility-icon-${id}`}>
+                    <div
+                      className="utility-icons"
+                      key={`utility-icon-${id}`}
+                      onClick={() => setIsEmailModalVisible(true)}
+                    >
                       <FeatherIcon name={item.icon} />
                       <span className="utilit-icon-label">{item.label}</span>
                     </div>
@@ -224,10 +230,14 @@ const ContactManagementDetails = () => {
             </div>
           </div>
 
-          <div className="column is-5 right-content">
+          <div className="column is-7 right-content">
             <Tabs tabList={tabList} />
           </div>
         </div>
+        <CrmEmailModal
+          setIsEmailModalVisible={setIsEmailModalVisible}
+          isEmailModalVisible={isEmailModalVisible}
+        />
       </div>
     </PageContent>
   );

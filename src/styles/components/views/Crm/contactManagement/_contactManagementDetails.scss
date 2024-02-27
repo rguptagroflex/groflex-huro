@@ -1,13 +1,14 @@
 .contact-management-details-wrapper {
   .left-content {
-    width: 335px;
-    height: 776px;
+    // width: 335px;
+    // height: 776px;
     .contact-image {
       height: 164px;
     }
     .contact-basic-info-container {
       .s-card-advanced {
-        height: 810px;
+        // height: 810px;
+        height: 985px;
         overflow-y: auto;
         overflow-x: hidden;
         .utility-icons-container {
@@ -26,11 +27,12 @@
         }
       }
       .s-card-advanced::-webkit-scrollbar {
-        width: 8px;
+        width: 4px;
         height: 48px;
       }
       .s-card-advanced::-webkit-scrollbar-thumb {
         background: #00a353;
+        // background: #ecfcf4;
         border-radius: 10px;
       }
       .s-card-advanced::-webkit-scrollbar-track {
@@ -51,7 +53,7 @@
     }
   }
   .right-content {
-    width: 760px;
+    // width: 760px;
     .list-container__sub-header {
       display: none;
     }

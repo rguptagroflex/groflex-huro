@@ -1,18 +1,18 @@
 import React, { useState } from "react";
-import PageContent from "../../shared/components/pageContent/PageContent";
-import { ListAdvancedComponent } from "../../shared/components/list-advanced/ListAdvancedComponent";
-import { formatCurrency } from "../../helpers/formatCurrency";
+import PageContent from "../../../shared/components/pageContent/PageContent";
+import { ListAdvancedComponent } from "../../../shared/components/list-advanced/ListAdvancedComponent";
+import { formatCurrency } from "../../../helpers/formatCurrency";
 import {
   ListAdvancedDefaultSettings,
   customerTypes,
-} from "../../helpers/constants";
-import { CustomShowHeaderSum } from "../../shared/components/list-advanced/CustomShowHeaderSum";
-import config from "../../../../config";
-import groflexService from "../../services/groflex.service";
+} from "../../../helpers/constants";
+import { CustomShowHeaderSum } from "../../../shared/components/list-advanced/CustomShowHeaderSum";
+import config from "../../../../../config";
+import groflexService from "../../../services/groflex.service";
 import { useNavigate } from "react-router-dom";
-import { Button } from "../../shared/components/button/Button";
-import { isNil } from "../../helpers/isNil";
-import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
+import { Button } from "../../../shared/components/button/Button";
+import { isNil } from "../../../helpers/isNil";
+import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
 
 const LeadOverview = () => {
   const actions = [
@@ -157,18 +157,7 @@ const LeadOverview = () => {
       titleIsBreadCrumb
       breadCrumbData={["Home", "CRM", "Leads"]}
       titleActionContent={
-        <Button
-          onClick={() =>
-            navigate("/crm/createForm", {
-              state: {
-                title: "Create Lead",
-                api: "Create lead api",
-                infoTitle: "Lead Info",
-              },
-            })
-          }
-          isSuccess
-        >
+        <Button onClick={() => navigate("/crm/leads/create-lead")} isSuccess>
           Create Lead
         </Button>
       }

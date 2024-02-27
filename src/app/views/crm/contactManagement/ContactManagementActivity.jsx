@@ -1,13 +1,13 @@
 import React from "react";
-import Accordion from "../../shared/components/accordion/Accordion";
-import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
-import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
-import { Button } from "../../shared/components/button/Button";
-import { ListAdvancedComponent } from "../../shared/components/list-advanced/ListAdvancedComponent";
-import { ListAdvancedDefaultSettings } from "../../helpers/constants";
-import { CustomShowHeaderSum } from "../../shared/components/list-advanced/CustomShowHeaderSum";
-import { formatCurrency } from "../../helpers/formatCurrency";
-import config from "../../../../config";
+import Accordion from "../../../shared/components/accordion/Accordion";
+import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
+import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
+import { Button } from "../../../shared/components/button/Button";
+import { ListAdvancedComponent } from "../../../shared/components/list-advanced/ListAdvancedComponent";
+import { ListAdvancedDefaultSettings } from "../../../helpers/constants";
+import { CustomShowHeaderSum } from "../../../shared/components/list-advanced/CustomShowHeaderSum";
+import { formatCurrency } from "../../../helpers/formatCurrency";
+import config from "../../../../../config";
 const ContactManagementActivity = () => {
   const actions = [
     { name: "Edit", icon: "edit" },

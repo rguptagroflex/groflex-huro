@@ -1,0 +1,65 @@
+.sale-tabs {
+  .dashboard-sales-by-article-tab-wrapper {
+    .sales-by-article-tab-header {
+      align-items: center;
+      justify-content: space-between;
+      .toggle-chart-btn {
+        border: 0.5px solid #dddddd;
+        background: #ebf5ff;
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
+    .donut-chart-wrapper {
+      min-height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .ct-bar {
+        stroke-width: 40;
+      }
+      .pie-0,
+      .ct-bar:nth-child(1) {
+        stroke: rgb(251, 195, 177);
+      }
+      .pie-1,
+      .ct-bar:nth-child(2) {
+        stroke: rgb(247, 140, 107);
+      }
+      .pie-2,
+      .ct-bar:nth-child(3) {
+        stroke: rgb(245, 104, 61);
+      }
+      .pie-3,
+      .ct-bar:nth-child(4) {
+        stroke: rgb(233, 64, 12);
+      }
+      .pie-4,
+      .ct-bar:nth-child(5) {
+        stroke: rgb(194, 53, 10);
+      }
+    }
+
+    .value-categories {
+      .column {
+        display: flex;
+      }
+      .value-category-text {
+        font-weight: 600;
+        font-size: 14px;
+        color: #63c2cd;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+      }
+      .value-category-dot {
+        height: 14px;
+        min-width: 14px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 10px;
+        background-color: rgb(17, 138, 178);
+      }
+    }
+  }
+}

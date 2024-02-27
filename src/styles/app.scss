@@ -6,21 +6,37 @@
 @import "./components/shared/otpInputComponent/otp-input-component";
 @import "./components/shared/toast/toast";
 @import "./components/shared/accordion/accordion";
+@import "./components/shared/kanbanBoard/kanbanBoard";
 
 // VIEWS
 @import "./components/views/Articles/articleOverview";
-@import "./components/views/Crm/leadsOverview";
-@import "./components//views/Crm/crmLeadDetail";
-@import "./components/views/Crm/contactManagement";
-@import "./components/views/Crm/_contactManagementDetails";
-@import "./components/views/Crm/contactManagementActivity";
-@import "./components/views/Crm/contactManagementEmail";
-@import "./components/views/Crm/contactManagementCall";
-@import "./components/views/Crm/contactManagementMeetings";
-@import "./components//views/Crm/dealsOverview";
 @import "./components/views/Sales/Quotations/quotationList";
 @import "./components/views/Accounting/transactionList";
 @import "./components/views/Sales/RecurringInvoices/recurringInvoicesList";
 @import "./components/views/Sales/Invoices/invoicesList";
 @import "./components/views/Accounting/bankList";
 @import "./components/views/Accounting/cashList";
+@import "./components/views/Crm/leads/leadsOverview";
+@import "./components//views/Crm/leads/crmLeadDetail";
+@import "./components/views/Crm/contactManagement/contactManagement";
+@import "./components/views/Crm/contactManagement/contactManagementDetails";
+@import "./components/views/Crm/contactManagement/contactManagementActivity";
+@import "./components/views/Crm/contactManagement/contactManagementEmail";
+@import "./components/views/Crm/contactManagement/contactManagementCall";
+@import "./components/views/Crm/contactManagement/contactManagementMeetings";
+@import "./components//views/Crm/deals/dealsOverview";
+@import "./components/views/Crm/tasks/tasksOverview";
+@import "./components/views/Crm/tasks/taskDetails";
+@import "./components/views/Crm/contactManagement/crmEmailModal";
+@import "./components/views/Crm/deals/dealDetails";
+@import "./components/views/home/home";
+@import "./components/views/dashboard/dashboard";
+@import "./components/views/dashboard/dashboardInvoiceExpense";
+@import "./components/views/dashboard/dashboardSalesExpense";
+@import "./components/views/dashboard/dashboardQuotation";
+@import "./components/views/dashboard/dashboardSales";
+@import "./components/views/dashboard/dashboardExpenses";
+
+//EXTERNAL
+@import "../../node_modules/pikaday/css/pikaday";
+@import "../../node_modules/chartist/dist/index.css";

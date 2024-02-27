@@ -1,7 +1,7 @@
 import React from "react";
-import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
-import Accordion from "../../shared/components/accordion/Accordion";
-import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
+import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
+import Accordion from "../../../shared/components/accordion/Accordion";
+import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
 
 const ContactManagementEmail = () => {
   const emails = [

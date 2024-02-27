@@ -1,0 +1,99 @@
+.dashboard-wrapper {
+  .create-expense-btn {
+    width: 187px;
+    color: #007983;
+    border-color: #007983;
+  }
+  .dashboard-card-title {
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    margin-bottom: 10px;
+  }
+  .receivable-container {
+    border-bottom: 1px #dddddd solid;
+
+    .receivable-label {
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 16px;
+      color: #888787;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      .text-indicator-green {
+        display: inline-block;
+        border-radius: 3px;
+        background-color: #00a353 !important;
+        width: 11px;
+        height: 11px;
+      }
+      .text-indicator-red {
+        display: inline-block;
+        border-radius: 3px;
+        background-color: #ff5e54 !important;
+        width: 11px;
+        height: 11px;
+        margin-right: 5px;
+      }
+    }
+    .receivable-overdue-value {
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 16px;
+      color: #d94339;
+      text-align: center;
+    }
+    .receivable-value {
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 16px;
+      color: #00a353;
+    }
+  }
+  //dashboard inovice tab card
+  .donut-chart-wrapper {
+    .pie-chart-label-container {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      align-items: center;
+      justify-content: center;
+      .container-text {
+        font-size: 16px;
+        color: #747474;
+      }
+      .contianer-value {
+        font-weight: 600;
+        font-size: 22px;
+        color: black;
+      }
+    }
+  }
+
+  .quotation-card {
+    .is-active {
+      width: 100%;
+    }
+  }
+
+  .sale-tabs {
+    li {
+      width: 50%;
+    }
+  }
+  .expense-tabs {
+    li {
+      width: 50%;
+    }
+  }
+}
