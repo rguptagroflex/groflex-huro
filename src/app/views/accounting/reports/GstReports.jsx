@@ -33,7 +33,7 @@ const GstReports = () => {
   const [isEmailModalVisible, setIsEmailModalVisible] = useState(false);
   const [generateGstReportFormData, setGenerateGstReportFormData] = useState({
     gstReportType: "",
-    sortBy: "",
+    sortBy: "all",
     dateDropDown: "",
   });
   const [date, setDate] = useState({
@@ -43,9 +43,15 @@ const GstReports = () => {
 
   const [rowData, setRowData] = useState([]);
 
+  const [filteredRowData, setFilteredRowData] = useState([]);
+
   useEffect(() => {
     fetchGstReportExportSummary();
   }, []);
+
+  useEffect(() => {
+    filterGstExportSummary();
+  }, [generateGstReportFormData.sortBy]);
 
   const handleGstReportTypeChange = (option) => {
     setGenerateGstReportFormData({
@@ -144,6 +150,7 @@ const GstReports = () => {
 
   const fetchGstReportExportSummary = () => {
     let rowData = [];
+
     groflexService
       .request(`${config.resourceUrls.gstReportExportSummary}`, { auth: true })
       .then((res) => {
@@ -158,6 +165,7 @@ const GstReports = () => {
           });
         }
         setRowData(rowData);
+        setFilteredRowData(rowData);
       });
   };
 
@@ -184,6 +192,18 @@ const GstReports = () => {
           groflexService.toast.success("GST report exported successfully ");
         }
       });
+  };
+
+  const filterGstExportSummary = () => {
+    if (generateGstReportFormData.sortBy === "all") {
+      setFilteredRowData(rowData);
+    } else {
+      const filteredRowData = rowData.filter(
+        (item) =>
+          item.exportType.toLowerCase() === generateGstReportFormData.sortBy
+      );
+      setFilteredRowData(filteredRowData);
+    }
   };
 
   const dateOptions = [
@@ -259,6 +279,7 @@ const GstReports = () => {
                 <label className="gst-filter-label">Sort By</label>
                 <SelectInput
                   options={[
+                    { label: "ALL", value: "all" },
                     { label: "GSTR-1", value: "gstr1" },
                     { label: "GSTR-2A", value: "gstr2a" },
                     { label: "GSTR-3B", value: "gstr3b" },
@@ -311,37 +332,60 @@ const GstReports = () => {
               </div>
             )}
           </div>
-          <Button isPrimary onClick={handleRunReport}>
+          <Button
+            isPrimary
+            isDisabled={
+              generateGstReportFormData.gstReportType &&
+              generateGstReportFormData.dateDropDown
+                ? false
+                : true
+            }
+            isOutlined={
+              generateGstReportFormData.gstReportType &&
+              generateGstReportFormData.dateDropDown
+                ? false
+                : true
+            }
+            onClick={handleRunReport}
+          >
             Run Report
           </Button>
         </AdvancedCard>
 
         <AdvancedCard type={"s-card"}>
           <h2 className="title is-5 is-bold">Export History</h2>
-          <div className="gst-export-summary">
-            <table className="table is-hoverable is-fullwidth">
-              <tbody>
-                <tr className="gst-export-summary-headers">
-                  <th>DATE</th>
-                  <th>EXPORT PERIOD</th>
-                  <th>EXPORT TYPE</th>
-                  <th>FILE FORMAT</th>
-                </tr>
-                {rowData.map((item, id) => (
-                  <tr
-                    className="gst-export-summary-row"
-                    key={id}
-                    onClick={() => handleRowClick(item)}
-                  >
-                    <td>{item.date}</td>
-                    <td>{item.exportPeriod}</td>
-                    <td>{item.exportType}</td>
-                    <td>{item.fileFormat}</td>
+          {filteredRowData.length > 0 ? (
+            <div className="gst-export-summary">
+              <table className="table is-hoverable is-fullwidth">
+                <tbody>
+                  <tr className="gst-export-summary-headers">
+                    <th>DATE</th>
+                    <th>EXPORT PERIOD</th>
+                    <th>EXPORT TYPE</th>
+                    <th>FILE FORMAT</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                  {filteredRowData.map((item, id) => (
+                    <tr
+                      className="gst-export-summary-row"
+                      key={id}
+                      onClick={() => handleRowClick(item)}
+                    >
+                      <td>{item.date}</td>
+                      <td>{item.exportPeriod}</td>
+                      <td>
+                        {item.exportType.slice(0, 4) +
+                          "-" +
+                          item.exportType.slice(4)}
+                      </td>
+                      <td>{item.fileFormat}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="reports-empty-table">No data to show</div>
+          )}
         </AdvancedCard>
       </div>
     </PageContent>
