@@ -155,8 +155,8 @@ class User {
       Object.assign(pendoData, { registeredAt });
     }
 
-    this.pendoData = pendoData;
-    PendoService.init(pendoData);
+    // this.pendoData = pendoData;
+    // PendoService.init(pendoData);
   }
 
   hasPermission(permission) {

@@ -15,37 +15,53 @@ const BankListComponent = () => {
   //     .then((response) => response.json())
   //     .then((data) => setBanks(data))
   //     .catch((error) => console.error("Error fetching data:", error));
-  // }, []); 
+  // }, []);
   return (
     <div className="s-card demo-table">
       <table className="table is-hoverable is-fullwidth">
         <tbody>
           <tr>
-            <th colSpan={8}  style={{ fontWeight: 600, fontSize: "21px", width:"423%", display:"flex",justifyContent:"space-between" }}> <span>Bank Details</span><Button
+            <th
+              colSpan={8}
+              style={{
+                fontWeight: 600,
+                fontSize: "21px",
+                width: "423%",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              {" "}
+              <span>Bank Details</span>
+              <Button
                 isOutlined
-                isPrimary
-                icon={ <FeatherIcon
-									primaryColor
-									name="Plus"
-									
-									size={18}
-									style={{ height:"18px", width:"18px"}}
-								/>}
+                // isPrimary
+                icon={
+                  <FeatherIcon
+                    primaryColor
+                    name="Plus"
+                    size={18}
+                    style={{ height: "18px", width: "18px" }}
+                  />
+                }
               >
                 Add new bank
-              </Button> </th>
-          
-						
-          
-					
+              </Button>{" "}
+            </th>
           </tr>
           <tr>
-            <th style={{ fontSize: "14px", fontWeight: 550, width:"4%" }}>Bank name</th>
-            <th style={{ fontSize: "14px", fontWeight: 550 }}> Account number</th>
+            <th style={{ fontSize: "14px", fontWeight: 550, width: "4%" }}>
+              Bank name
+            </th>
+            <th style={{ fontSize: "14px", fontWeight: 550 }}>
+              {" "}
+              Account number
+            </th>
             <th style={{ fontSize: "14px", fontWeight: 550 }}>Account type</th>
             <th style={{ fontSize: "14px", fontWeight: 550 }}>IFSC code</th>
-            <th colSpan={2} style={{ fontSize: "14px", fontWeight: 550 }}>Balance</th>
-            
+            <th colSpan={2} style={{ fontSize: "14px", fontWeight: 550 }}>
+              Balance
+            </th>
           </tr>
           {banks.map((bank, index) => {
             // Check if IFSC code contains a number
@@ -57,7 +73,16 @@ const BankListComponent = () => {
                   <td style={{ color: "black" }}>{bank.accountType}</td>
                   <td style={{ color: "black" }}>{bank.IFSCCode}</td>
                   <td style={{ color: "black" }}>{bank.openingBalance}</td>
-                  <td><Button isPrimary isOutlined isWhite style={{border:"none"}} >View Transactions</Button></td>
+                  <td>
+                    <Button
+                      isPrimary
+                      isOutlined
+                      isWhite
+                      style={{ border: "none" }}
+                    >
+                      View Transactions
+                    </Button>
+                  </td>
                 </tr>
               );
             }

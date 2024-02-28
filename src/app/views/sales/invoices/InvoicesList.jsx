@@ -114,6 +114,9 @@ const InvoicesList = () => {
         navigate(`/sales/invoices/edit/${row.id}`);
     }
   };
+
+  console.log(groflexService.user, "USER FROm INCOICE LIST");
+
   return (
     <PageContent
       title="Invoices List"

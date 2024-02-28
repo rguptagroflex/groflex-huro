@@ -6,6 +6,7 @@ export const Button = ({
   iconRight,
   isBold,
   isPrimary,
+  isSecondary,
   isSuccess,
   isInfo,
   isWarning,
@@ -36,6 +37,8 @@ export const Button = ({
 
     // Color Options
     isPrimary && classes.push("is-primary");
+    // classes.push("is-primary is-outlined bg-white color-primary");
+    isSecondary && classes.push("is-primary is-outlined");
     isSuccess && classes.push("is-success");
     isInfo && classes.push("is-info");
     isWarning && classes.push("is-warning");

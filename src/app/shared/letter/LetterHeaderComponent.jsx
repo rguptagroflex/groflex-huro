@@ -10,6 +10,9 @@ import _ from "lodash";
 import LetterHeaderState from "../../enums/letter/letter-header-state.enum";
 import {
   LetterFabricText,
+  fabricObjectToImageLetterElement,
+  fabricObjectToShapeLetterElement,
+  fabricObjectToTextLetterElement,
   letterElementsToFabricObjects,
 } from "../../helpers/letterHeaderHelpers";
 import CanvasColorPickerComponent from "../canvasColorPicker/CanvasColorPickerComponent";
@@ -21,8 +24,9 @@ const DEFAULT_FONT_SIZE = 18;
 const KEY_CODES = config.KEY_CODES;
 
 const SHIFT_STEP = 10;
-const CANVAS_HEIGHT = 200;
-const CANVAS_WIDTH = 937;
+// const CANVAS_WIDTH = 937;
+const CANVAS_WIDTH = 725;
+const CANVAS_HEIGHT = 198;
 const OFFSET = 0;
 const CANVAS_ZINDEX_OFFSET = 3;
 const BOUNDING_BOX = {
@@ -38,7 +42,7 @@ const CENTER = {
 const H_SNAP_POINTS = [OFFSET, CENTER.y, CANVAS_WIDTH - OFFSET, CENTER.y];
 const V_SNAP_POINTS = [CENTER.x, OFFSET, CENTER.x, CANVAS_HEIGHT - OFFSET];
 
-const LetterHeaderComponent = ({ items }) => {
+const LetterHeaderComponent = ({ items, onFinish }) => {
   //
   const [canvasEditMode, setCanvasEditMode] = useState();
   // const [colorPicker, setImageUrl] = useState();
@@ -84,54 +88,7 @@ const LetterHeaderComponent = ({ items }) => {
 
   //Initializing empty canvas
   useEffect(() => {
-    // initializeFabricCanvas();
-    setLetterHeaderStates({ ...letterHeaderStates, loading: true });
-    if (canvasRef.current) {
-      const newCanvas = new fabric.Canvas(canvasRef.current, {
-        selection: false,
-        height: CANVAS_HEIGHT,
-        width: CANVAS_WIDTH,
-        uniformScaling: true,
-      });
-      const lineOptions = {
-        stroke: "#ddd",
-        fill: "transparent",
-        selectable: false,
-        opacity: 0,
-      };
-      const wrapperOptions = Object.assign({}, BOUNDING_BOX, lineOptions);
-      // Hack: Show border from wrapper container (Canvas renders 0.5 pixels)
-      wrapperOptions.width--;
-      wrapperOptions.height--;
-      const snapOptions = Object.assign(
-        {},
-        { strokeDashArray: [5] },
-        lineOptions
-      );
-      const wrapper = new fabric.Rect(wrapperOptions);
-      const vSnap = new fabric.Line(V_SNAP_POINTS, snapOptions);
-      const hSnap = new fabric.Line(H_SNAP_POINTS, snapOptions);
-      newCanvas
-        .add(wrapper, hSnap, vSnap)
-        .on("selection:updated", handleSelection)
-        .on("selection:created", handleSelection)
-        .on("selection:cleared", handleDeSelection)
-        .on("object:moving", onCanvasObjectMoving);
-      // .on("object:selected", handleSelection)
-
-      canvasRef.current = newCanvas;
-
-      if (!items.length) {
-        setLetterHeaderStates({ ...letterHeaderStates, loading: false });
-      }
-
-      return () => {
-        document.removeEventListener("keydown", onDocumentKeydown);
-        // groflexService.off("keydown", onDocumentKeydown);
-        newCanvas.removeListeners();
-        newCanvas.dispose();
-      };
-    }
+    initializeFabricCanvas();
   }, []);
 
   //Effect for filling canvas elements from props
@@ -265,7 +222,7 @@ const LetterHeaderComponent = ({ items }) => {
     fileInputRef.current.click();
   };
 
-  const handleImageUpload = (event) => {
+  const handleImageInput = (event) => {
     let imageUrl;
     const canvas = canvasRef.current;
     const file = event.target.files[0];
@@ -279,7 +236,7 @@ const LetterHeaderComponent = ({ items }) => {
         });
         imageUrl = e.target.result;
         fabric.Image.fromURL(imageUrl, (image) => {
-          image.scaleToWidth(160);
+          image.scaleToHeight(158);
           image.lockUniScaling = true;
           image.lockSkewingX = true;
           image.lockSkewingY = true;
@@ -287,6 +244,14 @@ const LetterHeaderComponent = ({ items }) => {
           image.hasRotatingPoint = false;
           image.selectable = true;
           image._sortId = 3;
+          console.log(
+            image.getScaledHeight(),
+            image.getScaledWidth(),
+            image._sortId,
+            image._getLeftTopCoords(),
+
+            "FROM OM READ"
+          );
           // image.cornerColor = "#5a9ff5";
           // image.lockScalingFlip = true;
           // image.minScaleLimit = 0.25;
@@ -490,6 +455,87 @@ const LetterHeaderComponent = ({ items }) => {
     setCanvasEditMode(true);
   };
 
+  const saveLetterElements = () => {
+    const canvas = canvasRef.current;
+    const fabricObjects = canvas.getObjects();
+    fabricObjects = fabricObjects.slice(CANVAS_ZINDEX_OFFSET);
+    const parsedFabrics = parseFabricObjects(fabricObjects);
+
+    createImages().then((letterImage) => {
+      if (letterImage) {
+        parsedFabrics.push(letterImage);
+      }
+
+      letterElementsToFabricObjects(parsedFabrics).then((fabricObjects) => {
+        onFinish(parsedFabrics);
+        setLetterHeaderStates({
+          ...letterHeaderStates,
+          fabricObjects,
+          items: parsedFabrics,
+          headerState:
+            parsedFabrics.length > 0
+              ? LetterHeaderState.DISPLAY
+              : LetterHeaderState.EMPTY,
+        });
+      });
+    });
+  };
+
+  const parseFabricObjects = (fabricObjects) => {
+    const letterElements = fabricObjects.reduce(
+      (letterElementList, obj, index) => {
+        const letterElementModel = obj._letterElementId
+          ? letterHeaderStates.items.find((item) => {
+              return item.id === obj._letterElementId;
+            })
+          : undefined;
+        obj._sortId = index + CANVAS_ZINDEX_OFFSET;
+
+        const objectType = obj.get("type");
+
+        switch (objectType) {
+          case "image":
+            if (!letterElementModel) {
+              return letterElementList;
+            }
+            const imageElement = fabricObjectToImageLetterElement(
+              obj,
+              letterElementModel
+            );
+            letterElementList.push(imageElement);
+            break;
+          case "i-text":
+            const textElement = fabricObjectToTextLetterElement(
+              obj,
+              letterElementModel
+            );
+            letterElementList.push(textElement);
+            break;
+          case "rect":
+            const rectangleElement = fabricObjectToShapeLetterElement(
+              obj,
+              letterElementModel
+            );
+            letterElementList.push(rectangleElement);
+            break;
+        }
+        return letterElementList;
+      },
+      []
+    );
+
+    return letterElements;
+  };
+
+  const createImages = () => {
+    if (prepareImageUploads()) {
+      otherRefs.current.uploader.uploadStoredFiles();
+    } else {
+      otherRefs.current.whenImageUploaded.resolve();
+    }
+    return otherRefs.current.whenImageUploaded.promise;
+  };
+
   //Font formatting components
   const FontTools = () => {
     const canvas = canvasRef.current;
@@ -501,7 +547,7 @@ const LetterHeaderComponent = ({ items }) => {
     const isBold = activeObj?.fontWeight === "700";
     const isItalics = activeObj?.fontStyle === "italic";
     const isUnderline = activeObj?.underline;
-    console.log(isBold, isUnderline, isItalics);
+    // console.log(isBold, isUnderline, isItalics);
 
     const setBold = () => {
       if (isBold) {
@@ -563,14 +609,22 @@ const LetterHeaderComponent = ({ items }) => {
       <div className="font-tool-btns flex-row">
         <ButtonAddons>
           <p className="control">
-            <Button onClick={setBold} isPrimary={isBold} isDisabled={disabled}>
+            <Button
+              onClick={setBold}
+              // isPrimary={isBold}
+              // isOutlined={isBold}
+              isSecondary={isBold}
+              isDisabled={disabled}
+            >
               <div className="font-18px font-bold">B</div>
             </Button>
           </p>
           <p className="control">
             <Button
               onClick={setUnderline}
-              isPrimary={isUnderline}
+              // isPrimary={isUnderline}
+              // isOutlined={isUnderline}
+              isSecondary={isUnderline}
               isDisabled={disabled}
             >
               <div className="font-18px text-underline">U</div>
@@ -579,7 +633,8 @@ const LetterHeaderComponent = ({ items }) => {
           <p className="control">
             <Button
               onClick={setItalic}
-              isPrimary={isItalics}
+              // isPrimary={isItalics}
+              isSecondary={isItalics}
               isDisabled={disabled}
             >
               <div className="font-18px font-italic">i</div>
@@ -614,23 +669,32 @@ const LetterHeaderComponent = ({ items }) => {
     <OnClickOutside
       onClickOutside={exitEditMode}
       onCLickInside={enterEditMode}
-      className={"letter-header-component"}
+      className={`letter-header-component`}
     >
       <input
         ref={fileInputRef}
         className="is-hidden"
         type="file"
         accept="image/jpg,image/jpeg,image/png"
-        onChange={handleImageUpload}
+        onChange={handleImageInput}
       />
-      <div className="header-edit">
+      <div
+        className={`header-edit-container ${
+          canvasEditMode ? "header-edit-active" : "header-edit-inactive"
+        }`}
+      >
+        <FeatherIcon name={"Edit"} className={"header-edit-icon"} />
+
         <LoaderSpinner
           containerStyle={{ position: "absolute" }}
           visible={letterHeaderStates.loading}
           message={"Loading canvas"}
           size="30"
         />
-        <canvas ref={canvasRef} />
+        <canvas
+          style={{ cursor: !canvasEditMode && "pointer" }}
+          ref={canvasRef}
+        />
       </div>
       <div
         className={`canvas-action-buttons m-t-10 ${
@@ -641,26 +705,26 @@ const LetterHeaderComponent = ({ items }) => {
           <FontTools />
         </div>
         <div className="canvas-tools m-t-10">
-          <Button isPrimary onClick={handleUploadBtnClick}>
+          <Button isSecondary onClick={handleUploadBtnClick}>
             Upload Logo
           </Button>
           <Button
             className={"m-l-10"}
-            isPrimary
+            isSecondary
             onClick={handleAddTextToCanvas}
           >
             Text
           </Button>
           <Button
             className={"m-l-10"}
-            isPrimary
+            isSecondary
             onClick={handleClearALlElements}
           >
             Clear all elements
           </Button>
           <Button
             className={"m-l-10"}
-            isPrimary={selectedObject}
+            isSecondary={selectedObject}
             isDisabled={!selectedObject}
             onClick={removeSelectedObjectFromCanvas}
           >

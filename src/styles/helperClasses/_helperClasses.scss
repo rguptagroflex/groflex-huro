@@ -43,7 +43,7 @@
   color: $font-color-secondary;
 }
 .color-primary {
-  color: $primary;
+  color: $primary !important;
 }
 .color-warning {
   color: $warning;
@@ -150,4 +150,14 @@
 //Display
 .u_hidden {
   display: none !important;
+}
+
+//Other classes
+
+.bg-white {
+  background-color: #fff !important;
+}
+
+.horizontal-margin-auto {
+  margin: 0 auto;
 }

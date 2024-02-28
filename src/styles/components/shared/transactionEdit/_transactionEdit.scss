@@ -11,10 +11,35 @@
   .letter-header-component {
     width: 100%;
     outline: none;
-    .header-edit {
-      // height: 200px;
-      border: 1px solid $font-grey-dark;
+
+    .header-edit-container {
       position: relative;
+      .canvas-container {
+        margin: 0 auto;
+      }
+    }
+    .header-edit-active {
+      border: 1px solid $font-grey-dark;
+      .header-edit-icon {
+        display: none;
+      }
+    }
+    .header-edit-inactive {
+      border: 1px dashed transparent;
+      border-radius: 4px;
+      .header-edit-icon {
+        position: absolute;
+        opacity: 0;
+        right: 0;
+        margin-top: 3px;
+        margin-right: 3px;
+      }
+      &:hover {
+        border-color: darken($font-grey-dark, 15%);
+        .header-edit-icon {
+          opacity: 1;
+        }
+      }
     }
 
     .canvas-action-buttons {
@@ -28,5 +53,10 @@
         }
       }
     }
+  }
+
+  //Tranasction form row
+  .transaction-from-row {
+    display: flex;
   }
 }

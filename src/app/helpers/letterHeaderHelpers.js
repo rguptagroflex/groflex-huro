@@ -51,8 +51,10 @@ const fabricObjectToImageLetterElement = (fabricObject, letterElement) => {
   letterElement.sortId = fabricObject._sortId;
   letterElement.x = fabricObject.getLeft();
   letterElement.y = fabricObject.getTop();
-  letterElement.metaData.width = fabricObject.getWidth();
-  letterElement.metaData.height = fabricObject.getHeight();
+  // letterElement.metaData.width = fabricObject.getWidth();
+  // letterElement.metaData.height = fabricObject.getHeight();
+  letterElement.metaData.width = fabricObject.getScaledWidth();
+  letterElement.metaData.height = fabricObject.getScaledHeight();
 
   return letterElement;
 };
@@ -193,6 +195,7 @@ const buildImage = function buildImage(letterElement) {
     function (image) {
       // image.lockScalingX = true;
       // image.sendToBack
+      // console.log(letterElement.metaData, "FROM HEADER HELPER BUILDING");
       image.hasRotatingPoint = false;
       image.lockSkewingX = true;
       image.lockSkewingY = true;

@@ -30,7 +30,7 @@ const Login = () => {
   });
   useEffect(() => {
     if (config.checkLoginTokenIsValid()) {
-      navigate("/");
+      navigate("/"); 
     }
   }, []);
 

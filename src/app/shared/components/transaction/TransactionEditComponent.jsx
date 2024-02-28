@@ -107,31 +107,39 @@ const TransactionEditComponent = ({
     let pageInfo = {};
 
     if (isInvoice) {
+      pageInfo.pageTitle = transaction ? "Edit Invoice" : "Create Invoice";
       pageInfo.navigateBackTo = "/sales/invoices";
-      pageInfo.pageTitle = "Edit Invoice";
+      pageInfo.breadCrumbData = ["Home", "Sales", "Invoices"];
     }
     if (isQuotation) {
-      pageInfo.pageTitle = "Edit Quotation";
+      pageInfo.pageTitle = transaction ? "Edit Quotation" : "Create Quotation";
       pageInfo.navigateBackTo = "/sales/quotations";
+      pageInfo.breadCrumbData = ["Home", "Sales", "Quotations"];
     }
     if (isProforma) {
-      pageInfo.pageTitle = "Edit Proforma Invoice";
+      pageInfo.pageTitle = transaction
+        ? "Edit Proforma Invoice"
+        : "Create Proforma Invoice";
       pageInfo.navigateBackTo = "/sales/invoices";
+      pageInfo.breadCrumbData = ["Home", "Sales", "Proforma Invoices"];
     }
     if (isDeliveryChallan) {
-      pageInfo.pageTitle = "Edit Delivery Challan";
+      pageInfo.pageTitle = transaction
+        ? "Edit Delivery Challan"
+        : "Create Delivery Challan";
       pageInfo.navigateBackTo = "/sales/invoices";
+      pageInfo.breadCrumbData = ["Home", "Sales", "Delivery Challan"];
     }
     return pageInfo;
   };
 
-  const { navigateBackTo, pageTitle } = getPageInfo();
+  const { navigateBackTo, pageTitle, breadCrumbData } = getPageInfo();
 
   return (
     <PageContent
       navigateBackTo={navigateBackTo}
       title={pageTitle}
-      breadCrumbData={["Home", "Sales", "Invoices"]}
+      breadCrumbData={breadCrumbData}
     >
       <div className="transaction-edit-component">
         <LetterHeaderComponent
@@ -139,6 +147,12 @@ const TransactionEditComponent = ({
           // onCancel={onLetterHeaderCancel}
           onFinish={(elements) => onLetterHeaderEdited(elements)}
         />
+        <div className="transaction-form-row">
+          <div className="transaction-letter-recipient-container flex-column">
+            <div>BILLED TO</div>
+          </div>
+          <div></div>
+        </div>
       </div>
     </PageContent>
   );

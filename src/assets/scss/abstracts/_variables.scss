@@ -59,6 +59,7 @@ $dark-dark-text: #aaaab3;
 
 //Custom colors and and widely used one in app
 
+// $dark-text: #283252;
 $primary: #00a353;
 $success: #00a353;
 
@@ -70,11 +71,11 @@ $light-green: #bef9dc;
 $light-red: #ffdcda;
 $light-yellow: FFEBCC;
 
-$light-text: #a2a5b9;
 $title-grey: #a9abac;
 
-//new font colors
+$light-text: #a2a5b9;
 
-$dark-text: #283252;
-$font-color-secondary: #888787;
-$font-grey-dark: #c6c6c6;
+//new font colors
+$font-grey-dark: #c6c6c6; //For borders or use lighten(15% on font-color-decondary)
+$dark-text: #272d30; // Dark text
+$font-color-secondary: #888787; // Secondary text color

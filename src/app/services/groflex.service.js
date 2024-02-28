@@ -25,7 +25,7 @@ class GroflexService {
         location.assign(path);
       },
     };
-    // this.user = User;
+    this.user = User;
     this.request = request;
     this.login = login;
     this.logout = logout;
