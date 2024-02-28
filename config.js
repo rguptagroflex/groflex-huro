@@ -83,6 +83,7 @@ const resourceUrls = {
   sendAccountingReport: (reportType, startDate, endDate) =>
     `${resourceHost}accountingReport/sendAccountingReportEmail/${reportType}/${startDate}/${endDate}`,
   gstReportExportSummary: `${resourceHost}accountantExport/?offset=0&limit=5&orderBy=createdAt&desc=true`,
+  exportGstReport: `${resourceHost}accountantExport/`,
 
   //Teams
   teamsList: `${resourceHost}user/list`,

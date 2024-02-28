@@ -31,7 +31,7 @@ const GstReports = () => {
   const [showCustomDateRangeSelector, setShowCustomDateRangeSelector] =
     useState(false);
   const [isEmailModalVisible, setIsEmailModalVisible] = useState(false);
-  const [gstReportFilter, setGstReportFilter] = useState({
+  const [generateGstReportFormData, setGenerateGstReportFormData] = useState({
     gstReportType: "",
     sortBy: "",
     dateDropDown: "",
@@ -48,24 +48,24 @@ const GstReports = () => {
   }, []);
 
   const handleGstReportTypeChange = (option) => {
-    setGstReportFilter({
-      ...gstReportFilter,
+    setGenerateGstReportFormData({
+      ...generateGstReportFormData,
       gstReportType: option.value,
     });
   };
 
   const handleSortByTypeChange = (option) => {
-    setGstReportFilter({
-      ...gstReportFilter,
+    setGenerateGstReportFormData({
+      ...generateGstReportFormData,
       sortBy: option.value,
     });
   };
 
   const handleDateDropDown = (option) => {
     // setDate(option.value);
-    setGstReportFilter({
-      ...gstReportFilter,
-      dateDropDown: option.value,
+    setGenerateGstReportFormData({
+      ...generateGstReportFormData,
+      dateDropDown: option.label,
     });
     let startDate = "";
     let endDate = "";
@@ -123,8 +123,8 @@ const GstReports = () => {
 
     if (option.value !== "custom") {
       setDate({
-        startDate: startDate.toJSON(),
-        endDate: endDate.toJSON(),
+        startDate: moment(startDate).format("YYYY-MM-DD"),
+        endDate: moment(endDate).format("YYYY-MM-DD"),
       });
     }
   };
@@ -158,6 +158,31 @@ const GstReports = () => {
           });
         }
         setRowData(rowData);
+      });
+  };
+
+  const handleRunReport = () => {
+    let payload = {
+      endDate: date.endDate,
+      exportFormat: generateGstReportFormData.gstReportType,
+      exportPeriod: generateGstReportFormData.dateDropDown,
+      startDate: date.startDate,
+      type: "CSV",
+    };
+    groflexService
+      .request(`${config.resourceUrls.exportGstReport}`, {
+        auth: true,
+        data: payload,
+        method: "POST",
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.body?.message) {
+          groflexService.toast.error("Something went wrong");
+        } else {
+          fetchGstReportExportSummary();
+          groflexService.toast.success("GST report exported successfully ");
+        }
       });
   };
 
@@ -196,6 +221,10 @@ const GstReports = () => {
     },
   ];
 
+  const handleRowClick = (e) => {
+    console.log(e);
+  };
+
   return (
     <PageContent title={"Gst Reports"}>
       <div className={"gst-reports-wrapper"}>
@@ -220,7 +249,7 @@ const GstReports = () => {
                   ]}
                   placeholder={"None"}
                   onChange={handleGstReportTypeChange}
-                  value={gstReportFilter.gstReportType}
+                  value={generateGstReportFormData.gstReportType}
                 />
               </div>
             </div>
@@ -237,7 +266,7 @@ const GstReports = () => {
                   ]}
                   placeholder={"None"}
                   onChange={handleSortByTypeChange}
-                  value={gstReportFilter.sortBy}
+                  value={generateGstReportFormData.sortBy}
                 />
               </div>
             </div>
@@ -249,7 +278,7 @@ const GstReports = () => {
                   options={dateOptions}
                   placeholder={"Select Date"}
                   onChange={handleDateDropDown}
-                  value={gstReportFilter.dateDropDown}
+                  value={generateGstReportFormData.dateDropDown}
                 />
               </div>
             </div>
@@ -282,7 +311,9 @@ const GstReports = () => {
               </div>
             )}
           </div>
-          <Button isPrimary>Run Report</Button>
+          <Button isPrimary onClick={handleRunReport}>
+            Run Report
+          </Button>
         </AdvancedCard>
 
         <AdvancedCard type={"s-card"}>
@@ -297,7 +328,11 @@ const GstReports = () => {
                   <th>FILE FORMAT</th>
                 </tr>
                 {rowData.map((item, id) => (
-                  <tr className="gst-export-summary-row" key={id}>
+                  <tr
+                    className="gst-export-summary-row"
+                    key={id}
+                    onClick={() => handleRowClick(item)}
+                  >
                     <td>{item.date}</td>
                     <td>{item.exportPeriod}</td>
                     <td>{item.exportType}</td>

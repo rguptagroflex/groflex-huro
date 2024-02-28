@@ -50,6 +50,7 @@ const GeneralLedger = () => {
   });
 
   const [rowData, setRowData] = useState([]);
+  const [rowTotals, setRowTotals] = useState({});
   const [sendEmailFormData, setSendEmailFormData] = useState({
     emails: "",
     subject: "",
@@ -82,6 +83,7 @@ const GeneralLedger = () => {
 
   const fetchGeneralLedger = () => {
     let rowData = [];
+
     groflexService
       .request(
         `${config.resourceUrls.generalLedger(
@@ -96,9 +98,6 @@ const GeneralLedger = () => {
         const transcatios = res.body.data.summaryData.transactions;
         transcatios.forEach((item, index) => {
           if (item.chartOfAccount) {
-            let debit = parseFloat(item.debits).toFixed(2);
-            let credit = parseFloat(item.credits).toFixed(2);
-            let balance = parseFloat(item.balance).toFixed(2);
             rowData.push({
               id: index + 1,
               groupColumn:
@@ -113,9 +112,9 @@ const GeneralLedger = () => {
                 item.chartOfAccount.accountSubTypeId
                   .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
                   .slice(1),
-              column3: "₹" + " " + debit.toString(),
-              column4: "₹" + " " + credit.toString(),
-              column5: "₹" + " " + balance.toString(),
+              column3: `₹ ${parseFloat(item.debits).toFixed(2)}`,
+              column4: `₹ ${parseFloat(item.credits).toFixed(2)}`,
+              column5: `₹ ${parseFloat(item.balance).toFixed(2)}`,
             });
           }
         });
