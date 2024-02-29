@@ -85,8 +85,8 @@ const ReportsTable = ({ rowData, tableHeaders, rowTotals }) => {
           {renderRows()}
           {rowTotals && (
             <tr className="net-container">
-              <td className="net-label">{rowTotals.netValue.label}</td>
-              {rowTotals.netValue.value.map((item, id) => (
+              <td className="net-label">{rowTotals?.netValue?.label}</td>
+              {rowTotals?.netValue?.value.map((item, id) => (
                 <td className="net-value" key={id}>
                   {item && "₹"}
                   {item}

@@ -95,9 +95,61 @@ const GeneralLedger = () => {
         { auth: true }
       )
       .then((res) => {
+        let assetsTotal = {
+          debitsTotal: 0,
+          creditsTotal: 0,
+          balanceTotal: 0,
+        };
+        let equityTotal = {
+          debitsTotal: 0,
+          creditsTotal: 0,
+          balanceTotal: 0,
+        };
+        let expensesTotal = {
+          debitsTotal: 0,
+          creditsTotal: 0,
+          balanceTotal: 0,
+        };
+        let liabilityTotal = {
+          debitsTotal: 0,
+          creditsTotal: 0,
+          balanceTotal: 0,
+        };
+
         const transcatios = res.body.data.summaryData.transactions;
         transcatios.forEach((item, index) => {
           if (item.chartOfAccount) {
+            if (item.chartOfAccount.accountTypeId === "assets") {
+              assetsTotal = {
+                debitsTotal: assetsTotal.debitsTotal + item.debits,
+                creditsTotal: assetsTotal.creditsTotal + item.credits,
+                balanceTotal: assetsTotal.balanceTotal + item.balance,
+              };
+            }
+
+            if (item.chartOfAccount.accountTypeId === "liability") {
+              liabilityTotal = {
+                debitsTotal: liabilityTotal.debitsTotal + item.debits,
+                creditsTotal: liabilityTotal.creditsTotal + item.credits,
+                balanceTotal: liabilityTotal.balanceTotal + item.balance,
+              };
+            }
+
+            if (item.chartOfAccount.accountTypeId === "expenses") {
+              expensesTotal = {
+                debitsTotal: expensesTotal.debitsTotal + item.debits,
+                creditsTotal: expensesTotal.creditsTotal + item.credits,
+                balanceTotal: expensesTotal.balanceTotal + item.balance,
+              };
+            }
+
+            if (item.chartOfAccount.accountTypeId === "equity") {
+              equityTotal = {
+                debitsTotal: equityTotal.debitsTotal + item.debits,
+                creditsTotal: equityTotal.creditsTotal + item.credits,
+                balanceTotal: equityTotal.balanceTotal + item.balance,
+              };
+            }
             rowData.push({
               id: index + 1,
               groupColumn:
@@ -117,6 +169,37 @@ const GeneralLedger = () => {
               column5: `₹ ${parseFloat(item.balance).toFixed(2)}`,
             });
           }
+        });
+
+        setRowTotals({
+          AssetsTotal: [
+            "",
+            "",
+            parseFloat(assetsTotal.debitsTotal).toFixed(2),
+            parseFloat(assetsTotal.creditsTotal).toFixed(2),
+            parseFloat(assetsTotal.balanceTotal).toFixed(2),
+          ],
+          EquityTotal: [
+            "",
+            "",
+            parseFloat(equityTotal.debitsTotal).toFixed(2),
+            parseFloat(equityTotal.creditsTotal).toFixed(2),
+            parseFloat(equityTotal.balanceTotal).toFixed(2),
+          ],
+          ExpensesTotal: [
+            "",
+            "",
+            parseFloat(expensesTotal.debitsTotal).toFixed(2),
+            parseFloat(expensesTotal.creditsTotal).toFixed(2),
+            parseFloat(expensesTotal.balanceTotal).toFixed(2),
+          ],
+          LiabilityTotal: [
+            "",
+            "",
+            parseFloat(liabilityTotal.debitsTotal).toFixed(2),
+            parseFloat(liabilityTotal.creditsTotal).toFixed(2),
+            parseFloat(liabilityTotal.balanceTotal).toFixed(2),
+          ],
         });
 
         setRowData(rowData);
@@ -408,6 +491,7 @@ const GeneralLedger = () => {
                   "| Credit",
                   "| Balance",
                 ]}
+                rowTotals={rowTotals}
               />
             </div>
           </div>
