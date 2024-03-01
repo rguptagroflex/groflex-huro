@@ -16,7 +16,7 @@ const Reports = () => {
         <div className="columns is-multiline sub-cards-container">
           <AdvancedCard
             type={"s-card"}
-            className="column is-5 report-card"
+            containerClassName="column is-5 report-card"
             onClick={() => navigate("/accounting/reports/balance-sheet")}
           >
             <div className="report-card-heading-container">
@@ -30,7 +30,7 @@ const Reports = () => {
           </AdvancedCard>
           <AdvancedCard
             type={"s-card"}
-            className="column is-5 report-card"
+            containerClassName="column is-5 report-card"
             onClick={() => navigate("/accounting/reports/general-ledger")}
           >
             <div className="report-card-heading-container">
@@ -47,7 +47,7 @@ const Reports = () => {
         <div className="columns is-multiline sub-cards-container">
           <AdvancedCard
             type={"s-card"}
-            className="column is-5 report-card"
+            containerClassName="column is-5 report-card"
             onClick={() => navigate("/accounting/reports/profit-and-loss")}
           >
             <div className="report-card-heading-container">
@@ -61,7 +61,7 @@ const Reports = () => {
           </AdvancedCard>
           <AdvancedCard
             type={"s-card"}
-            className="column is-5 report-card"
+            containerClassName="column is-5 report-card"
             onClick={() => navigate("/accounting/reports/cash-flow")}
           >
             <div className="report-card-heading-container">
@@ -78,7 +78,7 @@ const Reports = () => {
         <div className="columns is-multiline sub-cards-container">
           <AdvancedCard
             type={"s-card"}
-            className="column is-5 report-card"
+            containerClassName="column is-5 report-card"
             onClick={() => navigate("/accounting/reports/gst-reports")}
           >
             <div className="report-card-heading-container">

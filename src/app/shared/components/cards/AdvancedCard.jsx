@@ -21,6 +21,7 @@ export const AdvancedCard = ({
   footerContentLeft,
   footerContentRight,
   footerContentCenter,
+  onClick,
 }) => {
   const getCardType = () => {
     switch (type) {
@@ -58,6 +59,7 @@ export const AdvancedCard = ({
 
   return (
     <div
+      onClick={() => onClick && onClick()}
       style={containerStyle}
       className={`${getCardType()} ${getCardClasses()} ${containerClassName}`}
     >
