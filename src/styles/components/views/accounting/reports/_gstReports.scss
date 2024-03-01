@@ -1,0 +1,43 @@
+.gst-reports-wrapper {
+  .gst-filter-card {
+    margin-bottom: 20px;
+    .company-details {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      .company-name {
+        font-weight: 500;
+        color: #00a353;
+        font-size: 14px;
+      }
+    }
+    .gst-filter-label {
+      font-size: 14px;
+    }
+  }
+  .gst-export-summary {
+    overflow-x: auto;
+    border: 1px solid #ddd;
+    .table.is-hoverable tbody tr:not(.is-selected):hover {
+      background: #ebf5ff;
+    }
+    .gst-export-summary-headers {
+      height: 54px;
+      background-color: #f1f8fb;
+
+      th {
+        color: #888787 !important;
+      }
+    }
+    .gst-export-summary-row {
+      height: 54px;
+      color: black;
+      td {
+        color: black;
+      }
+    }
+  }
+  .gst-export-summary table {
+    white-space: nowrap;
+  }
+}

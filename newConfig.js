@@ -42,6 +42,24 @@ const resourceUrls = {
   login: `${resourceHost}session/create?type=bearer`,
   checkEmailExist: `${resourceHost}user/checkUser`,
   /* ALl in-app APIs will need Login token */
+  //Dashboard
+  recievables: `${resourceHost}invoice`,
+  payable: `${resourceHost}expense`,
+  invoiceChartData: (startDate, endDate) =>
+    `${resourceHost}invoice?startDate=${startDate}&endDate=${endDate}`,
+  expenseChartData: (startDate, endDate) =>
+    `${resourceHost}expense?startDate=${startDate}&endDate=${endDate}`,
+  quotationChartData: (startDate, endDate) =>
+    `${resourceHost}offer?startDate=${startDate}&endDate=${endDate}`,
+  salesExpensesChartData: (starDate, endDate) =>
+    `${resourceHost}dashboard/stats/turnoverExpenses?startDate=${starDate}&endDate=${endDate}`,
+  salesByArticles: (startDate, endDate) =>
+    `${resourceHost}dashboard/stats/turnoverCustomersArticles?startDate=${startDate}&endDate=${endDate}`,
+  expenseBy: (startDate, endDate) =>
+    `${resourceHost}dashboard/stats/expenseByArticle?startDate=${startDate}&endDate=${endDate}`,
+  //Home
+  quickLinks: `${resourceHost}quick-links`,
+  lastViewedDocumentsAndCustomers: `${resourceHost}/dashboard/lastDocumentsAndCustomers`,
   //Articles
   articleNumber: `${resourceHost}article/number`, //Get Create article's number
   postArticleImage: `${resourceHost}article/image/`, //Concatenate articleId
@@ -75,6 +93,27 @@ const resourceUrls = {
   //Transaction
   transaction: `${resourceHost}bankTransaction?offset=0&searchText=&limit=9999999&orderBy=date&desc=true`,
   bank: `${resourceHost}bank`,
+  //Reports Balance Sheet
+  balanceSheet: (startDate, endDate, fileType) =>
+    `${resourceHost}accountingReport/balanceSheet/${startDate}/${endDate}?type=${fileType}`,
+  profitAndLoss: (startDate, endDate, fileType) =>
+    `${resourceHost}accountingReport/profitandloss/${startDate}/${endDate}?type=${fileType}`,
+  generalLedger: (startDate, endDate, fileType, customerID) =>
+    `${resourceHost}accountingReport/generalLedger/${startDate}/${endDate}?type=${fileType}&customerId=${customerID}`,
+  generalLedgerCustomers: `${resourceHost}customer?offset=0`,
+  cashFlow: (starDate, endDate, fileType) =>
+    `${resourceHost}accountingReport/cashflow/${starDate}/${endDate}?type=${fileType}`,
+  sendAccountingReport: (reportType, startDate, endDate) =>
+    `${resourceHost}accountingReport/sendAccountingReportEmail/${reportType}/${startDate}/${endDate}`,
+  gstReportExportSummary: `${resourceHost}accountantExport/?offset=0&limit=5&orderBy=createdAt&desc=true`,
+  exportGstReport: `${resourceHost}accountantExport/`,
+
+  //Teams
+  teamsList: `${resourceHost}user/list`,
+  inviteNewUser: `${resourceHost}user/tenant`,
+  inviteCa: `${resourceHost}user/cadetails`,
+  updateUserRole: (userId) => `${resourceHost}user/${userId}/role`,
+  deleteUser: `${resourceHost}tenant/user/`,
 };
 
 const checkLoginTokenIsValid = () => {
@@ -146,9 +185,9 @@ const modules = {
       { label: "Leads", route: "/crm/leads" },
       { label: "Contact Management", route: "/crm/contact-management" },
 
-      { label: "Tasks Overview", route: "/crm/tasks-overview" },
-      { label: "Deals Overview", route: "/crm/deals-overview" },
-      { label: "Task details", route: "/crm/task-details" },
+      { label: "Tasks", route: "/crm/tasks" },
+      { label: "Deals", route: "/crm/deals" },
+      // { label: "Task details", route: "/crm/task-details" },
     ],
   },
 };

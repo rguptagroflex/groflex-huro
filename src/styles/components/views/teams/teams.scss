@@ -1,0 +1,57 @@
+.teams-invite-ca-wrapper {
+  .teams-invite-title-container {
+    .invite-heading {
+      font-size: 20px;
+      line-height: 26px;
+      letter-spacing: 0.22px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .invite-subheading {
+      font-size: 14px;
+      line-height: 19px;
+      letter-spacing: 0.14px;
+      font-weight: 400;
+    }
+  }
+}
+
+.teams-invite-new-user-wrapper {
+  .teams-invite-title-container {
+    .invite-heading {
+      font-size: 20px;
+      line-height: 26px;
+      letter-spacing: 0.22px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .invite-subheading {
+      font-size: 14px;
+      line-height: 19px;
+      letter-spacing: 0.14px;
+      font-weight: 400;
+    }
+  }
+  .user-type-container {
+    .control {
+      display: flex;
+      flex-direction: column;
+      label:nth-child(2) {
+        span {
+          width: 34px;
+        }
+      }
+      label:nth-child(3) {
+        span {
+          width: 34px;
+        }
+      }
+      .radio {
+        display: flex;
+        .role-select-heading {
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

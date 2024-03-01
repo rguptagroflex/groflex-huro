@@ -1,7 +1,7 @@
 import React from "react";
 import { SelectInput } from "../../../shared/components/select/SelectInput";
 import { Input } from "../../../shared/components/input/Input";
-
+import DateInput from "../../../shared/components/datePicker/DateInput";
 const TaskInformation = ({
   cardInfo,
   handleAssignedUserChange,
@@ -82,22 +82,30 @@ const TaskInformation = ({
         <div className="column is-6">
           <div className="field">
             <label>Starting Date *</label>
-            <Input
+            {/* <Input
               onChange={handleStartDateChange}
               type={"text"}
               placeholder={"None"}
               value={cardInfo.startDate}
+            /> */}
+            <DateInput
+              selectedDate={cardInfo.startDate}
+              onDateChange={handleStartDateChange}
             />
           </div>
         </div>
         <div className="column is-6">
           <div className="field">
             <label>Due Date *</label>
-            <Input
+            {/* <Input
               onChange={handleDueDateChange}
               type={"text"}
               placeholder={"None"}
               value={cardInfo.dueDate}
+            /> */}
+            <DateInput
+              selectedDate={cardInfo.dueDate}
+              onDateChange={handleDueDateChange}
             />
           </div>
         </div>

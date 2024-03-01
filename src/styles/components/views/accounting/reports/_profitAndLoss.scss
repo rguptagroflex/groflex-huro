@@ -1,0 +1,10 @@
+.profit-and-loss-wrapper {
+  min-height: 500px;
+  .profit-and-loss-table {
+    .reports-table {
+      .row-entry td:nth-child(4) {
+        text-align: right;
+      }
+    }
+  }
+}

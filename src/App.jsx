@@ -46,6 +46,15 @@ import InvoiceDetail from "./app/views/sales/invoices/InvoiceDetail";
 import QuotationDetail from "./app/views/sales/quotations/QuotationDetail";
 import InvoiceEditWrapper from "./app/views/sales/invoices/InvoiceEditWrapper";
 // import CreateInvoiceWrapper from "./app/views/sales/invoices/CreateInvoiceWrapper";
+import CreateDeal from "./app/views/crm/deals/CreateDeal";
+import DealDetails from "./app/views/crm/deals/DealDetails";
+import Teams from "./app/views/teams/Teams";
+import Reports from "./app/views/accounting/reports/Reports";
+import BalanceSheet from "./app/views/accounting/reports/BalanceSheet";
+import ProfitAndLoss from "./app/views/accounting/reports/ProfitAndLoss";
+import GeneralLedger from "./app/views/accounting/reports/GeneralLedger";
+import CashFlow from "./app/views/accounting/reports/CashFlow";
+import GstReports from "./app/views/accounting/reports/GstReports";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -96,7 +105,24 @@ function App() {
           <Route path="accounting/transactions" element={<Transactions />} />
           <Route path="accounting/cash-and-bank" element={<CashAndBank />} />
           <Route path="accounting/debit-notes" element={<DebitNotesList />} />
-
+          <Route path="accounting/reports" element={<Reports />} />
+          <Route
+            path="accounting/reports/balance-sheet"
+            element={<BalanceSheet />}
+          />
+          <Route
+            path="accounting/reports/profit-and-loss"
+            element={<ProfitAndLoss />}
+          />
+          <Route
+            path="accounting/reports/general-ledger"
+            element={<GeneralLedger />}
+          />
+          <Route path="accounting/reports/cash-flow" element={<CashFlow />} />
+          <Route
+            path="accounting/reports/gst-reports"
+            element={<GstReports />}
+          />
           {/* ---------------------Inventory Module------------------------- */}
           <Route path="inventory/dashboard" element={<InventoryDashboard />} />
           <Route
@@ -126,14 +152,18 @@ function App() {
             path="/crm/contact-management/:contactManagementId"
             element={<ContactManagementDetails />}
           />
-          <Route path="/crm/deals-overview" element={<DealsOverview />} />
-          <Route path="/crm/tasks-overview" element={<TasksOverview />} />
-          <Route path="/crm/task-details" element={<TaskDetails />} />
+          <Route path="/crm/deals" element={<DealsOverview />} />
+          <Route path="/crm/deals/create-deal" element={<CreateDeal />} />
+          <Route path="/crm/deals/deal-details" element={<DealDetails />} />
+          <Route path="/crm/tasks" element={<TasksOverview />} />
+          <Route path="/crm/tasks/edit" element={<TaskDetails />} />
+          <Route path="/crm/tasks/edit/:taskId" element={<TaskDetails />} />
 
           {/* ---------------------Miscilaneous----------------------*/}
           <Route path="account-settings" element={<AccountSettings />} />
           <Route path="preferences" element={<Preferences />} />
           <Route path="notifications" element={<Notifications />} />
+          <Route path="teams" element={<Teams />} />
         </Route>
 
         {/* -------------------Unprotected Routes------------------- */}

@@ -10,6 +10,7 @@
 @import "./components/shared/transactionEdit/transactionEdit";
 @import "./components/shared/editableIndicatorDiv/editableIndocatorDiv";
 @import "./components/shared/recepientComponent/recepientComponent";
+@import "./components/shared/kanbanBoard/kanbanBoard";
 
 // VIEWS
 @import "./components/views/Articles/articleOverview";
@@ -25,6 +26,25 @@
 @import "./components/views/Crm/tasks/tasksOverview";
 @import "./components/views/Crm/tasks/taskDetails";
 @import "./components/views/Sales/Quotations/quotationList";
-@import "./components/views/Accounting/transactionList";
 @import "./components/views/Sales/RecurringInvoices/recurringInvoicesList";
 @import "./components/views/Sales/Invoices/invoiceDetail";
+@import "./components/views/Crm/contactManagement/crmEmailModal";
+
+@import "./components/views/Crm/deals/dealDetails";
+@import "./components/views/home/home";
+@import "./components/views/dashboard/dashboard";
+@import "./components/views/dashboard/dashboardInvoiceExpense";
+@import "./components/views/dashboard/dashboardSalesExpense";
+@import "./components/views/dashboard/dashboardQuotation";
+@import "./components/views/dashboard/dashboardSales";
+@import "./components/views/dashboard/dashboardExpenses";
+@import "./components/views/teams/teams.scss";
+@import "./components/views/accounting/reports/reports";
+@import "./components/views/accounting/reports/balanceSheet";
+@import "./components/views/accounting/reports/profitAndLoss";
+@import "./components/views/accounting/reports/generalLedger";
+@import "./components/views/accounting/reports/cashFlow";
+@import "./components/views/accounting/reports/gstReports";
+
+//EXTERNAL
+@import "../../node_modules/pikaday/css/pikaday"; 

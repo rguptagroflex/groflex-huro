@@ -1,0 +1,28 @@
+.balance-sheet-wrapper {
+  min-height: 500px;
+  .balance-sheet-summary {
+    margin-left: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .balance-sheet-header {
+    padding: 20px;
+    justify-content: space-between;
+    align-items: center;
+    .utility-buttons {
+      margin-right: 20px;
+      .utility-btn {
+        width: 120px;
+      }
+    }
+  }
+  .balance-sheet-table {
+    .reports-table {
+      .row-entry td:nth-child(3) {
+        text-align: right;
+      }
+    }
+  }
+}

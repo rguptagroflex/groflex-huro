@@ -1,0 +1,295 @@
+.home-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  .slick-dots {
+    margin-bottom: 30px;
+  }
+  .slick-dots li.slick-active button:before {
+    color: #00a353;
+  }
+  .slick-prev {
+    z-index: 1;
+    margin-left: 34px;
+  }
+  .slick-next {
+    z-index: 1;
+    margin-right: 34px;
+  }
+  .slick-next:before {
+    color: lightgray;
+  }
+  .slick-prev:before {
+    color: lightgray;
+  }
+  .welcome-container {
+    height: 234px;
+    border: 1px solid #c6c6c6;
+    border-radius: 8px;
+    .welcome-sub-container {
+      height: 232px;
+      background-size: 100%;
+      &.banner-1 {
+        display: flex;
+        justify-content: flex-end;
+        padding-right: 144px;
+        align-items: center;
+      }
+      &.banner-2 {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 30px;
+        padding-right: 144px;
+      }
+      &.banner-3 {
+        display: flex;
+        justify-content: center;
+        padding-top: 40px;
+        padding-right: 223px;
+      }
+      &.banner-4 {
+        display: flex;
+        padding-top: 40px;
+        padding-left: 150px;
+      }
+      .welcome-content {
+        width: 405px;
+        height: 75px;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        .dashboard-button {
+          width: 162px;
+          height: 40px;
+        }
+        .invoices-button {
+          width: 146px;
+          height: 40px;
+        }
+        .teams-button {
+          width: 123px;
+          height: 40px;
+        }
+        .welcome-content-heading {
+          font-family: Inter;
+          font-size: 25px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 24px;
+        }
+        .welcome-content-body {
+          font-family: Inter;
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 18px;
+        }
+      }
+    }
+  }
+  .home-quick-links {
+    font-family: Inter;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 22px;
+  }
+  .coming-soon-card {
+    display: flex;
+    justify-content: space-between;
+    .coming-soon-content {
+      display: flex;
+      // width: 294px;
+      width: 30%;
+      flex-direction: column;
+      gap: 25px;
+      margin-left: 30px;
+      .coming-soon-image {
+        height: 190px;
+        object-fit: contain;
+      }
+      .coming-soon-heading {
+        font-weight: 700;
+        font-size: 25px;
+      }
+    }
+    .coming-soon-carousel {
+      background-color: #f1f8fb;
+
+      // width: 687px;
+      width: 70%;
+
+      .carousel-wrapper {
+        display: flex !important;
+
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 20px;
+        gap: 24px;
+        .carousel-image-container {
+          width: 295px;
+        }
+        .carousel-content {
+          width: 460px;
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+          padding-top: 20px;
+          .carousel-content-heading {
+            font-family: Inter;
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 24px;
+          }
+          .carousel-content-body {
+            font-family: Inter;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 18px;
+          }
+        }
+      }
+    }
+  }
+  .home-quick-links-wrapper {
+    .quick-links-header {
+      display: flex;
+      justify-content: space-between;
+      .quick-links-edit-container {
+        color: #00a353;
+        display: flex;
+        gap: 10px;
+        cursor: pointer;
+      }
+    }
+    .home-quick-links-container {
+      display: flex;
+      &.default-view {
+        .kanban-task-list {
+          flex-wrap: wrap;
+        }
+      }
+      .kanban-column-container {
+        width: 1078px;
+        border: 0;
+        .kanban-task-list {
+          display: flex;
+          gap: 21px 30px;
+          // flex-wrap: wrap;
+
+          .kanban-task-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            width: 225px;
+            border-radius: 8px;
+            padding: 16px;
+            .quick-link-card {
+              align-items: center;
+              display: flex;
+              justify-content: center;
+              gap: 10px;
+              .quick-link-text {
+                color: #272d30;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .home-recent-activites {
+    .recent-activities-heading {
+      font-family: Inter;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 22px;
+      margin-bottom: 20px;
+    }
+    .recent-activies-container {
+      display: flex;
+      .recent-activites-entry {
+        cursor: pointer;
+        width: 405px;
+        height: 62px;
+        padding: 12px 10px;
+        border-bottom: 1px #e3e3e3 solid;
+
+        .recent-title {
+          width: 240px;
+        }
+        .recent-number {
+          width: 90px;
+        }
+        .recent-entry-header {
+          .recent-title {
+            color: #878787;
+            font-size: 12px;
+          }
+          .recent-number {
+            color: #878787;
+            font-size: 12px;
+          }
+
+          display: flex;
+          justify-content: space-between;
+        }
+        .recent-entry-content {
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+
+      .recent-activites-entry:hover {
+        background: #e5f1f7;
+      }
+
+      .recent-activities-divider {
+        height: 186px;
+        border: 1px #c6c6c6 solid;
+        margin-left: 40px;
+        margin-right: 40px;
+      }
+      .recent-customers-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: center;
+        .recent-customer {
+          cursor: pointer;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          .initials {
+            width: 70px;
+            height: 70px;
+            margin-bottom: 12px;
+            border-radius: 50%;
+            color: #00a353;
+            border: 2px #00a353 solid;
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .initials:hover {
+            background: #00a353;
+            color: white;
+          }
+          .full-name {
+            overflow-wrap: break-word;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+}

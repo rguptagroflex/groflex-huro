@@ -1,0 +1,115 @@
+.reports-wrapper {
+  .sub-cards-container {
+    justify-content: center;
+    gap: 50px;
+    margin-bottom: 50px;
+    .report-card {
+      cursor: pointer;
+      .report-card-heading-container {
+        display: flex;
+        color: #00a353;
+        gap: 10px;
+        margin-bottom: 20px;
+        .report-card-heading {
+          font-weight: 600;
+          font-size: 16px;
+          line-height: 20px;
+        }
+      }
+      .reports-description {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 18px;
+      }
+    }
+  }
+}
+
+.reports-table {
+  overflow-x: auto;
+  .reports-table-header {
+    height: 54px;
+
+    background: #f0f8fb;
+    th {
+      color: #888787;
+      font-weight: 500;
+      font-size: 15px;
+    }
+  }
+  .row-entry {
+    height: 54px;
+    td {
+      color: black !important;
+    }
+  }
+  .accordian-total {
+    height: 54px;
+    background: #ecfcf4;
+    font-size: 15px;
+    font-weight: 600;
+
+    .total-value {
+      color: black !important;
+      text-align: right;
+    }
+  }
+  .table-accordian {
+    height: 54px;
+    cursor: pointer;
+    th {
+      font-weight: 600;
+      font-size: 14px;
+    }
+  }
+  .net-container {
+    height: 54px;
+    font-size: 15px;
+    font-weight: 600;
+
+    .net-value {
+      color: black !important;
+      text-align: right;
+    }
+  }
+}
+.reports-table table {
+  white-space: nowrap;
+}
+
+.reports-summary {
+  margin-left: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.reports-header {
+  padding: 20px;
+  justify-content: space-between;
+  align-items: center;
+
+  .utility-buttons {
+    @media screen and (max-width: 480px) {
+      display: flex;
+      flex-direction: column;
+      margin-left: 10px;
+      gap: 11px;
+      margin-top: 10px;
+    }
+    margin-right: 20px;
+    .utility-btn {
+      @media screen and (max-width: 480px) {
+        width: 310px;
+      }
+      width: 120px;
+    }
+  }
+}
+.reports-empty-table {
+  display: flex;
+  justify-content: center;
+  margin-top: 150px;
+  font-size: 20px;
+}

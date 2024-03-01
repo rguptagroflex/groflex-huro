@@ -13,12 +13,13 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../../shared/components/button/Button";
 import { isNil } from "../../../helpers/isNil";
 import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
+import Reschedule from "./Reschedule";
 
 const TasksOverview = () => {
   const actions = [
     { name: "Edit", icon: "edit" },
     { name: "Delete", icon: "trash-alt" },
-    { name: "Convert to Deal", icon: "trash-alt" },
+    { name: "Reschedule", icon: "refresh-cw" },
   ];
   const navigate = useNavigate();
 
@@ -97,15 +98,7 @@ const TasksOverview = () => {
     return (
       <div className="task-overview-buttons">
         <Button
-          onClick={() =>
-            navigate("/crm/createForm", {
-              state: {
-                title: "Create Lead",
-                api: "Create lead api",
-                infoTitle: "Lead Info",
-              },
-            })
-          }
+          onClick={() => navigate("/crm/tasks/task-edit")}
           isOutlined
           isPrimary
           isBold
@@ -113,42 +106,21 @@ const TasksOverview = () => {
         >
           Delete
         </Button>
-        <Button
-          onClick={() =>
-            navigate("/crm/createForm", {
-              state: {
-                title: "Create Lead",
-                api: "Create lead api",
-                infoTitle: "Lead Info",
-              },
-            })
-          }
-          isSuccess
-        >
+        <Button onClick={() => navigate("/crm/tasks/edit")} isSuccess>
           Create
         </Button>
       </div>
     );
   };
 
-  const handleActionClick = (action, rowData) => {
-    if (rowData) {
-      if (action.name === "Edit") {
-        if (rowData.id) {
-          setSelectedContact(rowData.id);
-          const previousData = { ...rowData };
-          setPreviousData(previousData);
-          navigate(`/contacts-edit/${rowData.id}`, {
-            state: { previousData },
-          });
-        } else {
-          console.log("Invalid rowData:", rowData);
-        }
-      } else if (action.name === "Delete") {
-        // Implement delete functionality
-      }
-    } else {
-      console.log("Invalid rowData:", rowData);
+  const handleActionClick = (action, row, params) => {
+    switch (action.name) {
+      case "Edit":
+        navigate(`/crm/tasks/edit/${row.id}`);
+        break;
+      case "Reschedule":
+        <Reschedule />;
+        break;
     }
   };
 

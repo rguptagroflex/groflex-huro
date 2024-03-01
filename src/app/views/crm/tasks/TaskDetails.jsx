@@ -17,6 +17,10 @@ import MeetingInformation from "./MeetingInformation";
 import ToDoInformation from "./ToDoInformation";
 import EmailInformation from "./EmailInformation";
 import CallInformation from "./CallInformation";
+import DateInput from "../../../shared/components/datePicker/DateInput";
+import { TimePicker } from "@mui/x-date-pickers";
+import TimeInput from "../../../shared/components/timePicker/TimeInput";
+import moment from "moment";
 
 const TaskDetails = () => {
   const [taskType, setTaskType] = useState("task");
@@ -32,7 +36,7 @@ const TaskDetails = () => {
     host: "",
     location: "",
     date: "",
-    time: "",
+    time: moment(),
     attendees: "",
     email: "",
     contact: "",
@@ -40,7 +44,7 @@ const TaskDetails = () => {
   const [reminder, setReminder] = useState({
     remind: false,
     reminderDate: "",
-    reminderTime: "",
+    reminderTime: moment(),
     notificationType: "",
     repeat: "",
   });
@@ -61,17 +65,17 @@ const TaskDetails = () => {
     });
   };
 
-  const handleReminderDateChange = (e) => {
+  const handleReminderDateChange = (date) => {
     setReminder({
       ...reminder,
-      reminderDate: e.target.value,
+      reminderDate: date,
     });
   };
 
-  const handleReminderTimeChange = (e) => {
+  const handleReminderTimeChange = (time) => {
     setReminder({
       ...reminder,
-      reminderTime: e.target.value,
+      reminderTime: time,
     });
   };
 
@@ -123,17 +127,17 @@ const TaskDetails = () => {
     });
   };
 
-  const handleStartDateChange = (e) => {
+  const handleStartDateChange = (startDate) => {
     setCardInfo({
       ...cardInfo,
-      startDate: e.target.value,
+      startDate: startDate,
     });
   };
 
-  const handleDueDateChange = (e) => {
+  const handleDueDateChange = (dueDate) => {
     setCardInfo({
       ...cardInfo,
-      dueDate: e.target.value,
+      dueDate: dueDate,
     });
   };
 
@@ -165,17 +169,17 @@ const TaskDetails = () => {
     });
   };
 
-  const handleDateChange = (e) => {
+  const handleDateChange = (date) => {
     setCardInfo({
       ...cardInfo,
-      date: e.target.value,
+      date: date,
     });
   };
 
-  const handleTimeChange = (e) => {
+  const handleTimeChange = (time) => {
     setCardInfo({
       ...cardInfo,
-      time: e.target.value,
+      time: time,
     });
   };
 
@@ -335,7 +339,7 @@ const TaskDetails = () => {
     { label: "Lead A", value: "leadA" },
     { label: "Lead B", value: "leadB" },
   ];
-  // console.log(cardInfo, "Hello");
+  // console.log(moment(reminder.reminderTime).format("HH:MM"));
 
   return (
     <PageContent
@@ -387,22 +391,31 @@ const TaskDetails = () => {
                   <div className="column is-6">
                     <div className="field">
                       <label>Choose Date *</label>
-                      <Input
+                      {/* <Input
                         onChange={handleReminderDateChange}
                         type={"text"}
                         placeholder={"None"}
                         value={reminder.reminderDate}
+                      /> */}
+                      <DateInput
+                        selectedDate={reminder.reminderDate}
+                        onDateChange={handleReminderDateChange}
                       />
                     </div>
                   </div>
                   <div className="column is-6">
                     <div className="field">
                       <label>Time *</label>
-                      <Input
+                      {/* <Input
                         onChange={handleReminderTimeChange}
                         type={"text"}
                         placeholder={"None"}
                         value={reminder.reminderTime}
+                      /> */}
+                      <TimeInput
+                        size={"small"}
+                        onChange={handleReminderTimeChange}
+                        value={moment(reminder.reminderTime)}
                       />
                     </div>
                   </div>

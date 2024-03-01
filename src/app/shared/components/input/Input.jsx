@@ -76,7 +76,7 @@ export const Input = ({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          autoComplete="on"
+          // autoComplete="on"
           {...rest}
         />
 

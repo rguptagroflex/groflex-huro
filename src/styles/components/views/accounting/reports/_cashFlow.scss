@@ -1,0 +1,13 @@
+.cash-flow-wrapper {
+  min-height: 500px;
+  .cash-flow-table {
+    .row-heading {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .row-data {
+      color: black !important;
+      text-align: right;
+    }
+  }
+}
