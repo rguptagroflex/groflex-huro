@@ -5,6 +5,9 @@ import LetterHeaderComponent from "../../letter/LetterHeaderComponent";
 import groflexService from "../../../services/groflex.service";
 import resources from "../../resources/resources";
 import config from "../../../../../oldConfig";
+import HtmlInputComponent from "../input/HtmlInputComponent";
+import EditableIndicatorDiv from "../../editableIndicatorDiv/EditableIndicatorDiv";
+import RecepientComponent from "../../letter/RecepientComponent";
 
 const TransactionEditComponent = ({
   transaction,
@@ -22,6 +25,7 @@ const TransactionEditComponent = ({
   isQuotation,
   isProforma,
   isDeliveryChallan,
+  isPurchaseOrder,
 }) => {
   const [transactionStates, setTransactionStates] = useState({
     transaction,
@@ -66,7 +70,7 @@ const TransactionEditComponent = ({
   };
 
   const onLetterHeaderEdited = (elements) => {
-    const editedLetter = transactionStates.letter;
+    let editedLetter = transactionStates.letter;
     editedLetter.header = elements;
 
     setTransactionStates(
@@ -134,6 +138,7 @@ const TransactionEditComponent = ({
   };
 
   const { navigateBackTo, pageTitle, breadCrumbData } = getPageInfo();
+  console.log(transactionStates.transaction, "Transaction");
 
   return (
     <PageContent
@@ -147,11 +152,49 @@ const TransactionEditComponent = ({
           // onCancel={onLetterHeaderCancel}
           onFinish={(elements) => onLetterHeaderEdited(elements)}
         />
-        <div className="transaction-form-row">
-          <div className="transaction-letter-recipient-container flex-column">
-            <div>BILLED TO</div>
+        {/* First row BILLED TO, SHiP TO, ANd INVOICE NUMBE STUFF  */}
+        <div className="transaction-form-row columns is-multiline">
+          {/* BIll to */}
+          <div className="transaction-letter-recipient-container column is-3">
+            <EditableIndicatorDiv className="transaction-form-sender-quill-container">
+              <HtmlInputComponent
+                className={"sender-quill"}
+                value={transactionStates.letter.sender}
+              />
+              {/* Enter customer */}
+            </EditableIndicatorDiv>
+            <RecepientComponent
+              transaction={transactionStates.transaction}
+              customerData={transactionStates.transaction.customerData}
+              recipientState={transactionStates.letterRecipientState}
+              recipientType={isPurchaseOrder ? "payee" : "customer"}
+              customerFullData={transactionStates.transaction.customer}
+              initialShowStates={{
+                showEmptyComp: true,
+                showSelectComp: false,
+                showDisplayComp: false,
+                showFormComp: false,
+              }}
+            />
           </div>
-          <div></div>
+          {/* Ship to */}
+          <div className="transaction-letter-shipping-address-container column is-3">
+            <EditableIndicatorDiv className="sender-address-quill-container">
+              <HtmlInputComponent
+                className={"sender-address-quill"}
+                value={"SHIP TO"}
+              />
+            </EditableIndicatorDiv>
+          </div>
+          {/* Meta */}
+          <div className="transaction-form-meta column is-6">
+            <EditableIndicatorDiv className="transaction-form-sender">
+              <HtmlInputComponent
+                placeholder={"Meta component"}
+                // value={transactionStates.letter.sender}
+              />
+            </EditableIndicatorDiv>
+          </div>
         </div>
       </div>
     </PageContent>

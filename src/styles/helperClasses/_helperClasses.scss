@@ -45,6 +45,9 @@
 .color-primary {
   color: $primary !important;
 }
+.font-color-dark {
+  color: $dark-text;
+}
 .color-warning {
   color: $warning;
 }
@@ -160,4 +163,21 @@
 
 .horizontal-margin-auto {
   margin: 0 auto;
+}
+.vertical-margin-auto {
+  margin: auto 0;
+}
+
+.border-on-hover {
+  border: 1px dashed transparent;
+  border-radius: 4px;
+  &:hover {
+    border-color: darken($font-grey-dark, 15%);
+  }
+}
+
+// Override other classes
+
+.ql-editor {
+  padding: 10px !important;
 }

@@ -38,7 +38,7 @@ export const Button = ({
     // Color Options
     isPrimary && classes.push("is-primary");
     // classes.push("is-primary is-outlined bg-white color-primary");
-    isSecondary && classes.push("is-primary is-outlined");
+    isSecondary && classes.push("is-secondary");
     isSuccess && classes.push("is-success");
     isInfo && classes.push("is-info");
     isWarning && classes.push("is-warning");

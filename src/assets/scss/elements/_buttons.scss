@@ -185,6 +185,15 @@ body {
       height: 50px;
       width: 220px;
     }
+
+    &.is-secondary {
+      background-color: transparent;
+      color: $primary;
+      border-color: $primary;
+      &:hover {
+        background-color: #ffffff;
+      }
+    }
   }
 
   &.simple-action {
@@ -241,7 +250,9 @@ body {
 body {
   &.is-dark {
     .h-button {
-      &:not(.is-primary):not(.is-success):not(.is-info):not(.is-warning):not(.is-danger):not(.is-light):not(.is-white) {
+      &:not(.is-primary):not(.is-success):not(.is-info):not(.is-warning):not(
+          .is-danger
+        ):not(.is-light):not(.is-white) {
         background: lighten($dark-sidebar, 10%);
         border-color: lighten($dark-sidebar, 12%);
         color: $dark-dark-text;
@@ -300,7 +311,9 @@ body {
     }
 
     .button {
-      &:not(.is-primary):not(.is-success):not(.is-info):not(.is-warning):not(.is-danger):not(.is-light):not(.is-white) {
+      &:not(.is-primary):not(.is-success):not(.is-info):not(.is-warning):not(
+          .is-danger
+        ):not(.is-light):not(.is-white) {
         background: lighten($dark-sidebar, 10%);
         border-color: lighten($dark-sidebar, 12%);
         color: $dark-dark-text;

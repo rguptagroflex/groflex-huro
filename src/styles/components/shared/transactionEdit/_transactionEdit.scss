@@ -56,7 +56,38 @@
   }
 
   //Tranasction form row
-  .transaction-from-row {
-    display: flex;
+  .transaction-form-row {
+    // display: flex;
+    margin-top: 10px;
+    .transaction-letter-recipient-container {
+      .transaction-form-sender-quill-container {
+        .sender-quill {
+          .ql-container {
+            .ql-editor {
+            }
+            p {
+              color: $dark-text;
+              font-size: 14px;
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+    .transaction-letter-shipping-address-container {
+      .sender-address-quill-container {
+        .sender-address-quill {
+          .ql-container {
+            .ql-editor {
+            }
+            p {
+              color: $dark-text;
+              font-size: 14px;
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
   }
 }

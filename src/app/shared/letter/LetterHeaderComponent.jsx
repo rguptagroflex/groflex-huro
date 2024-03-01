@@ -438,6 +438,7 @@ const LetterHeaderComponent = ({ items, onFinish }) => {
   };
 
   const exitEditMode = () => {
+    if (!canvasEditMode) return;
     console.log("EXIT EDIT MODE");
     const canvas = canvasRef.current;
     canvas.discardActiveObject();
@@ -683,7 +684,11 @@ const LetterHeaderComponent = ({ items, onFinish }) => {
           canvasEditMode ? "header-edit-active" : "header-edit-inactive"
         }`}
       >
-        <FeatherIcon name={"Edit"} className={"header-edit-icon"} />
+        <FeatherIcon
+          name={"Edit"}
+          className={"header-edit-icon"}
+          primaryColor
+        />
 
         <LoaderSpinner
           containerStyle={{ position: "absolute" }}
