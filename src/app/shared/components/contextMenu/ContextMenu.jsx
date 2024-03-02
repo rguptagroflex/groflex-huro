@@ -10,7 +10,7 @@ const ContextMenu = ({ contextMenuItems = [], classes = [], iconText }) => {
   };
   return (
     <div
-      className={`dropdown  dropdown-trigger is-up ${getContextMenuClasses()} ${
+      className={`dropdown  dropdown-trigger is-down ${getContextMenuClasses()} ${
         isContextMenuActive ? "is-active" : ""
       }`}
       onClick={() => setIsContextMenuActive(!isContextMenuActive)}

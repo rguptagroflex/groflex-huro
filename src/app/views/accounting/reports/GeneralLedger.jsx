@@ -330,8 +330,20 @@ const GeneralLedger = () => {
           headers: { "Content-Type": `application/${exportType}` },
         }
       )
-      .then((res) => {
-        console.log(res);
+      .then(({ body }) => {
+        var blob = new Blob([body], { type: "application/text" });
+
+        var link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = `${moment(date.startDate).format()}_${moment(
+          date.endDate
+        ).format()}.${exportType}`;
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        document.body.removeChild(link);
       });
   };
 
