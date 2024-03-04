@@ -76,7 +76,7 @@ const KanbanBoard = ({
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="kanban-board-container">
-        {board.columnOrder.map((columnId) => {
+        {board?.columnOrder?.map((columnId) => {
           const column = board.columns[columnId];
           const tasks = column.taskIds.map((taskId) => board.tasks[taskId]);
           return (

@@ -19,102 +19,57 @@ import KanbanBoard from "../../shared/components/kanbanBoard/KanbanBoard";
 import groflexService from "../../services/groflex.service";
 import config from "../../../../newConfig";
 
-const quickLinks = {
-  tasks: {
-    "add-articles": {
-      id: "add-articles",
-      content: (
-        <div className="quick-link-card" onClick={() => navigate("/articles")}>
-          <FeatherIcon name={"Inbox"} size={25} color="#272d30" />
-          <p className="quick-link-text">Add Article</p>
-        </div>
-      ),
-    },
-    "create-sales": {
-      id: "create-sales",
-      content: (
-        <div
-          className="quick-link-card"
-          onClick={() => navigate("/sales/invoices")}
-        >
-          <FeatherIcon name={"TrendingUp"} size={25} color="#272d30" />
-          <p className="quick-link-text">Create Sales</p>
-        </div>
-      ),
-    },
-    "create-timesheets": {
-      id: "create-timesheets",
-      content: (
-        <div
-          className="quick-link-card"
-          onClick={() => navigate("/sales/time-sheets")}
-        >
-          <FeatherIcon name={"Clock"} size={25} color="#272d30" />
-          <p className="quick-link-text">Create Timesheets</p>
-        </div>
-      ),
-    },
-    "create-contacts": {
-      id: "create-contacts",
-      content: (
-        <div className="quick-link-card" onClick={() => navigate("/contacts")}>
-          <FeatherIcon name={"User"} size={25} color="#272d30" />
-          <p className="quick-link-text">Create Contact</p>
-        </div>
-      ),
-    },
-
-    "invite-users": {
-      id: "invite-users",
-      content: (
-        <div className="quick-link-card" onClick={() => navigate("/teams")}>
-          <FeatherIcon name={"Users"} size={25} color="#272d30" />
-          <p className="quick-link-text">Invite Users</p>
-        </div>
-      ),
-    },
-
-    "create-quotations": {
-      id: "create-quotations",
-      content: (
-        <div
-          className="quick-link-card"
-          onClick={() => navigate("/sales/quotations")}
-        >
-          <FeatherIcon name={"Book"} size={25} color="#272d30" />
-          <p className="quick-link-text">Create Quotations</p>
-        </div>
-      ),
-    },
-  },
-  columns: {
-    "column-1": {
-      id: "column-1",
-      title: "",
-      taskIds: [
-        "add-articles",
-        "create-sales",
-        "create-timesheets",
-        "create-contacts",
-        "invite-users",
-        "create-quotations",
-      ],
-    },
-  },
-  columnOrder: ["column-1"],
-};
 const Home = () => {
   const navigate = useNavigate();
   const [isEditableDisabled, setIsEditableDisbaled] = useState(true);
   const [lastViewedDocuments, setLastViewedDocuments] = useState([]);
   const [lastViewedCustomers, setLastViewedCustomers] = useState([]);
-  const [board, setBoard] = useState(quickLinks);
+
+  const [board, setBoard] = useState({});
   useEffect(() => {
     //Quick Links APi
     groflexService
       .request(`${config.resourceUrls.quickLinks}`, { auth: true })
       .then((res) => {
-        console.log(res);
+        let linksOrder = [];
+        let kanbanTasks = {};
+
+        res.body.data.links.forEach((item) => {
+          let quickLinkEntry = item.linkId;
+          linksOrder.push(quickLinkEntry);
+          kanbanTasks[item.linkId] = {
+            id: item.linkId,
+            content: (
+              <div
+                className="quick-link-card"
+                onClick={() => navigate(setQuickLinksUrl(item.linkId))}
+              >
+                <FeatherIcon name={"Inbox"} size={25} color="#272d30" />
+                <p className="quick-link-text">
+                  {item.linkId
+                    .split("-")
+                    .join(" ")
+                    .replace(
+                      /(^|\s)([a-z])/g,
+                      (_, space, letter) => space + letter.toUpperCase()
+                    )}
+                </p>
+              </div>
+            ),
+          };
+        });
+
+        setBoard({
+          tasks: kanbanTasks,
+          columns: {
+            column1: {
+              id: "column1",
+              title: "",
+              taskIds: linksOrder,
+            },
+          },
+          columnOrder: ["column1"],
+        });
       });
 
     //Last viewed Documents and Customers
@@ -127,7 +82,32 @@ const Home = () => {
         setLastViewedDocuments(res.body.data.lastUsedDocuments);
       });
   }, []);
-  console.log(board);
+
+  const setQuickLinksUrl = (quickLinkId) => {
+    let url = "";
+    switch (quickLinkId) {
+      case "add-articles":
+        url = "/articles";
+        break;
+      case "create-sales":
+        url = "/sales/invoices";
+        break;
+      case "create-timesheets":
+        url = "/sales/time-sheets";
+        break;
+      case "create-contacts":
+        url = "/contacts";
+        break;
+      case "invite-users":
+        url = "/teams";
+        break;
+      case "create-quotations":
+        url = "/sales/quotations";
+        break;
+    }
+
+    return url;
+  };
 
   return (
     <PageContent
@@ -141,6 +121,7 @@ const Home = () => {
       }
       breadCrumbData={["Home"]}
       title="Home page"
+      loading={Object.keys(board).length === 0}
     >
       <div className="home-wrapper">
         <ReactSlickCarousel settings={{ fade: false }}>
@@ -278,7 +259,6 @@ const Home = () => {
             }`}
           >
             <KanbanBoard
-              initialBoard={quickLinks}
               isDragDisabled={isEditableDisabled}
               direction={"horizontal"}
               board={board}
