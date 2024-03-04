@@ -27,7 +27,11 @@ const Home = () => {
 
   const [board, setBoard] = useState({});
   useEffect(() => {
-    //Quick Links APi
+    fetchQuickLinks();
+    fetchLastViewedDocumentsAndCustomers();
+  }, []);
+
+  const fetchQuickLinks = () => {
     groflexService
       .request(`${config.resourceUrls.quickLinks}`, { auth: true })
       .then((res) => {
@@ -71,8 +75,37 @@ const Home = () => {
           columnOrder: ["column1"],
         });
       });
+  };
 
-    //Last viewed Documents and Customers
+  const setQuickLinksOrder = () => {
+    let payload = [];
+    board.columns.column1.taskIds.forEach((item, id) => {
+      let link = setQuickLinksUrl(item);
+      payload.push({
+        link: link,
+        linkId: item,
+        name: item
+          .split("-")
+          .join(" ")
+          .replace(
+            /(^|\s)([a-z])/g,
+            (_, space, letter) => space + letter.toUpperCase()
+          ),
+        order: id,
+      });
+    });
+
+    groflexService
+      .request(`${config.resourceUrls.quickLinks}`, {
+        auth: true,
+        data: payload,
+        method: "PUT",
+      })
+      .then((res) => {
+        console.log(res);
+      });
+  };
+  const fetchLastViewedDocumentsAndCustomers = () => {
     groflexService
       .request(`${config.resourceUrls.lastViewedDocumentsAndCustomers}`, {
         auth: true,
@@ -81,7 +114,7 @@ const Home = () => {
         setLastViewedCustomers(res.body.data.lastUsedCustomers);
         setLastViewedDocuments(res.body.data.lastUsedDocuments);
       });
-  }, []);
+  };
 
   const setQuickLinksUrl = (quickLinkId) => {
     let url = "";
@@ -107,6 +140,11 @@ const Home = () => {
     }
 
     return url;
+  };
+
+  const handleSave = () => {
+    setQuickLinksOrder();
+    setIsEditableDisbaled(true);
   };
 
   return (
@@ -238,7 +276,7 @@ const Home = () => {
             ) : (
               <div
                 className="quick-links-edit-container"
-                onClick={() => setIsEditableDisbaled(true)}
+                onClick={() => handleSave()}
               >
                 <h5>Save</h5>
                 <FeatherIcon name={"Check"} size={20} color="#00A353" />
