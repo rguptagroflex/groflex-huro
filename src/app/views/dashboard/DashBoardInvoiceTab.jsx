@@ -74,7 +74,9 @@ const DashBoardInvoiceTab = () => {
       });
   };
   useEffect(() => {
-    fetchInvoiceList();
+    if (date.startDate && date.endDate) {
+      fetchInvoiceList();
+    }
   }, [date]);
 
   const [isBarChart, setIsBarChart] = useState(true);

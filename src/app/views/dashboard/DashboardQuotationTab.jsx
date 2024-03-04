@@ -81,7 +81,9 @@ const DashboardQuotation = () => {
   };
 
   useEffect(() => {
-    fetchQuotations();
+    if (date.startDate && date.endDate) {
+      fetchQuotations();
+    }
   }, [date]);
 
   const [isBarChart, setIsBarChart] = useState(true);

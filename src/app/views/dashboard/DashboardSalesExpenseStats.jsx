@@ -34,16 +34,17 @@ const DashboardSalesExpenseStats = () => {
     totalExpenses: 0,
   });
 
-  const [dateDropDown, setDateDropDown] = useState({
-    label: dateFilterTypes.fiscalYear,
-    value: "fiscalYear",
-  });
+  const [dateFilter, setDateFilter] = useState("fiscalYear");
 
   const [series, setSeries] = useState({
     sales: [],
     expenses: [],
   });
   const [labels, setLabels] = useState([]);
+
+  useEffect(() => {
+    handleDateChange();
+  }, [dateFilter]);
 
   useEffect(() => {
     groflexService
@@ -80,13 +81,15 @@ const DashboardSalesExpenseStats = () => {
       });
   }, [date]);
 
-  const handleDateDropDown = (option) => {
-    // setDate(option.value);
-    setDateDropDown(option.value);
+  const handleDateFilterChange = (option) => {
+    setDateFilter(option.value);
+  };
+
+  const handleDateChange = () => {
     let startDate = "";
     let endDate = "";
     let labels = [];
-    switch (option.value) {
+    switch (dateFilter) {
       case "currMonth":
         startDate = moment().startOf("month");
         endDate = moment().endOf("month");
@@ -228,8 +231,8 @@ const DashboardSalesExpenseStats = () => {
               <SelectInput
                 options={dateOptions}
                 placeholder={"None"}
-                onChange={handleDateDropDown}
-                value={dateDropDown}
+                onChange={handleDateFilterChange}
+                value={dateFilter}
               />
             </div>
             <div

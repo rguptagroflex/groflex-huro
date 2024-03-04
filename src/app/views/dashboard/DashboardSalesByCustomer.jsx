@@ -40,7 +40,9 @@ const DashboardSalesByCustomer = () => {
   };
 
   useEffect(() => {
-    fetchSalesByArticles();
+    if (date.startDate && date.endDate) {
+      fetchSalesByArticles();
+    }
   }, [date]);
 
   useEffect(() => {

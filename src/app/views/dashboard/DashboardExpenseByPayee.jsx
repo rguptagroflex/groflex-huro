@@ -41,7 +41,9 @@ const DashboardExpenseByPayee = () => {
   };
 
   useEffect(() => {
-    fetchExpenseBy();
+    if (date.startDate && date.endDate) {
+      fetchExpenseBy();
+    }
   }, [date]);
 
   useEffect(() => {

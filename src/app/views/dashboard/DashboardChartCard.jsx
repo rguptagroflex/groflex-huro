@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SelectInput } from "../../shared/components/select/SelectInput";
 import { FeatherIcon } from "../../shared/featherIcon/FeatherIcon";
 
@@ -59,17 +59,20 @@ const DashboardChartCard = ({
     value: 0,
   },
 }) => {
-  const [dateDropDown, setDateDropDown] = useState({
-    label: dateFilterTypes.fiscalYear,
-    value: "fiscalYear",
-  });
+  const [dateFilter, setDateFilter] = useState("fiscalYear");
 
-  const handleDateDropDown = (option) => {
-    // setDate(option.value);
-    setDateDropDown(option.value);
+  useEffect(() => {
+    handleDateChange();
+  }, [dateFilter]);
+
+  const handleDateFilterChange = (option) => {
+    setDateFilter(option.value);
+  };
+
+  const handleDateChange = () => {
     let startDate = "";
     let endDate = "";
-    switch (option.value) {
+    switch (dateFilter) {
       case "currMonth":
         startDate = moment().startOf("month");
         endDate = moment().endOf("month");
@@ -158,8 +161,8 @@ const DashboardChartCard = ({
           <SelectInput
             options={dateOptions}
             placeholder={"None"}
-            onChange={handleDateDropDown}
-            value={dateDropDown}
+            onChange={handleDateFilterChange}
+            value={dateFilter}
             defaultValue={"fiscalYear"}
           />
         </div>
