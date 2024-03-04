@@ -209,6 +209,7 @@ const DashboardExpenseByPayee = () => {
       filterOptions={filterOptions}
       handleFilterChange={handleFilterChange}
       filter={filter}
+      date={date}
     />
   );
 };

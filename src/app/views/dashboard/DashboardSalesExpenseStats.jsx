@@ -6,6 +6,7 @@ import moment from "moment";
 import groflexService from "../../services/groflex.service";
 import config from "../../../../newConfig";
 import CreateChart from "../../shared/components/chartjs/CreateChart";
+import DateInput from "../../shared/components/datePicker/DateInput";
 
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
@@ -35,6 +36,8 @@ const DashboardSalesExpenseStats = () => {
   });
 
   const [dateFilter, setDateFilter] = useState("fiscalYear");
+  const [showCustomDateRangeSelector, setShowCustomDateRangeSelector] =
+    useState(false);
 
   const [series, setSeries] = useState({
     sales: [],
@@ -145,13 +148,30 @@ const DashboardSalesExpenseStats = () => {
           "Feb",
         ];
         break;
+      case "custom":
+        setShowCustomDateRangeSelector(true);
+        break;
     }
 
-    setLabels(labels);
+    if (dateFilter !== "custom") {
+      setLabels(labels);
+      setDate({
+        startDate: startDate.toJSON(),
+        endDate: endDate.toJSON(),
+      });
+    }
+  };
 
+  const handleCustomStartDateChange = (value) => {
     setDate({
-      startDate: startDate.toJSON(),
-      endDate: endDate.toJSON(),
+      ...date,
+      startDate: value.toJSON(),
+    });
+  };
+  const handleCustomEndDateChange = (value) => {
+    setDate({
+      ...date,
+      endDate: value.toJSON(),
     });
   };
 
@@ -183,6 +203,10 @@ const DashboardSalesExpenseStats = () => {
     {
       label: dateFilterTypes.fiscalYear,
       value: "fiscalYear",
+    },
+    {
+      label: "Custom",
+      value: "custom",
     },
   ];
 
@@ -257,6 +281,22 @@ const DashboardSalesExpenseStats = () => {
               </div>
             </div>
           </div>
+          {showCustomDateRangeSelector && (
+            <div className="columns is-multiline" style={{ marginTop: "10px" }}>
+              <div className="column is-3">
+                <DateInput
+                  selectedDate={moment(date.startDate)}
+                  onDateChange={handleCustomStartDateChange}
+                />
+              </div>
+              <div className="column is-3">
+                <DateInput
+                  selectedDate={moment(date.endDate)}
+                  onDateChange={handleCustomEndDateChange}
+                />
+              </div>
+            </div>
+          )}
 
           <div
             className="columns is-mulitline"

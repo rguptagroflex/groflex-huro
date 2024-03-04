@@ -156,6 +156,7 @@ const DashboardQuotation = () => {
         },
       ]}
       setDate={setDate}
+      date={date}
     />
   );
 };

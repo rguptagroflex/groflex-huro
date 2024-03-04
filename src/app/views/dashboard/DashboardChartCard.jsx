@@ -16,6 +16,7 @@ import {
 } from "chart.js";
 
 import CreateChart from "../../shared/components/chartjs/CreateChart";
+import DateInput from "../../shared/components/datePicker/DateInput";
 
 ChartJS.register(
   CategoryScale,
@@ -50,6 +51,7 @@ const DashboardChartCard = ({
   chartEntries = [],
   chartType,
   setChartType,
+  date,
   setDate,
   filterOptions,
   handleFilterChange,
@@ -60,6 +62,8 @@ const DashboardChartCard = ({
   },
 }) => {
   const [dateFilter, setDateFilter] = useState("fiscalYear");
+  const [showCustomDateRangeSelector, setShowCustomDateRangeSelector] =
+    useState(false);
 
   useEffect(() => {
     handleDateChange();
@@ -74,23 +78,28 @@ const DashboardChartCard = ({
     let endDate = "";
     switch (dateFilter) {
       case "currMonth":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().startOf("month");
         endDate = moment().endOf("month");
 
         break;
       case "lastMonth":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().subtract(1, "months").startOf("month");
         endDate = moment().subtract(1, "months").endOf("month");
         break;
       case "secondLastMonth":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().subtract(2, "months").startOf("month");
         endDate = moment().subtract(2, "months").endOf("month");
         break;
       case "currQuarter":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().startOf("quarter");
         endDate = moment().endOf("quarter");
         break;
       case "lastQuarter":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().subtract(3, "months").startOf("quarter");
         endDate = moment()
           .subtract(3, "months")
@@ -98,10 +107,12 @@ const DashboardChartCard = ({
           .format("DD MMMM YYYY");
         break;
       case "secondLastQuarter":
+        setShowCustomDateRangeSelector(false);
         startDate = moment().subtract(6, "months").startOf("quarter");
         endDate = moment().subtract(6, "months").endOf("quarter");
         break;
       case "fiscalYear":
+        setShowCustomDateRangeSelector(false);
         const financialYearMonthStart = moment()
           .utc()
           .set("month", 2)
@@ -112,11 +123,29 @@ const DashboardChartCard = ({
             : financialYearMonthStart.set("year", moment().utc().year() - 1);
         endDate = endDate ? moment(endDate).utc() : moment().utc();
         break;
+      case "custom":
+        setShowCustomDateRangeSelector(true);
+        break;
     }
 
+    if (dateFilter !== "custom") {
+      setDate({
+        startDate: startDate.toJSON(),
+        endDate: endDate.toJSON(),
+      });
+    }
+  };
+
+  const handleCustomStartDateChange = (value) => {
     setDate({
-      startDate: startDate.toJSON(),
-      endDate: endDate.toJSON(),
+      ...date,
+      startDate: value.toJSON(),
+    });
+  };
+  const handleCustomEndDateChange = (value) => {
+    setDate({
+      ...date,
+      endDate: value.toJSON(),
     });
   };
 
@@ -148,6 +177,10 @@ const DashboardChartCard = ({
     {
       label: dateFilterTypes.fiscalYear,
       value: "fiscalYear",
+    },
+    {
+      label: "Custom",
+      value: "custom",
     },
   ];
 
@@ -184,6 +217,22 @@ const DashboardChartCard = ({
           />
         </div>
       </div>
+      {showCustomDateRangeSelector && (
+        <div className="columns is-multiline" style={{ marginTop: "10px" }}>
+          <div className="column is-6">
+            <DateInput
+              selectedDate={moment(date.startDate)}
+              onDateChange={handleCustomStartDateChange}
+            />
+          </div>
+          <div className="column is-6">
+            <DateInput
+              selectedDate={moment(date.endDate)}
+              onDateChange={handleCustomEndDateChange}
+            />
+          </div>
+        </div>
+      )}
       {filter && (
         <div className="columns is-multiline">
           <div style={{ width: "168px", marginLeft: "10px" }}>

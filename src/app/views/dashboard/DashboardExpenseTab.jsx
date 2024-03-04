@@ -148,6 +148,7 @@ const DashboardExpenseTab = () => {
         },
       ]}
       setDate={setDate}
+      date={date}
     />
   );
 };

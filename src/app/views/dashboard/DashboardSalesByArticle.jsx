@@ -185,6 +185,7 @@ const DashboardSalesByArticle = () => {
       filterOptions={filterOptions}
       handleFilterChange={handleFilterChange}
       filter={filter}
+      date={date}
     />
   );
 };

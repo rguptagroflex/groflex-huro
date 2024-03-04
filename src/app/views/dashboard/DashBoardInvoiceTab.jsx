@@ -118,6 +118,7 @@ const DashBoardInvoiceTab = () => {
 
   return (
     <DashboardChartCard
+      date={date}
       pieChartSummary={totalValue}
       className={"dashboard-invoice-expense-tab-wrapper"}
       headerClassName={"invoice-tab-header"}
