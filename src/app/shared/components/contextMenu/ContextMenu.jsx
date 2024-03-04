@@ -25,10 +25,11 @@ const ContextMenu = ({ contextMenuItems = [], classes = [], iconText }) => {
       </div>
       <div className="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {contextMenuItems.map((item) => (
+          {contextMenuItems.map((item, id) => (
             <a
               className="dropdown-item font-size-base"
               onClick={() => item.onContextMenuItemClick(item.label)}
+              key={`context-menu-entry-${id}`}
             >
               {item.label}
             </a>

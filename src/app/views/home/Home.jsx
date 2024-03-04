@@ -101,9 +101,7 @@ const Home = () => {
         data: payload,
         method: "PUT",
       })
-      .then((res) => {
-        console.log(res);
-      });
+      .then((res) => {});
   };
   const fetchLastViewedDocumentsAndCustomers = () => {
     groflexService
