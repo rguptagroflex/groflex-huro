@@ -11,6 +11,7 @@ import { Switch } from "../../shared/components/switch/Switch";
 import RadioButton from "../../shared/components/button/RadioButton";
 import GroflexService from "../../services/groflex.service";
 import config from "../../../../newConfig";
+import oldConfig from "../../../../oldConfig";
 import ErrorText from "../../shared/components/errorText/ErrorText";
 import AddContactPersonModal from "./AddContactPersonModal";
 import { getCountries } from "../../helpers/getCountries";
@@ -21,7 +22,7 @@ import DeleteModal from "./DeleteModal";
 import { getCurrencyRates as getCurrencyRatesFromOpenExchangeRates } from "../../helpers/getCurrencyRates";
 import groflexService from "../../services/groflex.service";
 import { useNavigate } from "react-router-dom";
-
+import { currencyOptions } from "../../helpers/constants";
 const countriesOptions = getCountries().map((country) => ({
   label: country.label,
   value: country.iso2,
@@ -38,7 +39,7 @@ const CreateContact = () => {
   const endpoint = config.resourceUrls.miscellaneous;
   const [salutationOptions, setSalutationOptions] = useState([]);
   const [titleOptions, setTitleOptions] = useState([]);
-  const [currencyOptions, setCurrencyOptions] = useState([]);
+  // const [currencyOptions, setCurrencyOptions] = useState([]);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   // const isDataFetchedRef = useRef(false);
@@ -75,7 +76,7 @@ const CreateContact = () => {
     defaultExchangeRateToggle: false,
     lastName: "",
     firstName: "",
-    exchangeRate: "",
+    exchangeRate: 0,
     outstandingAmount: 0,
     salutation: "",
     title: "",
@@ -89,6 +90,11 @@ const CreateContact = () => {
     firstName: "",
     email: "",
   });
+  const [paymentTermsOptions, setPaymentTermsOptions] = useState([]);
+
+  useEffect(() => {
+    fetchPaymentTermsOptions();
+  }, []);
   const handleEditContact = (index) => {
     const contact = companyInfo.contactPersons[index];
     setEditContactIndex(index);
@@ -98,6 +104,24 @@ const CreateContact = () => {
     });
     setIsModalEdit(true); // Open the modal for editing the contact details
   };
+
+  const fetchPaymentTermsOptions = () => {
+    groflexService
+      .request(`${oldConfig.settings.endpoints.payConditions}`, { auth: true })
+      .then((res) => {
+        if (res && res.body) {
+          let paymentTermsOptions = [];
+          res?.body?.data?.forEach((option) => {
+            paymentTermsOptions.push({
+              label: option.name,
+              value: option.id,
+            });
+          });
+          setPaymentTermsOptions(paymentTermsOptions);
+        }
+      });
+  };
+
   const handleSaveContact = () => {
     if (editContactIndex !== null) {
       // Update the contact details in the companyInfo.contactPersons array
@@ -131,36 +155,46 @@ const CreateContact = () => {
     setDeleteIndex(null);
   };
 
-  useEffect(() => {
-    const fetchCurrencyOptions = async () => {
-      try {
-        const jsonData = await getCurrencyRatesFromOpenExchangeRates({
-          base: "INR",
-        });
-        const rates = jsonData.rates;
+  // useEffect(() => {
+  //   const fetchCurrencyOptions = async () => {
+  //     try {
+  //       const jsonData = await getCurrencyRatesFromOpenExchangeRates({
+  //         base: "INR",
+  //       });
+  //       const rates = jsonData.rates;
 
-        const newCurrencyOptions = Object.keys(rates).map((currency) => ({
-          value: currency,
-          label: `1 ${currency}`,
-        }));
+  //       const newCurrencyOptions = Object.keys(rates).map((currency) => ({
+  //         value: currency,
+  //         label: `1 ${currency}`,
+  //       }));
 
-        setCurrencyOptions(newCurrencyOptions);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  //       // setCurrencyOptions(newCurrencyOptions);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
 
-    fetchCurrencyOptions();
-  }, []);
+  //   fetchCurrencyOptions();
+  // }, []);
   useEffect(() => {
     GroflexService.request(`${config.resourceHost}india/states`, {
       auth: true,
     }).then((res) => {
-      const newStateOptions = res.data.map((state) => ({
-        label: state.stateName,
-        value: state.id,
-      }));
-      setStateOptions([...newStateOptions]);
+      if (res && res.body) {
+        let newStateOptions = [];
+        res.body.data.forEach((state) => {
+          newStateOptions.push({
+            label: state.stateName,
+            value: state.id,
+          });
+        });
+        setStateOptions(newStateOptions);
+      }
+      // const newStateOptions = res?.data?.map((state) => ({
+      //   label: state.stateName,
+      //   value: state.id,
+      // }));
+      // setStateOptions([...newStateOptions]);
     });
   }, []);
 
@@ -176,9 +210,9 @@ const CreateContact = () => {
       groflexService
         .request(`${config.resourceHost}customer/number`, { auth: true })
         .then((response) => {
-          console.log("response", response);
+          // console.log("c no", response);
           setIsLoading(false);
-          const numberData = response.data;
+          const numberData = response.body.data;
 
           if (numberData) {
             setCompanyInfo((prevCompanyInfo) => ({
@@ -202,20 +236,39 @@ const CreateContact = () => {
       groflexService
         .request(`${config.resourceHost}setting/miscellaneous`, { auth: true })
         .then((response) => {
-          console.log("response", response);
-          const data = response.data;
-          const salutations =
-            data?.salutations.map((salutation) => ({
-              label: salutation,
-              value: salutation,
-            })) || [];
-          const titles =
-            data?.titles.map((title) => ({
-              label: title,
-              value: title,
-            })) || [];
-          setSalutationOptions(salutations);
-          setTitleOptions(titles);
+          if (response && response.body) {
+            // console.log("sal", response);
+            let salutationOptions = [];
+            let titleOptions = [];
+            response.body.data.salutations.forEach((salutation) => {
+              salutationOptions.push({
+                label: salutation,
+                value: salutation,
+              });
+            });
+            response.body.data.titles.forEach((title) => {
+              titleOptions.push({
+                label: title,
+                value: title,
+              });
+            });
+            setTitleOptions(titleOptions);
+            setSalutationOptions(salutationOptions);
+          }
+
+          // const data = response.body.data.salutations;
+          // const salutations =
+          //   data?.salutations?.map((salutation) => ({
+          //     label: salutation,
+          //     value: salutation,
+          //   })) || [];
+          // const titles =
+          //   data?.titles?.map((title) => ({
+          //     label: title,
+          //     value: title,
+          //   })) || [];
+          // setSalutationOptions(salutations);
+          // setTitleOptions(titles);
         });
     } catch (error) {
       console.error("Failed to fetch miscellaneous data:", error);
@@ -224,7 +277,7 @@ const CreateContact = () => {
 
   useEffect(() => {
     if (tenantData && stateOptions.length > 0) {
-      console.log("tenantData", tenantData);
+      // console.log("tenantData", tenantData);
       setCompanyInfo({
         companyName: tenantData.companyName,
         country:
@@ -232,7 +285,7 @@ const CreateContact = () => {
             ? "IN"
             : tenantData.companyAddress.country,
         state: stateOptions.find((indianState) => {
-          console.log(indianState.value, tenantData.indiaStateId);
+          // console.log(indianState.value, tenantData.indiaStateId);
           return indianState.value === tenantData.indiaStateId;
         }).value,
         gstType: tenantData.companyAddress.gstType,
@@ -446,9 +499,6 @@ const CreateContact = () => {
     navigate("/contacts");
   };
 
-  useEffect(() => {
-    console.log(companyInfo);
-  }, [companyInfo]);
   const handleStateChange = (options) => {
     setCompanyInfo({ ...companyInfo, state: options.value });
   };
@@ -797,7 +847,7 @@ const CreateContact = () => {
                               type="number"
                               placeholder="0.00"
                               step="0.001"
-                              value={parseFloat(companyInfo.exchangeRate)}
+                              value={companyInfo.exchangeRate}
                               onChange={handleExchangeRateChange}
                             />
                           </div>
@@ -981,7 +1031,7 @@ const CreateContact = () => {
 
               <div className="column is-5">
                 {companyInfo.type === "customer" && (
-                  <AdvancedCard type={"s-card"}>
+                  <AdvancedCard type={"s-card"} containerClassName={"m-b-10"}>
                     <div className="columns is-multiline">
                       <div className="column is-8">
                         <h2 className="title is-5 is-bold">Opening Balance</h2>
@@ -1035,7 +1085,7 @@ const CreateContact = () => {
                       <div className="field">
                         <label>Payment Terms</label>
                         <SelectInput
-                          options={selectPayment}
+                          options={paymentTermsOptions}
                           value={companyInfo.paymentTerms}
                           onChange={handlePaymentChange}
                           name="paymentTerms"

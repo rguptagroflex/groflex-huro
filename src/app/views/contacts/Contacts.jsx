@@ -11,28 +11,30 @@ import config from "../../../../newConfig";
 import EditContact from "./EditContact";
 import { useParams, useNavigate } from "react-router-dom";
 import groflexService from "../../services/groflex.service";
+import FontAwesomeIcon from "../../shared/fontAwesomeIcon/FontAwesomeIcon";
+import { Button } from "../../shared/components/button/Button";
 
-const getCompanyPersonIcon = (
-  value,
-  personIconWidth,
-  blankContactPersonIcon,
-  isMainContact
-) => {
-  const masterDetailArrowClass =
-    !isNil(isMainContact) && isMainContact.toString() === "false" ? "grey" : "";
+// const getCompanyPersonIcon = (
+//   value,
+//   personIconWidth,
+//   blankContactPersonIcon,
+//   isMainContact
+// ) => {
+//   const masterDetailArrowClass =
+//     !isNil(isMainContact) && isMainContact.toString() === "false" ? "grey" : "";
 
-  return value === customerTypes.PERSON ? (
-    `<span class="icon-user-wrapper"><img src="/assets/images/svg/user.svg" width="${personIconWidth}" /></span>`
-  ) : value === ListAdvancedDefaultSettings.CUSTOMER_TYPE_CONTACTPERSON ? (
-    blankContactPersonIcon ? (
-      ""
-    ) : (
-      `<span class="icon icon-arrow_right2 master-detail-arrow ${masterDetailArrowClass}"></span>`
-    )
-  ) : (
-    <i style={{ color: "#00A353" }} className={"fas fa-building"}></i>
-  );
-};
+//   return value === customerTypes.PERSON ? (
+//     `<span class="icon-user-wrapper"><img src="/assets/images/svg/user.svg" width="${personIconWidth}" /></span>`
+//   ) : value === ListAdvancedDefaultSettings.CUSTOMER_TYPE_CONTACTPERSON ? (
+//     blankContactPersonIcon ? (
+//       ""
+//     ) : (
+//       `<span class="icon icon-arrow_right2 master-detail-arrow ${masterDetailArrowClass}"></span>`
+//     )
+//   ) : (
+//     <i style={{ color: "#00A353" }} className={"fas fa-building"}></i>
+//   );
+// };
 
 const Contacts = () => {
   const [selectedContact, setSelectedContact] = useState(null);
@@ -44,6 +46,23 @@ const Contacts = () => {
     { name: "Delete", icon: "trash-alt" },
   ];
 
+  const getIconType = (value) => {
+    let icon = "";
+
+    switch (value) {
+      case "company":
+        icon = <FontAwesomeIcon name={"building"} size={18} color="#00A353" />;
+        break;
+      case "person":
+        icon = (
+          <FontAwesomeIcon name={"circle-user"} size={18} color="#0071ca" />
+        );
+        break;
+    }
+
+    return icon;
+  };
+
   const handleActionClick = (action, rowData) => {
     if (rowData) {
       if (action.name === "Edit") {
@@ -53,7 +72,7 @@ const Contacts = () => {
           setPreviousData(previousData);
           navigate(`/contacts-edit/${rowData.id}`, { state: { previousData } });
         } else {
-          console.log("Invalid rowData:", rowData);
+          // console.log("Invalid rowData:", rowData);
         }
       } else if (action.name === "Delete") {
         // Implement delete functionality
@@ -69,7 +88,14 @@ const Contacts = () => {
   }, [previousData]);
 
   return (
-    <PageContent title="Contacts">
+    <PageContent
+      title="Contacts"
+      titleActionContent={
+        <Button onClick={() => navigate("/contacts-create")} isSuccess>
+          Create new contact
+        </Button>
+      }
+    >
       <ListAdvancedComponent
         onActionClick={handleActionClick}
         columnDefs={[
@@ -78,10 +104,16 @@ const Contacts = () => {
             field: "kind",
             headerName: "Type",
             cellRenderer: (evt) => {
-              return getCompanyPersonIcon(evt.value, 20, true);
+              // return getCompanyPersonIcon(evt.value, 20, true);
+              return getIconType(evt.value);
+            },
+            cellStyle: {
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
             },
             filter: false,
-            flex: 1.5,
+            // flex: 1.5,
           },
           {
             field: "type",
@@ -96,6 +128,9 @@ const Contacts = () => {
             headerName: "Outstanding Amount",
             valueFormatter: (evt) => {
               return formatCurrency(evt.value);
+            },
+            cellStyle: {
+              textAlign: "right",
             },
           },
           { field: "address.street", headerName: "Address" },
