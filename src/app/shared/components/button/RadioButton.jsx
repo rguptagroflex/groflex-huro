@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 const RadioButton = ({ choices, onChange, selectedOption }) => {
   const [selectedValue, setSelectedValue] = useState(selectedOption);
@@ -10,7 +10,7 @@ const RadioButton = ({ choices, onChange, selectedOption }) => {
   const handleOptionChange = (event) => {
     const selectedValue = event.target.value;
     setSelectedValue(selectedValue);
-    if (typeof onChange === 'function') {
+    if (typeof onChange === "function") {
       onChange(selectedValue);
     }
   };
@@ -21,7 +21,9 @@ const RadioButton = ({ choices, onChange, selectedOption }) => {
         {choices.map((choice, index) => (
           <label
             key={index}
-            className={`radio ${selectedValue === choice.value ? choice.class : ''}`}
+            className={`radio ${choice?.defaultClass && choice.defaultClass} ${
+              selectedValue === choice.value ? choice.class : ""
+            }`}
           >
             <input
               type="radio"
@@ -38,6 +40,5 @@ const RadioButton = ({ choices, onChange, selectedOption }) => {
     </div>
   );
 };
-
 
 export default RadioButton;

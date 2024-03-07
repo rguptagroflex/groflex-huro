@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function FontAwesomeIcon({
   name,
@@ -6,16 +6,30 @@ export default function FontAwesomeIcon({
   primaryColor,
   onClick,
   color = "#C6C6C6",
+  onHoverColor,
   size = 21,
+  className,
   ...rest
 }) {
-  const getClassName = `fas fa-${name}`;
+  const [hover, setHover] = useState(false);
+  const getClassName = `${className ? className : ""} fas fa-${name}`;
+
+  const getColor = () => {
+    let col = primaryColor ? "#00a353" : color;
+    if (hover) {
+      col = onHoverColor;
+    }
+    return col;
+  };
+
   return (
     <i
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
       onClick={onClick}
       style={{
         margin: "0 5px",
-        color: primaryColor ? "#00a353" : color,
+        color: getColor(),
         fontSize: size,
         ...style,
       }}

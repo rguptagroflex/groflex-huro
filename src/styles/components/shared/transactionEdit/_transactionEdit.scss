@@ -6,7 +6,7 @@
   height: 100%;
   width: 1000px;
   background-color: #ffffff;
-  padding: 30px;
+  padding: 40px;
 
   .letter-header-component {
     width: 100%;
@@ -87,6 +87,15 @@
             }
           }
         }
+      }
+    }
+  }
+
+  .modal {
+    .recipient-notes-modal {
+      p {
+        color: $dark-text;
+        font-weight: 400;
       }
     }
   }

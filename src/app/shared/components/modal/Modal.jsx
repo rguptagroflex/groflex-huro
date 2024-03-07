@@ -3,6 +3,7 @@ import { FeatherIcon } from "../../featherIcon/FeatherIcon";
 const Modal = ({
   isActive,
   setIsAcive,
+  closeModalFunction,
   title,
   leftActions,
   centeredActions,
@@ -44,7 +45,8 @@ const Modal = ({
   }
 
   const closeModal = () => {
-    setIsAcive(false);
+    setIsAcive && setIsAcive(false);
+    closeModalFunction && closeModalFunction();
   };
 
   return (
@@ -57,7 +59,7 @@ const Modal = ({
       <div className="modal-content">
         <div className="modal-card">
           <header className="modal-card-head">
-            <h3>{title}</h3>
+            <div className="title is-5 no-margin-bottom">{title}</div>
             <div
               style={{
                 display: "flex",

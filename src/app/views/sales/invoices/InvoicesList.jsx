@@ -115,7 +115,7 @@ const InvoicesList = () => {
     }
   };
 
-  console.log(groflexService.user, "USER FROm INCOICE LIST");
+  // console.log(groflexService.user, "USER FROm INCOICE LIST");
 
   return (
     <PageContent
