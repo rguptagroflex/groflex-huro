@@ -36,7 +36,9 @@ const DashboardSalesByArticle = () => {
   };
 
   useEffect(() => {
-    fetchSalesByArticles();
+    if (date.startDate && date.endDate) {
+      fetchSalesByArticles();
+    }
   }, [date]);
 
   useEffect(() => {
@@ -183,6 +185,7 @@ const DashboardSalesByArticle = () => {
       filterOptions={filterOptions}
       handleFilterChange={handleFilterChange}
       filter={filter}
+      date={date}
     />
   );
 };

@@ -1,0 +1,57 @@
+.contact-overview-tab-main {
+  h2 {
+    color: #888787;
+    font-weight: 600;
+  }
+  .left-card {
+    min-height: 208px;
+    margin-bottom: 10px;
+    .payment-conditions-container {
+      padding: 16px;
+      border: 1px solid #c6c6c6;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      .payment-conditions-sub-container {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+  .contact-financial-card-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    .contact-financial-card {
+      padding: 16px;
+      background: #f1f8fb;
+      height: 142px;
+      border-radius: 8px;
+      width: 137px;
+
+      img {
+        width: 30px;
+        height: 30px;
+        margin-bottom: 10px;
+      }
+    }
+  }
+  .contact-basic-details {
+    background: #f1f8fb;
+    min-height: 322px;
+    padding: 16px;
+
+    .basic-details-row {
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      h2 {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  .contact-sales-and-purchases {
+    min-height: 422px;
+  }
+}

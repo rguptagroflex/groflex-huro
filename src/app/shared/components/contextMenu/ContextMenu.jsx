@@ -10,7 +10,7 @@ const ContextMenu = ({ contextMenuItems = [], classes = [], iconText }) => {
   };
   return (
     <div
-      className={`dropdown  dropdown-trigger is-up ${getContextMenuClasses()} ${
+      className={`dropdown  dropdown-trigger is-down ${getContextMenuClasses()} ${
         isContextMenuActive ? "is-active" : ""
       }`}
       onClick={() => setIsContextMenuActive(!isContextMenuActive)}
@@ -25,10 +25,11 @@ const ContextMenu = ({ contextMenuItems = [], classes = [], iconText }) => {
       </div>
       <div className="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {contextMenuItems.map((item) => (
+          {contextMenuItems.map((item, id) => (
             <a
               className="dropdown-item font-size-base"
               onClick={() => item.onContextMenuItemClick(item.label)}
+              key={`context-menu-entry-${id}`}
             >
               {item.label}
             </a>

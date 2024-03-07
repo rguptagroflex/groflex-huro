@@ -349,7 +349,7 @@ const DealsOverview = () => {
                 return createServiceColumn(column);
               })}
             </div> */}
-            <KanbanBoard initialBoard={initialData} />
+            {/* <KanbanBoard initialBoard={initialData} /> */}
           </AdvancedCard>
         </div>
       </div>

@@ -6,6 +6,7 @@ import moment from "moment";
 import groflexService from "../../services/groflex.service";
 import config from "../../../../newConfig";
 import CreateChart from "../../shared/components/chartjs/CreateChart";
+import DateInput from "../../shared/components/datePicker/DateInput";
 
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
@@ -34,16 +35,19 @@ const DashboardSalesExpenseStats = () => {
     totalExpenses: 0,
   });
 
-  const [dateDropDown, setDateDropDown] = useState({
-    label: dateFilterTypes.fiscalYear,
-    value: "fiscalYear",
-  });
+  const [dateFilter, setDateFilter] = useState("fiscalYear");
+  const [showCustomDateRangeSelector, setShowCustomDateRangeSelector] =
+    useState(false);
 
   const [series, setSeries] = useState({
     sales: [],
     expenses: [],
   });
   const [labels, setLabels] = useState([]);
+
+  useEffect(() => {
+    handleDateChange();
+  }, [dateFilter]);
 
   useEffect(() => {
     groflexService
@@ -80,13 +84,15 @@ const DashboardSalesExpenseStats = () => {
       });
   }, [date]);
 
-  const handleDateDropDown = (option) => {
-    // setDate(option.value);
-    setDateDropDown(option.value);
+  const handleDateFilterChange = (option) => {
+    setDateFilter(option.value);
+  };
+
+  const handleDateChange = () => {
     let startDate = "";
     let endDate = "";
     let labels = [];
-    switch (option.value) {
+    switch (dateFilter) {
       case "currMonth":
         startDate = moment().startOf("month");
         endDate = moment().endOf("month");
@@ -142,13 +148,30 @@ const DashboardSalesExpenseStats = () => {
           "Feb",
         ];
         break;
+      case "custom":
+        setShowCustomDateRangeSelector(true);
+        break;
     }
 
-    setLabels(labels);
+    if (dateFilter !== "custom") {
+      setLabels(labels);
+      setDate({
+        startDate: startDate.toJSON(),
+        endDate: endDate.toJSON(),
+      });
+    }
+  };
 
+  const handleCustomStartDateChange = (value) => {
     setDate({
-      startDate: startDate.toJSON(),
-      endDate: endDate.toJSON(),
+      ...date,
+      startDate: value.toJSON(),
+    });
+  };
+  const handleCustomEndDateChange = (value) => {
+    setDate({
+      ...date,
+      endDate: value.toJSON(),
     });
   };
 
@@ -180,6 +203,10 @@ const DashboardSalesExpenseStats = () => {
     {
       label: dateFilterTypes.fiscalYear,
       value: "fiscalYear",
+    },
+    {
+      label: "Custom",
+      value: "custom",
     },
   ];
 
@@ -228,8 +255,8 @@ const DashboardSalesExpenseStats = () => {
               <SelectInput
                 options={dateOptions}
                 placeholder={"None"}
-                onChange={handleDateDropDown}
-                value={dateDropDown}
+                onChange={handleDateFilterChange}
+                value={dateFilter}
               />
             </div>
             <div
@@ -254,6 +281,22 @@ const DashboardSalesExpenseStats = () => {
               </div>
             </div>
           </div>
+          {showCustomDateRangeSelector && (
+            <div className="columns is-multiline" style={{ marginTop: "10px" }}>
+              <div className="column is-3">
+                <DateInput
+                  selectedDate={moment(date.startDate)}
+                  onDateChange={handleCustomStartDateChange}
+                />
+              </div>
+              <div className="column is-3">
+                <DateInput
+                  selectedDate={moment(date.endDate)}
+                  onDateChange={handleCustomEndDateChange}
+                />
+              </div>
+            </div>
+          )}
 
           <div
             className="columns is-mulitline"

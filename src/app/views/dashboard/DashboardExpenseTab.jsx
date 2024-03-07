@@ -74,7 +74,9 @@ const DashboardExpenseTab = () => {
   };
 
   useEffect(() => {
-    fetchExpenses();
+    if (date.startDate && date.endDate) {
+      fetchExpenses();
+    }
   }, [date]);
 
   const [isBarChart, setIsBarChart] = useState(true);
@@ -146,6 +148,7 @@ const DashboardExpenseTab = () => {
         },
       ]}
       setDate={setDate}
+      date={date}
     />
   );
 };

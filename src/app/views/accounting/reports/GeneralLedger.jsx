@@ -37,17 +37,16 @@ const GeneralLedger = () => {
     useState(false);
   const [isEmailModalVisible, setIsEmailModalVisible] = useState(false);
 
-  const [customerID, setCustomerID] = useState(null);
-  const [customerDropDown, setCustomerDropDown] = useState([]);
+  const [customerDropDownValues, setCustomerDropDownValues] = useState([]);
+  const [customerID, setCustomerID] = useState(
+    customerDropDownValues[0]?.value
+  );
 
   const [date, setDate] = useState({
     startDate: "",
     endDate: "",
   });
-  const [dateDropDown, setDateDropDown] = useState({
-    label: dateFilterTypes.fiscalYear,
-    value: "fiscalYear",
-  });
+  const [dateFilter, setDateFilter] = useState("fiscalYear");
 
   const [rowData, setRowData] = useState([]);
   const [rowTotals, setRowTotals] = useState({});
@@ -60,6 +59,10 @@ const GeneralLedger = () => {
   });
 
   useEffect(() => {
+    handleDateChange();
+  }, [dateFilter]);
+
+  useEffect(() => {
     if (customerID && date.startDate && date.endDate) {
       fetchGeneralLedger();
     }
@@ -68,6 +71,10 @@ const GeneralLedger = () => {
   useEffect(() => {
     fetchCustomers();
   }, []);
+
+  const handleDateFilterChange = (option) => {
+    setDateFilter(option.value);
+  };
   const fetchCustomers = () => {
     let customerDropDown = [];
     groflexService
@@ -77,7 +84,8 @@ const GeneralLedger = () => {
           customerDropDown.push({ label: item.name, value: item.id });
         });
 
-        setCustomerDropDown(customerDropDown);
+        setCustomerDropDownValues(customerDropDown);
+        setCustomerID(customerDropDown[0].value);
       });
   };
 
@@ -249,12 +257,10 @@ const GeneralLedger = () => {
     setCustomerID(option.value);
   };
 
-  const handleDateDropDown = (option) => {
-    // setDate(option.value);
-    setDateDropDown(option.value);
+  const handleDateChange = () => {
     let startDate = "";
     let endDate = "";
-    switch (option.value) {
+    switch (dateFilter) {
       case "currMonth":
         setShowCustomDateRangeSelector(false);
         startDate = moment().startOf("month");
@@ -306,7 +312,7 @@ const GeneralLedger = () => {
         break;
     }
 
-    if (option.value !== "custom") {
+    if (dateFilter !== "custom") {
       setDate({
         startDate: startDate.toJSON(),
         endDate: endDate.toJSON(),
@@ -330,8 +336,20 @@ const GeneralLedger = () => {
           headers: { "Content-Type": `application/${exportType}` },
         }
       )
-      .then((res) => {
-        console.log(res);
+      .then(({ body }) => {
+        var blob = new Blob([body], { type: "application/text" });
+
+        var link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = `${moment(date.startDate).format()}_${moment(
+          date.endDate
+        ).format()}.${exportType}`;
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        document.body.removeChild(link);
       });
   };
 
@@ -397,8 +415,8 @@ const GeneralLedger = () => {
             <SelectInput
               options={dateOptions}
               placeholder={"Select Date"}
-              onChange={handleDateDropDown}
-              value={dateDropDown}
+              onChange={handleDateFilterChange}
+              value={dateFilter}
             />
           </div>
 
@@ -461,7 +479,7 @@ const GeneralLedger = () => {
             }}
           >
             <SelectInput
-              options={customerDropDown}
+              options={customerDropDownValues}
               placeholder={"Select Customer"}
               onChange={handleCustomerDropDown}
               value={customerID}

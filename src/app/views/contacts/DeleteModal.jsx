@@ -1,34 +1,38 @@
-import React from 'react'
-import Modal from '../../shared/components/modal/Modal'
-
-const DeleteModal = ({ isModalDelete = false, setIsModalDelete, onSubmit,
-  deleteIndex,
-  setDeleteIndex,
-  contactName
+import React from "react";
+import Modal from "../../shared/components/modal/Modal";
+import groflexService from "../../services/groflex.service";
+import oldConfig from "../../../../oldConfig";
+const DeleteModal = ({
+  isDeleteModalVisible,
+  setIsDeleteModalVisible,
+  contactId,
 }) => {
-  const handleConfirmDelete = () => {
-    onSubmit(deleteIndex);
-    setIsModalDelete(false);
-    setDeleteIndex(null);
+  const delteContact = () => {
+    groflexService
+      .request(`${oldConfig.customer.resourceUrl}/${contactId}`, {
+        auth: true,
+        method: "DELETE",
+      })
+      .then((res) => {
+        console.log(res);
+        if (res) {
+          groflexService.toast.success("Contact deleted successfully");
+          setIsDeleteModalVisible(false);
+        }
+      });
   };
-
-  const handleCancelDelete = () => {
-    setIsModalDelete(false);
-    setDeleteIndex(null);
-  };
-
   return (
     <Modal
-      title="Delete Contact"
-      submitBtnName="Delete"
-      isActive={isModalDelete}
-      setIsActive={setIsModalDelete}
-      onSubmit={handleConfirmDelete}
-      onClose={handleCancelDelete}
-      isSmall>
-      Are you sure you want to delete  {contactName}?
+      isActive={isDeleteModalVisible}
+      setIsAcive={setIsDeleteModalVisible}
+      title={"Delete Contact"}
+      onSubmit={delteContact}
+      submitBtnName={"Delete"}
+      isSmall
+    >
+      Are you sure you want to delete this contact?
     </Modal>
-  )
-}
+  );
+};
 
-export default DeleteModal
+export default DeleteModal;

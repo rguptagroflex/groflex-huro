@@ -248,7 +248,7 @@ const GstReports = () => {
   return (
     <PageContent title={"Gst Reports"}>
       <div className={"gst-reports-wrapper"}>
-        <AdvancedCard type={"s-card"} className={"gst-filter-card"}>
+        <AdvancedCard type={"s-card"} containerClassName={"gst-filter-card"}>
           <div className="company-details">
             <h3 className="company-name">{companyAddress?.companyName}</h3>
             <div style={{ display: "flex", gap: "10px" }}>

@@ -40,7 +40,9 @@ const DashboardExpenseByArticle = () => {
   };
 
   useEffect(() => {
-    fetchExpenseBy();
+    if (date.startDate && date.endDate) {
+      fetchExpenseBy();
+    }
   }, [date]);
 
   useEffect(() => {
@@ -207,6 +209,7 @@ const DashboardExpenseByArticle = () => {
       filterOptions={filterOptions}
       handleFilterChange={handleFilterChange}
       filter={filter}
+      date={date}
     />
   );
 };

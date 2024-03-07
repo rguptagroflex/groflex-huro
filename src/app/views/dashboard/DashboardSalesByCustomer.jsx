@@ -40,7 +40,9 @@ const DashboardSalesByCustomer = () => {
   };
 
   useEffect(() => {
-    fetchSalesByArticles();
+    if (date.startDate && date.endDate) {
+      fetchSalesByArticles();
+    }
   }, [date]);
 
   useEffect(() => {
@@ -158,6 +160,7 @@ const DashboardSalesByCustomer = () => {
       filterOptions={filterOptions}
       handleFilterChange={handleFilterChange}
       filter={filter}
+      date={date}
     />
     // <div className="dashboard-invoice-tab-wrapper">
     //   <div className="columns is-multiline invoice-tab-header">

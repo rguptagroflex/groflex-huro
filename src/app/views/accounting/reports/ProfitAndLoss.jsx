@@ -36,10 +36,7 @@ const ProfitAndLoss = () => {
     startDate: "",
     endDate: "",
   });
-  const [dateDropDown, setDateDropDown] = useState({
-    label: dateFilterTypes.fiscalYear,
-    value: "fiscalYear",
-  });
+  const [dateFilter, setDateFilter] = useState("fiscalYear");
 
   const [showCustomDateRangeSelector, setShowCustomDateRangeSelector] =
     useState(false);
@@ -55,6 +52,10 @@ const ProfitAndLoss = () => {
     pdf: false,
     csv: false,
   });
+
+  useEffect(() => {
+    handleDateChange();
+  }, [dateFilter]);
 
   useEffect(() => {
     if (date.startDate && date.endDate) {
@@ -188,17 +189,31 @@ const ProfitAndLoss = () => {
           headers: { "Content-Type": `application/${exportType}` },
         }
       )
-      .then((res) => {
-        console.log(res);
+      .then(({ body }) => {
+        var blob = new Blob([body], { type: "application/text" });
+
+        var link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = `${moment(date.startDate).format()}_${moment(
+          date.endDate
+        ).format()}.${exportType}`;
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        document.body.removeChild(link);
       });
   };
 
-  const handleDateDropDown = (option) => {
-    // setDate(option.value);
-    setDateDropDown(option.value);
+  const handleDateFilterChange = (option) => {
+    setDateFilter(option.value);
+  };
+
+  const handleDateChange = () => {
     let startDate = "";
     let endDate = "";
-    switch (option.value) {
+    switch (dateFilter) {
       case "currMonth":
         setShowCustomDateRangeSelector(false);
         startDate = moment().startOf("month");
@@ -250,7 +265,7 @@ const ProfitAndLoss = () => {
         break;
     }
 
-    if (option.value !== "custom") {
+    if (dateFilter !== "custom") {
       setDate({
         startDate: startDate.toJSON(),
         endDate: endDate.toJSON(),
@@ -318,8 +333,8 @@ const ProfitAndLoss = () => {
             <SelectInput
               options={dateOptions}
               placeholder={"Select Date"}
-              onChange={handleDateDropDown}
-              value={dateDropDown}
+              onChange={handleDateFilterChange}
+              value={dateFilter}
             />
           </div>
 

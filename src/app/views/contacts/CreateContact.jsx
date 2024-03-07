@@ -11,6 +11,7 @@ import { Switch } from "../../shared/components/switch/Switch";
 import RadioButton from "../../shared/components/button/RadioButton";
 import GroflexService from "../../services/groflex.service";
 import config from "../../../../newConfig";
+import oldConfig from "../../../../oldConfig";
 import ErrorText from "../../shared/components/errorText/ErrorText";
 import AddContactPersonModal from "./AddContactPersonModal";
 import { getCountries } from "../../helpers/getCountries";
@@ -20,14 +21,15 @@ import EditModal from "./EditModal";
 import DeleteModal from "./DeleteModal";
 import { getCurrencyRates as getCurrencyRatesFromOpenExchangeRates } from "../../helpers/getCurrencyRates";
 import groflexService from "../../services/groflex.service";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useParams } from "react-router-dom";
+import { currencyOptions, gstTypeOptions } from "../../helpers/constants";
 const countriesOptions = getCountries().map((country) => ({
   label: country.label,
   value: country.iso2,
 }));
 
 const CreateContact = () => {
+  const { contactId } = useParams();
   const tenantData = useSelector((state) => state.accountData.tenantData);
   const [isModalActive, setIsModalActive] = useState(false);
   const [isModalEdit, setIsModalEdit] = useState(false);
@@ -38,7 +40,7 @@ const CreateContact = () => {
   const endpoint = config.resourceUrls.miscellaneous;
   const [salutationOptions, setSalutationOptions] = useState([]);
   const [titleOptions, setTitleOptions] = useState([]);
-  const [currencyOptions, setCurrencyOptions] = useState([]);
+  // const [currencyOptions, setCurrencyOptions] = useState([]);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   // const isDataFetchedRef = useRef(false);
@@ -62,12 +64,12 @@ const CreateContact = () => {
     phone1: "",
     fax: "",
     paymentTerms: "",
-    discount: "",
+    discount: 0,
     selectedOption: "",
-    openingBalance: "",
-    notesAlert: "",
+    openingBalance: 0,
+    notesAlert: false,
     notes: "",
-    payConditionId: 177,
+    payConditionId: null,
     balance: 0,
     // baseCurrency: "",
     credits: 0,
@@ -75,7 +77,7 @@ const CreateContact = () => {
     defaultExchangeRateToggle: false,
     lastName: "",
     firstName: "",
-    exchangeRate: "",
+    exchangeRate: 0,
     outstandingAmount: 0,
     salutation: "",
     title: "",
@@ -84,11 +86,20 @@ const CreateContact = () => {
     baseCurrency: "",
     contactPersons: [],
   });
+  const [selectedState, setSelectedState] = useState({
+    id: null,
+    stateName: "",
+  });
   const [editContactIndex, setEditContactIndex] = useState(null);
   const [editContactDetails, setEditContactDetails] = useState({
     firstName: "",
     email: "",
   });
+  const [paymentTermsOptions, setPaymentTermsOptions] = useState([]);
+
+  useEffect(() => {
+    fetchPaymentTermsOptions();
+  }, []);
   const handleEditContact = (index) => {
     const contact = companyInfo.contactPersons[index];
     setEditContactIndex(index);
@@ -98,6 +109,24 @@ const CreateContact = () => {
     });
     setIsModalEdit(true); // Open the modal for editing the contact details
   };
+
+  const fetchPaymentTermsOptions = () => {
+    groflexService
+      .request(`${oldConfig.settings.endpoints.payConditions}`, { auth: true })
+      .then((res) => {
+        if (res && res.body) {
+          let paymentTermsOptions = [];
+          res?.body?.data?.forEach((option) => {
+            paymentTermsOptions.push({
+              label: option.name,
+              value: option.id,
+            });
+          });
+          setPaymentTermsOptions(paymentTermsOptions);
+        }
+      });
+  };
+
   const handleSaveContact = () => {
     if (editContactIndex !== null) {
       // Update the contact details in the companyInfo.contactPersons array
@@ -131,36 +160,41 @@ const CreateContact = () => {
     setDeleteIndex(null);
   };
 
-  useEffect(() => {
-    const fetchCurrencyOptions = async () => {
-      try {
-        const jsonData = await getCurrencyRatesFromOpenExchangeRates({
-          base: "INR",
-        });
-        const rates = jsonData.rates;
+  // useEffect(() => {
+  //   const fetchCurrencyOptions = async () => {
+  //     try {
+  //       const jsonData = await getCurrencyRatesFromOpenExchangeRates({
+  //         base: "INR",
+  //       });
+  //       const rates = jsonData.rates;
 
-        const newCurrencyOptions = Object.keys(rates).map((currency) => ({
-          value: currency,
-          label: `1 ${currency}`,
-        }));
+  //       const newCurrencyOptions = Object.keys(rates).map((currency) => ({
+  //         value: currency,
+  //         label: `1 ${currency}`,
+  //       }));
 
-        setCurrencyOptions(newCurrencyOptions);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  //       // setCurrencyOptions(newCurrencyOptions);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
 
-    fetchCurrencyOptions();
-  }, []);
+  //   fetchCurrencyOptions();
+  // }, []);
   useEffect(() => {
     GroflexService.request(`${config.resourceHost}india/states`, {
       auth: true,
     }).then((res) => {
-      const newStateOptions = res.data.map((state) => ({
-        label: state.stateName,
-        value: state.id,
-      }));
-      setStateOptions([...newStateOptions]);
+      if (res && res.body) {
+        let newStateOptions = [];
+        res.body.data.forEach((state) => {
+          newStateOptions.push({
+            label: state.stateName,
+            value: state.id,
+          });
+        });
+        setStateOptions(newStateOptions);
+      }
     });
   }, []);
 
@@ -176,9 +210,9 @@ const CreateContact = () => {
       groflexService
         .request(`${config.resourceHost}customer/number`, { auth: true })
         .then((response) => {
-          console.log("response", response);
+          // console.log("c no", response);
           setIsLoading(false);
-          const numberData = response.data;
+          const numberData = response.body.data;
 
           if (numberData) {
             setCompanyInfo((prevCompanyInfo) => ({
@@ -202,61 +236,66 @@ const CreateContact = () => {
       groflexService
         .request(`${config.resourceHost}setting/miscellaneous`, { auth: true })
         .then((response) => {
-          console.log("response", response);
-          const data = response.data;
-          const salutations =
-            data?.salutations.map((salutation) => ({
-              label: salutation,
-              value: salutation,
-            })) || [];
-          const titles =
-            data?.titles.map((title) => ({
-              label: title,
-              value: title,
-            })) || [];
-          setSalutationOptions(salutations);
-          setTitleOptions(titles);
+          if (response && response.body) {
+            // console.log("sal", response);
+            let salutationOptions = [];
+            let titleOptions = [];
+            response.body.data.salutations.forEach((salutation) => {
+              salutationOptions.push({
+                label: salutation,
+                value: salutation,
+              });
+            });
+            response.body.data.titles.forEach((title) => {
+              titleOptions.push({
+                label: title,
+                value: title,
+              });
+            });
+            setTitleOptions(titleOptions);
+            setSalutationOptions(salutationOptions);
+          }
         });
     } catch (error) {
       console.error("Failed to fetch miscellaneous data:", error);
     }
   };
 
-  useEffect(() => {
-    if (tenantData && stateOptions.length > 0) {
-      console.log("tenantData", tenantData);
-      setCompanyInfo({
-        companyName: tenantData.companyName,
-        country:
-          tenantData.companyAddress.country === "India"
-            ? "IN"
-            : tenantData.companyAddress.country,
-        state: stateOptions.find((indianState) => {
-          console.log(indianState.value, tenantData.indiaStateId);
-          return indianState.value === tenantData.indiaStateId;
-        }).value,
-        gstType: tenantData.companyAddress.gstType,
-        gstNumber: tenantData.companyAddress.gstNumber,
-        cinNumber: tenantData.companyAddress.cinNumber,
-        category: tenantData.category,
-        discount: tenantData.discount,
-        kind: tenantData.kind,
-        notesAlert: tenantData.notesAlert,
-        number: tenantData.number,
-        notes: tenantData.notes,
-        paymentTerms: tenantData.paymentTerms,
-        openingBalance: tenantData.openingBalance,
-        selectedOption: tenantData.selectedOption,
-        fax: tenantData.fax,
-        phone1: tenantData.phone1,
-        mobile: tenantData.mobile,
-        website: tenantData.website,
-        email: tenantData.email,
-        street: tenantData.street,
-        // payConditionId: tenantData.payConditionId,
-      });
-    }
-  }, [tenantData, stateOptions]);
+  // useEffect(() => {
+  //   if (tenantData && stateOptions.length > 0) {
+  //     // console.log("tenantData", tenantData);
+  //     setCompanyInfo({
+  //       companyName: tenantData.companyName,
+  //       country:
+  //         tenantData.companyAddress.country === "India"
+  //           ? "IN"
+  //           : tenantData.companyAddress.country,
+  //       state: stateOptions.find((indianState) => {
+  //         // console.log(indianState.value, tenantData.indiaStateId);
+  //         return indianState.value === tenantData.indiaStateId;
+  //       }).value,
+  //       gstType: tenantData.companyAddress.gstType,
+  //       gstNumber: tenantData.companyAddress.gstNumber,
+  //       cinNumber: tenantData.companyAddress.cinNumber,
+  //       category: tenantData.category,
+  //       discount: tenantData.discount,
+  //       kind: tenantData.kind,
+  //       notesAlert: tenantData.notesAlert,
+  //       number: tenantData.number,
+  //       notes: tenantData.notes,
+  //       paymentTerms: tenantData.paymentTerms,
+  //       openingBalance: tenantData.openingBalance,
+  //       selectedOption: tenantData.selectedOption,
+  //       fax: tenantData.fax,
+  //       phone1: tenantData.phone1,
+  //       mobile: tenantData.mobile,
+  //       website: tenantData.website,
+  //       email: tenantData.email,
+  //       street: tenantData.street,
+  //       // payConditionId: tenantData.payConditionId,
+  //     });
+  //   }
+  // }, [tenantData, stateOptions]);
 
   const categoryContact = [
     { value: "not specified", label: "Not Specified" },
@@ -278,6 +317,10 @@ const CreateContact = () => {
     currencyError: "",
   });
 
+  useEffect(() => {
+    fetchContactData();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCompanyInfo((prevCompanyInfo) => ({
@@ -286,20 +329,24 @@ const CreateContact = () => {
     }));
   };
   const handleCompanyName = (e) => {
-    const companyName = e.target.value.replace(/[^a-z]/gi, "");
-    setCompanyError({ ...companyError, companyNameError: "" });
-    setCompanyInfo({ ...companyInfo, companyName: companyName });
+    // const companyName = e.target.value.replace(/[^a-z]/gi, "");
+    // setCompanyError({ ...companyError, companyNameError: "" });
+    // setCompanyInfo({ ...companyInfo, companyName: companyName });
 
-    //check for empty field
-    if (!companyName) {
-      setCompanyInfo({ ...companyInfo, companyName: "" });
-      setCompanyError({
-        ...companyError,
-        companyNameError: "This field should not be empty",
-      });
+    // //check for empty field
+    // if (!companyName) {
+    //   setCompanyInfo({ ...companyInfo, companyName: "" });
+    //   setCompanyError({
+    //     ...companyError,
+    //     companyNameError: "This field should not be empty",
+    //   });
 
-      return;
-    }
+    //   return;
+    // }
+    setCompanyInfo({
+      ...companyInfo,
+      companyName: e.target.value,
+    });
   };
   const handleFaxChange = (e) => {
     const fax = e.target.value;
@@ -384,8 +431,8 @@ const CreateContact = () => {
     setCompanyInfo({ ...companyInfo, openingBalance: balance });
   };
   const handleDiscountChange = (e) => {
-    const discount = parseInt(e.target.value);
-    setCompanyInfo({ ...companyInfo, discount: discount });
+    // const discount = parseInt(e.target.value);
+    setCompanyInfo({ ...companyInfo, discount: e.target.value });
   };
   const handlePhoneChange = (e) => {
     const phone1 = parseInt(e.target.value);
@@ -439,18 +486,12 @@ const CreateContact = () => {
 
   const currencySymbol = "\u20B9";
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(companyInfo);
-    onAddContacts(companyInfo);
-    navigate("/contacts");
-  };
-
-  useEffect(() => {
-    console.log(companyInfo);
-  }, [companyInfo]);
   const handleStateChange = (options) => {
     setCompanyInfo({ ...companyInfo, state: options.value });
+    setSelectedState({
+      id: options.value,
+      stateName: options.label,
+    });
   };
 
   const handleCountryChange = (options) => {
@@ -477,7 +518,7 @@ const CreateContact = () => {
   const handleBussinessChange = (options) => {
     setCompanyInfo({ ...companyInfo, gstType: options.value });
   };
-  const selectPayment = [{ value: "not specified", label: "Not Specified" }];
+
   const handlePaymentChange = (options) => {
     setCompanyInfo({ ...companyInfo, paymentTerms: options.value });
   };
@@ -509,9 +550,11 @@ const CreateContact = () => {
     setCompanyInfo({ ...companyInfo, firstName: name });
   };
 
-  const onAddContacts = () => {
-    const endpoint = config.resourceUrls.contact;
-
+  const handleSubmit = () => {
+    const endpoint = contactId
+      ? config.resourceUrls.contact + `/${contactId}`
+      : config.resourceUrls.contact;
+    const method = contactId ? "PUT" : "POST";
     const contactPerson = companyInfo.contactPersons.map((person) => ({
       firstName: person.firstName,
       job: person.job,
@@ -526,14 +569,16 @@ const CreateContact = () => {
         gstNumber: companyInfo.gstNumber,
         cinNumber: companyInfo.cinNumber,
       },
-      indiaStateId: companyInfo.state,
+
+      // indiaStateId: selectedState,
+      indiaState: selectedState,
       category: companyInfo.category,
       discount: companyInfo.discount,
       kind: companyInfo.kind,
       notesAlert: companyInfo.notesAlert,
       number: companyInfo.number,
       companyName: companyInfo.companyName,
-      payConditionId: "1777",
+      payConditionId: companyInfo.payConditionId,
       notes: companyInfo.notes,
       paymentTerms: companyInfo.paymentTerms,
       openingBalance: companyInfo.openingBalance,
@@ -554,23 +599,84 @@ const CreateContact = () => {
     };
 
     GroflexService.request(endpoint, {
-      method: "POST",
+      method: method,
       auth: true,
       data: requestData,
     })
       .then((response) => {
-        console.log("Contact added successfully:", response);
+        // console.log("Contact added successfully:", response);
+        if (response.body.data.kind) {
+          groflexService.toast.success("Contact created successfully!");
+          navigate("/contacts");
+        } else {
+        }
       })
       .catch((error) => {
-        console.error("Error adding contact:", error);
+        // console.error("Error adding contact:", error);
+        groflexService.toast.error("Something went wrong");
       });
   };
 
+  const fetchContactData = () => {
+    groflexService
+      .request(`${oldConfig.customer.resourceUrl}/${contactId}`, { auth: true })
+      .then((res) => {
+        // console.log(res);
+        if (res && res.body.data) {
+          const contactData = res.body.data;
+          setCompanyInfo({
+            cinNumber: contactData.cinNumber,
+            gstType: contactData.address.gstType,
+            address: contactData.address.street,
+            website: contactData.website,
+            type: contactData.type,
+            title: contactData.title,
+            salutation: contactData.salutation,
+            phone1: contactData.phone1,
+            payConditionId: contactData.payConditionId,
+            openingBalance: contactData.openingBalance,
+            number: contactData.number,
+            notesAlert: contactData.notesAlert,
+            notes: contactData.notes,
+            companyName: contactData.name,
+            mobile: contactData.mobile,
+            lastName: contactData.lastName,
+            kind: contactData.kind,
+            id: contactData.id,
+            firstName: contactData.firstName,
+            fax: contactData.fax,
+            exchangeRate: contactData.exchangeRate,
+            email: contactData.email,
+            discount: contactData.discount,
+            defaultExchangeRateToggle: contactData.defaultExchangeRateToggle,
+            debits: contactData.debits,
+            credits: contactData.credits,
+            contactPersons: contactData.contactPersons,
+            category: contactData.category,
+            baseCurrency: contactData.baseCurrency,
+            balance: contactData.balance,
+            country: contactData.address.countryIso,
+            gstNumber: contactData.address.gstNumber,
+            state: contactData?.indiaState?.id || "",
+            street: contactData.address.street,
+          });
+        }
+      });
+  };
+
+  // console.log(companyInfo);
+
   return (
     <PageContent
-      title="Create Contact"
-      titleIsBreadCrumb
+      navigateBackTo={"/contacts-create"}
+      title={contactId ? "Edit Contact" : "Create Contact"}
+      // titleIsBreadCrumb
       breadCrumbData={["Home", "Contacts", "Create Contact"]}
+      titleActionContent={
+        <Button isSuccess onClick={() => handleSubmit()}>
+          Save
+        </Button>
+      }
     >
       {isModalActive && (
         <AddContactPersonModal
@@ -602,13 +708,6 @@ const CreateContact = () => {
           contactName={companyInfo.contactPersons[deleteIndex]?.firstName}
         />
       )}
-      <Button
-        isSuccess
-        style={{ float: "right", marginTop: "-45px" }}
-        onClick={handleSubmit}
-      >
-        Save
-      </Button>
 
       <div className="page-content-inner">
         <div className="tabs-wrapper">
@@ -797,7 +896,7 @@ const CreateContact = () => {
                               type="number"
                               placeholder="0.00"
                               step="0.001"
-                              value={parseFloat(companyInfo.exchangeRate)}
+                              value={companyInfo.exchangeRate}
                               onChange={handleExchangeRateChange}
                             />
                           </div>
@@ -805,7 +904,14 @@ const CreateContact = () => {
                       )}
                     </div>
                     <div className="columns is-multiline">
-                      <div className="column is-6">
+                      <div
+                        className={`column is-${
+                          companyInfo.kind === "company" &&
+                          companyInfo.country === "IN"
+                            ? "6"
+                            : "12"
+                        }`}
+                      >
                         <div className="field">
                           <label>Contact Category</label>
                           <SelectInput
@@ -816,58 +922,67 @@ const CreateContact = () => {
                           />
                         </div>
                       </div>
-
-                      <div className="column is-6">
-                        <div className="field">
-                          <label>CIN ?</label>
-                          <Input
-                            type="text"
-                            placeholder={"E.g.,U 31909 WB 2020 PTC 247113"}
-                            value={
-                              companyInfo.cinNumber ? companyInfo.cinNumber : ""
-                            }
-                            onChange={handleCinChange}
-                            name="cinNumber"
-                          />
-                          <ErrorText
-                            visible={companyError.cinError}
-                            text={companyError.cinError}
-                          />
-                        </div>
-                      </div>
+                      {companyInfo.kind === "company" &&
+                        companyInfo.country === "IN" && (
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>CIN ?</label>
+                              <Input
+                                type="text"
+                                placeholder={"E.g.,U 31909 WB 2020 PTC 247113"}
+                                value={
+                                  companyInfo.cinNumber
+                                    ? companyInfo.cinNumber
+                                    : ""
+                                }
+                                onChange={handleCinChange}
+                                name="cinNumber"
+                              />
+                              <ErrorText
+                                visible={companyError.cinError}
+                                text={companyError.cinError}
+                              />
+                            </div>
+                          </div>
+                        )}
                     </div>
-                    <div className="columns is-multiline">
-                      <div className="column is-6">
-                        <div className="field">
-                          <label>Business Type</label>
-                          <SelectInput
-                            options={bussinessType}
-                            onChange={handleBussinessChange}
-                            value={companyInfo.gstType}
-                            name="gstType"
-                          />
-                        </div>
-                      </div>
+                    {companyInfo.kind === "company" &&
+                      companyInfo.country === "IN" && (
+                        <div className="columns is-multiline">
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>Business Type</label>
+                              <SelectInput
+                                options={gstTypeOptions}
+                                onChange={handleBussinessChange}
+                                value={companyInfo.gstType}
+                                name="gstType"
+                              />
+                            </div>
+                          </div>
 
-                      <div className="column is-6">
-                        <div className="field">
-                          <label>GST No ?</label>
-                          <Input
-                            type="text"
-                            placeholder={"E.g.,07AAAAAOOOOA1Z6"}
-                            onChange={handleGstChange}
-                            value={
-                              companyInfo.gstNumber ? companyInfo.gstNumber : ""
-                            }
-                            name="gstNumber"
-                          />
-                          <ErrorText
-                            visible={companyError.gstError}
-                            text={companyError.gstError}
-                          />
+                          <div className="column is-6">
+                            <div className="field">
+                              <label>GST No ?</label>
+                              <Input
+                                type="text"
+                                placeholder={"E.g.,07AAAAAOOOOA1Z6"}
+                                onChange={handleGstChange}
+                                value={
+                                  companyInfo.gstNumber
+                                    ? companyInfo.gstNumber
+                                    : ""
+                                }
+                                name="gstNumber"
+                              />
+                              <ErrorText
+                                visible={companyError.gstError}
+                                text={companyError.gstError}
+                              />
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
+                      )}
                   </>
                 </AdvancedCard>
 
@@ -981,7 +1096,7 @@ const CreateContact = () => {
 
               <div className="column is-5">
                 {companyInfo.type === "customer" && (
-                  <AdvancedCard type={"s-card"}>
+                  <AdvancedCard type={"s-card"} containerClassName={"m-b-10"}>
                     <div className="columns is-multiline">
                       <div className="column is-8">
                         <h2 className="title is-5 is-bold">Opening Balance</h2>
@@ -1035,7 +1150,7 @@ const CreateContact = () => {
                       <div className="field">
                         <label>Payment Terms</label>
                         <SelectInput
-                          options={selectPayment}
+                          options={paymentTermsOptions}
                           value={companyInfo.paymentTerms}
                           onChange={handlePaymentChange}
                           name="paymentTerms"

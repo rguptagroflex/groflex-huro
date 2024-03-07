@@ -55,6 +55,7 @@ import ProfitAndLoss from "./app/views/accounting/reports/ProfitAndLoss";
 import GeneralLedger from "./app/views/accounting/reports/GeneralLedger";
 import CashFlow from "./app/views/accounting/reports/CashFlow";
 import GstReports from "./app/views/accounting/reports/GstReports";
+import ContactsDetail from "./app/views/contacts/ContactsDetail";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -78,7 +79,9 @@ function App() {
           {/* ---------------------------Contacts-------------------------------- */}
           <Route path="contacts" element={<Contacts />} />
           <Route path="contacts-create" element={<CreateContact />} />
-          <Route path="contacts-edit/:contactId" element={<EditContact />} />
+          <Route path="contacts-edit/:contactId" element={<CreateContact />} />
+          <Route path="contacts/:contactId" element={<ContactsDetail />} />
+          {/* <Route path="contacts-edit/:contactId" element={<EditContact />} /> */}
 
           {/* -------------------------Sales Module-------------------------*/}
           {/* Invoice */}

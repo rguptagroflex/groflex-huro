@@ -74,7 +74,9 @@ const DashBoardInvoiceTab = () => {
       });
   };
   useEffect(() => {
-    fetchInvoiceList();
+    if (date.startDate && date.endDate) {
+      fetchInvoiceList();
+    }
   }, [date]);
 
   const [isBarChart, setIsBarChart] = useState(true);
@@ -116,6 +118,7 @@ const DashBoardInvoiceTab = () => {
 
   return (
     <DashboardChartCard
+      date={date}
       pieChartSummary={totalValue}
       className={"dashboard-invoice-expense-tab-wrapper"}
       headerClassName={"invoice-tab-header"}
