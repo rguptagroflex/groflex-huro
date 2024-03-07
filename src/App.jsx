@@ -78,7 +78,8 @@ function App() {
           {/* ---------------------------Contacts-------------------------------- */}
           <Route path="contacts" element={<Contacts />} />
           <Route path="contacts-create" element={<CreateContact />} />
-          <Route path="contacts-edit/:contactId" element={<EditContact />} />
+          <Route path="contacts-edit/:contactId" element={<CreateContact />} />
+          {/* <Route path="contacts-edit/:contactId" element={<EditContact />} /> */}
 
           {/* -------------------------Sales Module-------------------------*/}
           {/* Invoice */}

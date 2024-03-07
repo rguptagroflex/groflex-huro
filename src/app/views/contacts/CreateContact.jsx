@@ -21,7 +21,7 @@ import EditModal from "./EditModal";
 import DeleteModal from "./DeleteModal";
 import { getCurrencyRates as getCurrencyRatesFromOpenExchangeRates } from "../../helpers/getCurrencyRates";
 import groflexService from "../../services/groflex.service";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { currencyOptions, gstTypeOptions } from "../../helpers/constants";
 const countriesOptions = getCountries().map((country) => ({
   label: country.label,
@@ -29,6 +29,7 @@ const countriesOptions = getCountries().map((country) => ({
 }));
 
 const CreateContact = () => {
+  const { contactId } = useParams();
   const tenantData = useSelector((state) => state.accountData.tenantData);
   const [isModalActive, setIsModalActive] = useState(false);
   const [isModalEdit, setIsModalEdit] = useState(false);
@@ -316,6 +317,10 @@ const CreateContact = () => {
     currencyError: "",
   });
 
+  useEffect(() => {
+    fetchContactData();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCompanyInfo((prevCompanyInfo) => ({
@@ -546,8 +551,10 @@ const CreateContact = () => {
   };
 
   const handleSubmit = () => {
-    const endpoint = config.resourceUrls.contact;
-
+    const endpoint = contactId
+      ? config.resourceUrls.contact + `/${contactId}`
+      : config.resourceUrls.contact;
+    const method = contactId ? "PUT" : "POST";
     const contactPerson = companyInfo.contactPersons.map((person) => ({
       firstName: person.firstName,
       job: person.job,
@@ -562,7 +569,9 @@ const CreateContact = () => {
         gstNumber: companyInfo.gstNumber,
         cinNumber: companyInfo.cinNumber,
       },
-      indiaStateId: companyInfo.state,
+
+      // indiaStateId: selectedState,
+      indiaState: selectedState,
       category: companyInfo.category,
       discount: companyInfo.discount,
       kind: companyInfo.kind,
@@ -590,7 +599,7 @@ const CreateContact = () => {
     };
 
     GroflexService.request(endpoint, {
-      method: "POST",
+      method: method,
       auth: true,
       data: requestData,
     })
@@ -607,12 +616,61 @@ const CreateContact = () => {
         groflexService.toast.error("Something went wrong");
       });
   };
+
+  const fetchContactData = () => {
+    groflexService
+      .request(`${oldConfig.customer.resourceUrl}/${contactId}`, { auth: true })
+      .then((res) => {
+        // console.log(res);
+        if (res && res.body.data) {
+          const contactData = res.body.data;
+          setCompanyInfo({
+            cinNumber: contactData.cinNumber,
+            gstType: contactData.address.gstType,
+            address: contactData.address.street,
+            website: contactData.website,
+            type: contactData.type,
+            title: contactData.title,
+            salutation: contactData.salutation,
+            phone1: contactData.phone1,
+            payConditionId: contactData.payConditionId,
+            openingBalance: contactData.openingBalance,
+            number: contactData.number,
+            notesAlert: contactData.notesAlert,
+            notes: contactData.notes,
+            companyName: contactData.name,
+            mobile: contactData.mobile,
+            lastName: contactData.lastName,
+            kind: contactData.kind,
+            id: contactData.id,
+            firstName: contactData.firstName,
+            fax: contactData.fax,
+            exchangeRate: contactData.exchangeRate,
+            email: contactData.email,
+            discount: contactData.discount,
+            defaultExchangeRateToggle: contactData.defaultExchangeRateToggle,
+            debits: contactData.debits,
+            credits: contactData.credits,
+            contactPersons: contactData.contactPersons,
+            category: contactData.category,
+            baseCurrency: contactData.baseCurrency,
+            balance: contactData.balance,
+            country: contactData.address.countryIso,
+            gstNumber: contactData.address.gstNumber,
+            state: contactData?.indiaState?.id || "",
+            street: contactData.address.street,
+          });
+        }
+      });
+  };
+
   // console.log(companyInfo);
 
   return (
     <PageContent
-      title="Create Contact"
-      titleIsBreadCrumb
+      navigateBackTo={"/contacts-create"}
+      title={contactId ? "Edit Contact" : "Create Contact"}
+      // titleIsBreadCrumb
       breadCrumbData={["Home", "Contacts", "Create Contact"]}
       titleActionContent={
         <Button isSuccess onClick={() => handleSubmit()}>

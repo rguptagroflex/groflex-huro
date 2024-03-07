@@ -13,7 +13,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import groflexService from "../../services/groflex.service";
 import FontAwesomeIcon from "../../shared/fontAwesomeIcon/FontAwesomeIcon";
 import { Button } from "../../shared/components/button/Button";
-
+import oldConfig from "../../../../oldConfig";
+import DeleteModal from "./DeleteModal";
 // const getCompanyPersonIcon = (
 //   value,
 //   personIconWidth,
@@ -40,6 +41,8 @@ const Contacts = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const navigate = useNavigate();
   const [previousData, setPreviousData] = useState(undefined);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [contactId, setContactId] = useState(null);
 
   const actions = [
     { name: "Edit", icon: "edit" },
@@ -63,27 +66,19 @@ const Contacts = () => {
     return icon;
   };
 
-  const handleActionClick = (action, rowData) => {
-    if (rowData) {
-      if (action.name === "Edit") {
-        if (rowData.id) {
-          setSelectedContact(rowData.id);
-          const previousData = { ...rowData };
-          setPreviousData(previousData);
-          navigate(`/contacts-edit/${rowData.id}`, { state: { previousData } });
-        } else {
-          // console.log("Invalid rowData:", rowData);
-        }
-      } else if (action.name === "Delete") {
-        // Implement delete functionality
-      }
-    } else {
-      console.log("Invalid rowData:", rowData);
+  const handleActionClick = (action, row, params) => {
+    switch (action.name) {
+      case "Delete":
+        setContactId(row.id);
+        setIsDeleteModalVisible(true);
+        break;
+      case "Edit":
+        navigate(`/contacts-edit/${row.id}`);
     }
   };
   useEffect(() => {
     if (previousData) {
-      console.log("previousData:", previousData);
+      // console.log("previousData:", previousData);
     }
   }, [previousData]);
 
@@ -96,6 +91,11 @@ const Contacts = () => {
         </Button>
       }
     >
+      <DeleteModal
+        isDeleteModalVisible={isDeleteModalVisible}
+        setIsDeleteModalVisible={setIsDeleteModalVisible}
+        contactId={contactId}
+      />
       <ListAdvancedComponent
         onActionClick={handleActionClick}
         columnDefs={[
