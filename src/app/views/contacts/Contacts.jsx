@@ -97,6 +97,9 @@ const Contacts = () => {
         contactId={contactId}
       />
       <ListAdvancedComponent
+        onRowClicked={(e) => {
+          navigate(`/contacts/${e.data.id}`);
+        }}
         onActionClick={handleActionClick}
         columnDefs={[
           { field: "number", headerName: "No.", filter: false },

@@ -62,6 +62,7 @@ const DateInput = ({ selectedDate, onDateChange }) => {
         popper: {
           sx: {
             "& .Mui-selected": { backgroundColor: "#00a353 !important" },
+            "& .MuiDateCalendar-root": { width: "230px", height: "300px" },
           },
         },
       }}
