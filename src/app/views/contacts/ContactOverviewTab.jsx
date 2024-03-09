@@ -35,22 +35,47 @@ const ContactOverviewTab = ({ contactId }) => {
   }, []);
 
   const fetchContactData = () => {
-    groflexService
-      .request(`${oldConfig.customer.resourceUrl}/${contactId}`, { auth: true })
-      .then((res) => {
-        console.log(res);
-        if (res && res.body.data) {
-          const customer = res.body.data;
-          setContactData({
-            ...contactData,
-            customerNo: customer.number,
-            website: customer.website,
-            address: customer.address.street,
-            email: customer.email,
-            mobile: customer.phone1,
-          });
+    Promise.all([
+      groflexService.request(`${oldConfig.customer.resourceUrl}/${contactId}`, {
+        auth: true,
+      }),
+      groflexService.request(
+        `${oldConfig.customer.resourceUrl}/${contactId}/salesVolume`,
+        {
+          auth: true,
         }
-      });
+      ),
+    ]).then((res) => {
+      if (res[0]?.body?.data && res[1]?.body?.data) {
+        const customerInfo = res[0].body.data;
+        const salesVolume = res[1].body.data;
+        console.log(salesVolume);
+
+        setContactData({
+          ...contactData,
+          customerNo: customerInfo.number,
+          website: customerInfo.website,
+          address: customerInfo.address.street,
+          email: customerInfo.email,
+          mobile: customerInfo.phone1,
+          openningBalance: customerInfo.openingBalance,
+          creditNotes: Math.abs(customerInfo.credits),
+          openInvoices: salesVolume.openInvoicesTurnOver
+            ? salesVolume.openInvoicesTurnOver
+            : parseFloat(0).toFixed(2),
+          openQuotations: salesVolume.openOffersTurnOver
+            ? salesVolume.openOffersTurnOver
+            : parseFloat(0).toFixed(2),
+          outstandingReceivables: salesVolume.outstandingAmount
+            ? salesVolume.outstandingAmount
+            : parseFloat(0).toFixed(2),
+          excessPayment: salesVolume.openTrackedTimesTurnOver
+            ? salesVolume.openTrackedTimesTurnOver
+            : parseFloat(0).toFixed(2),
+        });
+        console.log(contactData);
+      }
+    });
   };
 
   return (
@@ -95,17 +120,17 @@ const ContactOverviewTab = ({ contactId }) => {
                   <div className="contact-financial-card">
                     <img src={quotationSvg} alt="rupeeSvg" />
                     <h2>Open Quotations</h2>
-                    <h3>{formatCurrency(20)} </h3>
+                    <h3>{formatCurrency(contactData.openQuotations)} </h3>
                   </div>
                   <div className="contact-financial-card">
                     <img src={balanceSvg} alt="rupeeSvg" />
                     <h2>Openning Balance</h2>
-                    <h3>{formatCurrency(20)} </h3>
+                    <h3>{formatCurrency(contactData.openningBalance)} </h3>
                   </div>
                   <div className="contact-financial-card">
                     <img src={invoiceSvg} alt="rupeeSvg" />
                     <h2>Open Invoices</h2>
-                    <h3>{formatCurrency(20)} </h3>
+                    <h3>{formatCurrency(contactData.openInvoices)} </h3>
                   </div>
                 </div>
 
@@ -113,17 +138,19 @@ const ContactOverviewTab = ({ contactId }) => {
                   <div className="contact-financial-card">
                     <img src={receivablesSvg} alt="rupeeSvg" />
                     <h2>Outstanding receivables</h2>
-                    <h3>{formatCurrency(20)} </h3>
+                    <h3>
+                      {formatCurrency(contactData.outstandingReceivables)}
+                    </h3>
                   </div>
                   <div className="contact-financial-card">
                     <img src={eccessPaymentSvg} alt="rupeeSvg" />
                     <h2>Excess payment</h2>
-                    <h3>{formatCurrency(20)} </h3>
+                    <h3>{formatCurrency(contactData.excessPayment)} </h3>
                   </div>
                   <div className="contact-financial-card">
                     <img src={creditNoteSvg} alt="rupeeSvg" />
                     <h2 style={{ marginBottom: "18px" }}>Credit notes</h2>
-                    <h3>{formatCurrency(20)} </h3>
+                    <h3>{formatCurrency(contactData.creditNotes)} </h3>
                   </div>
                 </div>
               </AdvancedCard>
@@ -138,25 +165,25 @@ const ContactOverviewTab = ({ contactId }) => {
                     </div>
                     <div style={{ width: "130px" }}>
                       <h2>Website</h2>
-                      <h3>{contactData.website}</h3>
+                      <h3>{contactData.website ? contactData.website : "-"}</h3>
                     </div>
                   </div>
 
                   <div className="basic-details-row">
                     <div style={{ width: "130px" }}>
                       <h2>Address</h2>
-                      <h3>{contactData.address}</h3>
+                      <h3>{contactData.address ? contactData.address : "-"}</h3>
                     </div>
                     <div style={{ width: "130px" }}>
                       <h2>Email</h2>
-                      <h3>{contactData.email}</h3>
+                      <h3>{contactData.email ? contactData.email : "-"}</h3>
                     </div>
                   </div>
 
                   <div className="basic-details-row">
                     <div style={{ width: "130px" }}>
                       <h2>Mobile</h2>
-                      <h3>{contactData.mobile}</h3>
+                      <h3>{contactData.mobile ? contactData.mobile : "-"}</h3>
                     </div>
                     {/* <div>
                       <h2>Telephone</h2>
