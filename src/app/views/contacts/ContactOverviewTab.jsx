@@ -10,6 +10,8 @@ import eccessPaymentSvg from "../../../assets/groflex/icons/eccessPaymentIcon.sv
 import receivablesSvg from "../../../assets/groflex/icons/receivablesIcon.svg";
 import { formatCurrency } from "../../helpers/formatCurrency";
 import groflexService from "../../services/groflex.service";
+import CreateChart from "../../shared/components/chartjs/CreateChart";
+import ContactLedger from "./ContactLedger";
 const ContactOverviewTab = ({ contactId }) => {
   const [notes, setNotes] = useState("");
   const handleNotesChange = (e) => {
@@ -28,7 +30,11 @@ const ContactOverviewTab = ({ contactId }) => {
     address: "",
     email: "",
     mobile: "",
+    turnoverTotal: 0,
+    name: "",
   });
+
+  const [chartValues, setChartValues] = useState([]);
 
   useEffect(() => {
     fetchContactData();
@@ -47,9 +53,13 @@ const ContactOverviewTab = ({ contactId }) => {
       ),
     ]).then((res) => {
       if (res[0]?.body?.data && res[1]?.body?.data) {
+        let chartValues = [];
         const customerInfo = res[0].body.data;
         const salesVolume = res[1].body.data;
-        console.log(salesVolume);
+        salesVolume.chartData.forEach((item) => {
+          chartValues.push(item.sales);
+        });
+        setChartValues(chartValues);
 
         setContactData({
           ...contactData,
@@ -72,10 +82,32 @@ const ContactOverviewTab = ({ contactId }) => {
           excessPayment: salesVolume.openTrackedTimesTurnOver
             ? salesVolume.openTrackedTimesTurnOver
             : parseFloat(0).toFixed(2),
+          turnoverTotal: salesVolume.turnoverTotal,
+          name: customerInfo.name,
         });
-        console.log(contactData);
       }
     });
+  };
+
+  const chartData = {
+    labels: ["A", "M", "J", "J", "A", "S", "O", "N", "D", "J", "F", "M"],
+
+    datasets: [
+      {
+        label: "",
+        data: chartValues,
+        backgroundColor: ["#0071ca"],
+      },
+    ],
+  };
+
+  const chartOptions = {
+    barThickness: 10,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
   };
 
   return (
@@ -185,19 +217,53 @@ const ContactOverviewTab = ({ contactId }) => {
                       <h2>Mobile</h2>
                       <h3>{contactData.mobile ? contactData.mobile : "-"}</h3>
                     </div>
-                    {/* <div>
-                      <h2>Telephone</h2>
-                      <h3>google.com</h3>
-                    </div> */}
                   </div>
                 </div>
               </AdvancedCard>
             </div>
           </div>
+
+          <div className="columns is-multiline">
+            <div className="column is-12">
+              <ContactLedger
+                contactId={contactId}
+                contactName={contactData.name}
+              />
+            </div>
+          </div>
           <div className="columns is-multiline">
             <div className="column is-12">
               <AdvancedCard type={"s-card"}>
-                <div className="contact-sales-and-purchases"></div>
+                <div className="contact-sales-and-purchases">
+                  <div className="columns is-multiline">
+                    <h2 className="title is-5 is-bold column is-9">
+                      Sales Overview
+                    </h2>
+                    <div
+                      className="column is-3"
+                      style={{
+                        textAlign: "right",
+                        borderRadius: "10px",
+                        background: "#f1f8fb",
+                      }}
+                    >
+                      <h3 style={{ fontSize: "15px", fontWeight: "500" }}>
+                        Total Revenue
+                      </h3>
+                      <h3 style={{ fontSize: "18px", color: "#00a353" }}>
+                        {formatCurrency(contactData.turnoverTotal)}
+                      </h3>
+                    </div>
+                  </div>
+
+                  <h5 className="m-b-20">Sales over the last 12 months</h5>
+
+                  <CreateChart
+                    chartData={chartData}
+                    chartOptions={chartOptions}
+                    chartType={"barChart"}
+                  />
+                </div>
               </AdvancedCard>
             </div>
           </div>
