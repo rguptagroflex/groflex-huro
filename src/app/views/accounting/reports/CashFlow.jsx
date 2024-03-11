@@ -422,7 +422,9 @@ const CashFlow = () => {
         handleSendEmail={handleSendEmail}
         sendEmailFormData={sendEmailFormData}
         setSendEmailFormData={setSendEmailFormData}
-        fileName={"CashFlow"}
+        fileName={`CashFlow_${moment(date.startDate).format(
+          "DD-MM-YYYY"
+        )}_${moment(date.endDate).format("DD-MM-YYYY")}`}
         title={"Send cash flow statement"}
       />
     </PageContent>

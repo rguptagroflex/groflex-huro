@@ -318,7 +318,9 @@ const CreateContact = () => {
   });
 
   useEffect(() => {
-    fetchContactData();
+    if (contactId) {
+      fetchContactData();
+    }
   }, []);
 
   const handleChange = (e) => {
@@ -677,6 +679,7 @@ const CreateContact = () => {
           Save
         </Button>
       }
+      loading={companyInfo.number ? false : true}
     >
       {isModalActive && (
         <AddContactPersonModal

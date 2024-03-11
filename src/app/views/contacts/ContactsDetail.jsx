@@ -4,9 +4,11 @@ import Tabs from "../../shared/components/tabs/Tabs";
 import ContactOverviewTab from "./ContactOverviewTab";
 import ContactActivitiesTab from "./ContactActivitiesTab";
 import ContactDocumentsTab from "./ContactDocumentsTab";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button } from "../../shared/components/button/Button";
 
 const ContactsDetail = () => {
+  const navigate = useNavigate();
   const { contactId } = useParams();
   const contactsDetailTabs = [
     {
@@ -24,7 +26,17 @@ const ContactsDetail = () => {
   ];
 
   return (
-    <PageContent title={"Contact Details"}>
+    <PageContent
+      title={"Contact Details"}
+      titleActionContent={
+        <Button
+          onClick={() => navigate(`/contacts-edit/${contactId}`)}
+          isSuccess
+        >
+          Edit
+        </Button>
+      }
+    >
       <Tabs tabList={contactsDetailTabs} />
     </PageContent>
   );

@@ -422,7 +422,9 @@ const BalanceSheet = () => {
         handleSendEmail={handleSendEmail}
         sendEmailFormData={sendEmailFormData}
         setSendEmailFormData={setSendEmailFormData}
-        fileName={"BalanceSheet"}
+        fileName={`BalanceSheet_${moment(date.startDate).format(
+          "DD-MM-YYYY"
+        )}_${moment(date.endDate).format("DD-MM-YYYY")}`}
         title={"Send Balance Sheet"}
       />
     </PageContent>
