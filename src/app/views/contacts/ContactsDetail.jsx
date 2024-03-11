@@ -17,7 +17,10 @@ const ContactsDetail = () => {
       label: "Activities",
       content: <ContactActivitiesTab contactId={contactId} />,
     },
-    { label: "Documents", content: <ContactDocumentsTab /> },
+    {
+      label: "Documents",
+      content: <ContactDocumentsTab contactId={contactId} />,
+    },
   ];
 
   return (
