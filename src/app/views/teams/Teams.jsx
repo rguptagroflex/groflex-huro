@@ -20,7 +20,7 @@ const Teams = () => {
   const [isEditRoleModalVisible, setIsEditRoleModalVisible] = useState(false);
   const [isDeleteUserModalVisible, setIsDeleteUserModalVisible] =
     useState(false);
-  const [caExists, setCaExists] = useState(false);
+  const [caExists, setCaExists] = useState(true);
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
@@ -49,8 +49,8 @@ const Teams = () => {
         const caRole = roles.filter(
           (name) => name.role === "charteredaccountant"
         );
-        if (caRole[0].users.length > 0) {
-          setCaExists(true);
+        if (caRole[0].users.length === 0) {
+          setCaExists(false);
         }
       });
   };
