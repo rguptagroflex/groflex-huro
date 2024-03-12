@@ -12,6 +12,8 @@ import { formatCurrency } from "../../helpers/formatCurrency";
 import groflexService from "../../services/groflex.service";
 import CreateChart from "../../shared/components/chartjs/CreateChart";
 import ContactLedger from "./ContactLedger";
+import customerCompanySvg from "../../../assets/groflex/icons/customer-company.svg";
+import customerPersonSvg from "../../../assets/groflex/icons/customer-private-man.svg";
 const ContactOverviewTab = ({ contactId }) => {
   const [notes, setNotes] = useState("");
   const handleNotesChange = (e) => {
@@ -32,6 +34,7 @@ const ContactOverviewTab = ({ contactId }) => {
     mobile: "",
     turnoverTotal: 0,
     name: "",
+    kind: "",
   });
 
   const [chartValues, setChartValues] = useState([]);
@@ -84,6 +87,7 @@ const ContactOverviewTab = ({ contactId }) => {
             : parseFloat(0).toFixed(2),
           turnoverTotal: salesVolume.turnoverTotal,
           name: customerInfo.name,
+          kind: customerInfo.kind,
         });
       }
     });
@@ -114,10 +118,21 @@ const ContactOverviewTab = ({ contactId }) => {
     <div className="contact-overview-tab-main">
       <div className="columns is-multiline">
         <div className="column is-4">
-          <AdvancedCard
-            type={"s-card"}
-            containerClassName={"left-card"}
-          ></AdvancedCard>
+          <AdvancedCard type={"s-card"} containerClassName={"left-card"}>
+            <div className="customer-icon">
+              <img
+                src={
+                  contactData.kind === "company"
+                    ? customerCompanySvg
+                    : customerPersonSvg
+                }
+                alt="rupeeSvg"
+                width={"130px"}
+                height={"130px"}
+              />
+            </div>
+            <h2 className="customer-name">{contactData.name}</h2>
+          </AdvancedCard>
           <AdvancedCard type={"s-card"} containerClassName={"left-card"}>
             <h2 className="title is-5 is-bold">Notes</h2>
             <div className="field">
@@ -257,12 +272,15 @@ const ContactOverviewTab = ({ contactId }) => {
                   </div>
 
                   <h5 className="m-b-20">Sales over the last 12 months</h5>
-
-                  <CreateChart
-                    chartData={chartData}
-                    chartOptions={chartOptions}
-                    chartType={"barChart"}
-                  />
+                  {chartValues.length > 0 ? (
+                    <CreateChart
+                      chartData={chartData}
+                      chartOptions={chartOptions}
+                      chartType={"barChart"}
+                    />
+                  ) : (
+                    <div>No data to show</div>
+                  )}
                 </div>
               </AdvancedCard>
             </div>

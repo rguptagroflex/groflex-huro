@@ -291,6 +291,39 @@ const BalanceSheet = () => {
       });
   };
 
+  const handlePrint = () => {
+    groflexService
+      .request(
+        `${config.resourceUrls.balanceSheet(
+          date.startDate,
+          date.endDate,
+          "pdf"
+        )}`,
+        {
+          auth: true,
+          method: "GET",
+          headers: { "Content-Type": `application/pdf` },
+        }
+      )
+      .then(({ body }) => {
+        if (body.size) {
+          groflexService.toast.success(
+            `Print initiated for BalanceSheet_${moment(date.startDate).format(
+              "DD-MM-YYYY"
+            )}_${moment(date.endDate).format("DD-MM-YYYY")} `
+          );
+        }
+        var blob = new Blob([body], { type: "application/pdf" });
+
+        var link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.target = "_blank";
+        link.setAttribute("rel", "noopener noreferrer");
+
+        link.click();
+      });
+  };
+
   const dateOptions = [
     {
       label: dateFilterTypes.currentMonth,
@@ -386,6 +419,7 @@ const BalanceSheet = () => {
             <Button
               icon={<i className="fa-solid fa-print"></i>}
               className={"utility-btn"}
+              onClick={handlePrint}
             >
               Print
             </Button>

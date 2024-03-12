@@ -353,6 +353,41 @@ const GeneralLedger = () => {
       });
   };
 
+  const handlePrint = () => {
+    const exportType = "pdf";
+    groflexService
+      .request(
+        `${config.resourceUrls.generalLedger(
+          date.startDate,
+          date.endDate,
+          exportType,
+          customerID
+        )}`,
+        {
+          auth: true,
+          method: "GET",
+          headers: { "Content-Type": `application/${exportType}` },
+        }
+      )
+      .then(({ body }) => {
+        if (body.size) {
+          groflexService.toast.success(
+            `Print initiated for GeneralLedger_${moment(date.startDate).format(
+              "DD-MM-YYYY"
+            )}_${moment(date.endDate).format("DD-MM-YYYY")}`
+          );
+        }
+        var blob = new Blob([body], { type: "application/pdf" });
+
+        var link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.target = "_blank";
+        link.setAttribute("rel", "noopener noreferrer");
+
+        link.click();
+      });
+  };
+
   const handleCustomStartDateChange = (value) => {
     setDate({
       ...date,
@@ -464,6 +499,7 @@ const GeneralLedger = () => {
             <Button
               icon={<i className="fa-solid fa-print"></i>}
               className={"utility-btn"}
+              onClick={handlePrint}
             >
               Print
             </Button>
