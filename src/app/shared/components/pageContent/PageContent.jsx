@@ -28,7 +28,7 @@ const PageContent = ({
     <div className={viewWrapperClassNames}>
       <div className="page-content-wrapper">
         <div className="page-content is-relative">
-          <div className="page-title has-text-centered">
+          <div className="page-title has-text-centered m-b-15">
             {currentModule?.heading && (
               <div
                 onClick={toggleSidebar}
@@ -74,7 +74,7 @@ const PageContent = ({
           {title && (
             <div
               style={{
-                marginBottom: "24px",
+                marginBottom: "15px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",

@@ -13,6 +13,7 @@ const ContactSearchComponent = ({ value, onChange, searchPayee }) => {
   }, []);
 
   const handleChange = (option) => {
+    if (!option?.value) return;
     setContact(option.value);
     onChange(option);
   };
@@ -94,7 +95,8 @@ const ContactSearchComponent = ({ value, onChange, searchPayee }) => {
       isCreatable
       onChange={handleChange}
       value={contact}
-      placeholder={"Contact Name"}
+      placeholder={"Enter or Select Customers"}
+      isLoading={!contactsOptions?.length}
     />
   );
 };

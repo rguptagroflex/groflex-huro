@@ -1,9 +1,21 @@
 import React from "react";
 import { FeatherIcon } from "../featherIcon/FeatherIcon";
 
-const EditableIndicatorDiv = ({ children, className = "", style, icon }) => {
+const EditableIndicatorDiv = ({
+  children,
+  className = "",
+  style,
+  icon,
+  onClick = () => {},
+  rest,
+}) => {
   return (
-    <div style={style} className={`editable-indicator-div ${className}`}>
+    <div
+      onClick={onClick}
+      style={style}
+      className={`editable-indicator-div ${className}`}
+      {...rest}
+    >
       {children}
       {icon ? (
         icon

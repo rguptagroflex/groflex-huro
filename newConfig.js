@@ -13,7 +13,7 @@ const apiServers = {
   // integration: "https://web-integration-invoiz.buhl.de",
   // admin: "https://invoiz-admin.buhl.de",
 };
-const loginExpireHours = 6;
+const loginExpireHours = 9;
 const baseUrl = apiServers.local;
 
 const setResourceHost = () => {

@@ -51,7 +51,7 @@ const ArticleDetail = () => {
     return (
       <div style={{ display: "flex" }}>
         <Button
-          onClick={() => navigate(`/article/edit/${articleData.id}`)}
+          onClick={() => navigate(`/articles/edit/${articleData.id}`)}
           isOutlined
           isPrimary
           isBold

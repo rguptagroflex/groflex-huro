@@ -114,12 +114,13 @@ const Sidebar = () => {
                   }}
                   style={({ isActive }) => {
                     let isCurrentModuleActive;
-                    if (
-                      linkItem.isModule &&
-                      config.getCurrentModule()?.name === linkItem.moduleName
-                    ) {
-                      isCurrentModuleActive = true;
-                    } else if (isActive) {
+                    // if (
+                    //   linkItem.isModule &&
+                    //   config.getCurrentModule()?.name === linkItem.moduleName
+                    // ) {
+                    //   isCurrentModuleActive = true;
+                    // } else
+                    if (isActive) {
                       isCurrentModuleActive = true;
                     }
                     return {

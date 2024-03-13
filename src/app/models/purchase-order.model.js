@@ -3,7 +3,7 @@
 import { getLabelForCountry } from "helpers/getCountries";
 import PurchaseOrderState from "enums/purchase-order/purchase-order-state.enum";
 import { formatDate, formatApiDate } from "helpers/formatDate";
-import config from "../../oldConfig";
+import config from "../../../oldConfig";
 
 export default class PurchaseOrder {
   constructor(data) {

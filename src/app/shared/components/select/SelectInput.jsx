@@ -14,6 +14,7 @@ export const SelectInput = ({
   isCreatable,
   loadOptions,
   onInputChange,
+  isLoading = undefined,
 }) => {
   const [selectedOption, setSelectedOption] = useState();
 
@@ -46,6 +47,7 @@ export const SelectInput = ({
         onInputChange={onInputChange}
         onChange={onChange}
         placeholder={placeholder}
+        isLoading={isLoading}
       />
     );
   }
@@ -61,6 +63,7 @@ export const SelectInput = ({
         onInputChange={onInputChange}
         isClearable
         placeholder={placeholder}
+        isLoading={isLoading}
       />
     );
   }
@@ -76,6 +79,7 @@ export const SelectInput = ({
         onInputChange={onInputChange}
         isClearable
         placeholder={placeholder}
+        isLoading={isLoading}
       />
     );
   }
@@ -86,6 +90,7 @@ export const SelectInput = ({
       options={options}
       onChange={onChange}
       onInputChange={onInputChange}
+      isLoading={isLoading}
     />
   );
 };

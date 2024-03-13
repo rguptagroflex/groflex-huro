@@ -1,7 +1,7 @@
 import React from "react";
 import { FeatherIcon } from "../featherIcon/FeatherIcon";
 
-const RecepientEmptyComponent = ({ onClick }) => {
+const RecipientEmptyComponent = ({ onClick }) => {
   return (
     <div
       onClick={onClick}
@@ -13,4 +13,4 @@ const RecepientEmptyComponent = ({ onClick }) => {
   );
 };
 
-export default RecepientEmptyComponent;
+export default RecipientEmptyComponent;

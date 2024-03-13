@@ -3,13 +3,13 @@
 @import "../styles/helperClasses/helperClasses.scss";
 
 // SHARED
-@import "./components/shared/listAdvancedComponent/ListAdvanced";
+@import "./components/shared/listAdvancedComponent/listAdvancedComponent";
 @import "./components/shared/otpInputComponent/otp-input-component";
 @import "./components/shared/toast/toast";
 @import "./components/shared/accordion/accordion";
 @import "./components/shared/transactionEdit/transactionEdit";
 @import "./components/shared/editableIndicatorDiv/editableIndocatorDiv";
-@import "./components/shared/recepientComponent/recepientComponent";
+@import "./components/shared/recipientComponent/recipientComponent";
 @import "./components/shared/kanbanBoard/kanbanBoard";
 
 // VIEWS
@@ -46,6 +46,8 @@
 @import "./components/views/accounting/reports/cashFlow";
 @import "./components/views/accounting/reports/gstReports";
 @import "./components/views/contacts/contactDetails";
+@import "./components/views/accounting/cashAndBank/bankList";
+@import "./components/views/accounting/cashAndBank/cashList";
 
 //EXTERNAL
 @import "../../node_modules/pikaday/css/pikaday";

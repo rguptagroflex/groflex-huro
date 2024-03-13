@@ -47,7 +47,17 @@ export const ListAdvancedComponent = ({
     cellRenderer: customActionCellRenderer,
     flex: 1,
     resizable: false,
-    cellStyle: { textAlign: "center", overflow: "visible" },
+    cellStyle: {
+      textAlign: "center",
+      overflow: "visible",
+      padding: 0,
+    },
+    suppressMovable: true,
+    sortable: false,
+    filter: false,
+    minWidth: 50,
+    maxWidth: 50,
+    resizable: false,
   };
 
   const checkboxSelection = {
@@ -64,7 +74,7 @@ export const ListAdvancedComponent = ({
       filter: true,
       flex: 2,
       cellStyle: {
-        whiteSpace: "normal",
+        whiteSpace: "nowrap",
         overflow: "hidden",
         textOverflow: "ellipsis",
       },
@@ -108,7 +118,10 @@ export const ListAdvancedComponent = ({
     setVisibleColumnCheckedState(initialVisibleColumnState);
 
     customRowData.forEach((row) => {
-      row.actionItems = actionMenuData;
+      row.actionItems =
+        typeof actionMenuData === "function"
+          ? actionMenuData(row)
+          : actionMenuData;
     });
 
     params.api.applyTransaction({ add: customRowData });
@@ -156,7 +169,10 @@ export const ListAdvancedComponent = ({
         })
         .then((res) => {
           res.forEach((row) => {
-            row.actionItems = actionMenuData;
+            row.actionItems =
+              typeof actionMenuData === "function"
+                ? actionMenuData(row)
+                : actionMenuData;
           });
 
           return res;
