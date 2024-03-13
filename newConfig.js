@@ -93,6 +93,18 @@ const resourceUrls = {
   //Transaction
   transaction: `${resourceHost}bankTransaction?offset=0&searchText=&limit=9999999&orderBy=date&desc=true`,
   bank: `${resourceHost}bank`,
+  // Debit notes
+  expenseCancellation: `${resourceHost}expenseCancellation?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=debitsAndBalance&trigger=true`,
+  // Credit notes
+  cancellation: `${resourceHost}cancellation?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=creditsAndBalance&trigger=true`,
+  //Expenditure
+  expenses: `${resourceHost}expense?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all`,
+  expense: `${resourceHost}expense/`,
+  // Chart of Accounts
+  chartOfAccounts: `${resourceHost}chartofaccount?offset=0&searchText=&limit=9999999&orderBy=accountName&desc=false`,
+  chartOfAccount: `${resourceHost}chartofaccount/`,
+  accountType: `${resourceHost}accountType?offset=0&searchText=&limit=9999999&orderBy=name&desc=false`,
+
   //Reports Balance Sheet
   balanceSheet: (startDate, endDate, fileType) =>
     `${resourceHost}accountingReport/balanceSheet/${startDate}/${endDate}?type=${fileType}`,
@@ -163,7 +175,10 @@ const modules = {
       { label: "Transactions", route: "/accounting/transactions" },
       { label: "Cash and Bank", route: "/accounting/cash-and-bank" },
       { label: "Debit Notes", route: "/accounting/debit-notes" },
+      { label: "Credit Notes", route: "/accounting/credit-notes" },
+      { label: "Expenditure", route: "/accounting/expenses" },
       { label: "Reports", route: "/accounting/reports" },
+      { label: "Chart of Accounts", route: "/accounting/chart-of-accounts" },
     ],
   },
   inventory: {
