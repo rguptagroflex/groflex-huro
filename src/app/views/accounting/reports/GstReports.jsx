@@ -51,7 +51,7 @@ const GstReports = () => {
     startDate: "",
     endDate: "",
   });
-
+  const [exportUrl, setExportUrl] = useState("");
   const [rowData, setRowData] = useState([]);
 
   const [filteredRowData, setFilteredRowData] = useState([]);
@@ -169,6 +169,7 @@ const GstReports = () => {
           res.body.data.forEach((item) => {
             rowData.push({
               id: item.id,
+              documentUrl: item.documentUrl,
               date: moment(item.createdAt).format("DD-MM-YYYY"),
               exportPeriod: item.exportPeriod,
               exportType: item.exportFormat.toUpperCase(),
@@ -178,6 +179,7 @@ const GstReports = () => {
                   name={"download"}
                   size={20}
                   color="rgb(0, 121, 179)"
+                  onClick={() => handleExport()}
                 />
               ),
               share: (
@@ -261,6 +263,21 @@ const GstReports = () => {
       });
   };
 
+  const handleExport = () => {
+    window.location.href = `${oldConfig.resourceHost}${exportUrl}`;
+  };
+
+  const handleRowClick = (row) => {
+    setSendEmailFormData({
+      ...sendEmailFormData,
+      exportperiod: row.exportPeriod,
+      id: row.id,
+      message: `Dear Ladies and Gentlemen, Enclosed I send you my accounting documents for the period ${row.exportPeriod}. Yours sincerely,`,
+      subject: `Accounting documents ${row.exportPeriod}`,
+    });
+    setExportUrl(row.documentUrl);
+  };
+
   const dateOptions = [
     {
       label: dateFilterTypes.currentMonth,
@@ -295,16 +312,6 @@ const GstReports = () => {
       value: "custom",
     },
   ];
-
-  const handleRowClick = (e) => {
-    setSendEmailFormData({
-      ...sendEmailFormData,
-      exportperiod: e.exportPeriod,
-      id: e.id,
-      message: `Dear Ladies and Gentlemen, Enclosed I send you my accounting documents for the period ${e.exportPeriod}. Yours sincerely,`,
-      subject: `Accounting documents ${e.exportPeriod}`,
-    });
-  };
 
   return (
     <PageContent title={"Gst Reports"}>
