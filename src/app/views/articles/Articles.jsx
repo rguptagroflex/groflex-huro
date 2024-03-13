@@ -34,7 +34,7 @@ const Articles = () => {
           });
         break;
       case "Edit":
-        navigate(`/article/edit/${row.id}`);
+        navigate(`/articles/edit/${row.id}`);
     }
   };
 
@@ -44,14 +44,14 @@ const Articles = () => {
       titleIsBreadCrumb
       breadCrumbData={["Home", "Articles"]}
       titleActionContent={
-        <Button onClick={() => navigate("/article/new")} isSuccess>
+        <Button onClick={() => navigate("/articles/new")} isSuccess>
           Create Article
         </Button>
       }
     >
       <ListAdvancedComponent
         onRowClicked={(e) => {
-          navigate(`/article/${e.data.id}`);
+          navigate(`/articles/${e.data.id}`);
         }}
         onActionClick={handleActionClick}
         columnDefs={[

@@ -24,6 +24,9 @@ class GroflexService {
       redirectTo: (path) => {
         location.assign(path);
       },
+      reload: () => {
+        location.reload();
+      },
     };
     this.user = User;
     this.request = request;

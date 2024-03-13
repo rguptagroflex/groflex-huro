@@ -74,7 +74,7 @@ const PageContent = ({
           {title && (
             <div
               style={{
-                marginBottom: "24px",
+                marginBottom: "20px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",

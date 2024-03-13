@@ -86,7 +86,7 @@ const RecurringInvoicesList = () => {
   //         });
   //       break;
   //     // case "Edit":
-  //     //   navigate(`/article/edit/${row.id}`);
+  //     //   navigate(`/articles/edit/${row.id}`);
   //   }
   // };
   return (
@@ -96,7 +96,7 @@ const RecurringInvoicesList = () => {
     >
       <ListAdvancedComponent
         // onRowClicked={(e) => {
-        //   navigate(`/article/${e.data.id}`);
+        //   navigate(`/articles/${e.data.id}`);
         // }}
         //onActionClick={handleActionClick}
         columnDefs={[

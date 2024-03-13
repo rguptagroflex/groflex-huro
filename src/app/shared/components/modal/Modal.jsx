@@ -19,6 +19,7 @@ const Modal = ({
   children,
   ModalHeaderButton,
   otherHeaderChildren,
+  otherActionButtons,
 }) => {
   function getActionPositionClass() {
     if (leftActions) {
@@ -96,6 +97,7 @@ const Modal = ({
             >
               {cancelBtnName}
             </a>
+            {otherActionButtons}
             <a
               onClick={onSubmit}
               className={`button h-button is-primary is-raised ${

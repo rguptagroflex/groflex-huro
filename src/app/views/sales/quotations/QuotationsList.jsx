@@ -69,7 +69,7 @@ const QuotationsList = () => {
           });
         break;
       // case "Edit":
-      //   navigate(`/article/edit/${row.id}`);
+      //   navigate(`/articles/edit/${row.id}`);
     }
   };
   return (
