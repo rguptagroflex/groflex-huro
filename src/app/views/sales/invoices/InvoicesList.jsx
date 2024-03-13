@@ -23,6 +23,7 @@ import InvoiceState from "../../../enums/invoice/invoice-state.enum";
 import userPermissions from "../../../enums/user-permissions.enum";
 import Invoice from "../../../models/invoice.model";
 import resources from "../../../shared/resources/resources";
+import NumberRangeModal from "../../../shared/components/numberRange/NumberRangeModal";
 
 const PAYABLE_STATES = [
   InvoiceState.DUNNED,
@@ -234,12 +235,21 @@ const InvoicesList = () => {
   };
 
   console.log(groflexService.user, "USER FROm INCOICE LIST");
-
+  const [isModalActive, setIsModalActive] = useState(false);
   return (
     <PageContent
       title="Invoices List"
       titleActionContent={<Button isSuccess>Create Invoices</Button>}
     >
+      {isModalActive && (
+        <NumberRangeModal
+          isActive={isModalActive}
+          setIsActive={setIsModalActive}
+        />
+      )}
+      <Button isSuccess onClick={() => setIsModalActive(true)}>
+        Number range
+      </Button>
       <ListAdvancedComponent
         onRowClicked={(e) => {
           navigate(`/sales/invoices/${e.data.id}`);
