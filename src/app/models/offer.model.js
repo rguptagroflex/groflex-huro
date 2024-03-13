@@ -3,7 +3,7 @@
 import { getLabelForCountry } from "helpers/getCountries";
 import OfferState from "enums/offer/offer-state.enum";
 import { formatDate, formatApiDate } from "helpers/formatDate";
-import config from "../../oldConfig";
+import config from "../../../oldConfig";
 
 export default class Offer {
   constructor(data) {

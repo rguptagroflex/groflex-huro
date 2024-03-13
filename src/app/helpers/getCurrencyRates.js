@@ -1,21 +1,21 @@
 const toTypes = [
   "INR",
   "USD",
-  "CAD",
+  "EUR",
+  "JPY",
+  "CNY",
   "GBP",
   "AED,",
   "SGD",
-  "EUR",
   "MYR",
   "PHP",
+  "CAD",
   "BHD",
   "KWD",
   "OMR",
   "QAR",
   "SAR",
   "AUD",
-  "JPY",
-  "CNY",
 ];
 const symbols = toTypes.join("%2C");
 

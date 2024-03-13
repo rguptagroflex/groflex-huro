@@ -72,9 +72,9 @@ function App() {
 
           {/* Articles */}
           <Route path="articles" element={<Articles />} />
-          <Route path="article/:articleId" element={<ArticleDetail />} />
-          <Route path="article/new" element={<CreateArticle />} />
-          <Route path="article/edit/:articleId" element={<EditArticle />} />
+          <Route path="articles/:articleId" element={<ArticleDetail />} />
+          <Route path="articles/new" element={<CreateArticle />} />
+          <Route path="articles/edit/:articleId" element={<EditArticle />} />
 
           {/* ---------------------------Contacts-------------------------------- */}
           <Route path="contacts" element={<Contacts />} />

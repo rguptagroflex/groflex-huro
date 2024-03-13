@@ -1,5 +1,5 @@
 import invoiz from "services/invoiz.service";
-import config from "oldConfig";
+import config from "../../../oldConfig";
 import groflexService from "../services/groflex.service";
 
 // export const getPayConditions = () =>

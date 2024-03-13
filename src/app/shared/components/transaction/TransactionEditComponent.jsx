@@ -7,7 +7,16 @@ import resources from "../../resources/resources";
 import config from "../../../../../oldConfig";
 import HtmlInputComponent from "../input/HtmlInputComponent";
 import EditableIndicatorDiv from "../../editableIndicatorDiv/EditableIndicatorDiv";
-import RecepientComponent from "../../letter/RecepientComponent";
+import RecipientComponent from "../../letter/RecipientComponent";
+import Offer from "../../../models/offer.model";
+import PurchaseOrder from "../../../models/purchase-order.model";
+import DeliveryChallan from "../../../models/delivery-challan.model";
+import Invoice from "../../../models/invoice.model";
+import Decimal from "decimal.js";
+import Modal from "../modal/Modal";
+import { Input } from "../input/Input";
+import LetterMetaComponent from "../../letter/LetterMetaComponent";
+import LetterFormFooterComponent from "../../letter/LetterFormFooterComponent";
 
 const TransactionEditComponent = ({
   transaction,
@@ -45,6 +54,10 @@ const TransactionEditComponent = ({
     //   invoiz.user && invoiz.user.hasPermission(userPermissions.CREATE_OFFER),
     // canCreateChallan:
     //   invoiz.user && invoiz.user.hasPermission(userPermissions.CREATE_CHALLAN),
+  });
+  const [notesModalData, setNotesModalData] = useState({
+    active: false,
+    msg: "",
   });
 
   const otherRefs = useRef({
@@ -137,9 +150,140 @@ const TransactionEditComponent = ({
     return pageInfo;
   };
 
-  const { navigateBackTo, pageTitle, breadCrumbData } = getPageInfo();
-  console.log(transactionStates.transaction, "Transaction");
+  const handleRecipientChange = (
+    selectedOption,
+    baseCurrency,
+    exchangeRate
+  ) => {
+    const { transaction } = transactionStates;
 
+    if (selectedOption) {
+      const { customerData } = selectedOption;
+      if (customerData.notesAlert) {
+        // ModalService.open(
+        //   <div dangerouslySetInnerHTML={{ __html: customerData.notes }} />,
+        //   {
+        //     headline: isPurchaseOrder
+        //       ? resources.str_payeeNote
+        //       : resources.str_cutomerNote,
+        //     cancelLabel: resources.str_shutdown,
+        //     confirmLabel: resources.str_ok,
+        //     confirmIcon: "icon-check",
+        //     onConfirm: () => {
+        //       ModalService.close();
+        //     },
+        //   }
+        // );
+        setNotesModalData({
+          active: true,
+          msg: customerData.notes,
+        });
+      }
+
+      if (
+        !isQuotation &&
+        !isPurchaseOrder &&
+        !isDeliveryChallan &&
+        customerData.email &&
+        transaction.dunningRecipients &&
+        transaction.dunningRecipients.indexOf(customerData.email) < 0
+      ) {
+        transaction.dunningRecipients.push(customerData.email);
+      }
+      const newTransaction = isQuotation
+        ? new Offer(transaction)
+        : isPurchaseOrder
+        ? new PurchaseOrder(transaction)
+        : isDeliveryChallan
+        ? new DeliveryChallan(transaction)
+        : new Invoice(transaction);
+
+      if (customerData.countryIso !== "IN") {
+        newTransaction.priceKind = "net";
+        newTransaction.baseCurrency = baseCurrency;
+        newTransaction.exchangeRate = exchangeRate;
+      }
+      newTransaction.baseCurrency = customerData.baseCurrency;
+      newTransaction.exchangeRate = customerData.exchangeRate;
+
+      newTransaction.setCustomer(customerData);
+      newTransaction.positions = calculatePositions(newTransaction);
+      setTransactionStates({
+        ...transactionStates,
+        transaction: newTransaction,
+      });
+    } else {
+      const newTransaction = isQuotation
+        ? new Offer(transaction)
+        : isPurchaseOrder
+        ? new PurchaseOrder(transaction)
+        : isDeliveryChallan
+        ? new DeliveryChallan(transaction)
+        : new Invoice(transaction);
+      //	if (transaction.countryIso !== "IN") {
+      newTransaction.positions = [];
+      //	}
+      newTransaction.baseCurrency = "";
+      newTransaction.exchangeRate = 0.0;
+      newTransaction.setCustomer({});
+      newTransaction.positions = calculatePositions(newTransaction);
+      setTransactionStates({
+        ...transactionStates,
+        transaction: newTransaction,
+      });
+    }
+    otherRefs.current.updateCustomer = false;
+    otherRefs.current.createCustomer = false;
+  };
+
+  const calculatePositions = (transaction) => {
+    const { exchangeRate, baseCurrency, customerData } = transaction;
+    transaction.positions.forEach((pos) => {
+      if (transaction.priceKind === "net") {
+        pos.priceGross =
+          (customerData && customerData.countryIso !== "IN") ||
+          baseCurrency !== ""
+            ? pos.priceNet * (1 + pos.vatPercent / 100)
+            : pos.priceNet;
+        pos.priceNet =
+          (customerData && customerData.countryIso !== "IN") ||
+          baseCurrency !== ""
+            ? pos.metaData.articlePriceNet / exchangeRate
+            : pos.priceNet;
+      } else {
+        pos.priceNet = pos.priceGross / (1 + pos.vatPercent / 100);
+      }
+      pos.totalNet = new Decimal(pos.priceNet * pos.amount).toDP(2).toNumber();
+      pos.totalGross =
+        customerData.countryIso !== "IN" || baseCurrency !== ""
+          ? pos.totalNet
+          : new Decimal(pos.priceGross * pos.amount).toDP(2).toNumber();
+      pos.discountPercent = transaction.discount;
+      pos.totalNetAfterDiscount = new Decimal(pos.totalNet)
+        .minus((pos.totalNet * pos.discountPercent) / 100)
+        .toDP(2)
+        .toNumber();
+      pos.totalGrossAfterDiscount =
+        customerData.countryIso !== "IN" || baseCurrency !== ""
+          ? pos.totalNetAfterDiscount
+          : new Decimal(pos.totalGross)
+              .minus((pos.totalGross * pos.discountPercent) / 100)
+              .toDP(2)
+              .toNumber();
+      pos.vatPercent =
+        customerData.countryIso !== "IN" || baseCurrency !== ""
+          ? 0
+          : pos.vatPercent;
+    });
+
+    return transaction.positions;
+  };
+
+  const { navigateBackTo, pageTitle, breadCrumbData } = getPageInfo();
+  console.log(
+    transactionStates.transaction,
+    "Transaction from Transaction Edit component"
+  );
   return (
     <PageContent
       navigateBackTo={navigateBackTo}
@@ -152,10 +296,10 @@ const TransactionEditComponent = ({
           // onCancel={onLetterHeaderCancel}
           onFinish={(elements) => onLetterHeaderEdited(elements)}
         />
-        {/* First row BILLED TO, SHiP TO, ANd INVOICE NUMBE STUFF  */}
+        {/* First row -> BILLED TO, SHiP TO, ANd INVOICE NUMBE STUFF  */}
         <div className="transaction-form-row columns is-multiline">
           {/* BIll to */}
-          <div className="transaction-letter-recipient-container column is-3">
+          <div className="transaction-letter-recipient-container column is-4 p-0">
             <EditableIndicatorDiv className="transaction-form-sender-quill-container">
               <HtmlInputComponent
                 className={"sender-quill"}
@@ -163,39 +307,52 @@ const TransactionEditComponent = ({
               />
               {/* Enter customer */}
             </EditableIndicatorDiv>
-            <RecepientComponent
+            <RecipientComponent
+              onChange={(option, baseCurrency, exchangeRate) =>
+                handleRecipientChange(option, baseCurrency, exchangeRate)
+              }
               transaction={transactionStates.transaction}
               customerData={transactionStates.transaction.customerData}
               recipientState={transactionStates.letterRecipientState}
               recipientType={isPurchaseOrder ? "payee" : "customer"}
               customerFullData={transactionStates.transaction.customer}
-              initialShowStates={{
-                showEmptyComp: true,
-                showSelectComp: false,
-                showDisplayComp: false,
-                showFormComp: false,
-              }}
+              isPurchaseOrder={isPurchaseOrder}
             />
           </div>
           {/* Ship to */}
-          <div className="transaction-letter-shipping-address-container column is-3">
-            <EditableIndicatorDiv className="sender-address-quill-container">
+          <div className="transaction-letter-shipping-address-container column is-4">
+            {/* <EditableIndicatorDiv className="sender-address-quill-container">
               <HtmlInputComponent
                 className={"sender-address-quill"}
                 value={"SHIP TO"}
               />
-            </EditableIndicatorDiv>
+            </EditableIndicatorDiv> */}
           </div>
           {/* Meta */}
-          <div className="transaction-form-meta column is-6">
+          <div className="transaction-form-meta column is-4">
             <EditableIndicatorDiv className="transaction-form-sender">
-              <HtmlInputComponent
-                placeholder={"Meta component"}
-                // value={transactionStates.letter.sender}
-              />
+              <LetterMetaComponent />
             </EditableIndicatorDiv>
           </div>
         </div>
+
+        {/* Letter Footer */}
+        <LetterFormFooterComponent />
+        <Modal
+          title={"Note to the Customer"}
+          onSubmit={() => setNotesModalData({ active: false, msg: "" })}
+          closeModalFunction={() => {
+            setNotesModalData({ active: false, msg: "" });
+          }}
+          isActive={notesModalData.active}
+          cancelBtnName={resources.str_shutdown}
+          submitBtnName={resources.str_ok}
+        >
+          <div
+            className="recipient-notes-modal"
+            dangerouslySetInnerHTML={{ __html: notesModalData?.msg }}
+          />
+        </Modal>
       </div>
     </PageContent>
   );

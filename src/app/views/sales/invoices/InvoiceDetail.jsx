@@ -3,6 +3,7 @@ import PageContent from "../../../shared/components/pageContent/PageContent";
 import { Button } from "../../../shared/components/button/Button";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import config from "../../../../../newConfig";
+import oldConfig from "../../../../../oldConfig";
 import groflexService from "../../../services/groflex.service";
 import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
 import { abbreviationDateFormat } from "../../../helpers/dateFormatters";
@@ -13,12 +14,32 @@ import resources from "../../../shared/resources/resources";
 import { multiFetchHandler } from "../../../helpers/multiFetchHandler";
 import { capitalize } from "../../../helpers/textFromatters";
 import Invoice from "../../../models/invoice.model";
+import Modal from "../../../shared/components/modal/Modal";
+import {
+  errorCodes,
+  DetailViewConstants,
+  PAYMENT_TYPE_LESS_BANKCHARGE,
+  PAYMENT_TYPE_LESS_DISCOUNT,
+  PAYMENT_TYPE_LESS_TDSCHARGE,
+} from "../../../helpers/constants";
+import RegisterPaymentModal from "./RegisterPaymentModal";
+
+const allowedPaymentTypesForCancel = [
+  PAYMENT_TYPE_LESS_BANKCHARGE,
+  PAYMENT_TYPE_LESS_DISCOUNT,
+  PAYMENT_TYPE_LESS_TDSCHARGE,
+];
 
 const InvoicesDetail = () => {
   const [invoiceData, setInvoiceData] = useState();
   const [invoiceHistory, setInvoiceHistory] = useState();
   const [pdfLink, setPdfLink] = useState();
   const [letterElements, setLetterElements] = useState();
+  const [finalizeModalOpen, setFinalizeModalOpen] = useState(false);
+  const [reminderModalOpen, setReminderModalOpen] = useState(false);
+  const [registerPaymentModalOpen, setRegisterPaymentModalOpen] =
+    useState(false);
+
   const { invoiceId } = useParams();
   const navigate = useNavigate();
 
@@ -158,34 +179,116 @@ const InvoicesDetail = () => {
     return invoiceInfo;
   };
 
+  const openFinalizeModal = () => {
+    setFinalizeModalOpen(true);
+  };
+  const closeFinalizeModal = () => {
+    setFinalizeModalOpen(false);
+  };
+  const openReminderModal = () => {
+    setReminderModalOpen(true);
+  };
+  const closeReminderModal = () => {
+    setReminderModalOpen(false);
+  };
+  const openRegisterPaymentModal = () => {
+    setRegisterPaymentModalOpen(true);
+  };
+  const closeRegisterPaymentModal = () => {
+    setRegisterPaymentModalOpen(false);
+  };
+
+  const handleLockInvoice = () => {
+    const lockEndpoint = `${oldConfig.invoice.resourceUrl}/${invoiceData.id}/lock`;
+    groflexService
+      .request(lockEndpoint, { auth: true, method: "PUT" })
+      .then(() => {
+        closeFinalizeModal();
+        groflexService.router.reload();
+        groflexService.toast.success(resources.invoiceLockSuccessMessage);
+        // TODO: Handle Finalize Invoice Errors
+        // checkAchievementNotification();
+        // amplitude.getInstance().logEvent("created_invoice");
+      })
+      // .then(updateSubscriptionDetails())
+      .catch((error) => {
+        closeFinalizeModal();
+
+        if (
+          error.body.meta.useAdvancedPaymentOptions &&
+          error.body.meta.useAdvancedPaymentOptions[0].code ===
+            errorCodes.INVALID
+        ) {
+          groflexService.toast.error(
+            resources.invoizPayInvoiceEditErrorMessage
+          );
+          return;
+        } else if (
+          error.body.meta.number &&
+          error.body.meta.number[0].code === errorCodes.EXISTS
+        ) {
+          groflexService.toast.error(
+            resources.invoiceNumberAlreadyExistMessage
+          );
+          return;
+        } else if (
+          error.body.meta.number &&
+          error.body.meta.number[0].code === errorCodes.TOO_MANY
+        ) {
+          groflexService.toast.error(resources.invoiceNumberRangeExceedMessage);
+          return;
+        }
+        // handleTransactionErrors(error.body.meta);
+      });
+  };
+
   const getPageButtons = () => {
+    const invoice = new Invoice(invoiceData);
     let buttonsFragment = "";
+    let createReminder = "";
+    if (invoice.isOverDue) {
+      createReminder = (
+        <Button onClick={openReminderModal} className="m-r-10" isSecondary>
+          Create reminder
+        </Button>
+      );
+    }
 
     switch (invoiceData?.state) {
       case InvoiceState.DRAFT:
         buttonsFragment = (
           <>
-            <Button className="m-r-15" isSuccess isOutlined>
-              Edit
+            <Link to={`/sales/invoices/edit/${invoiceData.id}`}>
+              <Button className="m-r-10" isSecondary>
+                Edit
+              </Button>
+            </Link>
+            <Button onClick={openFinalizeModal} isSuccess>
+              Finalize
             </Button>
-            <Button isSuccess>Finalize</Button>
           </>
         );
         break;
       case InvoiceState.LOCKED:
+      case InvoiceState.DUNNED:
+      case InvoiceState.PARTIALLY_PAID:
         buttonsFragment = (
           <>
-            <Button className="m-r-15" isSuccess isOutlined>
-              Create reminder
+            <Button onClick={openRegisterPaymentModal} isSuccess>
+              Register payment
             </Button>
-            <Button isSuccess>Register payment</Button>
           </>
         );
         break;
       default:
         break;
     }
-    return buttonsFragment;
+    return (
+      <>
+        {createReminder}
+        {buttonsFragment}
+      </>
+    );
   };
 
   const getPageTitle = () => {
@@ -209,7 +312,7 @@ const InvoicesDetail = () => {
 
   // console.log(new Invoice(invoiceData), "Invoice detail");
   // console.log(invoiceHistory, "History");
-  // console.log(pdfLink, "PDF link");
+  // console.log(pdfLink, "PDF liink");
 
   return (
     <PageContent
@@ -251,6 +354,36 @@ const InvoicesDetail = () => {
           <InvoiceHistoryComponent activityData={invoiceHistory} />
         </div>
       </div>
+      <Modal
+        isActive={finalizeModalOpen}
+        closeModalFunction={closeFinalizeModal}
+        title={"Complete process"}
+        onSubmit={handleLockInvoice}
+      >
+        <div>{resources.invoiceLockModalContentText}</div>
+      </Modal>
+      <Modal
+        isActive={reminderModalOpen}
+        closeModalFunction={closeReminderModal}
+        title={resources.str_createPaymentReminder}
+        onSubmit={() => {}}
+        submitBtnName="Send via email"
+        otherActionButtons={
+          <Button onClick={() => {}} isPrimary>
+            Show PDF
+          </Button>
+        }
+      >
+        <div>
+          Do you want to create a payment reminder for the selected invoice?
+        </div>
+      </Modal>
+      <RegisterPaymentModal
+        isActive={registerPaymentModalOpen}
+        closeFunction={closeRegisterPaymentModal}
+        onSubmit={() => {}}
+        invoice={invoiceData}
+      />
     </PageContent>
   );
 };

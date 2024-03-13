@@ -65,12 +65,14 @@ const ListActionPopup = ({ actionItems, onActionClick, actionData }) => {
                   className="dropdown-item is-media"
                   onClick={() => handleActionClick(action)}
                 >
-                  <div className="icon">
-                    <i className={"fas fa-" + action.icon}></i>
-                  </div>
+                  {action?.icon && (
+                    <div className="icon">
+                      <i className={"fas fa-" + action.icon}></i>
+                    </div>
+                  )}
 
                   <div className="meta">
-                    <span>{action.name}</span>
+                    <span>{action?.label ? action.label : action.name}</span>
                   </div>
                 </a>
               ))}

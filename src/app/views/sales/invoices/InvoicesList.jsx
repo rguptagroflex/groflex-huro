@@ -1,8 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PageContent from "../../../shared/components/pageContent/PageContent";
 import { useNavigate } from "react-router-dom";
 import config from "../../../../../newConfig";
-import { ListAdvancedDefaultSettings } from "../../../helpers/constants";
+import {
+  ListAdvancedDefaultSettings,
+  transactionTypes,
+} from "../../../helpers/constants";
 import { CustomShowHeaderSum } from "../../../shared/components/list-advanced/CustomShowHeaderSum";
 import { ListAdvancedComponent } from "../../../shared/components/list-advanced/ListAdvancedComponent";
 import { formatCurrency } from "../../../helpers/formatCurrency";
@@ -17,6 +20,25 @@ import groflexService from "../../../services/groflex.service";
 import FontAwesomeIcon from "../../../shared/fontAwesomeIcon/FontAwesomeIcon";
 import { formatDateforUi } from "../../../helpers/dateFormatters";
 import InvoiceState from "../../../enums/invoice/invoice-state.enum";
+import userPermissions from "../../../enums/user-permissions.enum";
+import Invoice from "../../../models/invoice.model";
+import resources from "../../../shared/resources/resources";
+
+const PAYABLE_STATES = [
+  InvoiceState.DUNNED,
+  InvoiceState.LOCKED,
+  InvoiceState.PARTIALLY_PAID,
+];
+const CANCEL_OR_DELETE_STATES = [
+  "open",
+  InvoiceState.DUNNED,
+  InvoiceState.LOCKED,
+];
+const CANCEL_STATES = [InvoiceState.PAID, InvoiceState.PARTIALLY_PAID];
+const NOT_ALLOWED_TO_COPY = [
+  transactionTypes.TRANSACTION_TYPE_DEPOSIT_INVOICE,
+  transactionTypes.TRANSACTION_TYPE_CLOSING_INVOICE,
+];
 
 const actions = [
   { name: "Edit", action: "edit", icon: "edit" },
@@ -73,26 +95,39 @@ const createActivity = (params) => {
   );
 };
 
-const getRowActionButtons = (row) => {
-  const actionArr = [];
-
-  if (row.state === InvoiceState.DRAFT) {
-    entries.push({
-      name: "Edit",
-      action: "edit",
-      icon: "edit",
-    });
-  }
-
-  entries.push({ label: "Delete", action: "delete", icon: "trash-alt" });
-
-  console.log(row, "Bruhhhh");
-
-  return actionArr;
-};
-
+// Note: Component starts here
 const InvoicesList = () => {
   const navigate = useNavigate();
+
+  const [invoiceListStates, setInvoiceListStates] = useState({
+    isLoading: true,
+    invoiceData: null,
+    selectedRows: [],
+    // TODO: Manage permissions here from User from groflexService
+    canCreateInvoice: true,
+    canDeleteInvoice: true,
+    canUpdateInvoice: true,
+    canRegisterPayment: true,
+    canCreateReminder: true,
+    // canCreateInvoice:
+    //   groflexService.user &&
+    //   groflexService.user.hasPermission(userPermissions.CREATE_INVOICE),
+    // canDeleteInvoice:
+    //   groflexService.user &&
+    //   groflexService.user.hasPermission(userPermissions.DELETE_INVOICE),
+    // canUpdateInvoice:
+    //   groflexService.user &&
+    //   groflexService.user.hasPermission(userPermissions.UPDATE_INVOICE),
+    // canRegisterPayment:
+    //   groflexService.user &&
+    //   groflexService.user.hasPermission(userPermissions.ENTER_INVOICE_PAYMENT),
+    // canCreateReminder:
+    //   groflexService.user &&
+    //   groflexService.user.hasPermission(
+    //     userPermissions.CREATE_INVOICE_REMINDER
+    //   ),
+  });
+
   const handleActionClick = (action, row, params) => {
     switch (action.action) {
       case "delete":
@@ -101,18 +136,101 @@ const InvoicesList = () => {
             auth: true,
             method: "DELETE",
           })
-          .then((res) => {
-            if (res?.body?.message) {
-              console.log(res, "Delete Failed");
-            } else {
-              params.api.applyTransaction({ remove: [row] });
-              console.log(res, "Deleted Succesfullyyy");
-            }
+          .then(() => {
+            groflexService.toast.success(resources.invoiceDeleteSuccessMessage);
+            params.api.applyTransaction({ remove: [row] });
+            // console.log(res, "Deleted Succesfullyyy");
+          })
+          .catch(() => {
+            groflexService.toast.error("Deleting Invoice failed");
+            // console.log(res, "Delete Failed");
           });
         break;
       case "edit":
         navigate(`/sales/invoices/edit/${row.id}`);
     }
+  };
+
+  const getActionPopupButtons = (item) => {
+    console.log(item, "Row item on action popup");
+    const entries = [];
+    let invoice = null;
+
+    if (item) {
+      invoice = new Invoice(item);
+
+      if (invoiceListStates.canRegisterPayment) {
+        if (PAYABLE_STATES.includes(invoice.state)) {
+          entries.push({
+            label: "Add payment",
+            action: "addPayment",
+            dataQsId: "invoice-list-item-dropdown-addpayment",
+          });
+        }
+      }
+
+      if (invoiceListStates.canUpdateInvoice) {
+        if (invoice.state === InvoiceState.DRAFT) {
+          entries.push({
+            label: "Edit",
+            action: "edit",
+            dataQsId: "invoice-list-item-dropdown-entry-edit",
+          });
+        }
+
+        if (!NOT_ALLOWED_TO_COPY.includes(invoice.type)) {
+          entries.push({
+            label: "Copy and edit",
+            action: "copyAndEdit",
+            dataQsId: "invoice-list-item-dropdown-copyandedit",
+          });
+        }
+      }
+
+      if (invoiceListStates.canDeleteInvoice) {
+        if (invoice.state === InvoiceState.DRAFT) {
+          entries.push({
+            label: "Delete",
+            action: "delete",
+            dataQsId: "invoice-list-item-dropdown-delete",
+          });
+        }
+
+        if (!invoice.metaData.closingInvoiceExists) {
+          if (CANCEL_OR_DELETE_STATES.includes(invoice.state)) {
+            entries.push({
+              label: "Cancel / Delete",
+              action: "delete",
+              dataQsId: "invoice-list-item-dropdown-delete",
+            });
+          } else if (CANCEL_STATES.includes(invoice.state)) {
+            entries.push({
+              label: "Cancel",
+              action: "delete",
+              dataQsId: "invoice-list-item-dropdown-delete",
+            });
+          }
+        }
+      }
+      if (invoiceListStates.canCreateReminder) {
+        if (invoice.isOverDue) {
+          entries.push({
+            label: "Create payment reminder",
+            action: "dun",
+            dataQsId: "invoice-list-item-dropdown-dun",
+          });
+        }
+      }
+
+      if (entries.length === 0) {
+        entries.push({
+          label: "No action available",
+          customEntryClass: "popover-entry-disabled",
+        });
+      }
+    }
+    console.log(entries, "Entries ka list");
+    return entries;
   };
 
   console.log(groflexService.user, "USER FROm INCOICE LIST");
@@ -217,7 +335,7 @@ const InvoicesList = () => {
             headerComponent: CustomShowHeaderSum,
             headerComponentParams: {
               value: "outstandingAmount",
-              headerName: "Total",
+              headerName: "Outstanding",
             },
             minWidth: ListAdvancedDefaultSettings.COLUMN_MIN_WIDTH,
           },
@@ -229,7 +347,8 @@ const InvoicesList = () => {
           },
         ]}
         fetchUrl={config.resourceUrls.invoices}
-        actionMenuData={actions}
+        // actionMenuData={actions}
+        actionMenuData={getActionPopupButtons}
       />
     </PageContent>
   );

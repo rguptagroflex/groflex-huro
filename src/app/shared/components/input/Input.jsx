@@ -15,6 +15,7 @@ export const Input = ({
   value,
   onChange,
   rightIcon,
+  onBlur,
   ...rest
 }) => {
   const getFocusType = () => {
@@ -76,6 +77,7 @@ export const Input = ({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          onBlur={onBlur}
           // autoComplete="on"
           {...rest}
         />
