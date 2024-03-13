@@ -11,6 +11,7 @@ import DateInput from "../../../shared/components/datePicker/DateInput";
 import ContextMenu from "../../../shared/components/contextMenu/ContextMenu";
 import { ButtonGroup } from "../../../shared/components/button/buttonGroup/ButtonGroup";
 import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
+import { formatCurrency } from "../../../helpers/formatCurrency";
 
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
@@ -417,7 +418,7 @@ const CashFlow = () => {
                                       .slice(1)}
                                 </td>
                                 <td className="row-data">
-                                  {"₹" + " " + total}
+                                  {formatCurrency(total)}
                                 </td>
                               </tr>
                             );
@@ -439,7 +440,7 @@ const CashFlow = () => {
                           color: "black",
                         }}
                       >
-                        ₹{totalValue}
+                        {formatCurrency(totalValue)}
                       </td>
                     </tr>
                   </tbody>

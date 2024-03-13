@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { AdvancedCard } from "../../shared/components/cards/AdvancedCard";
+import { formatCurrency } from "../../helpers/formatCurrency";
 
 const DashBoardSummaryCard = ({ heading, subHeading, cardData }) => {
   return (
@@ -13,7 +14,7 @@ const DashBoardSummaryCard = ({ heading, subHeading, cardData }) => {
             Total Amount
           </h4>
           <h4 className="receivable-value">
-            ₹ {parseFloat(cardData.totalAmount).toFixed(0)}{" "}
+            {formatCurrency(parseFloat(cardData.totalAmount).toFixed(0))}
           </h4>
         </div>
         <div className="column is-6">
@@ -22,9 +23,10 @@ const DashBoardSummaryCard = ({ heading, subHeading, cardData }) => {
             {"Over Due (>3 Days)"}
           </h4>
           <h4 className="receivable-overdue-value">
-            ₹{" "}
-            {parseFloat(cardData.totalAmount - cardData.overdue3Days).toFixed(
-              0
+            {formatCurrency(
+              parseFloat(cardData.totalAmount - cardData.overdue3Days).toFixed(
+                0
+              )
             )}
           </h4>
         </div>

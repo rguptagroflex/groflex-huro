@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
+import { formatCurrency } from "../../../helpers/formatCurrency";
 
 const ReportsTable = ({ rowData, tableHeaders, rowTotals }) => {
   // State to manage the visibility of each group
@@ -58,7 +59,7 @@ const ReportsTable = ({ rowData, tableHeaders, rowTotals }) => {
             {rowTotals &&
               rowTotals[groupKey + "Total"].map((item, id) => (
                 <td className="total-value" key={id}>
-                  {item && "₹"} {item}
+                  {item ? formatCurrency(item) : item}
                 </td>
               ))}
           </tr>
@@ -88,8 +89,7 @@ const ReportsTable = ({ rowData, tableHeaders, rowTotals }) => {
               <td className="net-label">{rowTotals?.netValue?.label}</td>
               {rowTotals?.netValue?.value.map((item, id) => (
                 <td className="net-value" key={id}>
-                  {item && "₹"}
-                  {item}
+                  {item ? formatCurrency(item) : item}
                 </td>
               ))}
             </tr>

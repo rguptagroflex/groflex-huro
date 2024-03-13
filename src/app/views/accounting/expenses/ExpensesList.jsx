@@ -10,6 +10,7 @@ import { useState } from "react";
 import groflexService from "../../../services/groflex.service";
 import { FeatherIcon } from "../../../shared/featherIcon/FeatherIcon";
 import config from "../../../../../newConfig";
+import FontAwesomeIcon from "../../../shared/fontAwesomeIcon/FontAwesomeIcon";
 
 // TODO: filter select
 // TODO: remove settings button
@@ -20,6 +21,43 @@ const ExpensesList = () => {
   let [isCancelModalActive, setIsCancelModalActive] = useState(false);
   let [cancellingRowAndParams, setCancellingRowAndParams] = useState();
   let [cancellationReason, setCancellationReason] = useState("");
+
+  const createActivity = (params) => {
+    let val = "";
+    let iconColor = "";
+
+    switch (params.value.toLowerCase()) {
+      case "open":
+        val = "Open";
+        iconColor = "#0071CA";
+        break;
+      case "draft":
+        val = "Draft";
+        iconColor = "#DDDDDD";
+        break;
+      case "cancelled":
+        val = "Cancelled";
+        iconColor = "#888787";
+        break;
+      case "paid":
+        val = "Paid";
+        iconColor = "#00A353";
+        break;
+      default:
+        iconColor = "#D94339";
+        val = "Overdue";
+        break;
+    }
+
+    return (
+      <div className="quotations-status">
+        <FontAwesomeIcon name={"circle"} size={11} color={iconColor} />
+        {val}
+      </div>
+    );
+  };
+
+  const capitalize = (text) => text[0].toUpperCase() + text.slice(1);
 
   return (
     <PageContent
@@ -48,7 +86,7 @@ const ExpensesList = () => {
           {
             field: "status",
             headerName: "Status",
-            cellRenderer: Status,
+            cellRenderer: createActivity,
           },
           {
             field: "payKind",
@@ -154,35 +192,3 @@ const ExpensesList = () => {
   );
 };
 export default ExpensesList;
-
-const Status = ({ value }) => {
-  let icon = {
-    name:
-      value === "open"
-        ? "Clock"
-        : value === "paid"
-        ? "CheckCircle"
-        : value === "cancelled"
-        ? "MinusCircle"
-        : undefined,
-    color:
-      value === "open"
-        ? "#00A353"
-        : value === "paid"
-        ? "#00A353"
-        : value === "cancelled"
-        ? "#888787"
-        : undefined,
-  };
-
-  return (
-    <div
-      style={{ display: "flex", alignItems: "center", gap: 10, width: "110px" }}
-    >
-      <FeatherIcon {...icon} size={20} style={{ flexShrink: 0 }} />
-      <div>{capitalize(value)}</div>
-    </div>
-  );
-};
-
-const capitalize = (text) => text[0].toUpperCase() + text.slice(1);

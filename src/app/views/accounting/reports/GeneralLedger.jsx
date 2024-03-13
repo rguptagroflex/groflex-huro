@@ -12,6 +12,7 @@ import DateInput from "../../../shared/components/datePicker/DateInput";
 import { ButtonGroup } from "../../../shared/components/button/buttonGroup/ButtonGroup";
 import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
 import ContextMenu from "../../../shared/components/contextMenu/ContextMenu";
+import { formatCurrency } from "../../../helpers/formatCurrency";
 
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
@@ -172,9 +173,9 @@ const GeneralLedger = () => {
                 item.chartOfAccount.accountSubTypeId
                   .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
                   .slice(1),
-              column3: `₹ ${parseFloat(item.debits).toFixed(2)}`,
-              column4: `₹ ${parseFloat(item.credits).toFixed(2)}`,
-              column5: `₹ ${parseFloat(item.balance).toFixed(2)}`,
+              column3: formatCurrency(parseFloat(item.debits).toFixed(2)),
+              column4: formatCurrency(parseFloat(item.credits).toFixed(2)),
+              column5: formatCurrency(parseFloat(item.balance).toFixed(2)),
             });
           }
         });

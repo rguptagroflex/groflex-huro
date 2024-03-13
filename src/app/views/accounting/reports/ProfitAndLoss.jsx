@@ -12,6 +12,7 @@ import DateInput from "../../../shared/components/datePicker/DateInput";
 import { ButtonGroup } from "../../../shared/components/button/buttonGroup/ButtonGroup";
 import ContextMenu from "../../../shared/components/contextMenu/ContextMenu";
 import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
+import { formatCurrency } from "../../../helpers/formatCurrency";
 
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
@@ -127,7 +128,7 @@ const ProfitAndLoss = () => {
                   .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
                   .slice(1),
               column2: "-",
-              column3: "₹" + " " + total.toString(),
+              column3: formatCurrency(total),
             });
           });
           setRowTotals(rowTotals);

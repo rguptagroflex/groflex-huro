@@ -16,6 +16,7 @@ import DateInput from "../../../shared/components/datePicker/DateInput";
 import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
 import { ButtonGroup } from "../../../shared/components/button/buttonGroup/ButtonGroup";
 import ContextMenu from "../../../shared/components/contextMenu/ContextMenu";
+import { formatCurrency } from "../../../helpers/formatCurrency";
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
   currentMonth: moment().format("MMMM"),
@@ -199,7 +200,7 @@ const BalanceSheet = () => {
                 item.accountSubTypeId
                   .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
                   .slice(1),
-              column2: "₹" + " " + total.toString(),
+              column2: formatCurrency(total),
             });
           });
           setRowTotals(rowTotals);
