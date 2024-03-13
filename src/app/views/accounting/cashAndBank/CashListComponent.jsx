@@ -9,6 +9,13 @@ import Modal from "../../../shared/components/modal/Modal";
 import { Input } from "../../../../app/shared/components/input/Input";
 import PopOver from "../../../shared/components/popOver/PopOver";
 import DeleteBankModal from "./DeleteBankModal";
+import { SelectInput } from "../../../shared/components/select/SelectInput";
+import { TextArea } from "../../../shared/components/textArea/TextArea";
+
+const cashTypeList = [
+  { label: "Cash", value: "cash" },
+  { label: "Petty Cash", value: "pettyCash" },
+];
 
 const CashListComponent = () => {
   const [cashList, setCashList] = useState([]);
@@ -16,10 +23,19 @@ const CashListComponent = () => {
   const [selectedCashId, setSelectedCashId] = useState(null); // State to hold the selected bank ID for deletions
   const [addNewCashVisibility, setAddNewCashVisibility] = useState(false);
   const [newCashData, setNewCashData] = useState({
-    openingBalance: "",
-    description: "",
+    type: "cash",
+    cashType: "",
+    openingBalance: 0,
+    bankName: "",
+    accountNumber: "",
+    accountType: "savings",
+    IFSCCode: "cash",
+    branch: "cash",
+    customerId: "",
+    notes: "",
   });
   const [formErrors, setFormErrors] = useState({
+    cashTypeError: "",
     openingBalanceError: "",
   });
   useEffect(() => {
@@ -60,8 +76,16 @@ const CashListComponent = () => {
         getBanksList();
         setAddNewCashVisibility(false);
         setNewCashData({
-          openingBalance: "",
-          description: "",
+          type: "cash",
+          cashType: "",
+          openingBalance: 0,
+          bankName: "",
+          accountNumber: "",
+          accountType: "savings",
+          IFSCCode: "cash",
+          branch: "cash",
+          customerId: "",
+          notes: "",
         });
         groflexService.toast.success("Cash added successfully");
       });
@@ -98,6 +122,21 @@ const CashListComponent = () => {
 
     console.log(newCashData);
   };
+
+  const handleCashTypeChange = (option) => {
+    if (!option) {
+      return;
+    }
+    setNewCashData({
+      ...newCashData,
+      accountNumber: option.value,
+      bankName: option.label,
+      cashType: option.value,
+    });
+
+    // setFormErrors({ ...formErrors, bankNameError: "" });
+  };
+
   const handleOpeningBalanceChange = (value) => {
     if (!value) {
       setNewCashData({ ...newCashData, openingBalance: "" });
@@ -110,8 +149,10 @@ const CashListComponent = () => {
     });
   };
   const handleDescriptionChange = (event) => {
-    setNewCashData({ ...newCashData, description: event.target.value });
+    setNewCashData({ ...newCashData, notes: event.target.value });
   };
+
+  console.log(newCashData, "New cash data");
 
   return (
     <div className="s-card demo-table" id="custom">
@@ -157,7 +198,7 @@ const CashListComponent = () => {
                   }}
                   icon={
                     <FeatherIcon
-                      primaryColor
+                      primaryColor={cashList.length < 2}
                       name="Plus"
                       size={18}
                       style={{
@@ -171,6 +212,9 @@ const CashListComponent = () => {
                   Add opening balance
                 </Button>
                 <Modal
+                  submitDisabled={
+                    !newCashData.openingBalance || !newCashData.cashType
+                  }
                   isActive={addNewCashVisibility}
                   setIsAcive={setAddNewCashVisibility}
                   onSubmit={handleSave}
@@ -180,12 +224,26 @@ const CashListComponent = () => {
                     <div className="columns">
                       <div className="column is-12">
                         <div className="field">
+                          <label>Cash type*</label>
+                          <div style={{ fontWeight: "400", fontSize: "14px" }}>
+                            <SelectInput
+                              placeholder={"Choose Cash type"}
+                              value={newCashData.cashType}
+                              onChange={handleCashTypeChange}
+                              options={cashTypeList.filter(
+                                (cash) => cash.value !== cashList[0]?.cashType
+                              )}
+                            />
+                          </div>
+                        </div>
+                        <div className="field">
                           <label>Opening balance*</label>
                           <div style={{ fontWeight: "400", fontSize: "14px" }}>
                             <Input
+                              type="number"
                               placeholder={"₹0.00"}
                               hasError={formErrors.openingBalanceError}
-                              value={newCashData.openingBalance}
+                              value={newCashData.openingBalance || ""}
                               onChange={handleOpeningBalanceChange}
                               helpText={formErrors.openingBalanceError}
                             />
@@ -198,8 +256,8 @@ const CashListComponent = () => {
                         <div className="field">
                           <label>Description</label>
                           <div style={{ fontWeight: "400", fontSize: "14px" }}>
-                            <Input
-                              value={newCashData.description}
+                            <TextArea
+                              value={newCashData.notes}
                               onChange={handleDescriptionChange}
                             />
                           </div>

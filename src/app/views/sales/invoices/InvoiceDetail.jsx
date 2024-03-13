@@ -31,6 +31,7 @@ const allowedPaymentTypesForCancel = [
 ];
 
 const InvoicesDetail = () => {
+  const [refresh, setRefresh] = useState(false);
   const [invoiceData, setInvoiceData] = useState();
   const [invoiceHistory, setInvoiceHistory] = useState();
   const [pdfLink, setPdfLink] = useState();
@@ -88,7 +89,7 @@ const InvoicesDetail = () => {
         // );
       });
     }
-  }, [invoiceId]);
+  }, [invoiceId, refresh]);
 
   const getInvoiceInfo = () => {
     const invoiceInfo = [];
@@ -178,6 +179,9 @@ const InvoicesDetail = () => {
 
     return invoiceInfo;
   };
+  const refreshPage = () => {
+    setRefresh(!refresh);
+  };
 
   const openFinalizeModal = () => {
     setFinalizeModalOpen(true);
@@ -204,7 +208,7 @@ const InvoicesDetail = () => {
       .request(lockEndpoint, { auth: true, method: "PUT" })
       .then(() => {
         closeFinalizeModal();
-        groflexService.router.reload();
+        refreshPage();
         groflexService.toast.success(resources.invoiceLockSuccessMessage);
         // TODO: Handle Finalize Invoice Errors
         // checkAchievementNotification();
