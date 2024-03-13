@@ -254,11 +254,11 @@ const InvoicesDetail = () => {
       );
     }
 
-    switch (invoiceData?.state) {
+    switch (invoice?.state) {
       case InvoiceState.DRAFT:
         buttonsFragment = (
           <>
-            <Link to={`/sales/invoices/edit/${invoiceData.id}`}>
+            <Link to={`/sales/invoices/edit/${invoice?.id}`}>
               <Button className="m-r-10" isSecondary>
                 Edit
               </Button>
