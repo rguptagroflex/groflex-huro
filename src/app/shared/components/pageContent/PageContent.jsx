@@ -28,7 +28,7 @@ const PageContent = ({
     <div className={viewWrapperClassNames}>
       <div className="page-content-wrapper">
         <div className="page-content is-relative">
-          <div className="page-title has-text-centered m-b-0">
+          <div className="page-title has-text-centered m-b-15">
             {currentModule?.heading && (
               <div
                 onClick={toggleSidebar}
