@@ -42,6 +42,8 @@ const PopOver = ({
           className="dropdown-menu m-b-5"
           style={{
             minWidth: "90px",
+            // right: "50%",
+            // translate: "50%",
           }}
         >
           <div style={{ cursor: "default" }} className="dropdown-content">
