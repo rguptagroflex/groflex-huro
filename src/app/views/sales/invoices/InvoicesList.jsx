@@ -66,25 +66,31 @@ const createActivity = (params) => {
   let iconColor = "";
 
   switch (params.value.toLowerCase()) {
-    case "locked":
-      val = "Open";
-      iconColor = "#0071CA";
-      break;
-    case "draft":
+    case InvoiceState.DRAFT:
       val = "Draft";
       iconColor = "#DDDDDD";
       break;
-    case "cancelled":
+    case InvoiceState.LOCKED:
+    case InvoiceState.SENT:
+      val = "Open";
+      iconColor = "#0071CA";
+      break;
+    case InvoiceState.PARTIALLY_PAID:
+      val = "Partially paid";
+      iconColor = "#FFAA2C";
+      break;
+    case InvoiceState.CANCELLED:
       val = "Cancelled";
       iconColor = "#888787";
       break;
-    case "paid":
+    case InvoiceState.DUNNED:
+      iconColor = "#D94339";
+      val = "Reminded";
+      break;
+    case InvoiceState.PAID:
+    case InvoiceState.PRINTED:
       val = "Paid";
       iconColor = "#00A353";
-      break;
-    default:
-      iconColor = "#D94339";
-      val = "Overdue";
       break;
   }
 
@@ -153,7 +159,6 @@ const InvoicesList = () => {
   };
 
   const getActionPopupButtons = (item) => {
-    console.log(item, "Row item on action popup");
     const entries = [];
     let invoice = null;
 
@@ -230,7 +235,6 @@ const InvoicesList = () => {
         });
       }
     }
-    console.log(entries, "Entries ka list");
     return entries;
   };
 
@@ -240,6 +244,7 @@ const InvoicesList = () => {
     <PageContent
       title="Invoices List"
       titleActionContent={<Button isSuccess>Create Invoices</Button>}
+      breadCrumbData={["Home", "Sales", "Invoices"]}
     >
       {isModalActive && (
         <NumberRangeModal
@@ -260,6 +265,29 @@ const InvoicesList = () => {
             field: "state",
             headerName: "status",
             cellRenderer: createActivity,
+            comparator: (a, b) => {
+              const order = [
+                // Bezahlt
+                InvoiceState.PAID,
+                InvoiceState.PRINTED,
+
+                // Entwurf
+                InvoiceState.DRAFT,
+
+                // Offen
+                InvoiceState.LOCKED,
+                InvoiceState.SENT,
+                InvoiceState.PARTIALLY_PAID,
+
+                // Storniert
+                InvoiceState.CANCELLED,
+
+                // Überfällig
+                InvoiceState.DUNNED,
+              ];
+
+              return order.indexOf(a) - order.indexOf(b);
+            },
             minWidth: ListAdvancedDefaultSettings.COLUMN_MIN_WIDTH,
           },
           {

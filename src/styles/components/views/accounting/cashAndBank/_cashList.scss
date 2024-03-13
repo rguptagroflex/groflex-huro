@@ -1,0 +1,28 @@
+
+#table-sup-heading {
+  td {
+  // Styles for table data cells within rows with class .table-heading
+  font-weight: 600;
+  font-size: 18px;
+}
+}
+
+  #table-sub-heading {
+    td {
+    // Styles for table data cells within rows with class .table-sub-heading
+    font-size: 14px;
+    font-weight: 550;
+    line-height: 39px;
+  }
+}
+#custom{
+  td{
+    color: black;
+  }
+}
+
+@media (max-width: 870px) {
+    .demo-table {
+      overflow-x: scroll;
+    }
+}

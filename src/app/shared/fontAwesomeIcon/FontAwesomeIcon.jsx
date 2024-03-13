@@ -16,7 +16,7 @@ export default function FontAwesomeIcon({
 
   const getColor = () => {
     let col = primaryColor ? "#00a353" : color;
-    if (hover) {
+    if (onHoverColor && hover) {
       col = onHoverColor;
     }
     return col;
