@@ -49,6 +49,16 @@ const resourceUrls = {
     `${resourceHost}dashboard/stats/turnoverCustomersArticles?startDate=${startDate}&endDate=${endDate}`,
   expenseBy: (startDate, endDate) =>
     `${resourceHost}dashboard/stats/expenseByArticle?startDate=${startDate}&endDate=${endDate}`,
+
+  //InventoryDashboard
+  lastOrder: `${resourceHost}/inventoryDashboard/lastPurchaseOrder?limit=6`,
+  topAndLowSellingArticle: (startDate, endDate) =>
+    `${resourceHost}/inventoryDashboard/topAndlowSellingArticle?orderBy=ASC&limit=10&year=true&month=false&week=false&lastMonth=false&secondLastMonth=false&startDate=${startDate}&endDate=${endDate}`,
+  articleLowOnStock: (value) =>
+    `${resourceHost}/inventoryDashboard/lowStockArticle?byCategory=${value}&limit=6`,
+  profitAndLoss: `${resourceHost}/inventoryDashboard/profitAndLoss?year=true&month=false&week=false&lastMonth=false&secondLastMonth=false`,
+  salesAndPurchase: `${resourceHost}/inventoryDashboard/saleAndPurchase?year=true&month=false&week=false&lastMonth=false&secondLastMonth=false`,
+
   //Articles
   articleNumber: `${resourceHost}article/number`, //Get Create article's number
   postArticleImage: `${resourceHost}article/image/`, //Concatenate articleId

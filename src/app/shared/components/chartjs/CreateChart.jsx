@@ -21,6 +21,9 @@ ChartJS.register(
   ArcElement
 );
 
+
+
+
 const CreateChart = ({ chartType, chartData, chartOptions }) => {
   let chart = <></>;
 
@@ -33,7 +36,9 @@ const CreateChart = ({ chartType, chartData, chartOptions }) => {
         chart = <Pie data={chartData} options={chartOptions} />;
         break;
       case "doughnutChart":
-        chart = <Doughnut data={chartData} options={chartOptions} />;
+        chart = (
+          <Doughnut data={chartData} options={chartOptions} />
+        );
         break;
     }
     return chart;

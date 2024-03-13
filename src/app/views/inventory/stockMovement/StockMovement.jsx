@@ -45,7 +45,7 @@ const stocks = [
 const StockMovement = () => {
   return (
     <PageContent
-      title="StockMovement"
+      title="Stock Movement"
       titleActionContent={<Button isSuccess>New Manual Entry</Button>}
     >
       <ListAdvancedComponent

@@ -36,6 +36,8 @@
 @import "./components/views/dashboard/dashboardQuotation";
 @import "./components/views/dashboard/dashboardSales";
 @import "./components/views/dashboard/dashboardExpenses";
+@import "./components//views/inventoryDashboard/inventoryDashboard";
+@import "./components//views/inventoryDashboard/inventoryDashboardLastOrder";
 
 //EXTERNAL
 @import "../../node_modules/pikaday/css/pikaday";

@@ -1,0 +1,55 @@
+.inventorydashboard-wrapper{
+    .inventorydashboard-card-title{
+       font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    margin-bottom: 10px;
+    }
+    .inventorydashboard-chartcard-wrapper{
+        display: flex;
+        margin-bottom: 30px;
+        justify-content: space-between;
+        .toggle-chart-btn{
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+       
+}
+.donut-chart-wrapper {
+  
+    .pie-chart-label-container {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      align-items: center;
+      justify-content: center;
+      margin-left: 136px;
+      margin-top: 154px;
+      .container-text {
+        font-size: 15px;
+        color: #747474;
+      }
+      .contianer-value {
+        font-weight: 600;
+        font-size: 20px;
+        color: black;
+      }
+    }
+  }
+
+    .article-tabs {
+        li {
+          width: 50%;
+        }
+      }
+      .stock-tabs {
+        li {
+          width: 50%;
+        }
+      }
+}
