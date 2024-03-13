@@ -51,7 +51,7 @@ const GstReports = () => {
     startDate: "",
     endDate: "",
   });
-  const [exportUrl, setExportUrl] = useState("");
+
   const [rowData, setRowData] = useState([]);
 
   const [filteredRowData, setFilteredRowData] = useState([]);
@@ -263,11 +263,11 @@ const GstReports = () => {
       });
   };
 
-  const handleExport = () => {
-    window.location.href = `${oldConfig.resourceHost}${exportUrl}`;
+  const handleExport = (url) => {
+    window.location.href = `${oldConfig.resourceHost}${url}`;
   };
 
-  const handleRowClick = (row) => {
+  const handleShareClick = (row) => {
     setSendEmailFormData({
       ...sendEmailFormData,
       exportperiod: row.exportPeriod,
@@ -275,7 +275,6 @@ const GstReports = () => {
       message: `Dear Ladies and Gentlemen, Enclosed I send you my accounting documents for the period ${row.exportPeriod}. Yours sincerely,`,
       subject: `Accounting documents ${row.exportPeriod}`,
     });
-    setExportUrl(row.documentUrl);
   };
 
   const dateOptions = [
@@ -446,11 +445,7 @@ const GstReports = () => {
                     </th>
                   </tr>
                   {filteredRowData.map((item, id) => (
-                    <tr
-                      className="gst-export-summary-row"
-                      key={id}
-                      onClick={() => handleRowClick(item)}
-                    >
+                    <tr className="gst-export-summary-row" key={id}>
                       <td>{item.date}</td>
                       <td>{item.exportPeriod}</td>
                       <td>
@@ -460,8 +455,13 @@ const GstReports = () => {
                       </td>
                       <td>{item.fileFormat}</td>
                       <td style={{ textAlign: "center" }}>
-                        {item.download} &nbsp; | &nbsp;
-                        {item.share}
+                        <span onClick={() => handleExport(item.documentUrl)}>
+                          {item.download}
+                        </span>{" "}
+                        |{" "}
+                        <span onClick={() => handleShareClick(item)}>
+                          {item.share}
+                        </span>
                       </td>
                     </tr>
                   ))}
