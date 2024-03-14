@@ -59,6 +59,10 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
     //     setCompanyInfo(updatedCompanyInfo);
     //     setIsActive(false);
     // };
+    // const dateData = {None: 'None', YYMM: 'YYMM', YYYYMM: 'YYYYMM'}
+    const dateData = [{ value: "None", label: "None" },
+    { value: "YYMM", label: "YYMM" }, { value: "owner", label: "Owner" }, { value: "ceo", label: "CEO" }, { value: "cfo", label: "CFO" }, { value: "cto", label: "CTO" }, { value: "others", label: "Others" }]
+   
 
     return (
         <Modal
@@ -66,6 +70,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
             submitBtnName="Save"
             isActive={isActive}
             setIsAcive={setIsActive}
+            isBig="is-big"
         // onSubmit={handleSaveContactPerson}
 
         >
@@ -75,6 +80,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
                 <div className="columns is-multiline m-b-5">
                     <div className="column is-2">
                         <div className="field">
+                            <label>Prefix</label>
                             <Input
                                 type="text"
                                 name="prefix"
@@ -95,14 +101,13 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
                             />
                         </div>
                     </div>
-                    <div className="column is-4">
+                    <div className="column is-3">
                         <div className="field">
-                            <Input
-                                type="text"
-                                name="seperator"
-                                placeholder=""
-                            // value={newContactPerson.email}
-                            // onChange={handleInputChange}
+                            <label>Date</label>
+                            <SelectInput
+                                options={dateData}
+                                value={'YYMM'}
+                                // onChange={handlePositionChange}
                             />
                         </div>
                     </div>
@@ -117,14 +122,13 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
                             />
                         </div>
                     </div>
-                    <div className="column is-4">
+                    <div className="column is-2">
                         <div className="field">
-                            <Input
-                                type="text"
-                                name="serialNumber"
-                                placeholder=""
-                            // value={newContactPerson.email}
-                            // onChange={handleInputChange}
+                            <label>Serial No.</label>
+                            <SelectInput
+                                options={dateData}
+                                value={'YYMM'}
+                                // onChange={handlePositionChange}
                             />
                         </div>
                     </div>
@@ -141,6 +145,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
                     </div>
                     <div className="column is-2">
                         <div className="field">
+                            <label>Suffix</label>
                             <Input
                                 type="text"
                                 name="prefix"
