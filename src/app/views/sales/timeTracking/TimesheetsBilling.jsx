@@ -3,10 +3,17 @@ import PageContent from "../../../shared/components/pageContent/PageContent";
 import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
 import groflexService from "../../../services/groflex.service";
 import oldConfig from "../../../../../oldConfig";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { ListAdvancedComponent } from "../../../shared/components/list-advanced/ListAdvancedComponent";
+import Timetracking from "../../../models/timetracking.model";
+import { formatCurrency } from "../../../helpers/formatCurrency";
+import { CustomShowHeaderSum } from "../../../shared/components/list-advanced/CustomShowHeaderSum";
+import { Button } from "../../../shared/components/button/Button";
+import { ButtonGroup } from "../../../shared/components/button/buttonGroup/ButtonGroup";
 
 const TimesheetsBilling = () => {
-  const { customerId } = useParams();
+  const { customerId, status } = useParams();
+  const navigate = useNavigate();
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     customerNo: "",
@@ -31,8 +38,38 @@ const TimesheetsBilling = () => {
         });
       });
   };
+
+  const fetchInvoiceData = () => {
+    groflexService
+      .request(
+        `${oldConfig.timetracking.requestUrl.billing}${customerId}?status=${status}`,
+        { auth: true }
+      )
+      .then((res) => {});
+  };
+  const actions = [
+    { name: "Edit", icon: "edit" },
+    { name: "Delete", icon: "trash-alt" },
+    { name: "Convert to Deal", icon: "trash-alt" },
+  ];
+
+  const handleActionClick = () => {};
   return (
-    <PageContent title={"Invoiced times"}>
+    <PageContent
+      title={customerInfo.name}
+      titleActionContent={
+        status === "open" && (
+          <ButtonGroup>
+            <Button onClick={() => navigate("/contacts-create")} isSecondary>
+              Create Invoice
+            </Button>
+            <Button onClick={() => navigate("/contacts-create")} isSuccess>
+              Record Time
+            </Button>
+          </ButtonGroup>
+        )
+      }
+    >
       <div className="timesheets-billing-main">
         <div className="columns is-multiline">
           <div className="column is-5 customer-info-card">
@@ -60,7 +97,59 @@ const TimesheetsBilling = () => {
         </div>
         <div className="columns is-multiline">
           <div className="column is-12">
-            <AdvancedCard type={"s-card"}></AdvancedCard>
+            <AdvancedCard type={"s-card"}>
+              <ListAdvancedComponent
+                onRowClicked={(e) => {
+                  status === "invoiced" &&
+                    navigate(`/sales/invoices/${e.data.invoice.id}`);
+                }}
+                responseDataMapFunc={(timetrackings) => {
+                  const result = timetrackings.map((timetracking) => {
+                    return new Timetracking(timetracking);
+                  });
+
+                  return result;
+                }}
+                onActionClick={handleActionClick}
+                columnDefs={[
+                  {
+                    field: "date",
+                    headerName: "Date",
+                    valueGetter: (evt) => {
+                      return evt.data.date;
+                    },
+                  },
+                  {
+                    field: "activity",
+                    headerName: "Activity",
+                    valueGetter: (evt) => {
+                      return evt.data.taskDescriptionPrefix;
+                    },
+                  },
+                  {
+                    field: "durationInMinutes",
+                    headerName: "Duration",
+                    valueGetter: (evt) => {
+                      return evt.data.trackedTimeString;
+                    },
+                  },
+                  {
+                    field: "priceTotal",
+                    headerName: "Amount",
+                    cellRenderer: (evt) => {
+                      return formatCurrency(evt.value);
+                    },
+                    headerComponent: CustomShowHeaderSum,
+                    headerComponentParams: {
+                      value: "priceTotal",
+                      headerName: "Amount",
+                    },
+                  },
+                ]}
+                fetchUrl={`${oldConfig.timetracking.requestUrl.billing}${customerId}?status=${status}`}
+                actionMenuData={actions}
+              />
+            </AdvancedCard>
           </div>
         </div>
       </div>

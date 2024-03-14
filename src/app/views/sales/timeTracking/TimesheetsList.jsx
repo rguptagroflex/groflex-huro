@@ -19,7 +19,6 @@ const TimesheetsList = () => {
   ];
 
   const getStatusIcon = (evt) => {
-    console.log(evt);
     let icon = "";
     let text = "";
     switch (evt.value) {
@@ -44,9 +43,11 @@ const TimesheetsList = () => {
   return (
     <PageContent title="Timesheets List">
       <ListAdvancedComponent
-        onRowClicked={(e) =>
-          navigate(`/sales/time-sheets/billed/customer/${e.data.customerId}`)
-        }
+        onRowClicked={(e) => {
+          navigate(
+            `/sales/time-sheets/billed/customer/${e.data.customerId}/${e.data.status}`
+          );
+        }}
         onActionClick={handleActionClick}
         columnDefs={[
           {
@@ -96,9 +97,11 @@ const TimesheetsList = () => {
           },
         ]}
         responseDataMapFunc={(timetrackings) => {
-          return timetrackings.map((timetracking) => {
+          const result = timetrackings.map((timetracking) => {
             return new Timetracking(timetracking);
           });
+
+          return result;
         }}
         fetchUrl={`${oldConfig.timetracking.resourceUrl}?offset=0&searchText=&limit=9999999&orderBy=customerName&desc=true&filter=default`}
         actionMenuData={actions}

@@ -109,7 +109,7 @@ function App() {
           />
           <Route path="sales/time-sheets" element={<TimesheetsList />} />
           <Route
-            path="sales/time-sheets/billed/customer/:customerId"
+            path="sales/time-sheets/billed/customer/:customerId/:status"
             element={<TimesheetsBilling />}
           />
 

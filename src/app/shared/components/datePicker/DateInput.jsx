@@ -53,6 +53,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 const DateInput = ({ selectedDate, onDateChange }) => {
   return (
     <DatePicker
+      format="DD/MM/YYYY"
       value={selectedDate}
       onChange={onDateChange}
       showDaysOutsideCurrentMonth
