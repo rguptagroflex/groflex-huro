@@ -120,6 +120,20 @@ const resourceUrls = {
   gstReportExportSummary: `${resourceHost}accountantExport/?offset=0&limit=5&orderBy=createdAt&desc=true`,
   exportGstReport: `${resourceHost}accountantExport/`,
 
+  //InventoryDashboard
+  lastOrder: `${resourceHost}/inventoryDashboard/lastPurchaseOrder?limit=6`,
+  topAndLowSellingArticle: (startDate, endDate) =>
+    `${resourceHost}/inventoryDashboard/topAndlowSellingArticle?orderBy=ASC&limit=10&year=true&month=false&week=false&lastMonth=false&secondLastMonth=false&startDate=${startDate}&endDate=${endDate}`,
+  articleLowOnStock: (value) =>
+    `${resourceHost}/inventoryDashboard/lowStockArticle?byCategory=${value}&limit=6`,
+  profitAndLoss: `${resourceHost}/inventoryDashboard/profitAndLoss?year=true&month=false&week=false&lastMonth=false&secondLastMonth=false`,
+  salesAndPurchase: `${resourceHost}/inventoryDashboard/saleAndPurchase?year=true&month=false&week=false&lastMonth=false&secondLastMonth=false`,
+  //Stock Movement
+  stockMovement1: `${resourceHost}inventory/history?offset=0&searchText=&limit=9999999&orderBy=itemModifiedDate&desc=false`,
+  stockMovement2: `${resourceHost}inventory/?offset=0&searchText=&limit=9999999&orderBy=articleId&desc=false`,
+  //Purchase Orders
+  purchase: `${resourceHost}purchaseOrder?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,
+
   //Teams
   teamsList: `${resourceHost}user/list`,
   inviteNewUser: `${resourceHost}user/tenant`,
@@ -187,6 +201,7 @@ const modules = {
     links: [
       { label: "Dashboard", route: "/inventory/dashboard" },
       { label: "Purchase Order", route: "/inventory/purchase-orders" },
+      { label: "Stock Movement", route: "inventory/stock-movement" },
       { label: "Sales Order", route: "/inventory/sales-orders" },
       {
         label: "Reporting & Analytics",

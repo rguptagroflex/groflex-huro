@@ -60,6 +60,7 @@ import CreditNotesList from "./app/views/accounting/creditNotes/CreditNotesList"
 import ExpensesList from "./app/views/accounting/expenses/ExpensesList";
 import ChartOfAccounts from "./app/views/accounting/chartOfAccounts/ChartOfAccountsList";
 import TimesheetsBilling from "./app/views/sales/timeTracking/TimesheetsBilling";
+import StockMovement from "./app/views/inventory/stockMovement/StockMovement";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -140,12 +141,13 @@ function App() {
             path="accounting/reports/gst-reports"
             element={<GstReports />}
           />
-          {/* ---------------------Inventory Module------------------------- */}
+          {/* Inventory Module */}
           <Route path="inventory/dashboard" element={<InventoryDashboard />} />
           <Route
             path="inventory/purchase-orders"
             element={<PurchaseOrderList />}
           />
+          <Route path="inventory/stock-movement" element={<StockMovement />} />
           <Route path="inventory/sales-orders" element={<SalesOrdersList />} />
           <Route
             path="inventory/reporting-and-analytics"
