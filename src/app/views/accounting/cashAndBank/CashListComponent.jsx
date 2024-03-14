@@ -146,7 +146,7 @@ const CashListComponent = () => {
                       ? () => setAddNewCashVisibility(true)
                       : null
                   }
-                  isOutlined
+                  isSecondary
                   style={{
                     color: cashList.length < 2 ? "#00A353" : "#C6C6C6",
                     border: `1px solid ${

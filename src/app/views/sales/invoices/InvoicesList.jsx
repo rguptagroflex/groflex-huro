@@ -161,7 +161,10 @@ const InvoicesList = () => {
               return formatCurrency(evt.value);
             },
             headerComponent: CustomShowHeaderSum,
-            headerComponentParams: { value: "totalGross", headerName: "Total Gross" },
+            headerComponentParams: {
+              value: "totalGross",
+              headerName: "Total Gross",
+            },
           },
           {
             field: "outstandingAmount",

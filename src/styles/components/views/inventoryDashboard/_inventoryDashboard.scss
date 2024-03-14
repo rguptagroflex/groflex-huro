@@ -1,3 +1,16 @@
+
+.dashboard-list{
+  .list-container{
+    padding: 0px 0px 0px;
+    .list-container__sub-header{
+      display: none;
+     
+    }
+  }
+  .list-footer{
+    display: none;
+  }
+}
 .inventorydashboard-wrapper{
     .inventorydashboard-card-title{
        font-family: Inter;
@@ -9,7 +22,7 @@
     }
     .inventorydashboard-chartcard-wrapper{
         display: flex;
-        margin-bottom: 30px;
+        margin-bottom: 3px;
         justify-content: space-between;
         .toggle-chart-btn{
             width: 40px;

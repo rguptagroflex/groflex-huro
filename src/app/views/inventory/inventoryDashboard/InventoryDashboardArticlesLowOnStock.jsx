@@ -31,7 +31,6 @@ const InventoryDashboardArticlesLowOnStock = () => {
   const [filter, setFilter] = useState("filterByName");
   const [totalNetValue, setTotalNetValue] = useState([]);
   const [chartEntries, setChartEntries] = useState([]);
-  const [showList, setShowList] = useState([]);
   // useEffect(() => {
   //   fetchLowOnStockArticles();
   // }, []);
@@ -160,6 +159,7 @@ const InventoryDashboardArticlesLowOnStock = () => {
       handleFilterChange={handleFilterChange}
       filter={filter}
       showList={!isBarChart}
+      url={config.resourceUrls.articleLowOnStock(false)}
     />
   );
 };

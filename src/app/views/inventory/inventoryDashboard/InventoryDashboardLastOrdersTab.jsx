@@ -112,6 +112,8 @@ const InventoryDashboardLastOrdersTab = () => {
         list={list}
         setList={setList}
         Reordered={true}
+        showList={!isBarChart}
+        url={config.resourceUrls.articleLowOnStock(false)}
       />
     </>
   );

@@ -56,7 +56,7 @@ const InventoryDashboardChartCard = ({
   chartData,
   chartOptions,
   list,
-
+  url,
   chartId,
   headerClassName,
   chartEntries,
@@ -161,16 +161,11 @@ const InventoryDashboardChartCard = ({
       value: "fiscalYear",
     },
   ];
-
+console.log(url)
   return (
     <div className-={className}>
       <div
         className={`inventorydashboard-chartcard-wrapper ${headerClassName}`}
-        // style={{
-        //   display: "flex",
-        //   marginBottom: "30px",
-        //   justifyContent: "space-between",
-        // }}
       >
         {setDate && (
           <div style={{ width: "168px" }}>
@@ -186,13 +181,19 @@ const InventoryDashboardChartCard = ({
         {filter && (
           <div className="columns is-multiline">
             <div style={{ width: "168px", marginLeft: "10px" }}>
-              <SelectInput
-                options={filterOptions}
-                placeholder={"None"}
-                onChange={handleFilterChange}
-                value={filter}
-                defaultValue={"filterByName"}
-              />
+              {showList ? (
+                <Button isBold style={{ marginTop: "8px" }} isSecondary>
+                  Send PO
+                </Button>
+              ) : (
+                <SelectInput
+                  options={filterOptions}
+                  placeholder={"None"}
+                  onChange={handleFilterChange}
+                  value={filter}
+                  defaultValue={"filterByName"}
+                />
+              )}
             </div>
           </div>
         )}
@@ -202,13 +203,6 @@ const InventoryDashboardChartCard = ({
             setChartType(!chartType);
             //  setList(!list);
           }}
-          // style={{
-          //   width: "40px",
-          //   height: "40px",
-          //   display: "flex",
-          //   alignItems: "center",
-          //   justifyContent: "center",
-          // }}
         >
           <FeatherIcon
             name={chartType ? "PieChart" : "BarChart"}
@@ -218,42 +212,41 @@ const InventoryDashboardChartCard = ({
         </div>
       </div>
       {showList ? (
-        <ListAdvancedComponent
-          columnDefs={[
-            {
-              //field: "state",
-              headerName: "Article Name",
-            },
-            {
-              //field: "customerData.name",
-              headerName: "Quantity",
-            },
-           
-            {
-              headerName: "Purchase price",
-              // field: "date",
-              // filter: true,
-              // comparator: (date1, date2) =>
-              //   dateCompareSort(date1, date2, config.dateFormat.client),
-            },
+        <div className="dashboard-list">
+          {/* <ListAdvancedComponent
+            columnDefs={[
+              {
+                field: "lowStockArticlesByName.title",
+                headerName: "Article Name",
+              },
+              {
+                field: "lowStockArticlesByName.currentstock",
+                headerName: "Quantity",
+              },
 
-            {
-              // //field: "dueToDate",
-              // filter: true,
-              // comparator: (date1, date2) =>
-              //   dateCompareSort(date1, date2, config.dateFormat.client),
-              headerName: "Location",
-            },
+              {
+                headerName: "Purchase price",
+                field: "lowStockArticlesByName.purchasePrice",
+              },
 
-            {
-              // field: "type",
-              headerName: " ",
+              {
+                // //field: "dueToDate",
+                // filter: true,
+                // comparator: (date1, date2) =>
+                //   dateCompareSort(date1, date2, config.dateFormat.client),
+                headerName: "Location",
+              },
 
-              //minWidth: 150,
-            },
-          ]}
-          fetchUrl={config.resourceUrls.articleLowOnStock}
-        />
+              {
+                // field: "type",
+                headerName: " ",
+
+                //minWidth: 150,
+              },
+            ]}
+            fetchUrl={url}
+          /> */}
+        </div>
       ) : (
         <div
           className="column is-12 donut-chart-wrapper"

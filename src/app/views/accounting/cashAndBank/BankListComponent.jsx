@@ -144,8 +144,7 @@ const BankListComponent = () => {
                     setBankModalVisibility(true);
                     setModeToEdit(false);
                   }}
-                  isOutlined
-                  isPrimary
+                  isSecondary
                   icon={
                     <FeatherIcon
                       primaryColor
