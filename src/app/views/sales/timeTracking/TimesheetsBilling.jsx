@@ -10,7 +10,7 @@ import { formatCurrency } from "../../../helpers/formatCurrency";
 import { CustomShowHeaderSum } from "../../../shared/components/list-advanced/CustomShowHeaderSum";
 import { Button } from "../../../shared/components/button/Button";
 import { ButtonGroup } from "../../../shared/components/button/buttonGroup/ButtonGroup";
-
+import timesheetsSvg from "../../../../assets/groflex/icons/timesheetsIcon.svg";
 const TimesheetsBilling = () => {
   const { customerId, status } = useParams();
   const navigate = useNavigate();
@@ -92,7 +92,11 @@ const TimesheetsBilling = () => {
             </AdvancedCard>
           </div>
           <div className="column is-7">
-            <AdvancedCard type={"s-card"}></AdvancedCard>
+            <AdvancedCard type={"s-card"}>
+              <h2 className="title is-5 is-bold">Time Track</h2>
+              <div>hello</div>
+              <img src={timesheetsSvg} width={"130px"} height={"130px"} />
+            </AdvancedCard>
           </div>
         </div>
         <div className="columns is-multiline">
