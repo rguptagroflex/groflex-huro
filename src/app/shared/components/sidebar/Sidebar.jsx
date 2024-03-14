@@ -12,18 +12,21 @@ import CustomToolTip from "../customToolTip/CustomToolTip";
 const sidebarRoutes = [
   {
     route: "/",
+    routeStartsWith: "/",
     icon: "Home",
     isModule: false,
     name: "Home",
   },
   {
     route: "/dashboard",
+    routeStartsWith: "/dashboard",
     icon: "Activity",
     isModule: false,
     name: "Dashboard",
   },
   {
     route: "/sales/invoices",
+    routeStartsWith: "/sales",
     icon: "TrendingUp",
     isModule: true,
     moduleName: "sales",
@@ -31,18 +34,21 @@ const sidebarRoutes = [
   },
   {
     route: "/contacts",
+    routeStartsWith: "/contacts",
     icon: "Users",
     isModule: false,
     name: "Contacts",
   },
   {
     route: "/articles",
+    routeStartsWith: "/articles",
     icon: "Inbox",
     isModule: false,
     name: "Articles",
   },
   {
     route: "/accounting/transactions",
+    routeStartsWith: "/accounting",
     icon: "CreditCard",
     isModule: true,
     moduleName: "accounting",
@@ -50,6 +56,7 @@ const sidebarRoutes = [
   },
   {
     route: "/inventory/dashboard",
+    routeStartsWith: "/inventory",
     icon: "Archive",
     isModule: true,
     moduleName: "inventory",
@@ -57,6 +64,7 @@ const sidebarRoutes = [
   },
   {
     route: "/crm/leads",
+    routeStartsWith: "/crm",
     icon: "Briefcase",
     isModule: true,
     moduleName: "crm",
@@ -119,10 +127,22 @@ const Sidebar = () => {
                     //   config.getCurrentModule()?.name === linkItem.moduleName
                     // ) {
                     //   isCurrentModuleActive = true;
-                    // } else
-                    if (isActive) {
+                    // } else if (isActive) {
+                    //   isCurrentModuleActive = true;
+                    // }
+                    if (
+                      linkItem.name === "Home" &&
+                      location.pathname.split("/")[1] === ""
+                    ) {
                       isCurrentModuleActive = true;
                     }
+                    if (
+                      location.pathname.startsWith(linkItem.routeStartsWith) &&
+                      linkItem.name !== "Home"
+                    ) {
+                      isCurrentModuleActive = true;
+                    }
+
                     return {
                       backgroundColor: isCurrentModuleActive ? "white" : "",
                       width: isCurrentModuleActive ? "100%" : "98%",

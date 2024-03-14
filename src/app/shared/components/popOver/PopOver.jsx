@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import OnClickOutside from "../onClickOutside/OnClickOutside";
 import { FeatherIcon } from "../../featherIcon/FeatherIcon";
+import { Button } from "../button/Button";
 
 const PopOver = ({
   elements = [{ title: "", subTitle: "", handleClick: () => {} }],
+  openUp,
+  label,
 }) => {
   const [isActive, setIsActive] = useState(false);
 
@@ -19,35 +22,44 @@ const PopOver = ({
     setIsActive(true);
   };
 
+  const togglePopOver = () => {
+    setIsActive(!isActive);
+  };
+
   return (
     <OnClickOutside onClickOutside={closePopOver}>
       <div
         style={{ cursor: "pointer" }}
-        onClick={openPopOver}
-        className={`${"dropdown is-spaced  is-right dropdown-trigger is-pushed-mobile is-up "}${
-          isActive && "is-active"
-        }`}
+        onClick={togglePopOver}
+        className={`${"dropdown is-spaced is-right dropdown-trigger is-pushed-mobile "}${
+          openUp ? "is-up " : ""
+        }${isActive && "is-active"}`}
       >
-        <FeatherIcon primaryColor name={"MoreVertical"} />
+        <div onClick={togglePopOver} className="is-trigger">
+          {label ? label : <FeatherIcon primaryColor name={"MoreVertical"} />}
+        </div>
         <div
-          className="dropdown-menu no-padding-bottom"
-          style={{ minWidth: "65px", bottom: "0" }}
+          className="dropdown-menu m-b-5"
+          style={{
+            minWidth: "90px",
+            // right: "50%",
+            // translate: "50%",
+          }}
         >
-          <div style={{ cursor: "pointer" }} className="dropdown-content">
+          <div style={{ cursor: "default" }} className="dropdown-content">
             {elements.map((item, index) => {
               return (
-                <>
-                  <div
-                    onClick={() => handleFunction(item.handleClick)}
-                    className="dropdown-item is-media"
-                    key={item?.title.toLowerCase()}
-                  >
-                    <div className="meta">
-                      <span>{item?.title}</span>
-                      <span>{item?.subTitle}</span>
-                    </div>
+                <div
+                  onClick={() => handleFunction(item.handleClick)}
+                  className="dropdown-item is-media m-t-5 m-b-5 cursor-pointer"
+                  key={item?.title.toLowerCase()}
+                  style={{ minHeight: "35px" }}
+                >
+                  <div className="meta m-r-10">
+                    <span>{item?.title}</span>
+                    <span>{item?.subTitle}</span>
                   </div>
-                </>
+                </div>
               );
             })}
           </div>
