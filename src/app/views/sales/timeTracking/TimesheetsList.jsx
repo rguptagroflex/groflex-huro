@@ -7,8 +7,10 @@ import FontAwesomeIcon from "../../../shared/fontAwesomeIcon/FontAwesomeIcon";
 import { formatCurrency } from "../../../helpers/formatCurrency";
 import { ListAdvancedDefaultSettings } from "../../../helpers/constants";
 import { CustomShowHeaderSum } from "../../../shared/components/list-advanced/CustomShowHeaderSum";
+import { useNavigate } from "react-router-dom";
 
 const TimesheetsList = () => {
+  const navigate = useNavigate();
   const handleActionClick = () => {};
   const actions = [
     { name: "Edit", icon: "edit" },
@@ -42,7 +44,9 @@ const TimesheetsList = () => {
   return (
     <PageContent title="Timesheets List">
       <ListAdvancedComponent
-        onRowClicked={(e) => {}}
+        onRowClicked={(e) =>
+          navigate(`/sales/time-sheets/billed/customer/${e.data.customerId}`)
+        }
         onActionClick={handleActionClick}
         columnDefs={[
           {

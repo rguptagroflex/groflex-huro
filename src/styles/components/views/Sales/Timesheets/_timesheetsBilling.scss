@@ -1,0 +1,14 @@
+.timesheets-billing-main {
+  .customer-info-card {
+    .sub-info-box {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      .sub-info-heading {
+        font-size: 15px;
+        color: #888787;
+        font-weight: 600;
+      }
+    }
+  }
+}

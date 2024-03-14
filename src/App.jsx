@@ -59,6 +59,7 @@ import ContactsDetail from "./app/views/contacts/ContactsDetail";
 import CreditNotesList from "./app/views/accounting/creditNotes/CreditNotesList";
 import ExpensesList from "./app/views/accounting/expenses/ExpensesList";
 import ChartOfAccounts from "./app/views/accounting/chartOfAccounts/ChartOfAccountsList";
+import TimesheetsBilling from "./app/views/sales/timeTracking/TimesheetsBilling";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -106,6 +107,10 @@ function App() {
             element={<RecurringInvoicesList />}
           />
           <Route path="sales/time-sheets" element={<TimesheetsList />} />
+          <Route
+            path="sales/time-sheets/billed/customer/:customerId"
+            element={<TimesheetsBilling />}
+          />
 
           {/* --------------------Accounting Module-------------------- */}
           <Route path="accounting/transactions" element={<Transactions />} />
