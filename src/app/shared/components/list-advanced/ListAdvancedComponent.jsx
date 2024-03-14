@@ -20,6 +20,7 @@ export const ListAdvancedComponent = ({
   onCellClicked,
   customRowData,
   responseDataMapFunc,
+  settingsElement
 }) => {
   const [dataIsEmptyFlag, setDataIsEmptyFlag] = useState(false);
   const [gridApi, setGridApi] = useState();
@@ -214,7 +215,7 @@ export const ListAdvancedComponent = ({
         <div className="list-container__sub-header">
           <ListSearchComponent />
 
-          <ListHeadbarControls isFiltered={isFiltered} />
+          <ListHeadbarControls isFiltered={isFiltered} elements={settingsElement}/>
         </div>
 
         <div className="my-grid-container ag-theme-alpine">

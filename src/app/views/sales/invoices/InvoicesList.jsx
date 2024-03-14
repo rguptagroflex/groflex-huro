@@ -240,6 +240,24 @@ const InvoicesList = () => {
 
   console.log(groflexService.user, "USER FROm INCOICE LIST");
   const [isModalActive, setIsModalActive] = useState(false);
+
+  // settings elements
+  const elements = [
+    {
+      title: "Text Modules",
+      handleClick: () => {
+        // test modules functionality
+      },
+    },
+    {
+      title: "Number Range",
+      handleClick: () => {
+        setIsModalActive(true);
+      },
+    },
+  ]
+
+
   return (
     <PageContent
       title="Invoices List"
@@ -252,9 +270,7 @@ const InvoicesList = () => {
           setIsActive={setIsModalActive}
         />
       )}
-      <Button isSuccess onClick={() => setIsModalActive(true)}>
-        Number range
-      </Button>
+
       <ListAdvancedComponent
         onRowClicked={(e) => {
           navigate(`/sales/invoices/${e.data.id}`);
@@ -387,6 +403,7 @@ const InvoicesList = () => {
         fetchUrl={config.resourceUrls.invoices}
         // actionMenuData={actions}
         actionMenuData={getActionPopupButtons}
+        settingsElement={elements}
       />
     </PageContent>
   );
