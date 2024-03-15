@@ -11,8 +11,13 @@ import { CustomShowHeaderSum } from "../../../shared/components/list-advanced/Cu
 import { Button } from "../../../shared/components/button/Button";
 import { ButtonGroup } from "../../../shared/components/button/buttonGroup/ButtonGroup";
 import timesheetsSvg from "../../../../assets/groflex/icons/timesheetsIcon.svg";
+import Modal from "../../../shared/components/modal/Modal";
+import RecordTimeModal from "./RecordTimeModal";
 const TimesheetsBilling = () => {
   const { customerId, status } = useParams();
+  const [recordTimeModalVisible, setRecordTimeModalVisible] = useState(false);
+  const [recordTimeModalTitle, setRecordTimeModalTitle] =
+    useState("Record Time");
   const navigate = useNavigate();
   const [workStats, setWorkStats] = useState({
     priceTotal: 0,
@@ -75,7 +80,44 @@ const TimesheetsBilling = () => {
     { name: "Convert to Deal", icon: "trash-alt" },
   ];
 
-  const handleActionClick = () => {};
+  const handleActionClick = (action, row, params) => {
+    switch (action.action) {
+      case "delete":
+        console.log(action.action);
+        break;
+      case "edit":
+        setRecordTimeModalTitle("Edit recorded time");
+        setRecordTimeModalVisible(true);
+        break;
+    }
+  };
+  const getActionPopupButtons = (item) => {
+    console.log(item);
+    const entries = [];
+    switch (status) {
+      case "open":
+        entries.push({
+          label: "Edit",
+          action: "edit",
+          dataQsId: "timesheet-list-item-dropdown-entry-edit",
+        });
+        entries.push({
+          label: "Delete",
+          action: "delete",
+          dataQsId: "timesheet-list-item-dropdown-entry-delete",
+        });
+        break;
+      case "invoiced":
+        entries.push({
+          label: "Go to invoice",
+          action: "goToInvoice",
+          dataQsId: "timesheet-list-item-dropdown-entry-go-to-invoice",
+        });
+        break;
+    }
+
+    return entries;
+  };
 
   return (
     <PageContent
@@ -83,16 +125,30 @@ const TimesheetsBilling = () => {
       titleActionContent={
         status === "open" && (
           <ButtonGroup>
-            <Button onClick={() => navigate("/contacts-create")} isSecondary>
+            <Button onClick={() => navigate("/sales/timesheets")} isSecondary>
               Create Invoice
             </Button>
-            <Button onClick={() => navigate("/contacts-create")} isSuccess>
+            <Button
+              onClick={() => {
+                setRecordTimeModalTitle("Record Time"),
+                  setRecordTimeModalVisible(true);
+              }}
+              isSuccess
+            >
               Record Time
             </Button>
           </ButtonGroup>
         )
       }
     >
+      {status === "open" && (
+        <RecordTimeModal
+          recordTimeModalVisible={recordTimeModalVisible}
+          setRecordTimeModalVisible={setRecordTimeModalVisible}
+          title={recordTimeModalTitle}
+        />
+      )}
+
       <div className="timesheets-billing-main">
         <div className="columns is-multiline">
           <div className="column is-5 customer-info-card">
@@ -193,7 +249,7 @@ const TimesheetsBilling = () => {
                   },
                 ]}
                 fetchUrl={`${oldConfig.timetracking.requestUrl.billing}${customerId}?status=${status}`}
-                actionMenuData={actions}
+                actionMenuData={getActionPopupButtons}
               />
             </AdvancedCard>
           </div>

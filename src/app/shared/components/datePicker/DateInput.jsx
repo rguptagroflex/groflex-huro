@@ -50,10 +50,10 @@ import { DatePicker } from "@mui/x-date-pickers";
 import moment from "moment";
 import React from "react";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-const DateInput = ({ selectedDate, onDateChange }) => {
+const DateInput = ({ selectedDate, onDateChange, format = "DD/MM/YYYY" }) => {
   return (
     <DatePicker
-      format="DD/MM/YYYY"
+      format={format}
       value={selectedDate}
       onChange={onDateChange}
       showDaysOutsideCurrentMonth
@@ -63,7 +63,7 @@ const DateInput = ({ selectedDate, onDateChange }) => {
         popper: {
           sx: {
             "& .Mui-selected": { backgroundColor: "#00a353 !important" },
-            "& .MuiDateCalendar-root": { width: "230px", height: "300px" },
+            "& .MuiDateCalendar-root": { width: "250px", height: "300px" },
           },
         },
       }}
