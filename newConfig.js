@@ -116,7 +116,8 @@ const resourceUrls = {
   deleteUser: `${resourceHost}tenant/user/`,
 
   // numerations
-  numerationList: `${resourceHost}setting/numeration`
+  numeration: `${resourceHost}setting/numeration`,
+  numerationInvoice: `${resourceHost}setting/invoice/changeNumeration`
 };
 
 const checkLoginTokenIsValid = () => {

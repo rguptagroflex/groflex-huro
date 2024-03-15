@@ -9,6 +9,7 @@ import { TextArea } from '../textArea/TextArea';
 import moment from 'moment';
 import GroflexService from '../../../services/groflex.service';
 import config from "../../../../../newConfig";
+import LoaderSpinner from '../loaderSpinner/LoaderSpinner';
 
 const INVOICE_VIEW = "invoice";
 const OFFER_VIEW = "offer";
@@ -25,7 +26,7 @@ const FREQUENCY_YEAR = "yearly";
 const FREQUENCY_MONTH = "monthly";
 const FREQUENCY_DAY = "daily";
 
-const NumberRangeModal = ({ isActive = false, setIsActive, numerationType }) => {
+const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handlePostData, isLoading }) => {
 
     const [numerationData, setNumerationData] = useState({})
 
@@ -140,7 +141,6 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType }) => 
     };
 
     const handleSerialNumberChange = (options) => {
-        console.log(newNumberRange.currentValue)
         setNewNumberRange((prevNewNumberRange) => ({
             ...prevNewNumberRange,
             serialNumber: options.value
@@ -317,7 +317,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType }) => 
 
     // get existing Numeration data
     const fetchNumerationData = () => {
-        GroflexService.request(`${config.resourceUrls.numerationList}`, {
+        GroflexService.request(`${config.resourceUrls.numeration}`, {
             method: "GET",
             auth: true,
         })
@@ -327,7 +327,6 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType }) => 
                     if (numerationType && responseData.hasOwnProperty(numerationType)) {
                         // setNumerationData(numerationData[numerationType]);
                         let numerationData = responseData[numerationType]
-                        console.log(numerationData)
                         setNewNumberRange(prevState => ({
                             ...prevState,
                             prefix: numerationData.prefix,
@@ -345,6 +344,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType }) => 
                             currentNumber: String(numerationData.currentValue).padStart(numerationData.counterLength, '0'),
                             currentValue: numerationData.currentValue
                         }));
+                        handleDatePartChange({ value: numerationData.datePart })
                     } else {
                         setNumerationData({});
                     }
@@ -355,12 +355,31 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType }) => 
             });
     };
 
-    console.log(newNumberRange)
     useEffect(() => {
         if (numerationType) {
             fetchNumerationData();
         }
     }, [numerationType]);
+
+    const handleSaveButton = () => {
+        let numerationData = {
+            counterLength: newNumberRange.serialNumber,
+            datePart: newNumberRange.datePart,
+            prefix: newNumberRange.prefix,
+            relationKind: numerationType,
+            suffix: newNumberRange.surfix,
+            placeHolder1: newNumberRange.placeholder1,
+            placeHolder2: newNumberRange.placeholder2,
+            placeHolder3: newNumberRange.placeholder3,
+            isPeriodic: newNumberRange.resetPeriodically,
+            frequency: newNumberRange.resetInterval,
+            subFrequency: newNumberRange.numberFrom,
+            currentValue: parseInt(newNumberRange.currentNumber),
+            increment: newNumberRange.numberIncrement,
+            startValue: newNumberRange.startFrom
+        }
+        handlePostData(numerationData)
+    }
 
     return (
         <Modal
@@ -369,9 +388,17 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType }) => 
             isActive={isActive}
             setIsAcive={setIsActive}
             isBig="is-big"
-        // onSubmit={handleSaveContactPerson}
+            onSubmit={handleSaveButton}
 
         >
+
+            <LoaderSpinner
+                visible={isLoading}
+                message={"Wait..."}
+                size="50"
+                containerStyle={{ position: "absolute" }}
+
+            />
             <div className="numeration-result">
                 <div className='column is-12' ref={containerRef}>
                     <div className='field m-1'>
@@ -404,8 +431,8 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType }) => 
                     </div>
                 </div>
             </div>
-            {/* onSubmit={handleSaveContactPerson} */}
-            <form >
+
+            <form onSubmit={handleSaveButton}>
 
                 <div className="columns is-multiline m-b-5">
                     <div className="column is-2">

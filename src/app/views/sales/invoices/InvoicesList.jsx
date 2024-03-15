@@ -24,6 +24,7 @@ import userPermissions from "../../../enums/user-permissions.enum";
 import Invoice from "../../../models/invoice.model";
 import resources from "../../../shared/resources/resources";
 import NumberRangeModal from "../../../shared/components/numberRange/NumberRangeModal";
+import LoaderSpinner from "../../../shared/components/loaderSpinner/LoaderSpinner";
 
 const PAYABLE_STATES = [
   InvoiceState.DUNNED,
@@ -242,6 +243,7 @@ const InvoicesList = () => {
 
   // for number range modal
   const [isModalActive, setIsModalActive] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // settings elements
   const elements = [
@@ -259,6 +261,30 @@ const InvoicesList = () => {
     },
   ]
 
+  // post data for numeration
+  const handlePostNumerationData = (numerationData) => {
+    setIsLoading(true)
+    groflexService
+      .request(`${config.resourceUrls.numerationInvoice}`, {
+        auth: true,
+        data: numerationData,
+        method: "POST",
+      })
+      .then((res) => {
+        if (res.body?.message) {
+          console.log(res.body?.message)
+          groflexService.toast.error("Something went wrong");
+          setIsLoading(false)
+          setIsModalActive(false)
+        } else {
+          groflexService.toast.success(resources.numerationSaveSuccess);
+          setIsLoading(false)
+          setIsModalActive(false)
+        }
+      });
+
+  }
+
 
   return (
     <PageContent
@@ -266,13 +292,18 @@ const InvoicesList = () => {
       titleActionContent={<Button isSuccess>Create Invoices</Button>}
       breadCrumbData={["Home", "Sales", "Invoices"]}
     >
-      {isModalActive && (
-        <NumberRangeModal
-          isActive={isModalActive}
-          setIsActive={setIsModalActive}
-          numerationType = 'invoice'
-        />
-      )}
+      {
+        isModalActive && (
+          <NumberRangeModal
+            isActive={isModalActive}
+            setIsActive={setIsModalActive}
+            numerationType='invoice'
+            handlePostData={handlePostNumerationData}
+            isLoading={isLoading}
+          />
+        )
+      }
+
 
       <ListAdvancedComponent
         onRowClicked={(e) => {
