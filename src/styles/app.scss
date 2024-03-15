@@ -11,6 +11,7 @@
 @import "./components/shared/editableIndicatorDiv/editableIndocatorDiv";
 @import "./components/shared/recipientComponent/recipientComponent";
 @import "./components/shared/kanbanBoard/kanbanBoard";
+@import "./components/shared/pdfViewer/pdfViewer";
 
 // VIEWS
 @import "./components/views/Articles/articleOverview";
@@ -48,6 +49,9 @@
 @import "./components/views/contacts/contactDetails";
 @import "./components/views/accounting/cashAndBank/bankList";
 @import "./components/views/accounting/cashAndBank/cashList";
+@import "./components/views/Sales/Timesheets/timesheetsBilling";
+@import "./components//views/inventoryDashboard/inventoryDashboard";
+@import "./components//views/inventoryDashboard/inventoryDashboardLastOrder";
 
 //EXTERNAL
 @import "../../node_modules/pikaday/css/pikaday";

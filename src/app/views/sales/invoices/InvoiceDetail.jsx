@@ -27,6 +27,7 @@ import accounting from "accounting";
 import Customer from "../../../models/customer.model";
 import Payment from "../../../models/payment.model";
 import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
+import PdfViewer from "../../../shared/components/pdfViewer/PdfViewer";
 // import TransactionEmail from "../../../models/transaction-email.model";
 
 const allowedPaymentTypesForCancel = [
@@ -386,7 +387,7 @@ const InvoicesDetail = () => {
 
   // console.log(new Invoice(invoiceData), "Invoice detail");
   // console.log(invoiceHistory, "History");
-  // console.log(pdfLink, "PDF liink");
+  console.log(pdfLink, "PDF liink");
 
   return (
     <PageContent
@@ -410,7 +411,8 @@ const InvoicesDetail = () => {
           >
             {/* PDF bruh */}
             {/* {pdfObject} */}
-            <img id="invoice-pdf-img" src={pdfLink} />
+            {/* <img id="invoice-pdf-img" src={pdfLink} /> */}
+            <PdfViewer pdfUrl={pdfLink} />
           </div>
         </div>
         <div className="column is-5">

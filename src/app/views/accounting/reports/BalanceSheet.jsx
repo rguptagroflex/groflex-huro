@@ -16,6 +16,7 @@ import DateInput from "../../../shared/components/datePicker/DateInput";
 import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
 import { ButtonGroup } from "../../../shared/components/button/buttonGroup/ButtonGroup";
 import ContextMenu from "../../../shared/components/contextMenu/ContextMenu";
+import { formatCurrency } from "../../../helpers/formatCurrency";
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
   currentMonth: moment().format("MMMM"),
@@ -199,7 +200,7 @@ const BalanceSheet = () => {
                 item.accountSubTypeId
                   .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
                   .slice(1),
-              column2: "₹" + " " + total.toString(),
+              column2: formatCurrency(total),
             });
           });
           setRowTotals(rowTotals);
@@ -288,6 +289,39 @@ const BalanceSheet = () => {
         link.click();
 
         document.body.removeChild(link);
+      });
+  };
+
+  const handlePrint = () => {
+    groflexService
+      .request(
+        `${config.resourceUrls.balanceSheet(
+          date.startDate,
+          date.endDate,
+          "pdf"
+        )}`,
+        {
+          auth: true,
+          method: "GET",
+          headers: { "Content-Type": `application/pdf` },
+        }
+      )
+      .then(({ body }) => {
+        if (body.size) {
+          groflexService.toast.success(
+            `Print initiated for BalanceSheet_${moment(date.startDate).format(
+              "DD-MM-YYYY"
+            )}_${moment(date.endDate).format("DD-MM-YYYY")} `
+          );
+        }
+        var blob = new Blob([body], { type: "application/pdf" });
+
+        var link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.target = "_blank";
+        link.setAttribute("rel", "noopener noreferrer");
+
+        link.click();
       });
   };
 
@@ -386,6 +420,7 @@ const BalanceSheet = () => {
             <Button
               icon={<i className="fa-solid fa-print"></i>}
               className={"utility-btn"}
+              onClick={handlePrint}
             >
               Print
             </Button>
@@ -422,7 +457,9 @@ const BalanceSheet = () => {
         handleSendEmail={handleSendEmail}
         sendEmailFormData={sendEmailFormData}
         setSendEmailFormData={setSendEmailFormData}
-        fileName={"BalanceSheet"}
+        fileName={`BalanceSheet_${moment(date.startDate).format(
+          "DD-MM-YYYY"
+        )}_${moment(date.endDate).format("DD-MM-YYYY")}`}
         title={"Send Balance Sheet"}
       />
     </PageContent>

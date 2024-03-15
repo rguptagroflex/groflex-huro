@@ -93,6 +93,18 @@ const resourceUrls = {
   //Transaction
   transaction: `${resourceHost}bankTransaction?offset=0&searchText=&limit=9999999&orderBy=date&desc=true`,
   bank: `${resourceHost}bank`,
+  // Debit notes
+  expenseCancellation: `${resourceHost}expenseCancellation?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=debitsAndBalance&trigger=true`,
+  // Credit notes
+  cancellation: `${resourceHost}cancellation?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=creditsAndBalance&trigger=true`,
+  //Expenditure
+  expenses: `${resourceHost}expense?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all`,
+  expense: `${resourceHost}expense/`,
+  // Chart of Accounts
+  chartOfAccounts: `${resourceHost}chartofaccount?offset=0&searchText=&limit=9999999&orderBy=accountName&desc=false`,
+  chartOfAccount: `${resourceHost}chartofaccount/`,
+  accountType: `${resourceHost}accountType?offset=0&searchText=&limit=9999999&orderBy=name&desc=false`,
+
   //Reports Balance Sheet
   balanceSheet: (startDate, endDate, fileType) =>
     `${resourceHost}accountingReport/balanceSheet/${startDate}/${endDate}?type=${fileType}`,
@@ -107,6 +119,20 @@ const resourceUrls = {
     `${resourceHost}accountingReport/sendAccountingReportEmail/${reportType}/${startDate}/${endDate}`,
   gstReportExportSummary: `${resourceHost}accountantExport/?offset=0&limit=5&orderBy=createdAt&desc=true`,
   exportGstReport: `${resourceHost}accountantExport/`,
+
+  //InventoryDashboard
+  lastOrder: `${resourceHost}/inventoryDashboard/lastPurchaseOrder?limit=6`,
+  topAndLowSellingArticle: (startDate, endDate) =>
+    `${resourceHost}/inventoryDashboard/topAndlowSellingArticle?orderBy=ASC&limit=10&year=true&month=false&week=false&lastMonth=false&secondLastMonth=false&startDate=${startDate}&endDate=${endDate}`,
+  articleLowOnStock: (value) =>
+    `${resourceHost}/inventoryDashboard/lowStockArticle?byCategory=${value}&limit=6`,
+  profitAndLoss: `${resourceHost}/inventoryDashboard/profitAndLoss?year=true&month=false&week=false&lastMonth=false&secondLastMonth=false`,
+  salesAndPurchase: `${resourceHost}/inventoryDashboard/saleAndPurchase?year=true&month=false&week=false&lastMonth=false&secondLastMonth=false`,
+  //Stock Movement
+  stockMovement1: `${resourceHost}inventory/history?offset=0&searchText=&limit=9999999&orderBy=itemModifiedDate&desc=false`,
+  stockMovement2: `${resourceHost}inventory/?offset=0&searchText=&limit=9999999&orderBy=articleId&desc=false`,
+  //Purchase Orders
+  purchase: `${resourceHost}purchaseOrder?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,
 
   //Teams
   teamsList: `${resourceHost}user/list`,
@@ -165,7 +191,10 @@ const modules = {
       { label: "Transactions", route: "/accounting/transactions" },
       { label: "Cash and Bank", route: "/accounting/cash-and-bank" },
       { label: "Debit Notes", route: "/accounting/debit-notes" },
+      { label: "Credit Notes", route: "/accounting/credit-notes" },
+      { label: "Expenditure", route: "/accounting/expenses" },
       { label: "Reports", route: "/accounting/reports" },
+      { label: "Chart of Accounts", route: "/accounting/chart-of-accounts" },
     ],
   },
   inventory: {
@@ -174,6 +203,7 @@ const modules = {
     links: [
       { label: "Dashboard", route: "/inventory/dashboard" },
       { label: "Purchase Order", route: "/inventory/purchase-orders" },
+      { label: "Stock Movement", route: "inventory/stock-movement" },
       { label: "Sales Order", route: "/inventory/sales-orders" },
       {
         label: "Reporting & Analytics",

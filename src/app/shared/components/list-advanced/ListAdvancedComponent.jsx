@@ -46,7 +46,6 @@ export const ListAdvancedComponent = ({
     headerName: "",
     cellRenderer: customActionCellRenderer,
     flex: 1,
-    resizable: false,
     cellStyle: {
       textAlign: "center",
       overflow: "visible",

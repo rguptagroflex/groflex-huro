@@ -108,7 +108,8 @@ const Contacts = () => {
             headerName: "Type",
             cellRenderer: (evt) => {
               // return getCompanyPersonIcon(evt.value, 20, true);
-              return getIconType(evt.value);
+              // return getIconType(evt.value);
+              return evt.value === "company" ? "Company" : "Person";
             },
             cellStyle: {
               display: "flex",

@@ -11,6 +11,7 @@ import DateInput from "../../../shared/components/datePicker/DateInput";
 import ContextMenu from "../../../shared/components/contextMenu/ContextMenu";
 import { ButtonGroup } from "../../../shared/components/button/buttonGroup/ButtonGroup";
 import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
+import { formatCurrency } from "../../../helpers/formatCurrency";
 
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
@@ -235,6 +236,40 @@ const CashFlow = () => {
       });
   };
 
+  const handlePrint = () => {
+    const exportType = "pdf";
+    groflexService
+      .request(
+        `${config.resourceUrls.cashFlow(
+          date.startDate,
+          date.endDate,
+          exportType
+        )}`,
+        {
+          auth: true,
+          method: "GET",
+          headers: { "Content-Type": `application/${exportType}` },
+        }
+      )
+      .then(({ body }) => {
+        if (body.size) {
+          groflexService.toast.success(
+            `Print initiated for CashFlow_${moment(date.startDate).format(
+              "DD-MM-YYYY"
+            )}_${moment(date.endDate).format("DD-MM-YYYY")}`
+          );
+        }
+        var blob = new Blob([body], { type: "application/pdf" });
+
+        var link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.target = "_blank";
+        link.setAttribute("rel", "noopener noreferrer");
+
+        link.click();
+      });
+  };
+
   const dateOptions = [
     {
       label: dateFilterTypes.currentMonth,
@@ -328,6 +363,7 @@ const CashFlow = () => {
             <Button
               icon={<i className="fa-solid fa-print"></i>}
               className={"utility-btn"}
+              onClick={handlePrint}
             >
               Print
             </Button>
@@ -382,7 +418,7 @@ const CashFlow = () => {
                                       .slice(1)}
                                 </td>
                                 <td className="row-data">
-                                  {"₹" + " " + total}
+                                  {formatCurrency(total)}
                                 </td>
                               </tr>
                             );
@@ -404,7 +440,7 @@ const CashFlow = () => {
                           color: "black",
                         }}
                       >
-                        ₹{totalValue}
+                        {formatCurrency(totalValue)}
                       </td>
                     </tr>
                   </tbody>
@@ -422,7 +458,9 @@ const CashFlow = () => {
         handleSendEmail={handleSendEmail}
         sendEmailFormData={sendEmailFormData}
         setSendEmailFormData={setSendEmailFormData}
-        fileName={"CashFlow"}
+        fileName={`CashFlow_${moment(date.startDate).format(
+          "DD-MM-YYYY"
+        )}_${moment(date.endDate).format("DD-MM-YYYY")}`}
         title={"Send cash flow statement"}
       />
     </PageContent>

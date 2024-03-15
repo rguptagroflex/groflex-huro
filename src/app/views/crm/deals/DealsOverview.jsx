@@ -135,6 +135,8 @@ const DealsOverview = () => {
     },
     columnOrder: ["column-1", "column-2", "column-3"],
   };
+
+  const [board, setBoard] = useState(initialData);
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
   const dealsSummary = [
@@ -349,7 +351,7 @@ const DealsOverview = () => {
                 return createServiceColumn(column);
               })}
             </div> */}
-            {/* <KanbanBoard initialBoard={initialData} /> */}
+            <KanbanBoard setBoard={setBoard} board={board} />
           </AdvancedCard>
         </div>
       </div>

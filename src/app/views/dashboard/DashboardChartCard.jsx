@@ -17,6 +17,7 @@ import {
 
 import CreateChart from "../../shared/components/chartjs/CreateChart";
 import DateInput from "../../shared/components/datePicker/DateInput";
+import { formatCurrency } from "../../helpers/formatCurrency";
 
 ChartJS.register(
   CategoryScale,
@@ -251,7 +252,9 @@ const DashboardChartCard = ({
         {chartType === false && (
           <div className="pie-chart-label-container">
             <div className="container-text">{pieChartSummary.label}</div>
-            <div className="contianer-value">₹ {pieChartSummary.value}</div>
+            <div className="contianer-value">
+              {formatCurrency(pieChartSummary.value)}
+            </div>
           </div>
         )}
 
@@ -281,7 +284,8 @@ const DashboardChartCard = ({
                 />
               </p>
               <p className="value-category-value">
-                ₹ {parseFloat(entry.value).toFixed(0)} <span>{"| "} 100 %</span>
+                {formatCurrency(parseFloat(entry.value).toFixed(0))}{" "}
+                <span>{"| "} 100 %</span>
               </p>
             </div>
           </div>
