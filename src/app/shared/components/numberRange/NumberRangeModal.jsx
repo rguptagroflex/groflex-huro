@@ -121,6 +121,14 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
             placeholder1: options.value
         }));
     };
+    const handleViewNumberChange = (event) => {
+        console.log(event.target.value)
+        setNewNumberRange((prevNewNumberRange) => ({
+            ...prevNewNumberRange,
+            currentNumber: event.target.value,
+            currentValue: parseInt(event.target.value)
+        }));
+    };
     const handlePlaceHolder2Change = (options) => {
         setNewNumberRange((prevNewNumberRange) => ({
             ...prevNewNumberRange,
@@ -341,8 +349,8 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
                             numberIncrement: numerationData.increment,
                             startFrom: numerationData.startValue,
                             numberFrom: numerationData.subFrequency,
-                            currentNumber: String(numerationData.currentValue).padStart(numerationData.counterLength, '0'),
-                            currentValue: numerationData.currentValue
+                            currentNumber: String(numerationData.currentValue + 1).padStart(numerationData.counterLength, '0'),
+                            currentValue: numerationData.currentValue + 1
                         }));
                         handleDatePartChange({ value: numerationData.datePart })
                     } else {
@@ -380,6 +388,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
         }
         handlePostData(numerationData)
     }
+    console.log(newNumberRange)
 
     return (
         <Modal
@@ -420,7 +429,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
                             placeholder={newNumberRange.currentNumber}
                             value={newNumberRange.currentNumber}
                             // defaultValue= {newNumberRange.currentNumber}
-                            onChange={handleInputChange}
+                            onChange={handleViewNumberChange}
                         />
                     </div>
                     <div className='field m-1'>
@@ -463,7 +472,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
                             <label>Date</label>
                             <SelectInput
                                 options={dateOptions}
-                                value={newNumberRange.formattedDatePart}
+                                value={newNumberRange.datePart}
                                 placeholder={"None"}
                                 onChange={handleDatePartChange}
                             />
@@ -507,6 +516,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
                             <Input
                                 type="text"
                                 name="surfix"
+                                maxLength="3"
                                 placeholder=""
                                 value={newNumberRange.surfix}
                                 onChange={handleInputChange}
