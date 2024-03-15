@@ -91,6 +91,16 @@ function App() {
             path="sales/invoices/edit/:invoiceId"
             element={<InvoiceEditWrapper />}
           />
+          {/* Proforma Invoice */}
+          <Route path="sales/proforma-invoices" element={<InvoicesList />} />
+          <Route
+            path="sales/proforma-invoices/:invoiceId"
+            element={<InvoiceDetail />}
+          />
+          <Route
+            path="sales/proforma-invoices/edit/:proformaInvoiceId"
+            element={<InvoiceEditWrapper />}
+          />
           {/* Quotation */}
           <Route path="sales/quotations" element={<QuotationsList />} />
           <Route

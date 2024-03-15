@@ -3,6 +3,7 @@ import React from "react";
 export const Input = ({
   type = "text",
   placeholder,
+  label,
   focusType,
   helpText,
   isRounded,
@@ -16,6 +17,7 @@ export const Input = ({
   onChange,
   rightIcon,
   onBlur,
+  disabled,
   ...rest
 }) => {
   const getFocusType = () => {
@@ -69,6 +71,7 @@ export const Input = ({
   };
   return (
     <div className="field">
+      <label>{label}</label>
       <div className={`control ${getControlClassOptions()}`}>
         <input
           style={errorStyles.border}
@@ -78,6 +81,7 @@ export const Input = ({
           value={value}
           onChange={onChange}
           onBlur={onBlur}
+          disabled={disabled}
           // autoComplete="on"
           {...rest}
         />

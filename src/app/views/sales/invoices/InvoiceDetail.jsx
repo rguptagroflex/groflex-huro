@@ -23,6 +23,11 @@ import {
   PAYMENT_TYPE_LESS_TDSCHARGE,
 } from "../../../helpers/constants";
 import RegisterPaymentModal from "./RegisterPaymentModal";
+import accounting from "accounting";
+import Customer from "../../../models/customer.model";
+import Payment from "../../../models/payment.model";
+import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
+// import TransactionEmail from "../../../models/transaction-email.model";
 
 const allowedPaymentTypesForCancel = [
   PAYMENT_TYPE_LESS_BANKCHARGE,
@@ -32,14 +37,25 @@ const allowedPaymentTypesForCancel = [
 
 const InvoicesDetail = () => {
   const [refresh, setRefresh] = useState(false);
+  const [hoveringLoader, setHoveringLoading] = useState(false);
   const [invoiceData, setInvoiceData] = useState();
   const [invoiceHistory, setInvoiceHistory] = useState();
   const [pdfLink, setPdfLink] = useState();
   const [letterElements, setLetterElements] = useState();
   const [finalizeModalOpen, setFinalizeModalOpen] = useState(false);
-  const [reminderModalOpen, setReminderModalOpen] = useState(false);
   const [registerPaymentModalOpen, setRegisterPaymentModalOpen] =
     useState(false);
+  const [sendEmailModalActive, setSendEmailModalActive] = useState(false);
+  const [customer, setCustomer] = useState();
+  const [payment, setPayment] = useState();
+  const [reminderModalOpen, setReminderModalOpen] = useState(false);
+  const [sendEmailForm, setSendEmailForm] = useState({
+    emails: "",
+    subject: "",
+    message: "",
+    pdf: true,
+    csv: false,
+  });
 
   const { invoiceId } = useParams();
   const navigate = useNavigate();
@@ -179,9 +195,6 @@ const InvoicesDetail = () => {
 
     return invoiceInfo;
   };
-  const refreshPage = () => {
-    setRefresh(!refresh);
-  };
 
   const openFinalizeModal = () => {
     setFinalizeModalOpen(true);
@@ -196,7 +209,34 @@ const InvoicesDetail = () => {
     setReminderModalOpen(false);
   };
   const openRegisterPaymentModal = () => {
-    setRegisterPaymentModalOpen(true);
+    const invoice = new Invoice(invoiceData);
+    const openAmount = parseFloat(
+      accounting.toFixed(invoice.outstandingAmount, 2),
+      10
+    );
+    const { id, displayName, number, type, customerId } = invoice;
+
+    const payment = new Payment({
+      customerName: displayName,
+      invoiceId: id,
+      invoiceNumber: number,
+      invoiceType: type,
+      amount: openAmount,
+      custId: customerId,
+      outstandingBalance: openAmount,
+    });
+    setHoveringLoading(true);
+    groflexService
+      .request(`${oldConfig.customer.resourceUrl}/${customerId}`, {
+        auth: true,
+      })
+      .then((response) => {
+        const customer = new Customer(response.body.data);
+        setCustomer(customer);
+        setPayment(payment);
+        setHoveringLoading(false);
+        setRegisterPaymentModalOpen(true);
+      });
   };
   const closeRegisterPaymentModal = () => {
     setRegisterPaymentModalOpen(false);
@@ -208,7 +248,7 @@ const InvoicesDetail = () => {
       .request(lockEndpoint, { auth: true, method: "PUT" })
       .then(() => {
         closeFinalizeModal();
-        refreshPage();
+        groflexService.router.reload();
         groflexService.toast.success(resources.invoiceLockSuccessMessage);
         // TODO: Handle Finalize Invoice Errors
         // checkAchievementNotification();
@@ -246,7 +286,7 @@ const InvoicesDetail = () => {
       });
   };
 
-  const getPageButtons = () => {
+  const geTopbarButtons = () => {
     const invoice = new Invoice(invoiceData);
     let buttonsFragment = "";
     let createReminder = "";
@@ -295,6 +335,36 @@ const InvoicesDetail = () => {
     );
   };
 
+  const openSendReminderModal = () => {
+    setReminderModalOpen(false);
+    setSendEmailModalActive(true);
+  };
+
+  const handleSendEmailReminder = () => {
+    // const emailContent = {
+    //   attachmentName: `Invoice No. ${invoiceData?.number}`,
+    //   attachments: [],
+    //   recipients: [sendEmailForm.emails],
+    //   sendCopy: false,
+    //   subject: sendEmailForm.subject,
+    //   text: sendEmailForm.message,
+    //   textAdditional: "",
+    // };
+
+    // const invoiceModel = new Invoice(invoiceData);
+
+    // const emailModel = new TransactionEmail({
+    //   type: "invoice",
+    // });
+    // emailModel.invoice = invoiceModel;
+
+    // const endpoint = `${oldConfig.resourceHost}${emailModel.type}/${
+    //   emailModel[emailModel.type].id
+    // }/send`;
+    // console.log(endpoint, "ENDPOINT FOR SENd email");
+    // // groflexService.request();
+  };
+
   const getPageTitle = () => {
     let pageTitle = "";
     if (invoiceData?.state === InvoiceState.DRAFT) {
@@ -311,7 +381,7 @@ const InvoicesDetail = () => {
     invoiceData?.totalGross - invoiceData?.outstandingAmount
   );
   const invoiceInfoArr = getInvoiceInfo();
-  const pageButtons = getPageButtons();
+  const topbarButtons = geTopbarButtons();
   const pageTitle = getPageTitle();
 
   // console.log(new Invoice(invoiceData), "Invoice detail");
@@ -322,8 +392,9 @@ const InvoicesDetail = () => {
     <PageContent
       navigateBackTo={"/sales/invoices"}
       loading={!invoiceData?.id}
+      hoveringLoader={hoveringLoader}
       title={invoiceData?.id ? pageTitle : ""}
-      titleActionContent={pageButtons}
+      titleActionContent={topbarButtons}
     >
       <div className="columns">
         <div className="column is-7">
@@ -366,27 +437,46 @@ const InvoicesDetail = () => {
       >
         <div>{resources.invoiceLockModalContentText}</div>
       </Modal>
+
       <Modal
         isActive={reminderModalOpen}
         closeModalFunction={closeReminderModal}
         title={resources.str_createPaymentReminder}
-        onSubmit={() => {}}
+        onSubmit={openSendReminderModal}
         submitBtnName="Send via email"
-        otherActionButtons={
-          <Button onClick={() => {}} isPrimary>
-            Show PDF
-          </Button>
-        }
+        // otherActionButtons={
+        //   <Button onClick={() => {}} isPrimary>
+        //     Show PDF
+        //   </Button>
+        // }
       >
         <div>
           Do you want to create a payment reminder for the selected invoice?
         </div>
       </Modal>
-      <RegisterPaymentModal
-        isActive={registerPaymentModalOpen}
-        closeFunction={closeRegisterPaymentModal}
-        onSubmit={() => {}}
-        invoice={invoiceData}
+
+      {registerPaymentModalOpen && (
+        <RegisterPaymentModal
+          isActive={registerPaymentModalOpen}
+          closeFunction={closeRegisterPaymentModal}
+          invoice={new Invoice(invoiceData)}
+          customer={customer}
+          payment={payment}
+          onSubmit={() => {
+            groflexService.router.reload();
+          }}
+          // dunning={dunning}
+        />
+      )}
+
+      <SendEmailModal
+        isEmailModalVisible={sendEmailModalActive}
+        setIsEmailModalVisible={setSendEmailModalActive}
+        handleSendEmail={handleSendEmailReminder}
+        title={resources.dunnningEmailSubheadline}
+        fileName={`Invoice No. ${invoiceData?.number}`}
+        sendEmailFormData={sendEmailForm}
+        setSendEmailFormData={setSendEmailForm}
       />
     </PageContent>
   );
