@@ -114,6 +114,9 @@ const resourceUrls = {
   inviteCa: `${resourceHost}user/cadetails`,
   updateUserRole: (userId) => `${resourceHost}user/${userId}/role`,
   deleteUser: `${resourceHost}tenant/user/`,
+
+  // numerations
+  numerationList: `${resourceHost}setting/numeration`
 };
 
 const checkLoginTokenIsValid = () => {

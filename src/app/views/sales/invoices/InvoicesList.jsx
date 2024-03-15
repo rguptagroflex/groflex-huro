@@ -239,6 +239,8 @@ const InvoicesList = () => {
   };
 
   console.log(groflexService.user, "USER FROm INCOICE LIST");
+
+  // for number range modal
   const [isModalActive, setIsModalActive] = useState(false);
 
   // settings elements
@@ -268,6 +270,7 @@ const InvoicesList = () => {
         <NumberRangeModal
           isActive={isModalActive}
           setIsActive={setIsModalActive}
+          numerationType = 'invoice'
         />
       )}
 

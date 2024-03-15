@@ -7,6 +7,8 @@ import { AdvancedCard } from '../cards/AdvancedCard';
 import { Switch } from '../switch/Switch';
 import { TextArea } from '../textArea/TextArea';
 import moment from 'moment';
+import GroflexService from '../../../services/groflex.service';
+import config from "../../../../../newConfig";
 
 const INVOICE_VIEW = "invoice";
 const OFFER_VIEW = "offer";
@@ -23,10 +25,14 @@ const FREQUENCY_YEAR = "yearly";
 const FREQUENCY_MONTH = "monthly";
 const FREQUENCY_DAY = "daily";
 
-const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
+const NumberRangeModal = ({ isActive = false, setIsActive, numerationType }) => {
+
+    const [numerationData, setNumerationData] = useState({})
+
     const [newNumberRange, setNewNumberRange] = useState({
         prefix: "",
         datePart: "",
+        formattedDatePart: "",
         serialNumber: 4,
         surfix: "",
         placeholder1: "",
@@ -37,7 +43,8 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
         numberIncrement: 1,
         startFrom: 1,
         numberFrom: "",
-        currentNumber: "0001"
+        currentNumber: "",
+        currentValue: "1"
     });
 
     const handleInputChange = (event) => {
@@ -48,17 +55,63 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
         }));
     };
 
-    const handleResetPeriodically = () => {
+    const handleResetPeriodically = (e) => {
+        let isPeriodically = e.target.checked
         setNewNumberRange({
             ...newNumberRange,
             resetPeriodically: !newNumberRange.resetPeriodically,
         });
+        if (isPeriodically && newNumberRange.resetInterval == FREQUENCY_YEAR) {
+            handleDatePartChange({ value: FY_KEY })
+        } else if (isPeriodically && newNumberRange.resetInterval == FREQUENCY_MONTH) {
+            handleDatePartChange({ value: YEAR_SHORT_MONTH_KEY })
+            setNewNumberRange((prevNewNumberRange) => ({
+                ...prevNewNumberRange,
+                numberFrom: ''
+            }));
+        } else if (isPeriodically && newNumberRange.resetInterval == FREQUENCY_DAY) {
+            handleDatePartChange({ value: YEAR_SHORT_MONTH_DAY_KEY })
+            setNewNumberRange((prevNewNumberRange) => ({
+                ...prevNewNumberRange,
+                numberFrom: ''
+            }));
+        } else {
+            setNewNumberRange((prevNewNumberRange) => ({
+                ...prevNewNumberRange,
+                formattedDatePart: '',
+                datePart: '',
+                numberFrom: ''
+            }));
+        }
+
     };
     const handleResetIntervalChange = (options) => {
         setNewNumberRange((prevNewNumberRange) => ({
             ...prevNewNumberRange,
             resetInterval: options.value
         }));
+        if (options.value == FREQUENCY_YEAR) {
+            handleDatePartChange({ value: FY_KEY })
+        } else if (options.value == FREQUENCY_MONTH) {
+            handleDatePartChange({ value: YEAR_SHORT_MONTH_KEY })
+            setNewNumberRange((prevNewNumberRange) => ({
+                ...prevNewNumberRange,
+                numberFrom: ''
+            }));
+        } else if (options.value == FREQUENCY_DAY) {
+            handleDatePartChange({ value: YEAR_SHORT_MONTH_DAY_KEY })
+            setNewNumberRange((prevNewNumberRange) => ({
+                ...prevNewNumberRange,
+                numberFrom: ''
+            }));
+        } else {
+            setNewNumberRange((prevNewNumberRange) => ({
+                ...prevNewNumberRange,
+                formattedDatePart: '',
+                datePart: '',
+                numberFrom: ''
+            }));
+        }
     };
 
     const handlePlaceHolder1Change = (options) => {
@@ -79,31 +132,25 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
             placeholder3: options.value
         }));
     };
-    const handleSerialNumberChange = (options) => {
-        const optionValue = options.value;
-        const currentNumber = newNumberRange.currentNumber;
-
-        // Pad the current number with leading zeros
-        const paddedCurrentNumber = currentNumber.toString().padStart(optionValue, '0');
-
-        // Update serial number based on the option value
-        let newCurrentNumber;
-        if (optionValue >= currentNumber.toString().length) {
-            newCurrentNumber = paddedCurrentNumber;
-        } else {
-            newCurrentNumber = currentNumber.toString();
-        }
-
-        // Update state with the new serial number
+    const handleSubFrequencyChange = (options) => {
         setNewNumberRange((prevNewNumberRange) => ({
             ...prevNewNumberRange,
-            currentNumber: newCurrentNumber
+            numberFrom: options.value
         }));
+    };
+
+    const handleSerialNumberChange = (options) => {
+        console.log(newNumberRange.currentValue)
         setNewNumberRange((prevNewNumberRange) => ({
             ...prevNewNumberRange,
             serialNumber: options.value
         }));
-    };
+
+        setNewNumberRange((prevNewNumberRange) => ({
+            ...prevNewNumberRange,
+            currentNumber: String(newNumberRange.currentValue).padStart(options.value, '0')
+        }));
+    }
 
     const handleDatePartChange = (options) => {
         let formattedDate = '';
@@ -139,49 +186,10 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
         // Update state with the formattedDate
         setNewNumberRange((prevNewNumberRange) => ({
             ...prevNewNumberRange,
-            datePart: formattedDate
+            formattedDatePart: formattedDate,
+            datePart: options.value
         }));
     };
-    console.log(newNumberRange.currentNumber)
-
-    // const handlePositionChange = (options) => {
-    //     setNewContactPerson((prevContactPerson) => ({
-    //         ...prevContactPerson,
-    //         job: options.value
-    //     }));
-    // };
-
-    // const handleMobileChange = (e) => {
-    //     const inputValue = e.target.value;
-    //     const mobile = inputValue.slice(0, 10); // Extract the first 10 digits
-
-    //     if (mobile.length === 10) {
-    //         e.target.blur();
-    //     }
-
-    //     setNewContactPerson({ ...newContactPerson, mobile: mobile });
-    // };
-
-    // const handleSaveContactPerson = (event) => {
-    //     event.preventDefault();
-
-    //     let updatedContactPersons = [];
-
-    //     if (Array.isArray(companyInfo.contactPersons)) {
-    //         updatedContactPersons = [...companyInfo.contactPersons];
-    //     } else {
-    //         console.error("companyInfo.contactPersons is not an array. Initializing as an empty array.");
-    //     }
-
-    //     const updatedCompanyInfo = {
-    //         ...companyInfo,
-    //         contactPersons: [...updatedContactPersons, newContactPerson]
-    //     };
-
-    //     setCompanyInfo(updatedCompanyInfo);
-    //     setIsActive(false);
-    // };
-    // const dateData = {None: 'None', YYMM: 'YYMM', YYYYMM: 'YYYYMM'}
 
     const dateOptions = [
         {
@@ -242,8 +250,8 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
 
     const placeholderLoadedOptions = [
         {
-            label: 'Empty',
-            value: "",
+            label: "",
+            value: ""
         },
         {
             label: "-",
@@ -306,6 +314,54 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
             document.removeEventListener('click', handleDocumentClick);
         };
     }, []);
+
+    // get existing Numeration data
+    const fetchNumerationData = () => {
+        GroflexService.request(`${config.resourceUrls.numerationList}`, {
+            method: "GET",
+            auth: true,
+        })
+            .then(async (response) => {
+                const responseData = response.body.data;
+                if (numerationData) {
+                    if (numerationType && responseData.hasOwnProperty(numerationType)) {
+                        // setNumerationData(numerationData[numerationType]);
+                        let numerationData = responseData[numerationType]
+                        console.log(numerationData)
+                        setNewNumberRange(prevState => ({
+                            ...prevState,
+                            prefix: numerationData.prefix,
+                            datePart: numerationData.datePart,
+                            serialNumber: numerationData.counterLength,
+                            surfix: numerationData.suffix,
+                            placeholder1: numerationData.placeHolder1,
+                            placeholder2: numerationData.placeHolder2,
+                            placeholder3: numerationData.placeHolder3,
+                            resetPeriodically: numerationData.isPeriodic,
+                            resetInterval: numerationData.frequency || 'yearly',
+                            numberIncrement: numerationData.increment,
+                            startFrom: numerationData.startValue,
+                            numberFrom: numerationData.subFrequency,
+                            currentNumber: String(numerationData.currentValue).padStart(numerationData.counterLength, '0'),
+                            currentValue: numerationData.currentValue
+                        }));
+                    } else {
+                        setNumerationData({});
+                    }
+                }
+            })
+            .catch((error) => {
+                console.error("Error fetching contact:", error);
+            });
+    };
+
+    console.log(newNumberRange)
+    useEffect(() => {
+        if (numerationType) {
+            fetchNumerationData();
+        }
+    }, [numerationType]);
+
     return (
         <Modal
             title="Number Range"
@@ -325,7 +381,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
                         <span className={clickedElement === 'placeHolder1Hover' ? "triggeredHover" : ""} onClick={() => handleClick('placeHolder1Hover')}>{newNumberRange.placeholder1}</span>
                     </div>
                     <div className='field m-1'>
-                        <span className={clickedElement === 'datePart' ? "triggeredHover" : ""} onClick={() => handleClick('datePart')}>{newNumberRange.datePart}</span>
+                        <span className={clickedElement === 'datePart' ? "triggeredHover" : ""} onClick={() => handleClick('datePart')}>{newNumberRange.formattedDatePart}</span>
                     </div>
                     <div className='field m-1'>
                         <span className={clickedElement === 'placeHolder2Hover' ? "triggeredHover" : ""} onClick={() => handleClick('placeHolder2Hover')}>{newNumberRange.placeholder2}</span>
@@ -369,8 +425,8 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
                         <div className="field numeration-dropdown">
                             <SelectInput
                                 options={placeholderLoadedOptions}
-                                // value={newNumberRange.placeholder1}
-                                placeholder={''}
+                                value={newNumberRange.placeholder1}
+                                // placeholder={''}
                                 onChange={handlePlaceHolder1Change}
                             />
                         </div>
@@ -380,7 +436,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
                             <label>Date</label>
                             <SelectInput
                                 options={dateOptions}
-                                value={newNumberRange.datePart}
+                                value={newNumberRange.formattedDatePart}
                                 placeholder={"None"}
                                 onChange={handleDatePartChange}
                             />
@@ -390,7 +446,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
                         <div className="field numeration-dropdown">
                             <SelectInput
                                 options={placeholderLoadedOptions}
-                                // value={newNumberRange.placeholder1}
+                                value={newNumberRange.placeholder2}
                                 placeholder={''}
                                 onChange={handlePlaceHolder2Change}
                             />
@@ -411,7 +467,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
                         <div className="field numeration-dropdown">
                             <SelectInput
                                 options={placeholderLoadedOptions}
-                                // value={newNumberRange.placeholder3}
+                                value={newNumberRange.placeholder3}
                                 // placeholder={newNumberRange.placeholder3}
                                 onChange={handlePlaceHolder3Change}
                                 placeholder={""}
@@ -481,7 +537,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, }) => {
                                                 options={numberFrom}
                                                 value={newNumberRange.numberFrom}
                                                 placeholder={'Choose'}
-                                            // onChange={handlePositionChange}
+                                                onChange={handleSubFrequencyChange}
                                             />
                                         </div>
                                     </div> : ''
