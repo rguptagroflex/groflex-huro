@@ -10,6 +10,8 @@ import moment from 'moment';
 import GroflexService from '../../../services/groflex.service';
 import config from "../../../../../newConfig";
 import LoaderSpinner from '../loaderSpinner/LoaderSpinner';
+import ErrorText from '../errorText/ErrorText';
+import resources from '../../resources/resources';
 
 const INVOICE_VIEW = "invoice";
 const OFFER_VIEW = "offer";
@@ -50,6 +52,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
+        validation(name, value)
         setNewNumberRange((prevNumberRange) => ({
             ...prevNumberRange,
             [name]: value
@@ -122,13 +125,16 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
         }));
     };
     const handleViewNumberChange = (event) => {
+        const { name, value } = event.target;
+        validation(name, value)
         console.log(event.target.value)
         setNewNumberRange((prevNewNumberRange) => ({
             ...prevNewNumberRange,
-            currentNumber: event.target.value,
+            currentNumber: String(event.target.value).padStart(newNumberRange.serialNumber, '0'),
             currentValue: parseInt(event.target.value)
         }));
     };
+
     const handlePlaceHolder2Change = (options) => {
         setNewNumberRange((prevNewNumberRange) => ({
             ...prevNewNumberRange,
@@ -382,13 +388,79 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
             isPeriodic: newNumberRange.resetPeriodically,
             frequency: newNumberRange.resetInterval,
             subFrequency: newNumberRange.numberFrom,
-            currentValue: parseInt(newNumberRange.currentNumber),
+            currentValue: parseInt(newNumberRange.currentNumber - 1),
             increment: newNumberRange.numberIncrement,
             startValue: newNumberRange.startFrom
         }
-        handlePostData(numerationData)
+
+        if(!error.prefix && !error.suffix && !error.currentNumber){
+            handlePostData(numerationData)
+        }else{
+            GroflexService.toast.error(`Input error!\n ${error.prefix} \n ${error.suffix} \n ${error.currentNumber}` )
+        }
     }
     console.log(newNumberRange)
+    const [error, setError] = useState({
+        prefix: "",
+        suffix: "",
+        currentNumber: ""
+    });
+
+    // validation
+    const validation = (name, value) => {
+        console.log(name, value)
+        if (value.length == 1 && name == 'prefix' && !isNaN(value.charAt(0))) {
+            setError({
+                ...error,
+                prefix: resources.numerationPrefixError,
+            });
+            return;
+        } else if (value.length == 2 && value.length !== 3 && name == 'prefix' && !isNaN(value.charAt(1))) {
+            setError({
+                ...error,
+                prefix: resources.numerationPrefixErrorMessage,
+            });
+            return;
+        } else if (value.length == 3 && name == 'prefix' && !isNaN(value.charAt(2))) {
+            setError({
+                ...error,
+                prefix: resources.numerationPrefixErrorMessage,
+            });
+            return;
+        } else if (value.length == 1 && name == 'surfix' && !isNaN(value.charAt(0))) {
+            setError({
+                ...error,
+                suffix: resources.numerationSuffixErrorMessage,
+            });
+            return;
+        } else if (value.length == 2 && value.length !== 3 && name == 'surfix' && !isNaN(value.charAt(1))) {
+            setError({
+                ...error,
+                suffix: resources.numberationSuffixError,
+            });
+            return;
+        } else if (value.length == 3 && name == 'surfix' && !isNaN(value.charAt(2))) {
+            setError({
+                ...error,
+                suffix: resources.numberationSuffixError,
+            });
+            return;
+        } else if (name == 'currentNumber' && isNaN(value)) {
+            setError({
+                ...error,
+                currentNumber: resources.numerationNumericError,
+            });
+        }
+        else {
+            setError({
+                ...error,
+                prefix: "",
+                suffix: "",
+                currentNumber: ""
+            });
+        }
+        return
+    }
 
     return (
         <Modal
@@ -422,14 +494,22 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
                     <div className='field m-1'>
                         <span className={clickedElement === 'placeHolder2Hover' ? "triggeredHover" : ""} onClick={() => handleClick('placeHolder2Hover')}>{newNumberRange.placeholder2}</span>
                     </div>
-                    <div className={`field numeration-input-box digits-${newNumberRange.serialNumber} m-1`}>
+                    <div className={`field numeration-input-box digits-${newNumberRange.serialNumber} m-1`}
+                    style={{display: "block"}}
+                    >
                         <InputAddons
                             type="text"
                             name="currentNumber"
-                            placeholder={newNumberRange.currentNumber}
+                            // placeholder={newNumberRange.currentNumber}
                             value={newNumberRange.currentNumber}
                             // defaultValue= {newNumberRange.currentNumber}
-                            onChange={handleViewNumberChange}
+                            // onChange= {handleViewNumberChange}
+                            onChange={handleInputChange}
+                            onBlur={handleViewNumberChange}
+                        />
+                        <ErrorText
+                            visible={error.currentNumber}
+                            text={error.currentNumber}
                         />
                     </div>
                     <div className='field m-1'>
@@ -454,6 +534,10 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
                                 maxLength="3"
                                 value={newNumberRange.prefix}
                                 onChange={handleInputChange}
+                            />
+                            <ErrorText
+                                visible={error.prefix}
+                                text={error.prefix}
                             />
                         </div>
                     </div>
@@ -520,6 +604,10 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
                                 placeholder=""
                                 value={newNumberRange.surfix}
                                 onChange={handleInputChange}
+                            />
+                            <ErrorText
+                                visible={error.suffix}
+                                text={error.suffix}
                             />
                         </div>
                     </div>
