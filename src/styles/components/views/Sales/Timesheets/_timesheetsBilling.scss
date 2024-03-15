@@ -1,5 +1,6 @@
 .timesheets-billing-main {
   .customer-info-card {
+    min-height: 222px;
     .sub-info-box {
       display: flex;
       justify-content: space-between;
@@ -8,6 +9,48 @@
         font-size: 15px;
         color: #888787;
         font-weight: 600;
+      }
+    }
+  }
+  .time-track-text-container {
+    margin-top: -100px;
+    position: relative;
+    width: 212px;
+    display: flex;
+    justify-content: space-between;
+    top: 130px;
+    .container-heading {
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .container-value {
+      font-weight: 600;
+      font-size: 18px;
+    }
+  }
+
+  .track-time-image-container {
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+    width: 321px;
+    left: 277px;
+    .time-track-text {
+      position: absolute;
+      right: 56px;
+      top: 34px;
+      text-align: center;
+
+      text-align: center;
+      .time-value {
+        color: #0071ca;
+        font-weight: 600;
+        font-size: 31px;
+      }
+      .price-value {
+        font-weight: 700;
+        color: #656768;
       }
     }
   }

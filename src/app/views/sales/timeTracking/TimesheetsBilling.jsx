@@ -14,6 +14,10 @@ import timesheetsSvg from "../../../../assets/groflex/icons/timesheetsIcon.svg";
 const TimesheetsBilling = () => {
   const { customerId, status } = useParams();
   const navigate = useNavigate();
+  const [workStats, setWorkStats] = useState({
+    priceTotal: 0,
+    time: "",
+  });
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     customerNo: "",
@@ -22,6 +26,10 @@ const TimesheetsBilling = () => {
   });
   useEffect(() => {
     fetchCustomerData();
+  }, []);
+
+  useEffect(() => {
+    fetchInvoiceData();
   }, []);
   const fetchCustomerData = () => {
     groflexService
@@ -45,7 +53,21 @@ const TimesheetsBilling = () => {
         `${oldConfig.timetracking.requestUrl.billing}${customerId}?status=${status}`,
         { auth: true }
       )
-      .then((res) => {});
+      .then((res) => {
+        let totalAmount = 0;
+        let totalTime = 0;
+        res.body.data.forEach((item) => {
+          totalAmount = totalAmount + item.priceTotal;
+          totalTime = totalTime + item.durationInMinutes;
+        });
+
+        const test = new Timetracking({ durationInMinutes: totalTime });
+
+        setWorkStats({
+          priceTotal: totalAmount,
+          time: test.trackedTimeString,
+        });
+      });
   };
   const actions = [
     { name: "Edit", icon: "edit" },
@@ -54,6 +76,7 @@ const TimesheetsBilling = () => {
   ];
 
   const handleActionClick = () => {};
+
   return (
     <PageContent
       title={customerInfo.name}
@@ -73,7 +96,7 @@ const TimesheetsBilling = () => {
       <div className="timesheets-billing-main">
         <div className="columns is-multiline">
           <div className="column is-5 customer-info-card">
-            <AdvancedCard type={"s-card"}>
+            <AdvancedCard type={"s-card"} style={{ minHeight: "200px" }}>
               <h2 style={{ marginBottom: "10px" }}>{customerInfo.name}</h2>
               <div className="sub-info-box">
                 <h2 className="sub-info-heading">Customer Number</h2>
@@ -94,8 +117,27 @@ const TimesheetsBilling = () => {
           <div className="column is-7">
             <AdvancedCard type={"s-card"}>
               <h2 className="title is-5 is-bold">Time Track</h2>
-              <div>hello</div>
-              <img src={timesheetsSvg} width={"130px"} height={"130px"} />
+              <div className="time-track-text-container">
+                <div className="time-container">
+                  <h2 className="container-heading">Total Hours</h2>
+                  <h2 className="container-value">{workStats.time}</h2>
+                </div>
+                <div className="price-container">
+                  <h2 className="container-heading">Total Price</h2>
+                  <h2 className="container-value" style={{ color: "#00a353" }}>
+                    {formatCurrency(workStats.priceTotal)}
+                  </h2>
+                </div>
+              </div>
+              <div className="track-time-image-container">
+                <div className="time-track-text">
+                  <div className="time-value">{workStats.time}</div>
+                  <div className="price-value">
+                    {formatCurrency(workStats.priceTotal)}
+                  </div>
+                </div>
+                <img src={timesheetsSvg} width={"166px"} height={"157px"} />
+              </div>
             </AdvancedCard>
           </div>
         </div>
