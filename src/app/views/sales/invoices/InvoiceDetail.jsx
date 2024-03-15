@@ -318,7 +318,7 @@ const InvoicesDetail = () => {
   return (
     <PageContent
       navigateBackTo={"/sales/invoices"}
-      // loading={!invoiceData?.id}
+      loading={!invoiceData?.id}
       title={invoiceData?.id ? pageTitle : ""}
       titleActionContent={pageButtons}
     >
