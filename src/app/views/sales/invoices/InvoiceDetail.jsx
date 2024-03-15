@@ -23,6 +23,7 @@ import {
   PAYMENT_TYPE_LESS_TDSCHARGE,
 } from "../../../helpers/constants";
 import RegisterPaymentModal from "./RegisterPaymentModal";
+import PdfViewer from "../../../shared/components/pdfViewer/PdfViewer";
 
 const allowedPaymentTypesForCancel = [
   PAYMENT_TYPE_LESS_BANKCHARGE,
@@ -312,12 +313,12 @@ const InvoicesDetail = () => {
 
   // console.log(new Invoice(invoiceData), "Invoice detail");
   // console.log(invoiceHistory, "History");
-  // console.log(pdfLink, "PDF liink");
+  console.log(pdfLink, "PDF liink");
 
   return (
     <PageContent
       navigateBackTo={"/sales/invoices"}
-      loading={!invoiceData?.id}
+      // loading={!invoiceData?.id}
       title={invoiceData?.id ? pageTitle : ""}
       titleActionContent={pageButtons}
     >
@@ -335,7 +336,8 @@ const InvoicesDetail = () => {
           >
             {/* PDF bruh */}
             {/* {pdfObject} */}
-            <img id="invoice-pdf-img" src={pdfLink} />
+            {/* <img id="invoice-pdf-img" src={pdfLink} /> */}
+            <PdfViewer pdfUrl={pdfLink} />
           </div>
         </div>
         <div className="column is-5">

@@ -1,21 +1,24 @@
 import { useState } from "react";
-import PageContent from "../../../shared/components/pageContent/PageContent";
-import { ListAdvancedComponent } from "../../../shared/components/list-advanced/ListAdvancedComponent";
-import config from "../../../../../newConfig";
-import { ListAdvancedDefaultSettings } from "../../../helpers/constants";
-import Modal from "../../../shared/components/modal/Modal";
-import { CustomShowHeaderSum } from "../../../shared/components/list-advanced/CustomShowHeaderSum";
-import moment from "moment";
-import { formatCurrency } from "../../../helpers/formatCurrency";
 
-const DebitNotesList = () => {
+import { ListAdvancedDefaultSettings } from "../../../helpers/constants";
+import { formatCurrency } from "../../../helpers/formatCurrency";
+import { CustomShowHeaderSum } from "../../../shared/components/list-advanced/CustomShowHeaderSum";
+import { ListAdvancedComponent } from "../../../shared/components/list-advanced/ListAdvancedComponent";
+import PageContent from "../../../shared/components/pageContent/PageContent";
+import moment from "moment";
+import Modal from "../../../shared/components/modal/Modal";
+import groflexService from "../../../services/groflex.service";
+import toastService from "../../../services/toast.service";
+import config from "../../../../../newConfig";
+
+const CreditNotesList = () => {
   let [isDeletingModalActive, setIsDeletingModalActive] = useState(false);
   let [deletingRowAndParams, setDeletingRowAndParams] = useState();
 
   return (
-    <PageContent title="Debit notes">
+    <PageContent title="Credit Notes">
       <ListAdvancedComponent
-        fetchUrl={config.resourceUrls.expenseCancellation}
+        fetchUrl={config.resourceUrls.cancellation}
         columnDefs={[
           {
             field: "number",
@@ -23,12 +26,12 @@ const DebitNotesList = () => {
           },
           {
             field: "customerData",
-            headerName: "Customer",
+            headerName: "Customer Name",
             valueFormatter: ({ value }) => value.name,
           },
           {
             field: "date",
-            headerName: "Date created",
+            headerName: "Date Created",
             valueFormatter: ({ value }) => moment(value).format("DD-MM-YYYY"),
           },
           {
@@ -88,6 +91,6 @@ const DebitNotesList = () => {
     </PageContent>
   );
 };
-export default DebitNotesList;
+export default CreditNotesList;
 
 const capitalize = (text) => text[0].toUpperCase() + text.slice(1);

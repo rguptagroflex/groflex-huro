@@ -8,7 +8,9 @@ import DateInput from "../../../shared/components/datePicker/DateInput";
 import { Button } from "../../../shared/components/button/Button";
 import groflexService from "../../../services/groflex.service";
 import config from "../../../../../newConfig";
-
+import FontAwesomeIcon from "../../../shared/fontAwesomeIcon/FontAwesomeIcon";
+import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
+import oldConfig from "../../../../../oldConfig";
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
   currentMonth: moment().format("MMMM"),
@@ -28,6 +30,15 @@ const GstReports = () => {
   const { companyAddress } = useSelector(
     (state) => state?.accountData?.tenantData || ""
   );
+  const [sendEmailFormData, setSendEmailFormData] = useState({
+    id: "",
+    subject: "",
+    emails: [],
+    message: "",
+    csv: true,
+    exportperiod: "",
+  });
+
   const [showCustomDateRangeSelector, setShowCustomDateRangeSelector] =
     useState(false);
   const [isEmailModalVisible, setIsEmailModalVisible] = useState(false);
@@ -157,10 +168,28 @@ const GstReports = () => {
         if (res && res.body) {
           res.body.data.forEach((item) => {
             rowData.push({
+              id: item.id,
+              documentUrl: item.documentUrl,
               date: moment(item.createdAt).format("DD-MM-YYYY"),
               exportPeriod: item.exportPeriod,
               exportType: item.exportFormat.toUpperCase(),
               fileFormat: item.type,
+              download: (
+                <FontAwesomeIcon
+                  name={"download"}
+                  size={20}
+                  color="rgb(0, 121, 179)"
+                  onClick={() => handleExport()}
+                />
+              ),
+              share: (
+                <FontAwesomeIcon
+                  name={"share-nodes"}
+                  size={20}
+                  color="rgb(0, 121, 179)"
+                  onClick={() => setIsEmailModalVisible(true)}
+                />
+              ),
             });
           });
         }
@@ -206,6 +235,48 @@ const GstReports = () => {
     }
   };
 
+  const handleSendEmail = () => {
+    let payload = {
+      id: sendEmailFormData.id,
+      subject: sendEmailFormData.subject,
+      recipients: [sendEmailFormData.emails],
+      text: sendEmailFormData.message,
+    };
+    groflexService
+      .request(
+        `${oldConfig.resourceHost}/accountantExport/${sendEmailFormData.id}/send`,
+        {
+          auth: true,
+          data: payload,
+          method: "POST",
+        }
+      )
+      .then((res) => {
+        if (res.body?.message) {
+          groflexService.toast.error("Something went wrong");
+        } else {
+          groflexService.toast.success(
+            "Balance sheet has been sent successfully "
+          );
+        }
+        setIsEmailModalVisible(false);
+      });
+  };
+
+  const handleExport = (url) => {
+    window.location.href = `${oldConfig.resourceHost}${url}`;
+  };
+
+  const handleShareClick = (row) => {
+    setSendEmailFormData({
+      ...sendEmailFormData,
+      exportperiod: row.exportPeriod,
+      id: row.id,
+      message: `Dear Ladies and Gentlemen, Enclosed I send you my accounting documents for the period ${row.exportPeriod}. Yours sincerely,`,
+      subject: `Accounting documents ${row.exportPeriod}`,
+    });
+  };
+
   const dateOptions = [
     {
       label: dateFilterTypes.currentMonth,
@@ -241,12 +312,18 @@ const GstReports = () => {
     },
   ];
 
-  const handleRowClick = (e) => {
-    console.log(e);
-  };
-
   return (
     <PageContent title={"Gst Reports"}>
+      <SendEmailModal
+        isEmailModalVisible={isEmailModalVisible}
+        setIsEmailModalVisible={setIsEmailModalVisible}
+        handleSendEmail={handleSendEmail}
+        sendEmailFormData={sendEmailFormData}
+        setSendEmailFormData={setSendEmailFormData}
+        fileName={`GST-Report_${sendEmailFormData.exportperiod}`}
+        title={"Send GST Report"}
+        attachmentCheckboxes={false}
+      />
       <div className={"gst-reports-wrapper"}>
         <AdvancedCard type={"s-card"} containerClassName={"gst-filter-card"}>
           <div className="company-details">
@@ -363,13 +440,12 @@ const GstReports = () => {
                     <th>EXPORT PERIOD</th>
                     <th>EXPORT TYPE</th>
                     <th>FILE FORMAT</th>
+                    <th style={{ textAlign: "center" }}>
+                      DOWNLOAD &nbsp;| &nbsp;SHARE
+                    </th>
                   </tr>
                   {filteredRowData.map((item, id) => (
-                    <tr
-                      className="gst-export-summary-row"
-                      key={id}
-                      onClick={() => handleRowClick(item)}
-                    >
+                    <tr className="gst-export-summary-row" key={id}>
                       <td>{item.date}</td>
                       <td>{item.exportPeriod}</td>
                       <td>
@@ -378,6 +454,15 @@ const GstReports = () => {
                           item.exportType.slice(4)}
                       </td>
                       <td>{item.fileFormat}</td>
+                      <td style={{ textAlign: "center" }}>
+                        <span onClick={() => handleExport(item.documentUrl)}>
+                          {item.download}
+                        </span>{" "}
+                        |{" "}
+                        <span onClick={() => handleShareClick(item)}>
+                          {item.share}
+                        </span>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

@@ -16,7 +16,7 @@ const DeleteUserModal = ({
       })
       .then((res) => {
         setIsDeleteUserModalVisible(false);
-        console.log("delete", res);
+        groflexService.toast.success("User deleted");
       });
   };
 

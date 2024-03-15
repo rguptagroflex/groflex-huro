@@ -7,6 +7,7 @@ import groflexService from "../../services/groflex.service";
 import config from "../../../../newConfig";
 import CreateChart from "../../shared/components/chartjs/CreateChart";
 import DateInput from "../../shared/components/datePicker/DateInput";
+import { formatCurrency } from "../../helpers/formatCurrency";
 
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
@@ -267,7 +268,9 @@ const DashboardSalesExpenseStats = () => {
                 <AdvancedCard type={"s-card"} style={{ padding: "0" }}>
                   <div className="total-sales-label">Total Sales</div>
                   <div className="total-sales-value">
-                    ₹ {parseFloat(totalValues.totalSales).toFixed(0)}
+                    {formatCurrency(
+                      parseFloat(totalValues.totalSales).toFixed(0)
+                    )}
                   </div>
                 </AdvancedCard>
               </div>
@@ -275,7 +278,9 @@ const DashboardSalesExpenseStats = () => {
                 <AdvancedCard type={"s-card"} style={{ padding: "0" }}>
                   <div className="total-expense-label">Total Expenses</div>
                   <div className="total-expense-value">
-                    ₹ {parseFloat(totalValues.totalExpenses).toFixed(0)}
+                    {formatCurrency(
+                      parseFloat(totalValues.totalExpenses).toFixed(0)
+                    )}
                   </div>
                 </AdvancedCard>
               </div>

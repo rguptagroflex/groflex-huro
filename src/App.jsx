@@ -56,6 +56,11 @@ import GeneralLedger from "./app/views/accounting/reports/GeneralLedger";
 import CashFlow from "./app/views/accounting/reports/CashFlow";
 import GstReports from "./app/views/accounting/reports/GstReports";
 import ContactsDetail from "./app/views/contacts/ContactsDetail";
+import CreditNotesList from "./app/views/accounting/creditNotes/CreditNotesList";
+import ExpensesList from "./app/views/accounting/expenses/ExpensesList";
+import ChartOfAccounts from "./app/views/accounting/chartOfAccounts/ChartOfAccountsList";
+import TimesheetsBilling from "./app/views/sales/timeTracking/TimesheetsBilling";
+import StockMovement from "./app/views/inventory/stockMovement/StockMovement";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -103,12 +108,22 @@ function App() {
             element={<RecurringInvoicesList />}
           />
           <Route path="sales/time-sheets" element={<TimesheetsList />} />
+          <Route
+            path="sales/time-sheets/billed/customer/:customerId/:status"
+            element={<TimesheetsBilling />}
+          />
 
           {/* --------------------Accounting Module-------------------- */}
           <Route path="accounting/transactions" element={<Transactions />} />
           <Route path="accounting/cash-and-bank" element={<CashAndBank />} />
           <Route path="accounting/debit-notes" element={<DebitNotesList />} />
+          <Route path="accounting/credit-notes" element={<CreditNotesList />} />
+          <Route path="accounting/expenses" element={<ExpensesList />} />
           <Route path="accounting/reports" element={<Reports />} />
+          <Route
+            path="accounting/chart-of-accounts"
+            element={<ChartOfAccounts />}
+          />
           <Route
             path="accounting/reports/balance-sheet"
             element={<BalanceSheet />}
@@ -126,12 +141,13 @@ function App() {
             path="accounting/reports/gst-reports"
             element={<GstReports />}
           />
-          {/* ---------------------Inventory Module------------------------- */}
+          {/* Inventory Module */}
           <Route path="inventory/dashboard" element={<InventoryDashboard />} />
           <Route
             path="inventory/purchase-orders"
             element={<PurchaseOrderList />}
           />
+          <Route path="inventory/stock-movement" element={<StockMovement />} />
           <Route path="inventory/sales-orders" element={<SalesOrdersList />} />
           <Route
             path="inventory/reporting-and-analytics"

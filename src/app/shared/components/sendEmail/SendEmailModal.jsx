@@ -13,6 +13,7 @@ const SendEmailModal = ({
   fileName,
   sendEmailFormData,
   setSendEmailFormData,
+  attachmentCheckboxes = true,
 }) => {
   const handleEmailChange = (e) => {
     setSendEmailFormData({
@@ -88,38 +89,40 @@ const SendEmailModal = ({
           </div>
         </div>
 
-        <div className="columns is-multiline m-b-5">
-          <div className="column is-3">
-            <div className="field">
-              <Checkbox
-                label={"PDF"}
-                value={sendEmailFormData.pdf}
-                checked={sendEmailFormData.pdf}
-                onChange={() =>
-                  setSendEmailFormData({
-                    ...sendEmailFormData,
-                    pdf: !sendEmailFormData.pdf,
-                  })
-                }
-              />
+        {attachmentCheckboxes && (
+          <div className="columns is-multiline m-b-5">
+            <div className="column is-3">
+              <div className="field">
+                <Checkbox
+                  label={"PDF"}
+                  value={sendEmailFormData.pdf}
+                  checked={sendEmailFormData.pdf}
+                  onChange={() =>
+                    setSendEmailFormData({
+                      ...sendEmailFormData,
+                      pdf: !sendEmailFormData.pdf,
+                    })
+                  }
+                />
+              </div>
+            </div>
+            <div className="column is-3">
+              <div className="field">
+                <Checkbox
+                  label={"CSV"}
+                  value={sendEmailFormData.csv}
+                  checked={sendEmailFormData.csv}
+                  onChange={() =>
+                    setSendEmailFormData({
+                      ...sendEmailFormData,
+                      csv: !sendEmailFormData.csv,
+                    })
+                  }
+                />
+              </div>
             </div>
           </div>
-          <div className="column is-3">
-            <div className="field">
-              <Checkbox
-                label={"CSV"}
-                value={sendEmailFormData.csv}
-                checked={sendEmailFormData.csv}
-                onChange={() =>
-                  setSendEmailFormData({
-                    ...sendEmailFormData,
-                    csv: !sendEmailFormData.csv,
-                  })
-                }
-              />
-            </div>
-          </div>
-        </div>
+        )}
 
         <div className="columns is-multiline m-b-5">
           <div className="column is-12">
@@ -145,17 +148,19 @@ const SendEmailModal = ({
                     {fileName + "." + "pdf"}
                   </div>
 
-                  <FontAwesomeIcon
-                    name={"trash"}
-                    size={15}
-                    color="#00A353"
-                    onClick={() =>
-                      setSendEmailFormData({
-                        ...sendEmailFormData,
-                        pdf: false,
-                      })
-                    }
-                  />
+                  {attachmentCheckboxes && (
+                    <FontAwesomeIcon
+                      name={"trash"}
+                      size={15}
+                      color="#00A353"
+                      onClick={() =>
+                        setSendEmailFormData({
+                          ...sendEmailFormData,
+                          pdf: false,
+                        })
+                      }
+                    />
+                  )}
                 </div>
               )}
               {sendEmailFormData.csv && (
@@ -178,17 +183,19 @@ const SendEmailModal = ({
                     {fileName + "." + "csv"}
                   </div>
 
-                  <FontAwesomeIcon
-                    name={"trash"}
-                    size={15}
-                    color="#00A353"
-                    onClick={() =>
-                      setSendEmailFormData({
-                        ...sendEmailFormData,
-                        csv: false,
-                      })
-                    }
-                  />
+                  {attachmentCheckboxes && (
+                    <FontAwesomeIcon
+                      name={"trash"}
+                      size={15}
+                      color="#00A353"
+                      onClick={() =>
+                        setSendEmailFormData({
+                          ...sendEmailFormData,
+                          pdf: false,
+                        })
+                      }
+                    />
+                  )}
                 </div>
               )}
             </div>
