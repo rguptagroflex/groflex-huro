@@ -52,6 +52,9 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
+        if (name == 'currentNumber' && isNaN(value)) {
+            return
+        }
         validation(name, value)
         setNewNumberRange((prevNumberRange) => ({
             ...prevNumberRange,
@@ -126,12 +129,19 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
     };
     const handleViewNumberChange = (event) => {
         const { name, value } = event.target;
-        validation(name, value)
-        console.log(event.target.value)
+        if (name == 'currentNumber' && isNaN(value)) {
+            return
+        }
+        let inputValue = value;
+        let serialNumber = newNumberRange.serialNumber;
+
+        if (inputValue.length > serialNumber) {
+            inputValue = inputValue.slice(0, serialNumber);
+        }
         setNewNumberRange((prevNewNumberRange) => ({
             ...prevNewNumberRange,
-            currentNumber: String(event.target.value).padStart(newNumberRange.serialNumber, '0'),
-            currentValue: parseInt(event.target.value)
+            currentNumber: String(inputValue).padStart(serialNumber, '0'),
+            currentValue: parseInt(inputValue)
         }));
     };
 
@@ -160,9 +170,15 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
             serialNumber: options.value
         }));
 
+        let fromattedCurrentValue = newNumberRange.currentNumber
+        if (fromattedCurrentValue.length > Number(options.value)) {
+            fromattedCurrentValue = fromattedCurrentValue.slice(0, options.value);
+        }
+
         setNewNumberRange((prevNewNumberRange) => ({
             ...prevNewNumberRange,
-            currentNumber: String(newNumberRange.currentValue).padStart(options.value, '0')
+            currentNumber: String(fromattedCurrentValue).padStart(options.value, '0'),
+            currentValue: parseInt(fromattedCurrentValue)
         }));
     }
 
@@ -393,13 +409,12 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
             startValue: newNumberRange.startFrom
         }
 
-        if(!error.prefix && !error.suffix && !error.currentNumber){
+        if (!error.prefix && !error.suffix && !error.currentNumber) {
             handlePostData(numerationData)
-        }else{
-            GroflexService.toast.error(`Input error!\n ${error.prefix} \n ${error.suffix} \n ${error.currentNumber}` )
+        } else {
+            GroflexService.toast.error(`Input error!\n ${error.prefix} \n ${error.suffix} \n ${error.currentNumber}`)
         }
     }
-    console.log(newNumberRange)
     const [error, setError] = useState({
         prefix: "",
         suffix: "",
@@ -408,7 +423,6 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
 
     // validation
     const validation = (name, value) => {
-        console.log(name, value)
         if (value.length == 1 && name == 'prefix' && !isNaN(value.charAt(0))) {
             setError({
                 ...error,
@@ -445,12 +459,13 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
                 suffix: resources.numberationSuffixError,
             });
             return;
-        } else if (name == 'currentNumber' && isNaN(value)) {
-            setError({
-                ...error,
-                currentNumber: resources.numerationNumericError,
-            });
         }
+        // else if (name == 'currentNumber' && isNaN(value)) {
+        //     setError({
+        //         ...error,
+        //         currentNumber: resources.numerationNumericError,
+        //     });
+        // }
         else {
             setError({
                 ...error,
@@ -495,7 +510,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
                         <span className={clickedElement === 'placeHolder2Hover' ? "triggeredHover" : ""} onClick={() => handleClick('placeHolder2Hover')}>{newNumberRange.placeholder2}</span>
                     </div>
                     <div className={`field numeration-input-box digits-${newNumberRange.serialNumber} m-1`}
-                    style={{display: "block"}}
+                        style={{ display: "block" }}
                     >
                         <InputAddons
                             type="text"
