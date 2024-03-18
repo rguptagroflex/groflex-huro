@@ -61,6 +61,7 @@ import ExpensesList from "./app/views/accounting/expenses/ExpensesList";
 import ChartOfAccounts from "./app/views/accounting/chartOfAccounts/ChartOfAccountsList";
 import TimesheetsBilling from "./app/views/sales/timeTracking/TimesheetsBilling";
 import StockMovement from "./app/views/inventory/stockMovement/StockMovement";
+import RecordTime from "./app/views/sales/timeTracking/RecordTime";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -111,6 +112,14 @@ function App() {
           <Route
             path="sales/time-sheets/billed/customer/:customerId/:status"
             element={<TimesheetsBilling />}
+          />
+          <Route
+            path="sales/time-sheets/record-time"
+            element={<RecordTime />}
+          />
+          <Route
+            path="sales/time-sheets/record-time/:trackId"
+            element={<RecordTime />}
           />
 
           {/* --------------------Accounting Module-------------------- */}

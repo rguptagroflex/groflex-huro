@@ -8,15 +8,10 @@ import { formatCurrency } from "../../../helpers/formatCurrency";
 import { ListAdvancedDefaultSettings } from "../../../helpers/constants";
 import { CustomShowHeaderSum } from "../../../shared/components/list-advanced/CustomShowHeaderSum";
 import { useNavigate } from "react-router-dom";
+import { Button } from "../../../shared/components/button/Button";
 
 const TimesheetsList = () => {
   const navigate = useNavigate();
-  const handleActionClick = () => {};
-  const actions = [
-    { name: "Edit", icon: "edit" },
-    { name: "Delete", icon: "trash-alt" },
-    { name: "Convert to Deal", icon: "trash-alt" },
-  ];
 
   const getStatusIcon = (evt) => {
     let icon = "";
@@ -24,24 +19,58 @@ const TimesheetsList = () => {
     switch (evt.value) {
       case "invoiced":
         text = "Invoiced";
-        icon = (
-          <FontAwesomeIcon name={"file-invoice"} size={15} color="black" />
-        );
+        icon = "#00A353";
         break;
       case "open":
         text = "Open";
-        icon = <FontAwesomeIcon name={"credit-card"} size={15} color="black" />;
+        icon = "#0071CA";
         break;
     }
+
     return (
-      <div>
-        <span>{icon}</span>
-        <span>{text}</span>
+      <div className="quotations-status">
+        <FontAwesomeIcon name={"circle"} size={11} color={icon} />
+        {text}
       </div>
     );
   };
+
+  const getActionPopupButtons = (item) => {
+    const entries = [];
+    entries.push({
+      label: "Edit",
+      action: "edit",
+      dataQsId: "timesheet-list-item-dropdown-entry-edit",
+    });
+
+    return entries;
+  };
+
+  const handleActionClick = (action, row, params) => {
+    switch (action.action) {
+      case "delete":
+        break;
+      case "edit":
+        navigate(
+          `/sales/time-sheets/billed/customer/${row.customerId}/${row.status}`
+        );
+        break;
+    }
+  };
   return (
-    <PageContent title="Timesheets List">
+    <PageContent
+      title="Timesheets List"
+      titleActionContent={
+        <Button
+          onClick={() => {
+            navigate("/sales/time-sheets/record-time");
+          }}
+          isSuccess
+        >
+          Record Time
+        </Button>
+      }
+    >
       <ListAdvancedComponent
         onRowClicked={(e) => {
           navigate(
@@ -104,7 +133,7 @@ const TimesheetsList = () => {
           return result;
         }}
         fetchUrl={`${oldConfig.timetracking.resourceUrl}?offset=0&searchText=&limit=9999999&orderBy=customerName&desc=true&filter=default`}
-        actionMenuData={actions}
+        actionMenuData={getActionPopupButtons}
       />
     </PageContent>
   );
