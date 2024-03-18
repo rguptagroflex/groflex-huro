@@ -108,7 +108,7 @@ const resourceUrls = {
   //Reports Balance Sheet
   balanceSheet: (startDate, endDate, fileType) =>
     `${resourceHost}accountingReport/balanceSheet/${startDate}/${endDate}?type=${fileType}`,
-  profitAndLoss: (startDate, endDate, fileType) =>
+  reportsProfitAndLoss: (startDate, endDate, fileType) =>
     `${resourceHost}accountingReport/profitandloss/${startDate}/${endDate}?type=${fileType}`,
   generalLedger: (startDate, endDate, fileType, customerID) =>
     `${resourceHost}accountingReport/generalLedger/${startDate}/${endDate}?type=${fileType}&customerId=${customerID}`,
@@ -117,7 +117,7 @@ const resourceUrls = {
     `${resourceHost}accountingReport/cashflow/${starDate}/${endDate}?type=${fileType}`,
   sendAccountingReport: (reportType, startDate, endDate) =>
     `${resourceHost}accountingReport/sendAccountingReportEmail/${reportType}/${startDate}/${endDate}`,
-  gstReportExportSummary: `${resourceHost}accountantExport/?offset=0&limit=5&orderBy=createdAt&desc=true`,
+  gstReportExportSummary: `${resourceHost}accountantExport/?offset=0&limit=0&orderBy=createdAt&desc=true`,
   exportGstReport: `${resourceHost}accountantExport/`,
 
   //InventoryDashboard

@@ -11,6 +11,7 @@ import config from "../../../../../newConfig";
 import FontAwesomeIcon from "../../../shared/fontAwesomeIcon/FontAwesomeIcon";
 import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
 import oldConfig from "../../../../../oldConfig";
+import { useNavigate } from "react-router-dom";
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
   currentMonth: moment().format("MMMM"),
@@ -27,6 +28,7 @@ const dateFilterTypes = {
     .format("Q/YYYY"),
 };
 const GstReports = () => {
+  const navigate = useNavigate();
   const { companyAddress } = useSelector(
     (state) => state?.accountData?.tenantData || ""
   );
@@ -277,6 +279,23 @@ const GstReports = () => {
     });
   };
 
+  const handleRowClick = (rowData) => {
+    console.log(rowData);
+    let url = "";
+    switch (rowData.exportType) {
+      case "GSTR1":
+        url = "/accounting/reports/gst-reports/gstr-1";
+        break;
+      case "GSTR2A":
+        url = "/accounting/reports/gst-reports/gstr-2A";
+        break;
+      case "GSTR3B":
+        url = "/accounting/reports/gst-reports/gstr-3B";
+        break;
+    }
+    navigate(url);
+  };
+
   const dateOptions = [
     {
       label: dateFilterTypes.currentMonth,
@@ -445,7 +464,11 @@ const GstReports = () => {
                     </th>
                   </tr>
                   {filteredRowData.map((item, id) => (
-                    <tr className="gst-export-summary-row" key={id}>
+                    <tr
+                      className="gst-export-summary-row"
+                      key={id}
+                      onClick={() => handleRowClick(item)}
+                    >
                       <td>{item.date}</td>
                       <td>{item.exportPeriod}</td>
                       <td>
