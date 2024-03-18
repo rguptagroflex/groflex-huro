@@ -117,7 +117,8 @@ const resourceUrls = {
     `${resourceHost}accountingReport/cashflow/${starDate}/${endDate}?type=${fileType}`,
   sendAccountingReport: (reportType, startDate, endDate) =>
     `${resourceHost}accountingReport/sendAccountingReportEmail/${reportType}/${startDate}/${endDate}`,
-  gstReportExportSummary: `${resourceHost}accountantExport/?offset=0&limit=0&orderBy=createdAt&desc=true`,
+  gstReportExportSummary: (pageNumber) =>
+    `${resourceHost}accountantExport/?offset=${pageNumber}&limit=5&orderBy=createdAt&desc=true`,
   exportGstReport: `${resourceHost}accountantExport/`,
 
   //InventoryDashboard

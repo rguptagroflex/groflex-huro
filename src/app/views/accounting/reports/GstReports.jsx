@@ -29,6 +29,8 @@ const dateFilterTypes = {
 };
 const GstReports = () => {
   const navigate = useNavigate();
+  const [numberOfPages, setNumberOfPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const { companyAddress } = useSelector(
     (state) => state?.accountData?.tenantData || ""
   );
@@ -60,7 +62,7 @@ const GstReports = () => {
 
   useEffect(() => {
     fetchGstReportExportSummary();
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => {
     filterGstExportSummary();
@@ -163,11 +165,17 @@ const GstReports = () => {
 
   const fetchGstReportExportSummary = () => {
     let rowData = [];
+    let numberOfPages = 0;
+    const offset = (currentPage - 1) * 5;
 
     groflexService
-      .request(`${config.resourceUrls.gstReportExportSummary}`, { auth: true })
+      .request(`${config.resourceUrls.gstReportExportSummary(offset)}`, {
+        auth: true,
+      })
       .then((res) => {
         if (res && res.body) {
+          numberOfPages = 0.2 * res.body.meta.count;
+
           res.body.data.forEach((item) => {
             rowData.push({
               id: item.id,
@@ -195,6 +203,7 @@ const GstReports = () => {
             });
           });
         }
+        setNumberOfPages(numberOfPages);
         setRowData(rowData);
         setFilteredRowData(rowData);
       });
@@ -215,7 +224,6 @@ const GstReports = () => {
         method: "POST",
       })
       .then((res) => {
-        console.log(res);
         if (res.body?.message) {
           groflexService.toast.error("Something went wrong");
         } else {
@@ -280,7 +288,6 @@ const GstReports = () => {
   };
 
   const handleRowClick = (rowData) => {
-    console.log(rowData);
     let url = "";
     switch (rowData.exportType) {
       case "GSTR1":
@@ -294,6 +301,59 @@ const GstReports = () => {
         break;
     }
     navigate(url);
+  };
+
+  const GstPagination = () => {
+    const rows = [];
+    for (let pageNumer = 0; pageNumer < numberOfPages; pageNumer++) {
+      rows.push(
+        <li
+          onClick={() => {
+            setCurrentPage(pageNumer + 1);
+          }}
+          key={`gst-page-${pageNumer}`}
+        >
+          <a
+            className={`pagination-link ${
+              currentPage === pageNumer + 1 && "is-current"
+            }`}
+            aria-label={`Goto page ${currentPage}`}
+          >
+            {pageNumer + 1}
+          </a>
+        </li>
+      );
+    }
+
+    return (
+      <nav
+        className="flex-pagination pagination is-rounded"
+        aria-label="pagination"
+      >
+        <FontAwesomeIcon
+          name={"angle-left"}
+          size={15}
+          color="#00a353"
+          onClick={() => setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))}
+          className={"pagination-previous"}
+        />
+        <FontAwesomeIcon
+          name={"angle-right"}
+          size={15}
+          color="#00a353"
+          onClick={() =>
+            setCurrentPage((prev) => (prev < numberOfPages ? prev + 1 : prev))
+          }
+          className={"pagination-next"}
+        />
+        <ul
+          className="pagination-list"
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          {rows}
+        </ul>
+      </nav>
+    );
   };
 
   const dateOptions = [
@@ -494,6 +554,7 @@ const GstReports = () => {
           ) : (
             <div className="reports-empty-table">No data to show</div>
           )}
+          <GstPagination />
         </AdvancedCard>
       </div>
     </PageContent>
