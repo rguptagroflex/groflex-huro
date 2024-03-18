@@ -3,9 +3,7 @@ import Modal from "../modal/Modal";
 import { Input } from '../input/Input';
 import { SelectInput } from '../select/SelectInput';
 import { InputAddons } from '../inputAddons/InputAddons';
-import { AdvancedCard } from '../cards/AdvancedCard';
 import { Switch } from '../switch/Switch';
-import { TextArea } from '../textArea/TextArea';
 import moment from 'moment';
 import GroflexService from '../../../services/groflex.service';
 import config from "../../../../../newConfig";
@@ -74,20 +72,21 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
             handleDatePartChange({ value: YEAR_SHORT_MONTH_KEY })
             setNewNumberRange((prevNewNumberRange) => ({
                 ...prevNewNumberRange,
-                numberFrom: ''
+                numberFrom: 'January'
             }));
         } else if (isPeriodically && newNumberRange.resetInterval == FREQUENCY_DAY) {
             handleDatePartChange({ value: YEAR_SHORT_MONTH_DAY_KEY })
             setNewNumberRange((prevNewNumberRange) => ({
                 ...prevNewNumberRange,
-                numberFrom: ''
+                numberFrom: 'January'
             }));
         } else {
             setNewNumberRange((prevNewNumberRange) => ({
                 ...prevNewNumberRange,
                 formattedDatePart: '',
                 datePart: '',
-                numberFrom: ''
+                numberFrom: 'January',
+                startFrom: 1
             }));
         }
 
@@ -103,20 +102,20 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
             handleDatePartChange({ value: YEAR_SHORT_MONTH_KEY })
             setNewNumberRange((prevNewNumberRange) => ({
                 ...prevNewNumberRange,
-                numberFrom: ''
+                numberFrom: 'January'
             }));
         } else if (options.value == FREQUENCY_DAY) {
             handleDatePartChange({ value: YEAR_SHORT_MONTH_DAY_KEY })
             setNewNumberRange((prevNewNumberRange) => ({
                 ...prevNewNumberRange,
-                numberFrom: ''
+                numberFrom: 'January'
             }));
         } else {
             setNewNumberRange((prevNewNumberRange) => ({
                 ...prevNewNumberRange,
                 formattedDatePart: '',
                 datePart: '',
-                numberFrom: ''
+                numberFrom: 'January'
             }));
         }
     };
@@ -408,17 +407,18 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
             increment: newNumberRange.numberIncrement,
             startValue: newNumberRange.startFrom
         }
-
-        if (!error.prefix && !error.suffix && !error.currentNumber) {
+        if (!error.prefix && !error.suffix && !error.currentNumber && !error.increment && !error.startFrom) {
             handlePostData(numerationData)
         } else {
-            GroflexService.toast.error(`Input error!\n ${error.prefix} \n ${error.suffix} \n ${error.currentNumber}`)
+            GroflexService.toast.error(`Input error!\n ${error.prefix} \n ${error.suffix} \n ${error.currentNumber} \n ${error.increment} \n ${error.startFrom}`)
         }
     }
     const [error, setError] = useState({
         prefix: "",
         suffix: "",
-        currentNumber: ""
+        currentNumber: "",
+        increment: "",
+        startFrom: ""
     });
 
     // validation
@@ -459,6 +459,18 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
                 suffix: resources.numberationSuffixError,
             });
             return;
+        } else if (name == 'numberIncrement'&& !isNaN(value) && value < 1) {
+            setError({
+                ...error,
+                increment: resources.numerationIncrementNumberError,
+            });
+            return;
+        } else if (name == 'startFrom' && !isNaN(value) && value < 1) {
+            setError({
+                ...error,
+                startFrom: resources.numerationStartValueNumberError,
+            });
+            return;
         }
         // else if (name == 'currentNumber' && isNaN(value)) {
         //     setError({
@@ -471,7 +483,9 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
                 ...error,
                 prefix: "",
                 suffix: "",
-                currentNumber: ""
+                currentNumber: "",
+                increment: "",
+                startFrom: ""
             });
         }
         return
@@ -486,7 +500,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
             isBig="is-big"
             onSubmit={handleSaveButton}
 
-        >
+            >
 
             <LoaderSpinner
                 visible={isLoading}
@@ -495,6 +509,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
                 containerStyle={{ position: "absolute" }}
 
             />
+            <div className="title is-5 no-margin-bottom">{numerationType? numerationType: ''}</div>
             <div className="numeration-result">
                 <div className='column is-12' ref={containerRef}>
                     <div className='field m-1'>
@@ -635,9 +650,12 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
                                 type="number"
                                 name="numberIncrement"
                                 placeholder=""
-                                defaultValue={1}
                                 value={newNumberRange.numberIncrement}
                                 onChange={handleInputChange}
+                            />
+                            <ErrorText
+                                visible={error.increment}
+                                text={error.increment}
                             />
                         </div>
                     </div>
@@ -689,9 +707,12 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
                                         type="number"
                                         name="startFrom"
                                         placeholder=""
-                                        defaultValue={1}
                                         value={newNumberRange.startFrom}
                                         onChange={handleInputChange}
+                                    />
+                                    <ErrorText
+                                        visible={error.startFrom}
+                                        text={error.startFrom}
                                     />
                                 </div>
                             </div>
