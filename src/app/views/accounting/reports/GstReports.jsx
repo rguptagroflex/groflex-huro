@@ -177,30 +177,35 @@ const GstReports = () => {
           numberOfPages = 0.2 * res.body.meta.count;
 
           res.body.data.forEach((item) => {
-            rowData.push({
-              id: item.id,
-              documentUrl: item.documentUrl,
-              date: moment(item.createdAt).format("DD-MM-YYYY"),
-              exportPeriod: item.exportPeriod,
-              exportType: item.exportFormat.toUpperCase(),
-              fileFormat: item.type,
-              download: (
-                <FontAwesomeIcon
-                  name={"download"}
-                  size={20}
-                  color="rgb(0, 121, 179)"
-                  onClick={() => handleExport()}
-                />
-              ),
-              share: (
-                <FontAwesomeIcon
-                  name={"share-nodes"}
-                  size={20}
-                  color="rgb(0, 121, 179)"
-                  onClick={() => setIsEmailModalVisible(true)}
-                />
-              ),
-            });
+            if (
+              item.exportFormat === "gstr1" ||
+              item.exportFormat === "gstr3b"
+            ) {
+              rowData.push({
+                id: item.id,
+                documentUrl: item.documentUrl,
+                date: moment(item.createdAt).format("DD-MM-YYYY"),
+                exportPeriod: item.exportPeriod,
+                exportType: item.exportFormat.toUpperCase(),
+                fileFormat: item.type,
+                download: (
+                  <FontAwesomeIcon
+                    name={"download"}
+                    size={20}
+                    color="rgb(0, 121, 179)"
+                    onClick={() => handleExport()}
+                  />
+                ),
+                share: (
+                  <FontAwesomeIcon
+                    name={"share-nodes"}
+                    size={20}
+                    color="rgb(0, 121, 179)"
+                    onClick={() => setIsEmailModalVisible(true)}
+                  />
+                ),
+              });
+            }
           });
         }
         setNumberOfPages(numberOfPages);
@@ -419,9 +424,9 @@ const GstReports = () => {
                 <SelectInput
                   options={[
                     { label: "GSTR-1", value: "gstr1" },
-                    { label: "GSTR-2A", value: "gstr2a" },
+                    // { label: "GSTR-2A", value: "gstr2a" },
                     { label: "GSTR-3B", value: "gstr3b" },
-                    { label: "GSTR-9", value: "gstr9" },
+                    // { label: "GSTR-9", value: "gstr9" },
                   ]}
                   placeholder={"None"}
                   onChange={handleGstReportTypeChange}
@@ -437,9 +442,9 @@ const GstReports = () => {
                   options={[
                     { label: "ALL", value: "all" },
                     { label: "GSTR-1", value: "gstr1" },
-                    { label: "GSTR-2A", value: "gstr2a" },
+                    // { label: "GSTR-2A", value: "gstr2a" },
                     { label: "GSTR-3B", value: "gstr3b" },
-                    { label: "GSTR-9", value: "gstr9" },
+                    // { label: "GSTR-9", value: "gstr9" },
                   ]}
                   placeholder={"None"}
                   onChange={handleSortByTypeChange}

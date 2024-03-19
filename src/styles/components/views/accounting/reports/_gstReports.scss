@@ -49,6 +49,7 @@
   .list-container {
     border: 0;
     border-bottom: 1px solid #ddd;
+    padding: 0;
     .list-container__sub-header {
       display: none;
     }
@@ -80,5 +81,14 @@
         color: #888787;
       }
     }
+  }
+
+  .gstr-table-heading {
+    font-weight: 600;
+    background: #f2f2f2;
+    height: 40px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
   }
 }
