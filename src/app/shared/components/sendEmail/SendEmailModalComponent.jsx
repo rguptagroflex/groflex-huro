@@ -13,7 +13,7 @@ const SendEmailModalComponent = ({
   allowCsv,
   emailList,
   subject,
-  // allowAttachment,
+  allowAttachment,
 }) => {
   const [formData, setFormData] = useState({
     attachmentName: "Invoice No. 0028.pdf",

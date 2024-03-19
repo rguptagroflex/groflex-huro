@@ -76,10 +76,11 @@ const QuotationsList = () => {
     <PageContent
       title="Quotaiton List"
       titleActionContent={
-        <Button onClick={() => navigate("/quotations/new")} isSuccess>
+        <Button onClick={() => navigate("/quotations/new")} isPrimary>
           Create Quotation
         </Button>
       }
+      breadCrumbData={["Home", "Sales", "Quotaions"]}
     >
       <ListAdvancedComponent
         onRowClicked={(e) => {
@@ -90,6 +91,11 @@ const QuotationsList = () => {
           {
             field: "number",
             headerName: "Number",
+          },
+          {
+            field: "state",
+            headerName: "Status",
+            cellRenderer: createActivity,
           },
           { field: "customerData.name", headerName: "Customer Name" },
           {
@@ -109,11 +115,6 @@ const QuotationsList = () => {
             },
           },
           { field: "type", headerName: "Quotation Type" },
-          {
-            field: "state",
-            headerName: "Status",
-            cellRenderer: createActivity,
-          },
 
           // {
           //   field: "date",

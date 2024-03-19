@@ -36,7 +36,7 @@ const allowedPaymentTypesForCancel = [
   PAYMENT_TYPE_LESS_TDSCHARGE,
 ];
 
-const InvoicesDetail = () => {
+const ProformaInvoiceDetail = () => {
   const [refresh, setRefresh] = useState(false);
   const [hoveringLoader, setHoveringLoading] = useState(false);
   const [invoiceData, setInvoiceData] = useState();
@@ -58,17 +58,20 @@ const InvoicesDetail = () => {
     csv: false,
   });
 
-  const { invoiceId } = useParams();
+  const { proformaInvoiceId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (invoiceId) {
+    if (proformaInvoiceId) {
       const calls = [
-        groflexService.request(`${config.resourceUrls.invoice}${invoiceId}`, {
-          auth: true,
-        }),
         groflexService.request(
-          `${config.resourceUrls.invoice}${invoiceId}/document`,
+          `${config.resourceUrls.invoice}${proformaInvoiceId}`,
+          {
+            auth: true,
+          }
+        ),
+        groflexService.request(
+          `${config.resourceUrls.invoice}${proformaInvoiceId}/document`,
           {
             auth: true,
             method: "POST",
@@ -78,7 +81,7 @@ const InvoicesDetail = () => {
           }
         ),
         groflexService.request(
-          `${config.resourceUrls.invoice}${invoiceId}/history`,
+          `${config.resourceUrls.invoice}${proformaInvoiceId}/history`,
           {
             auth: true,
             method: "GET",
@@ -91,9 +94,6 @@ const InvoicesDetail = () => {
         const pdfDocumentResponse = responses[1];
         const history = responses[2];
         // console.log(responses, "HERE ARE the responses in invoice detail");
-        if (!invoiceResponse.body.data) {
-          navigate("/sales/invoices");
-        }
         setInvoiceData({
           ...invoiceResponse.body.data.invoice,
         });
@@ -109,7 +109,7 @@ const InvoicesDetail = () => {
         // );
       });
     }
-  }, [invoiceId, refresh]);
+  }, [proformaInvoiceId, refresh]);
 
   const refreshPage = () => {
     setRefresh((r) => !r);
@@ -258,8 +258,6 @@ const InvoicesDetail = () => {
         closeFinalizeModal();
         // groflexService.router.reload();
         refreshPage();
-
-        // navigate(`/sales/invoices/${invoiceId}`, { replace: true });
         groflexService.toast.success(resources.invoiceLockSuccessMessage);
         // TODO: Handle Finalize Invoice Errors
         // checkAchievementNotification();
@@ -376,9 +374,9 @@ const InvoicesDetail = () => {
   const getPageTitle = () => {
     let pageTitle = "";
     if (invoiceData?.state === InvoiceState.DRAFT) {
-      pageTitle = "Invoice Draft";
+      pageTitle = "Proforma Invoice Draft";
     } else {
-      pageTitle = `Invoice No. ${invoiceData?.number}`;
+      pageTitle = `Proforma Invoice No. ${invoiceData?.number}`;
     }
     return pageTitle;
   };
@@ -394,7 +392,7 @@ const InvoicesDetail = () => {
 
   // console.log(new Invoice(invoiceData), "Invoice detail");
   // console.log(invoiceHistory, "History");
-  // console.log(pdfLink, "PDF liink");
+  console.log(pdfLink, "PDF liink");
 
   return (
     <PageContent
@@ -472,8 +470,8 @@ const InvoicesDetail = () => {
           customer={customer}
           payment={payment}
           onSubmit={() => {
-            refreshPage();
             // groflexService.router.reload();
+            refreshPage();
           }}
           // dunning={dunning}
         />
@@ -492,4 +490,4 @@ const InvoicesDetail = () => {
   );
 };
 
-export default InvoicesDetail;
+export default ProformaInvoiceDetail;

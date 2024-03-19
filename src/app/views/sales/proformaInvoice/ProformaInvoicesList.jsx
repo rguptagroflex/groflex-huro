@@ -105,7 +105,7 @@ const createActivity = (params) => {
 };
 
 // Note: Component starts here
-const InvoicesList = () => {
+const ProformaInvoicesList = () => {
   const navigate = useNavigate();
   const [refresh, setRefresh] = useState(false);
   const [invoiceListStates, setInvoiceListStates] = useState({
@@ -166,7 +166,7 @@ const InvoicesList = () => {
         }
         break;
       case "edit":
-        navigate(`/sales/invoices/edit/${row.id}`);
+        navigate(`/sales/proforma-invoices/edit/${row.id}`);
         break;
       case "copyAndEdit":
         break;
@@ -260,13 +260,13 @@ const InvoicesList = () => {
 
   return (
     <PageContent
-      title="Invoices"
-      titleActionContent={<Button isSuccess>Create Invoices</Button>}
-      breadCrumbData={["Home", "Sales", "Invoices"]}
+      title="Proforma Invoices"
+      titleActionContent={<Button isSuccess>Create Proforma Invoice</Button>}
+      breadCrumbData={["Home", "Sales", "Proforma Invoices"]}
     >
       <ListAdvancedComponent
         onRowClicked={(e) => {
-          navigate(`/sales/invoices/${e.data.id}`);
+          navigate(`/sales/proforma-invoices/${e.data.id}`);
         }}
         onActionClick={handleActionCellPopupClick}
         columnDefs={[
@@ -428,4 +428,4 @@ const InvoicesList = () => {
   );
 };
 
-export default InvoicesList;
+export default ProformaInvoicesList;

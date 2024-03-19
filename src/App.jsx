@@ -61,6 +61,9 @@ import ExpensesList from "./app/views/accounting/expenses/ExpensesList";
 import ChartOfAccounts from "./app/views/accounting/chartOfAccounts/ChartOfAccountsList";
 import TimesheetsBilling from "./app/views/sales/timeTracking/TimesheetsBilling";
 import StockMovement from "./app/views/inventory/stockMovement/StockMovement";
+import ProformaInvoicesListWrapper from "./app/views/sales/proformaInvoice/ProformaInvoicesListWrapper";
+import ProformaInvoiceDetailWrapper from "./app/views/sales/proformaInvoice/ProformaInvoiceDetailWrapper";
+import ProformaInvoiceEditWrapper from "./app/views/sales/proformaInvoice/ProformaInvoiceEditWrapper";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -97,14 +100,17 @@ function App() {
             element={<InvoiceEditWrapper />}
           />
           {/* Proforma Invoice */}
-          <Route path="sales/proforma-invoices" element={<InvoicesList />} />
           <Route
-            path="sales/proforma-invoices/:invoiceId"
-            element={<InvoiceDetail />}
+            path="sales/proforma-invoices"
+            element={<ProformaInvoicesListWrapper />}
+          />
+          <Route
+            path="sales/proforma-invoices/:proformaInvoiceId"
+            element={<ProformaInvoiceDetailWrapper />}
           />
           <Route
             path="sales/proforma-invoices/edit/:proformaInvoiceId"
-            element={<InvoiceEditWrapper />}
+            element={<ProformaInvoiceEditWrapper />}
           />
           {/* Quotation */}
           <Route path="sales/quotations" element={<QuotationsList />} />

@@ -32,7 +32,7 @@ const TransactionEditComponent = ({
   isRecurring,
   isInvoice,
   isQuotation,
-  isProforma,
+  isProformaInvoice,
   isDeliveryChallan,
   isPurchaseOrder,
 }) => {
@@ -133,11 +133,11 @@ const TransactionEditComponent = ({
       pageInfo.navigateBackTo = "/sales/quotations";
       pageInfo.breadCrumbData = ["Home", "Sales", "Quotations"];
     }
-    if (isProforma) {
+    if (isProformaInvoice) {
       pageInfo.pageTitle = transaction
         ? "Edit Proforma Invoice"
         : "Create Proforma Invoice";
-      pageInfo.navigateBackTo = "/sales/invoices";
+      pageInfo.navigateBackTo = "/sales/proforma-invoices";
       pageInfo.breadCrumbData = ["Home", "Sales", "Proforma Invoices"];
     }
     if (isDeliveryChallan) {
