@@ -120,6 +120,8 @@ const resourceUrls = {
   gstReportExportSummary: (pageNumber) =>
     `${resourceHost}accountantExport/?offset=${pageNumber}&limit=5&orderBy=createdAt&desc=true`,
   exportGstReport: `${resourceHost}accountantExport/`,
+  //Delivery Challan
+  deliveryChallanList: `${resourceHost}deliveryChallan?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,
 
   //InventoryDashboard
   lastOrder: `${resourceHost}/inventoryDashboard/lastPurchaseOrder?limit=6`,
@@ -194,6 +196,7 @@ const modules = {
       { label: "Expenditure", route: "/accounting/expenses" },
       { label: "Reports", route: "/accounting/reports" },
       { label: "Chart of Accounts", route: "/accounting/chart-of-accounts" },
+      { label: "Delivery Challan", route: "/accounting/delivery-challan" },
     ],
   },
   inventory: {

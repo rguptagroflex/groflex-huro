@@ -65,6 +65,7 @@ import RecordTime from "./app/views/sales/timeTracking/RecordTime";
 import Gstr1List from "./app/views/accounting/reports/Gstr1List";
 import Gstr2AList from "./app/views/accounting/reports/Gstr2AList";
 import Gstr3BList from "./app/views/accounting/reports/Gstr3BList";
+import DeliveryChallan from "./app/views/accounting/deliveryChallan/DeliveryChallan";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -164,6 +165,11 @@ function App() {
           <Route
             path="accounting/reports/gst-reports/gstr-3B"
             element={<Gstr3BList />}
+          />
+
+          <Route
+            path="accounting/delivery-challan"
+            element={<DeliveryChallan />}
           />
 
           {/* Inventory Module */}
