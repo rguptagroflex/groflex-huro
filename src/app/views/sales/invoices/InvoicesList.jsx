@@ -25,6 +25,7 @@ import Invoice from "../../../models/invoice.model";
 import resources from "../../../shared/resources/resources";
 import NumberRangeModal from "../../../shared/components/numberRange/NumberRangeModal";
 import LoaderSpinner from "../../../shared/components/loaderSpinner/LoaderSpinner";
+import TextModuleModal from "../../../shared/components/textModuleModal/TextModuleModal";
 
 const PAYABLE_STATES = [
   InvoiceState.DUNNED,
@@ -241,22 +242,31 @@ const InvoicesList = () => {
 
   console.log(groflexService.user, "USER FROm INCOICE LIST");
 
+  const [isLoading, setIsLoading] = useState(false);
   // for number range modal
   const [isModalActive, setIsModalActive] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+
+  // for Text Module
+  const [isTextModuleModalActive, setIsTextModuleActive] = useState(false);
 
   // settings elements
   const elements = [
     {
       title: "Text Modules",
       handleClick: () => {
-        // test modules functionality
+        setIsTextModuleActive(true)
       },
     },
     {
       title: "Number Range",
       handleClick: () => {
         setIsModalActive(true);
+      },
+    },
+    {
+      title: "Dunning",
+      handleClick: () => {
+        // setIsModalActive(true);
       },
     },
   ]
@@ -285,6 +295,10 @@ const InvoicesList = () => {
 
   }
 
+  // post data for text module 
+  const handleTextModule = () => {
+    // 
+  }
 
   return (
     <PageContent
@@ -299,6 +313,17 @@ const InvoicesList = () => {
             setIsActive={setIsModalActive}
             numerationType='invoice'
             handlePostData={handlePostNumerationData}
+            isLoading={isLoading}
+          />
+        )
+      }
+      {
+        isTextModuleModalActive && (
+          <TextModuleModal
+            isActive={isTextModuleModalActive}
+            setIsActive={setIsTextModuleActive}
+            textModuleType='invoice'
+            handleTextModule={handleTextModule}
             isLoading={isLoading}
           />
         )
