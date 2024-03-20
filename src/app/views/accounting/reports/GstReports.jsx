@@ -57,6 +57,7 @@ const GstReports = () => {
     gstReportType: "",
     sortBy: "all",
     dateDropDown: "",
+    reportFormat: "CSV",
   });
   const [date, setDate] = useState({
     startDate: "",
@@ -86,6 +87,13 @@ const GstReports = () => {
     setGenerateGstReportFormData({
       ...generateGstReportFormData,
       sortBy: option.value,
+    });
+  };
+
+  const handleReportFormatChange = (option) => {
+    setGenerateGstReportFormData({
+      ...generateGstReportFormData,
+      reportFormat: option.value,
     });
   };
 
@@ -245,7 +253,7 @@ const GstReports = () => {
       exportFormat: generateGstReportFormData.gstReportType,
       exportPeriod: generateGstReportFormData.dateDropDown,
       startDate: date.startDate,
-      type: "CSV",
+      type: generateGstReportFormData.reportFormat,
     };
     groflexService
       .request(`${config.resourceUrls.exportGstReport}`, {
@@ -317,7 +325,7 @@ const GstReports = () => {
     });
   };
 
-  const handleRowClick = (rowData) => {
+  const handleRowClick = (e, rowData) => {
     let url = "";
     switch (rowData.exportType) {
       case "GSTR1":
@@ -436,8 +444,23 @@ const GstReports = () => {
                 />
               </div>
             </div>
+            <div className="column is-2">
+              <div className="field">
+                <label className="gst-filter-label">Report Format</label>
+                <SelectInput
+                  options={[
+                    { label: "CSV", value: "CSV" },
+
+                    { label: "XML", value: "Tally" },
+                  ]}
+                  placeholder={"None"}
+                  onChange={handleReportFormatChange}
+                  value={generateGstReportFormData.reportFormat}
+                />
+              </div>
+            </div>
             {showCustomDateRangeSelector && (
-              <div className="column is-3">
+              <div className="column is-2">
                 <div
                   className="field"
                   style={{ display: "flex", flexDirection: "column" }}
@@ -451,7 +474,7 @@ const GstReports = () => {
               </div>
             )}
             {showCustomDateRangeSelector && (
-              <div className="column is-3">
+              <div className="column is-2">
                 <div
                   className="field"
                   style={{ display: "flex", flexDirection: "column" }}
@@ -469,7 +492,8 @@ const GstReports = () => {
             isPrimary
             isDisabled={
               generateGstReportFormData.gstReportType &&
-              generateGstReportFormData.dateDropDown
+              generateGstReportFormData.dateDropDown &&
+              generateGstReportFormData.reportFormat
                 ? false
                 : true
             }
@@ -487,6 +511,7 @@ const GstReports = () => {
 
         <AdvancedCard type={"s-card"}>
           <h2 className="title is-5 is-bold">Export History</h2>
+
           {filteredRowData.length > 0 ? (
             <div className="gst-export-summary">
               <table className="table is-hoverable is-fullwidth">
@@ -504,7 +529,7 @@ const GstReports = () => {
                     <tr
                       className="gst-export-summary-row"
                       key={id}
-                      onClick={() => handleRowClick(item)}
+                      onClick={(e) => handleRowClick(e, item)}
                     >
                       <td>{item.date}</td>
                       <td>{item.exportPeriod}</td>
@@ -515,11 +540,19 @@ const GstReports = () => {
                       </td>
                       <td>{item.fileFormat}</td>
                       <td style={{ textAlign: "center" }}>
-                        <span onClick={() => handleExport(item.documentUrl)}>
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation(), handleExport(item.documentUrl);
+                          }}
+                        >
                           {item.download}
                         </span>{" "}
                         |{" "}
-                        <span onClick={() => handleShareClick(item)}>
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation(), handleShareClick(item);
+                          }}
+                        >
                           {item.share}
                         </span>
                       </td>
