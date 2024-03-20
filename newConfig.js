@@ -117,8 +117,8 @@ const resourceUrls = {
     `${resourceHost}accountingReport/cashflow/${starDate}/${endDate}?type=${fileType}`,
   sendAccountingReport: (reportType, startDate, endDate) =>
     `${resourceHost}accountingReport/sendAccountingReportEmail/${reportType}/${startDate}/${endDate}`,
-  gstReportExportSummary: (pageNumber) =>
-    `${resourceHost}accountantExport/?offset=${pageNumber}&limit=5&orderBy=createdAt&desc=true`,
+  gstReportExportSummary: (offset, limit) =>
+    `${resourceHost}accountantExport/?offset=${offset}&limit=${limit}&orderBy=createdAt&desc=true`,
   exportGstReport: `${resourceHost}accountantExport/`,
   //Delivery Challan
   deliveryChallanList: `${resourceHost}deliveryChallan?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,

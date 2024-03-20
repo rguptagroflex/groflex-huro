@@ -12,6 +12,8 @@ import FontAwesomeIcon from "../../../shared/fontAwesomeIcon/FontAwesomeIcon";
 import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
 import oldConfig from "../../../../../oldConfig";
 import { useNavigate } from "react-router-dom";
+import PaginationComponent from "../../../shared/components/pagination/PaginationComponent";
+
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
   currentMonth: moment().format("MMMM"),
@@ -29,8 +31,13 @@ const dateFilterTypes = {
 };
 const GstReports = () => {
   const navigate = useNavigate();
-  const [numberOfPages, setNumberOfPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [paginationInfo, setPaginationInfo] = useState({
+    numberOfPages: 0,
+    currentPage: 1,
+    entriesPerPage: 5,
+    rowCount: 0,
+  });
+
   const { companyAddress } = useSelector(
     (state) => state?.accountData?.tenantData || ""
   );
@@ -62,7 +69,7 @@ const GstReports = () => {
 
   useEffect(() => {
     fetchGstReportExportSummary();
-  }, [currentPage]);
+  }, [paginationInfo.currentPage, paginationInfo.entriesPerPage]);
 
   useEffect(() => {
     filterGstExportSummary();
@@ -166,15 +173,27 @@ const GstReports = () => {
   const fetchGstReportExportSummary = () => {
     let rowData = [];
     let numberOfPages = 0;
-    const offset = (currentPage - 1) * 5;
+    const offset =
+      (paginationInfo.currentPage - 1) * paginationInfo.entriesPerPage;
 
     groflexService
-      .request(`${config.resourceUrls.gstReportExportSummary(offset)}`, {
-        auth: true,
-      })
+      .request(
+        `${config.resourceUrls.gstReportExportSummary(
+          offset,
+          paginationInfo.entriesPerPage
+        )}`,
+        {
+          auth: true,
+        }
+      )
       .then((res) => {
         if (res && res.body) {
-          numberOfPages = 0.2 * res.body.meta.count;
+          setPaginationInfo({
+            ...paginationInfo,
+            rowCount: res.body.meta.count,
+          });
+          numberOfPages =
+            (1 / paginationInfo.entriesPerPage) * res.body.meta.count;
 
           res.body.data.forEach((item) => {
             if (
@@ -208,7 +227,13 @@ const GstReports = () => {
             }
           });
         }
-        setNumberOfPages(numberOfPages);
+        if (paginationInfo.numberOfPages === 0) {
+          setPaginationInfo({
+            ...paginationInfo,
+            numberOfPages: Math.ceil(numberOfPages),
+          });
+        }
+
         setRowData(rowData);
         setFilteredRowData(rowData);
       });
@@ -306,59 +331,6 @@ const GstReports = () => {
         break;
     }
     navigate(url);
-  };
-
-  const GstPagination = () => {
-    const rows = [];
-    for (let pageNumer = 0; pageNumer < numberOfPages; pageNumer++) {
-      rows.push(
-        <li
-          onClick={() => {
-            setCurrentPage(pageNumer + 1);
-          }}
-          key={`gst-page-${pageNumer}`}
-        >
-          <a
-            className={`pagination-link ${
-              currentPage === pageNumer + 1 && "is-current"
-            }`}
-            aria-label={`Goto page ${currentPage}`}
-          >
-            {pageNumer + 1}
-          </a>
-        </li>
-      );
-    }
-
-    return (
-      <nav
-        className="flex-pagination pagination is-rounded"
-        aria-label="pagination"
-      >
-        <FontAwesomeIcon
-          name={"angle-left"}
-          size={15}
-          color="#00a353"
-          onClick={() => setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))}
-          className={"pagination-previous"}
-        />
-        <FontAwesomeIcon
-          name={"angle-right"}
-          size={15}
-          color="#00a353"
-          onClick={() =>
-            setCurrentPage((prev) => (prev < numberOfPages ? prev + 1 : prev))
-          }
-          className={"pagination-next"}
-        />
-        <ul
-          className="pagination-list"
-          style={{ display: "flex", justifyContent: "center" }}
-        >
-          {rows}
-        </ul>
-      </nav>
-    );
   };
 
   const dateOptions = [
@@ -559,7 +531,11 @@ const GstReports = () => {
           ) : (
             <div className="reports-empty-table">No data to show</div>
           )}
-          <GstPagination />
+          {/* <GstPagination /> */}
+          <PaginationComponent
+            paginationInfo={paginationInfo}
+            setPaginationInfo={setPaginationInfo}
+          />
         </AdvancedCard>
       </div>
     </PageContent>
