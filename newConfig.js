@@ -117,7 +117,10 @@ const resourceUrls = {
 
   // numerations
   numeration: `${resourceHost}setting/numeration`,
-  numerationInvoice: `${resourceHost}setting/invoice/changeNumeration`
+  numerationInvoice: `${resourceHost}setting/invoice/changeNumeration`,
+
+  // text modules
+  textModule: `${resourceHost}setting/textModule`,
 };
 
 const checkLoginTokenIsValid = () => {

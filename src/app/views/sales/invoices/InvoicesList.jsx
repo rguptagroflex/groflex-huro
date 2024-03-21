@@ -296,8 +296,34 @@ const InvoicesList = () => {
   }
 
   // post data for text module 
-  const handleTextModule = () => {
-    // 
+  const handleTextModule = (textModuleData) => {
+    setIsLoading(true);
+
+    const updateTextModules = async () => {
+      try {
+        let successCount = 0;
+        for (const data of textModuleData) {
+          await groflexService.request(`${config.resourceUrls.textModule}/${data.id}`, {
+            auth: true,
+            data: data,
+            method: "PUT",
+          });
+          successCount++;
+        }
+        if (successCount === textModuleData.length) {
+          groflexService.toast.success(resources.textModuleUpdateSuccessMessage);
+        }
+      } catch (error) {
+        console.error("Error occurred while updating text modules:", error);
+        groflexService.toast.error("Something went wrong");
+      } finally {
+        setIsLoading(false);
+        setIsTextModuleActive(false);
+      }
+    };
+
+    updateTextModules();
+
   }
 
   return (
