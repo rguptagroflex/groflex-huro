@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PageContent from "../../../shared/components/pageContent/PageContent";
 import { useNavigate } from "react-router-dom";
 import config from "../../../../../newConfig";
@@ -14,6 +14,8 @@ import {
 } from "../../../helpers/sortComparators";
 import groflexService from "../../../services/groflex.service";
 import FontAwesomeIcon from "../../../shared/fontAwesomeIcon/FontAwesomeIcon";
+import NumberRangeModal from "../../../shared/components/numberRange/NumberRangeModal";
+import TextModuleModal from "../../../shared/components/textModuleModal/TextModuleModal";
 const actions = [
   { name: "edit", icon: "edit" },
   { name: "delete", icon: "trash-alt" },
@@ -72,6 +74,86 @@ const QuotationsList = () => {
       //   navigate(`/articles/edit/${row.id}`);
     }
   };
+
+  // settings elements
+  const elements = [
+    {
+      title: "Text Modules",
+      handleClick: () => {
+        setIsTextModuleActive(true)
+      },
+    },
+    {
+      title: "Number Range",
+      handleClick: () => {
+        setIsModalActive(true);
+      },
+    },
+  ]
+
+
+  const [isLoading, setIsLoading] = useState(false);
+  // for number range modal
+  const [isModalActive, setIsModalActive] = useState(false);
+
+  // for Text Module
+  const [isTextModuleModalActive, setIsTextModuleActive] = useState(false);
+
+  // post data for numeration
+  const handlePostNumerationData = (numerationData) => {
+    setIsLoading(true)
+    groflexService
+      .request(`${config.resourceUrls.numerationOffer}`, {
+        auth: true,
+        data: numerationData,
+        method: "POST",
+      })
+      .then((res) => {
+        if (res.body?.message) {
+          console.log(res.body?.message)
+          groflexService.toast.error("Something went wrong");
+          setIsLoading(false)
+          setIsModalActive(false)
+        } else {
+          groflexService.toast.success(resources.numerationSaveSuccess);
+          setIsLoading(false)
+          setIsModalActive(false)
+        }
+      });
+
+  }
+
+  // post data for text module 
+  const handleTextModule = (textModuleData) => {
+    setIsLoading(true);
+
+    const updateTextModules = async () => {
+      try {
+        let successCount = 0;
+        for (const data of textModuleData) {
+          await groflexService.request(`${config.resourceUrls.textModule}/${data.id}`, {
+            auth: true,
+            data: data,
+            method: "PUT",
+          });
+          successCount++;
+        }
+        if (successCount === textModuleData.length) {
+          groflexService.toast.success(resources.textModuleUpdateSuccessMessage);
+        }
+      } catch (error) {
+        console.error("Error occurred while updating text modules:", error);
+        groflexService.toast.error("Something went wrong");
+      } finally {
+        setIsLoading(false);
+        setIsTextModuleActive(false);
+      }
+    };
+
+    updateTextModules();
+
+  }
+
   return (
     <PageContent
       title="Quotaiton List"
@@ -81,6 +163,30 @@ const QuotationsList = () => {
         </Button>
       }
     >
+
+      {
+        isModalActive && (
+          <NumberRangeModal
+            isActive={isModalActive}
+            setIsActive={setIsModalActive}
+            numerationType='offer'
+            handlePostData={handlePostNumerationData}
+            isLoading={isLoading}
+          />
+        )
+      }
+      {
+        isTextModuleModalActive && (
+          <TextModuleModal
+            isActive={isTextModuleModalActive}
+            setIsActive={setIsTextModuleActive}
+            textModuleType='quotation'
+            handleTextModule={handleTextModule}
+            isLoading={isLoading}
+          />
+        )
+      }
+
       <ListAdvancedComponent
         onRowClicked={(e) => {
           navigate(`/sales/quotations/${e.data.id}`);
@@ -143,6 +249,7 @@ const QuotationsList = () => {
         ]}
         fetchUrl={config.resourceUrls.quotations}
         actionMenuData={actions}
+        settingsElement={elements}
       />
     </PageContent>
   );

@@ -43,12 +43,12 @@ export const ListHeadbarControls = ({ isFiltered, elements }) => {
 						<div style={{ display: 'flex', alignItems: 'center' }}>
 							Settings
 
-						{elements?
-							<PopOver
-								label={<FeatherIcon name={"ChevronDown"} />}
-								elements={elements}
-							/> : ''
-						}
+							{elements ?
+								<PopOver
+									label={<FeatherIcon name={"ChevronDown"} />}
+									elements={elements}
+								/> : ''
+							}
 
 						</div>
 					</Button>
