@@ -222,6 +222,7 @@ const TimesheetsBilling = () => {
           <div className="column is-12">
             <AdvancedCard type={"s-card"}>
               <ListAdvancedComponent
+                pagination={false}
                 onRowClicked={(e) => {
                   status === "invoiced" &&
                     navigate(`/sales/invoices/${e.data.invoice.id}`);
@@ -269,7 +270,9 @@ const TimesheetsBilling = () => {
                     },
                   },
                 ]}
-                fetchUrl={`${oldConfig.timetracking.requestUrl.billing}${customerId}?status=${status}`}
+                fetchUrl={() =>
+                  `${oldConfig.timetracking.requestUrl.billing}${customerId}?status=${status}`
+                }
                 actionMenuData={getActionPopupButtons}
               />
             </AdvancedCard>

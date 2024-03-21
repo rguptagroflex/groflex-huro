@@ -21,6 +21,7 @@ export const ListAdvancedComponent = ({
   onCellClicked,
   customRowData,
   responseDataMapFunc,
+  pagination = true,
 }) => {
   const [dataIsEmptyFlag, setDataIsEmptyFlag] = useState(false);
   const [gridApi, setGridApi] = useState();
@@ -302,10 +303,12 @@ export const ListAdvancedComponent = ({
 
       <div>
         {/* <ListPaginationComponent /> */}
-        <PaginationComponent
-          paginationInfo={paginationInfo}
-          setPaginationInfo={setPaginationInfo}
-        />
+        {pagination && (
+          <PaginationComponent
+            paginationInfo={paginationInfo}
+            setPaginationInfo={setPaginationInfo}
+          />
+        )}
       </div>
     </GridApiContext.Provider>
   );
