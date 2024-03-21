@@ -121,6 +121,9 @@ const resourceUrls = {
 
   // text modules
   textModule: `${resourceHost}setting/textModule`,
+  
+  // dunning
+  dunningLevel: `${resourceHost}setting/dunningLevel`,
 };
 
 const checkLoginTokenIsValid = () => {

@@ -26,6 +26,7 @@ import resources from "../../../shared/resources/resources";
 import NumberRangeModal from "../../../shared/components/numberRange/NumberRangeModal";
 import LoaderSpinner from "../../../shared/components/loaderSpinner/LoaderSpinner";
 import TextModuleModal from "../../../shared/components/textModuleModal/TextModuleModal";
+import DunningModal from "../../../shared/components/dunngingModal/DunningModal";
 
 const PAYABLE_STATES = [
   InvoiceState.DUNNED,
@@ -249,6 +250,9 @@ const InvoicesList = () => {
   // for Text Module
   const [isTextModuleModalActive, setIsTextModuleActive] = useState(false);
 
+  // for Dunning
+  const [isDunningModalActive, setIsDunningModalActive] = useState(false);
+
   // settings elements
   const elements = [
     {
@@ -266,7 +270,7 @@ const InvoicesList = () => {
     {
       title: "Dunning",
       handleClick: () => {
-        // setIsModalActive(true);
+        setIsDunningModalActive(true);
       },
     },
   ]
@@ -349,6 +353,16 @@ const InvoicesList = () => {
             isActive={isTextModuleModalActive}
             setIsActive={setIsTextModuleActive}
             textModuleType='invoice'
+            handleTextModule={handleTextModule}
+            isLoading={isLoading}
+          />
+        )
+      }
+      {
+        isDunningModalActive && (
+          <DunningModal
+            isActive={isDunningModalActive}
+            setIsActive={setIsDunningModalActive}
             handleTextModule={handleTextModule}
             isLoading={isLoading}
           />
