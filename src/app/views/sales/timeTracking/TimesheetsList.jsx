@@ -132,7 +132,9 @@ const TimesheetsList = () => {
 
           return result;
         }}
-        fetchUrl={`${oldConfig.timetracking.resourceUrl}?offset=0&searchText=&limit=9999999&orderBy=customerName&desc=true&filter=default`}
+        fetchUrl={(offset, limit) =>
+          `${oldConfig.timetracking.resourceUrl}?offset=${offset}&searchText=&limit=${limit}&orderBy=customerName&desc=true&filter=default`
+        }
         actionMenuData={getActionPopupButtons}
       />
     </PageContent>
