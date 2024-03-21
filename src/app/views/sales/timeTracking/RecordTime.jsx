@@ -193,13 +193,39 @@ const RecordTime = () => {
       hoursMin: e.target.value,
     });
   };
+  const handleSaveDisable = () => {
+    if (
+      recordTimeFormData.customer &&
+      recordTimeFormData.hourlyRate &&
+      recordTimeFormData.type &&
+      selectedDate &&
+      recordTimeFormData.jobDescription
+    ) {
+      if (recordTimeFormData.type === "h:mm") {
+        if (recordTimeFormData.hoursMin) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+      if (recordTimeFormData.type === "fromDateTime_toDateTime") {
+        if (toTime && fromTime) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+    } else {
+      return true;
+    }
+  };
 
   return (
     <PageContent
       loading={trackId && loading}
       title={trackId ? "Edit recorded time" : "Record Time"}
       titleActionContent={
-        <Button onClick={handleSave} isSuccess>
+        <Button onClick={handleSave} isSuccess isDisabled={handleSaveDisable()}>
           Save
         </Button>
       }

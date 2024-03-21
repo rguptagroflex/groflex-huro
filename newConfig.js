@@ -149,7 +149,7 @@ const resourceUrls = {
     `${resourceHost}purchaseOrder?offset=${offset}&searchText=&limit=${limit}&orderBy=date&desc=true&filter=all&trigger=true`,
 
   //Teams
-  teamsList: `${resourceHost}user/list`,
+  teamsList: (offset, limit) => `${resourceHost}user/list`,
   inviteNewUser: `${resourceHost}user/tenant`,
   inviteCa: `${resourceHost}user/cadetails`,
   updateUserRole: (userId) => `${resourceHost}user/${userId}/role`,
