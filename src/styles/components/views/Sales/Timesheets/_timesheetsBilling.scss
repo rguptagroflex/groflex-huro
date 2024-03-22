@@ -55,3 +55,13 @@
     }
   }
 }
+
+.timesheet-billing-delete-modal-main {
+  h2 {
+    margin-bottom: 10px;
+  }
+  li {
+    display: flex;
+    justify-content: space-between;
+  }
+}

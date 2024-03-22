@@ -1,0 +1,31 @@
+.pagination-main {
+  display: flex;
+  justify-content: space-between;
+  li:first-child {
+    position: absolute;
+    right: 170px;
+    border: 1px solid #ddd;
+    background: #ffffff;
+  }
+  li:last-child {
+    position: absolute;
+    right: 100px;
+    border: 1px solid #ddd;
+    background: #ffffff;
+  }
+  .MuiButtonBase-root {
+    color: #00a353;
+    background: #ffffff;
+  }
+  .MuiPaginationItem-previousNext {
+    border: 0;
+  }
+  .MuiButtonBase-root:hover {
+    background: none;
+  }
+
+  .Mui-selected {
+    background-color: #00a353 !important;
+    color: white;
+  }
+}

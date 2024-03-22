@@ -11,6 +11,9 @@ import config from "../../../../../newConfig";
 import FontAwesomeIcon from "../../../shared/fontAwesomeIcon/FontAwesomeIcon";
 import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
 import oldConfig from "../../../../../oldConfig";
+import { useNavigate } from "react-router-dom";
+import PaginationComponent from "../../../shared/components/pagination/PaginationComponent";
+
 const dateFilterTypes = {
   fiscalYear: "Fiscal Year",
   currentMonth: moment().format("MMMM"),
@@ -27,6 +30,14 @@ const dateFilterTypes = {
     .format("Q/YYYY"),
 };
 const GstReports = () => {
+  const navigate = useNavigate();
+  const [paginationInfo, setPaginationInfo] = useState({
+    numberOfPages: 0,
+    currentPage: 1,
+    entriesPerPage: 5,
+    rowCount: 0,
+  });
+
   const { companyAddress } = useSelector(
     (state) => state?.accountData?.tenantData || ""
   );
@@ -46,6 +57,7 @@ const GstReports = () => {
     gstReportType: "",
     sortBy: "all",
     dateDropDown: "",
+    reportFormat: "CSV",
   });
   const [date, setDate] = useState({
     startDate: "",
@@ -58,7 +70,7 @@ const GstReports = () => {
 
   useEffect(() => {
     fetchGstReportExportSummary();
-  }, []);
+  }, [paginationInfo.currentPage, paginationInfo.entriesPerPage]);
 
   useEffect(() => {
     filterGstExportSummary();
@@ -75,6 +87,13 @@ const GstReports = () => {
     setGenerateGstReportFormData({
       ...generateGstReportFormData,
       sortBy: option.value,
+    });
+  };
+
+  const handleReportFormatChange = (option) => {
+    setGenerateGstReportFormData({
+      ...generateGstReportFormData,
+      reportFormat: option.value,
     });
   };
 
@@ -161,38 +180,68 @@ const GstReports = () => {
 
   const fetchGstReportExportSummary = () => {
     let rowData = [];
+    let numberOfPages = 0;
+    const offset =
+      (paginationInfo.currentPage - 1) * paginationInfo.entriesPerPage;
 
     groflexService
-      .request(`${config.resourceUrls.gstReportExportSummary}`, { auth: true })
+      .request(
+        `${config.resourceUrls.gstReportExportSummary(
+          offset,
+          paginationInfo.entriesPerPage
+        )}`,
+        {
+          auth: true,
+        }
+      )
       .then((res) => {
         if (res && res.body) {
+          setPaginationInfo({
+            ...paginationInfo,
+            rowCount: res.body.meta.count,
+          });
+          numberOfPages =
+            (1 / paginationInfo.entriesPerPage) * res.body.meta.count;
+
           res.body.data.forEach((item) => {
-            rowData.push({
-              id: item.id,
-              documentUrl: item.documentUrl,
-              date: moment(item.createdAt).format("DD-MM-YYYY"),
-              exportPeriod: item.exportPeriod,
-              exportType: item.exportFormat.toUpperCase(),
-              fileFormat: item.type,
-              download: (
-                <FontAwesomeIcon
-                  name={"download"}
-                  size={20}
-                  color="rgb(0, 121, 179)"
-                  onClick={() => handleExport()}
-                />
-              ),
-              share: (
-                <FontAwesomeIcon
-                  name={"share-nodes"}
-                  size={20}
-                  color="rgb(0, 121, 179)"
-                  onClick={() => setIsEmailModalVisible(true)}
-                />
-              ),
-            });
+            if (
+              item.exportFormat === "gstr1" ||
+              item.exportFormat === "gstr3b"
+            ) {
+              rowData.push({
+                id: item.id,
+                documentUrl: item.documentUrl,
+                date: moment(item.createdAt).format("DD-MM-YYYY"),
+                exportPeriod: item.exportPeriod,
+                exportType: item.exportFormat.toUpperCase(),
+                fileFormat: item.type,
+                download: (
+                  <FontAwesomeIcon
+                    name={"download"}
+                    size={20}
+                    color="rgb(0, 121, 179)"
+                    onClick={() => handleExport()}
+                  />
+                ),
+                share: (
+                  <FontAwesomeIcon
+                    name={"share-nodes"}
+                    size={20}
+                    color="rgb(0, 121, 179)"
+                    onClick={() => setIsEmailModalVisible(true)}
+                  />
+                ),
+              });
+            }
           });
         }
+        if (paginationInfo.numberOfPages === 0) {
+          setPaginationInfo({
+            ...paginationInfo,
+            numberOfPages: Math.ceil(numberOfPages),
+          });
+        }
+
         setRowData(rowData);
         setFilteredRowData(rowData);
       });
@@ -204,7 +253,7 @@ const GstReports = () => {
       exportFormat: generateGstReportFormData.gstReportType,
       exportPeriod: generateGstReportFormData.dateDropDown,
       startDate: date.startDate,
-      type: "CSV",
+      type: generateGstReportFormData.reportFormat,
     };
     groflexService
       .request(`${config.resourceUrls.exportGstReport}`, {
@@ -213,7 +262,6 @@ const GstReports = () => {
         method: "POST",
       })
       .then((res) => {
-        console.log(res);
         if (res.body?.message) {
           groflexService.toast.error("Something went wrong");
         } else {
@@ -275,6 +323,22 @@ const GstReports = () => {
       message: `Dear Ladies and Gentlemen, Enclosed I send you my accounting documents for the period ${row.exportPeriod}. Yours sincerely,`,
       subject: `Accounting documents ${row.exportPeriod}`,
     });
+  };
+
+  const handleRowClick = (e, rowData) => {
+    let url = "";
+    switch (rowData.exportType) {
+      case "GSTR1":
+        url = "/accounting/reports/gst-reports/gstr-1";
+        break;
+      case "GSTR2A":
+        url = "/accounting/reports/gst-reports/gstr-2A";
+        break;
+      case "GSTR3B":
+        url = "/accounting/reports/gst-reports/gstr-3B";
+        break;
+    }
+    navigate(url);
   };
 
   const dateOptions = [
@@ -340,9 +404,9 @@ const GstReports = () => {
                 <SelectInput
                   options={[
                     { label: "GSTR-1", value: "gstr1" },
-                    { label: "GSTR-2A", value: "gstr2a" },
+                    // { label: "GSTR-2A", value: "gstr2a" },
                     { label: "GSTR-3B", value: "gstr3b" },
-                    { label: "GSTR-9", value: "gstr9" },
+                    // { label: "GSTR-9", value: "gstr9" },
                   ]}
                   placeholder={"None"}
                   onChange={handleGstReportTypeChange}
@@ -358,9 +422,9 @@ const GstReports = () => {
                   options={[
                     { label: "ALL", value: "all" },
                     { label: "GSTR-1", value: "gstr1" },
-                    { label: "GSTR-2A", value: "gstr2a" },
+                    // { label: "GSTR-2A", value: "gstr2a" },
                     { label: "GSTR-3B", value: "gstr3b" },
-                    { label: "GSTR-9", value: "gstr9" },
+                    // { label: "GSTR-9", value: "gstr9" },
                   ]}
                   placeholder={"None"}
                   onChange={handleSortByTypeChange}
@@ -380,8 +444,23 @@ const GstReports = () => {
                 />
               </div>
             </div>
+            <div className="column is-2">
+              <div className="field">
+                <label className="gst-filter-label">Report Format</label>
+                <SelectInput
+                  options={[
+                    { label: "CSV", value: "CSV" },
+
+                    { label: "XML", value: "Tally" },
+                  ]}
+                  placeholder={"None"}
+                  onChange={handleReportFormatChange}
+                  value={generateGstReportFormData.reportFormat}
+                />
+              </div>
+            </div>
             {showCustomDateRangeSelector && (
-              <div className="column is-3">
+              <div className="column is-2">
                 <div
                   className="field"
                   style={{ display: "flex", flexDirection: "column" }}
@@ -395,7 +474,7 @@ const GstReports = () => {
               </div>
             )}
             {showCustomDateRangeSelector && (
-              <div className="column is-3">
+              <div className="column is-2">
                 <div
                   className="field"
                   style={{ display: "flex", flexDirection: "column" }}
@@ -413,7 +492,8 @@ const GstReports = () => {
             isPrimary
             isDisabled={
               generateGstReportFormData.gstReportType &&
-              generateGstReportFormData.dateDropDown
+              generateGstReportFormData.dateDropDown &&
+              generateGstReportFormData.reportFormat
                 ? false
                 : true
             }
@@ -431,6 +511,7 @@ const GstReports = () => {
 
         <AdvancedCard type={"s-card"}>
           <h2 className="title is-5 is-bold">Export History</h2>
+
           {filteredRowData.length > 0 ? (
             <div className="gst-export-summary">
               <table className="table is-hoverable is-fullwidth">
@@ -445,7 +526,11 @@ const GstReports = () => {
                     </th>
                   </tr>
                   {filteredRowData.map((item, id) => (
-                    <tr className="gst-export-summary-row" key={id}>
+                    <tr
+                      className="gst-export-summary-row"
+                      key={id}
+                      onClick={(e) => handleRowClick(e, item)}
+                    >
                       <td>{item.date}</td>
                       <td>{item.exportPeriod}</td>
                       <td>
@@ -455,11 +540,19 @@ const GstReports = () => {
                       </td>
                       <td>{item.fileFormat}</td>
                       <td style={{ textAlign: "center" }}>
-                        <span onClick={() => handleExport(item.documentUrl)}>
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation(), handleExport(item.documentUrl);
+                          }}
+                        >
                           {item.download}
                         </span>{" "}
                         |{" "}
-                        <span onClick={() => handleShareClick(item)}>
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation(), handleShareClick(item);
+                          }}
+                        >
                           {item.share}
                         </span>
                       </td>
@@ -471,6 +564,11 @@ const GstReports = () => {
           ) : (
             <div className="reports-empty-table">No data to show</div>
           )}
+          {/* <GstPagination /> */}
+          <PaginationComponent
+            paginationInfo={paginationInfo}
+            setPaginationInfo={setPaginationInfo}
+          />
         </AdvancedCard>
       </div>
     </PageContent>

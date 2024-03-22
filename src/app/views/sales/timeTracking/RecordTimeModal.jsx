@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Modal from "../../../shared/components/modal/Modal";
-import config from "../../../../../oldConfig";
+import oldConfig from "../../../../../oldConfig";
 import groflexService from "../../../services/groflex.service";
 import { SelectInput } from "../../../shared/components/select/SelectInput";
 import DateInput from "../../../shared/components/datePicker/DateInput";
@@ -8,22 +8,26 @@ import moment from "moment";
 import { Input } from "../../../shared/components/input/Input";
 import { formatCurrency } from "../../../helpers/formatCurrency";
 import { TextArea } from "../../../shared/components/textArea/TextArea";
+import TimeInput from "../../../shared/components/timePicker/TimeInput";
+import { useNavigate } from "react-router-dom";
 
 const RecordTimeModal = ({
   recordTimeModalVisible,
   setRecordTimeModalVisible,
   title = "Reccord Time",
 }) => {
+  const navigate = useNavigate();
   const [customerDropDownValues, setCustomerDropDownValues] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState("");
   const [recordTimeFormData, setRecordTimeFormData] = useState({
     customer: "",
     hoursMin: "",
     hourlyRate: "",
     type: "",
     jobDescription: "",
-    from: "",
-    to: "",
   });
+  const [fromTime, setFromTime] = useState("");
+  const [toTime, setToTime] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   useEffect(() => {
     fetchCustomers();
@@ -31,7 +35,7 @@ const RecordTimeModal = ({
   const fetchCustomers = () => {
     let customerDropDown = [];
     groflexService
-      .request(`${config.getAllCustomers}?type=customer&search=%27*%27`, {
+      .request(`${oldConfig.getAllCustomers}?type=customer&search=%27*%27`, {
         auth: true,
       })
       .then((res) => {
@@ -42,10 +46,55 @@ const RecordTimeModal = ({
         setCustomerDropDownValues(customerDropDown);
       });
   };
+
+  const handleSave = () => {
+    const numberOfHours = moment.duration(toTime.diff(fromTime)).asHours();
+    const durationInMinutes = numberOfHours * 60;
+
+    const priceTotal = recordTimeFormData.hourlyRate * numberOfHours;
+    const payload = {
+      durationInMinutes: durationInMinutes,
+      startDate: moment(
+        moment(selectedDate).format("YYYY-MM-DD") +
+          " " +
+          moment(fromTime).format("HH:mm")
+      ).toJSON(),
+      endDate: moment(
+        moment(selectedDate).format("YYYY-MM-DD") +
+          " " +
+          moment(toTime).format("HH:mm")
+      ).toJSON(),
+      pricePerHour: recordTimeFormData.hourlyRate,
+      taskDescription: recordTimeFormData.jobDescription,
+      priceTotal: priceTotal,
+      timeType: recordTimeFormData.type,
+      customer: recordTimeFormData.customer,
+    };
+    groflexService
+      .request(`${oldConfig.timetracking.resourceUrl}`, {
+        auth: true,
+        method: "POST",
+        data: payload,
+      })
+      .then((res) => {
+        if (res.body.data.id) {
+          navigate(
+            `/sales/time-sheets/billed/customer/${recordTimeFormData.customer.id}/open`
+          );
+          setRecordTimeModalVisible(false);
+
+          groflexService.toast.success("Time recorded");
+        } else {
+          groflexService.toast.error("Something went wrong");
+          setRecordTimeModalVisible(false);
+        }
+      });
+  };
   const handleCustomerChange = (option) => {
+    setSelectedCustomer(option.value);
     setRecordTimeFormData({
       ...recordTimeFormData,
-      customer: option.value,
+      customer: { id: option.value, name: option.label },
     });
   };
   const handleHorulyRateChange = (e) => {
@@ -69,34 +118,20 @@ const RecordTimeModal = ({
     });
   };
 
-  const handleFromChange = (e) => {
-    setRecordTimeFormData({
-      ...recordTimeFormData,
-      from: e.target.value,
-    });
-  };
-  const handleToChange = (e) => {
-    setRecordTimeFormData({
-      ...recordTimeFormData,
-      to: e.target.value,
-    });
-  };
-
   const handleHourMinChange = (e) => {
     setRecordTimeFormData({
       ...recordTimeFormData,
       hoursMin: e.target.value,
     });
   };
-  console.log(recordTimeFormData);
 
-  //   console.log(selectedDate.toJSON());
   return (
     <Modal
       title={title}
       isActive={recordTimeModalVisible}
       setIsAcive={setRecordTimeModalVisible}
       isBig
+      onSubmit={handleSave}
     >
       <div className="record-time-main">
         <div className="columns is-multiline">
@@ -107,7 +142,7 @@ const RecordTimeModal = ({
                 options={customerDropDownValues}
                 placeholder={"None"}
                 onChange={handleCustomerChange}
-                value={recordTimeFormData.customer}
+                value={selectedCustomer}
               />
             </div>
           </div>
@@ -136,14 +171,14 @@ const RecordTimeModal = ({
         <div className="columns is-multiline">
           <div
             className={`column is-${
-              recordTimeFormData.type === "fromTo" ? "4" : "6"
+              recordTimeFormData.type === "fromDateTime_toDateTime" ? "4" : "6"
             }`}
           >
             <div className="field">
               <label>Type</label>
               <SelectInput
                 options={[
-                  { label: "From - To", value: "fromTo" },
+                  { label: "From - To", value: "fromDateTime_toDateTime" },
                   { label: "Hours / Min", value: "hourMin" },
                 ]}
                 placeholder={"None"}
@@ -152,27 +187,28 @@ const RecordTimeModal = ({
               />
             </div>
           </div>
-          {recordTimeFormData.type === "fromTo" ? (
+          {recordTimeFormData.type === "fromDateTime_toDateTime" ? (
             <>
               <div className="column is-4">
                 <div className="field">
                   <label>From</label>
-                  <Input
-                    onChange={handleFromChange}
-                    placeholder={"None"}
-                    type={"text"}
-                    value={recordTimeFormData.from}
+
+                  <TimeInput
+                    ampm={false}
+                    value={moment(fromTime)}
+                    onChange={setFromTime}
+                    size={"small"}
                   />
                 </div>
               </div>
               <div className="column is-4">
                 <div className="field">
                   <label>To</label>
-                  <Input
-                    onChange={handleToChange}
-                    placeholder={"None"}
-                    type={"text"}
-                    value={recordTimeFormData.to}
+                  <TimeInput
+                    ampm={false}
+                    value={moment(toTime)}
+                    onChange={setToTime}
+                    size={"small"}
                   />
                 </div>
               </div>
@@ -184,8 +220,9 @@ const RecordTimeModal = ({
                 <Input
                   onChange={handleHourMinChange}
                   placeholder={"None"}
-                  type={"text"}
+                  type={"number"}
                   value={recordTimeFormData.hoursMin}
+                  min="0"
                 />
               </div>
             </div>

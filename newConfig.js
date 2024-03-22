@@ -63,14 +63,16 @@ const resourceUrls = {
   //Articles
   articleNumber: `${resourceHost}article/number`, //Get Create article's number
   postArticleImage: `${resourceHost}article/image/`, //Concatenate articleId
-  articles: `${resourceHost}article?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
+  articles: (offset, limit) =>
+    `${resourceHost}article?offset=${offset}&searchText=&limit=${limit}&orderBy=number&desc=false`,
   article: `${resourceHost}article/`, // concatenate article Id
   articleHistory: (articleId) =>
     `${resourceHost}article/${articleId}/history?offset=0&limit=5&orderBy=date&desc=true&filter=all`, // pass article Id
 
   articleSearch: `${resourceHost}find/eanRecord/`, // concatenate search query
   //Customers
-  customers: `${resourceHost}customer?offset=0&searchText=&limit=9999999&orderBy=number&desc=false`,
+  customers: (offset, limit) =>
+    `${resourceHost}customer?offset=${offset}&searchText=&limit=${limit}&orderBy=number&desc=false`,
   tenant: `${resourceHost}tenant`,
   accountSettings: `${resourceHost}setting/account`,
   changeProfileName: `${resourceHost}user/changePassword`,
@@ -79,36 +81,44 @@ const resourceUrls = {
   miscellaneous: `${resourceHost}setting/miscellaneous`,
 
   //Invoices
-  invoices: `${resourceHost}invoice?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,
+  invoices: (offset, limit) =>
+    `${resourceHost}invoice?offset=${offset}&searchText=&limit=${limit}&orderBy=date&desc=true&filter=all&trigger=true`,
   invoice: `${resourceHost}invoice/`, // Contatenate invoiceId
 
   //Quotation
-  quotations: `${resourceHost}offer?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,
+  quotations: (offset, limit) =>
+    `${resourceHost}offer?offset=${offset}&searchText=&limit=${limit}&orderBy=date&desc=true&filter=all&trigger=true`,
   quotation: `${resourceHost}offer/`, //Concatenate QuotationId
 
   //Recurring
-  recurring: `${resourceHost}recurringinvoice?offset=0&searchText=&limit=9999999&orderBy=name&desc=true`,
+  recurring: (offset, limit) =>
+    `${resourceHost}recurringinvoice?offset=${offset}&searchText=&limit=${limit}&orderBy=name&desc=true`,
 
   //Accounting
   //Transaction
-  transaction: `${resourceHost}bankTransaction?offset=0&searchText=&limit=9999999&orderBy=date&desc=true`,
+  transaction: (offset, limit) =>
+    `${resourceHost}bankTransaction?offset=${offset}&searchText=&limit=${limit}&orderBy=date&desc=true`,
   bank: `${resourceHost}bank`,
   // Debit notes
-  expenseCancellation: `${resourceHost}expenseCancellation?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=debitsAndBalance&trigger=true`,
+  expenseCancellation: (offset, limit) =>
+    `${resourceHost}expenseCancellation?offset=${offset}&searchText=&limit=${limit}&orderBy=date&desc=true&filter=debitsAndBalance&trigger=true`,
   // Credit notes
-  cancellation: `${resourceHost}cancellation?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=creditsAndBalance&trigger=true`,
+  cancellation: (offset, limit) =>
+    `${resourceHost}cancellation?offset=${offset}&searchText=&limit=${limit}&orderBy=date&desc=true&filter=creditsAndBalance&trigger=true`,
   //Expenditure
-  expenses: `${resourceHost}expense?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all`,
+  expenses: (offset, limit) =>
+    `${resourceHost}expense?offset=${offset}&searchText=&limit=${limit}&orderBy=date&desc=true&filter=all`,
   expense: `${resourceHost}expense/`,
   // Chart of Accounts
-  chartOfAccounts: `${resourceHost}chartofaccount?offset=0&searchText=&limit=9999999&orderBy=accountName&desc=false`,
+  chartOfAccounts: (offset, limit) =>
+    `${resourceHost}chartofaccount?offset=${offset}&searchText=&limit=${limit}&orderBy=accountName&desc=false`,
   chartOfAccount: `${resourceHost}chartofaccount/`,
   accountType: `${resourceHost}accountType?offset=0&searchText=&limit=9999999&orderBy=name&desc=false`,
 
   //Reports Balance Sheet
   balanceSheet: (startDate, endDate, fileType) =>
     `${resourceHost}accountingReport/balanceSheet/${startDate}/${endDate}?type=${fileType}`,
-  profitAndLoss: (startDate, endDate, fileType) =>
+  reportsProfitAndLoss: (startDate, endDate, fileType) =>
     `${resourceHost}accountingReport/profitandloss/${startDate}/${endDate}?type=${fileType}`,
   generalLedger: (startDate, endDate, fileType, customerID) =>
     `${resourceHost}accountingReport/generalLedger/${startDate}/${endDate}?type=${fileType}&customerId=${customerID}`,
@@ -117,8 +127,11 @@ const resourceUrls = {
     `${resourceHost}accountingReport/cashflow/${starDate}/${endDate}?type=${fileType}`,
   sendAccountingReport: (reportType, startDate, endDate) =>
     `${resourceHost}accountingReport/sendAccountingReportEmail/${reportType}/${startDate}/${endDate}`,
-  gstReportExportSummary: `${resourceHost}accountantExport/?offset=0&limit=5&orderBy=createdAt&desc=true`,
+  gstReportExportSummary: (offset, limit) =>
+    `${resourceHost}accountantExport/?offset=${offset}&limit=${limit}&orderBy=createdAt&desc=true`,
   exportGstReport: `${resourceHost}accountantExport/`,
+  //Delivery Challan
+  deliveryChallanList: `${resourceHost}deliveryChallan?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,
 
   //InventoryDashboard
   lastOrder: `${resourceHost}/inventoryDashboard/lastPurchaseOrder?limit=6`,
@@ -132,10 +145,11 @@ const resourceUrls = {
   stockMovement1: `${resourceHost}inventory/history?offset=0&searchText=&limit=9999999&orderBy=itemModifiedDate&desc=false`,
   stockMovement2: `${resourceHost}inventory/?offset=0&searchText=&limit=9999999&orderBy=articleId&desc=false`,
   //Purchase Orders
-  purchase: `${resourceHost}purchaseOrder?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,
+  purchase: (offset, limit) =>
+    `${resourceHost}purchaseOrder?offset=${offset}&searchText=&limit=${limit}&orderBy=date&desc=true&filter=all&trigger=true`,
 
   //Teams
-  teamsList: `${resourceHost}user/list`,
+  teamsList: (offset, limit) => `${resourceHost}user/list`,
   inviteNewUser: `${resourceHost}user/tenant`,
   inviteCa: `${resourceHost}user/cadetails`,
   updateUserRole: (userId) => `${resourceHost}user/${userId}/role`,
@@ -196,6 +210,7 @@ const modules = {
       { label: "Vendor Payments", route: "/accounting/vendor-payments" },
       { label: "Reports", route: "/accounting/reports" },
       { label: "Chart of Accounts", route: "/accounting/chart-of-accounts" },
+      { label: "Delivery Challan", route: "/accounting/delivery-challan" },
     ],
   },
   inventory: {

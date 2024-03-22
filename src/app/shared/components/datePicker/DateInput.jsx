@@ -64,7 +64,7 @@ const DateInput = ({
       onChange={onDateChange}
       showDaysOutsideCurrentMonth
       slotProps={{
-        textField: { size: "small" },
+        textField: { size: "small", error: false },
         inputAdornment: { position: "start" },
         popper: {
           sx: {

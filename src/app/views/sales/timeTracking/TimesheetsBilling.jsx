@@ -13,12 +13,16 @@ import { ButtonGroup } from "../../../shared/components/button/buttonGroup/Butto
 import timesheetsSvg from "../../../../assets/groflex/icons/timesheetsIcon.svg";
 import Modal from "../../../shared/components/modal/Modal";
 import RecordTimeModal from "./RecordTimeModal";
+import DeleteRecordedTimeModal from "./DeleteRecordedTimeModal";
 const TimesheetsBilling = () => {
   const { customerId, status } = useParams();
-  const [recordTimeModalVisible, setRecordTimeModalVisible] = useState(false);
-  const [recordTimeModalTitle, setRecordTimeModalTitle] =
-    useState("Record Time");
+  // const [recordTimeModalVisible, setRecordTimeModalVisible] = useState(false);
+  // const [recordTimeModalTitle, setRecordTimeModalTitle] =
+  //   useState("Record Time");
+
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const navigate = useNavigate();
+  const [delteModalInfo, setDeleteModalInfo] = useState({});
   const [workStats, setWorkStats] = useState({
     priceTotal: 0,
     time: "",
@@ -83,16 +87,22 @@ const TimesheetsBilling = () => {
   const handleActionClick = (action, row, params) => {
     switch (action.action) {
       case "delete":
-        console.log(action.action);
+        setIsDeleteModalVisible(true);
+
+        setDeleteModalInfo(row);
         break;
       case "edit":
-        setRecordTimeModalTitle("Edit recorded time");
-        setRecordTimeModalVisible(true);
+        // setRecordTimeModalTitle("Edit recorded time");
+        // setRecordTimeModalVisible(true);
+
+        navigate(`/sales/time-sheets/record-time/${row.id}`);
+        break;
+      case "goToInvoice":
+        navigate(`/sales/invoices/${row.invoice.id}`);
         break;
     }
   };
   const getActionPopupButtons = (item) => {
-    console.log(item);
     const entries = [];
     switch (status) {
       case "open":
@@ -125,13 +135,17 @@ const TimesheetsBilling = () => {
       titleActionContent={
         status === "open" && (
           <ButtonGroup>
-            <Button onClick={() => navigate("/sales/timesheets")} isSecondary>
+            <Button
+              onClick={() => navigate("/sales/invoices/create-new")}
+              isSecondary
+            >
               Create Invoice
             </Button>
             <Button
               onClick={() => {
-                setRecordTimeModalTitle("Record Time"),
-                  setRecordTimeModalVisible(true);
+                // setRecordTimeModalTitle("Record Time"),
+                //   setRecordTimeModalVisible(true);
+                navigate("/sales/time-sheets/record-time");
               }}
               isSuccess
             >
@@ -142,12 +156,19 @@ const TimesheetsBilling = () => {
       }
     >
       {status === "open" && (
+        <DeleteRecordedTimeModal
+          isDeleteModalVisible={isDeleteModalVisible}
+          setIsDeleteModalVisible={setIsDeleteModalVisible}
+          rowData={delteModalInfo}
+        />
+      )}
+      {/* {status === "open" && (
         <RecordTimeModal
           recordTimeModalVisible={recordTimeModalVisible}
           setRecordTimeModalVisible={setRecordTimeModalVisible}
           title={recordTimeModalTitle}
         />
-      )}
+      )} */}
 
       <div className="timesheets-billing-main">
         <div className="columns is-multiline">
@@ -201,6 +222,7 @@ const TimesheetsBilling = () => {
           <div className="column is-12">
             <AdvancedCard type={"s-card"}>
               <ListAdvancedComponent
+                pagination={false}
                 onRowClicked={(e) => {
                   status === "invoiced" &&
                     navigate(`/sales/invoices/${e.data.invoice.id}`);
@@ -248,7 +270,9 @@ const TimesheetsBilling = () => {
                     },
                   },
                 ]}
-                fetchUrl={`${oldConfig.timetracking.requestUrl.billing}${customerId}?status=${status}`}
+                fetchUrl={() =>
+                  `${oldConfig.timetracking.requestUrl.billing}${customerId}?status=${status}`
+                }
                 actionMenuData={getActionPopupButtons}
               />
             </AdvancedCard>

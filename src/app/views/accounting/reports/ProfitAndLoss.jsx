@@ -67,7 +67,7 @@ const ProfitAndLoss = () => {
   const fetchProfitAndLossStatement = () => {
     groflexService
       .request(
-        `${config.resourceUrls.profitAndLoss(
+        `${config.resourceUrls.reportsProfitAndLoss(
           date.startDate,
           date.endDate,
           "json"
@@ -179,7 +179,7 @@ const ProfitAndLoss = () => {
     const exportType = label.toLowerCase();
     groflexService
       .request(
-        `${config.resourceUrls.profitAndLoss(
+        `${config.resourceUrls.reportsProfitAndLoss(
           date.startDate,
           date.endDate,
           exportType
@@ -211,7 +211,7 @@ const ProfitAndLoss = () => {
     const exportType = "pdf";
     groflexService
       .request(
-        `${config.resourceUrls.profitAndLoss(
+        `${config.resourceUrls.reportsProfitAndLoss(
           date.startDate,
           date.endDate,
           exportType

@@ -15,6 +15,7 @@ export const SelectInput = ({
   loadOptions,
   onInputChange,
   isLoading = undefined,
+  menuPlacement = "bottom",
 }) => {
   const [selectedOption, setSelectedOption] = useState();
 
@@ -91,6 +92,7 @@ export const SelectInput = ({
       onChange={onChange}
       onInputChange={onInputChange}
       isLoading={isLoading}
+      menuPlacement={menuPlacement}
     />
   );
 };

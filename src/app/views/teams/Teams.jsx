@@ -78,6 +78,7 @@ const Teams = () => {
       titleActionContent={createTopbarButtons()}
     >
       <ListAdvancedComponent
+        pagination={false}
         onRowClicked={(e) => {}}
         onActionClick={handleActionClick}
         columnDefs={[

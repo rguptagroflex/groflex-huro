@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useState } from "react";
+import React, { createContext, useCallback, useEffect, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ListPaginationComponent } from "./ListPaginationComponent";
 import { ListSearchComponent } from "./ListSearchComponent";
@@ -8,6 +8,7 @@ import groflexService from "../../../services/groflex.service";
 // import "./ListAdvanced.style.scss";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import PaginationComponent from "../pagination/PaginationComponent";
 
 export const GridApiContext = createContext();
 
@@ -20,6 +21,7 @@ export const ListAdvancedComponent = ({
   onCellClicked,
   customRowData,
   responseDataMapFunc,
+  pagination = true,
 }) => {
   const [dataIsEmptyFlag, setDataIsEmptyFlag] = useState(false);
   const [gridApi, setGridApi] = useState();
@@ -30,7 +32,40 @@ export const ListAdvancedComponent = ({
   const [visibleColumnCheckedState, setVisibleColumnCheckedState] = useState(
     {}
   );
+  const [paginationInfo, setPaginationInfo] = useState({
+    numberOfPages: 0,
+    currentPage: 1,
+    entriesPerPage: 5,
+    rowCount: 0,
+  });
 
+  const [rowData, setRowData] = useState([]);
+
+  useEffect(() => {
+    if (rowData.length !== 0) {
+      fetchListData();
+    }
+  }, [paginationInfo.currentPage, paginationInfo.entriesPerPage]);
+
+  const fetchListData = () => {
+    const offset =
+      (paginationInfo.currentPage - 1) * paginationInfo.entriesPerPage;
+    const newUrl = fetchUrl(offset, paginationInfo.entriesPerPage);
+    groflexService.request(newUrl, { auth: true }).then((res) => {
+      setPaginationInfo({
+        ...paginationInfo,
+        rowCount: res.body.meta.count,
+        numberOfPages: Math.ceil(
+          (1 / paginationInfo.entriesPerPage) * res.body.meta.count
+        ),
+      });
+      let rowData = responseDataMapFunc
+        ? responseDataMapFunc(res.body.data)
+        : res.body.data;
+
+      setRowData(rowData);
+    });
+  };
   const customActionCellRenderer = (params) => {
     // console.log(params, "ON ACTION CLICK MENu CLICK");
     return (
@@ -66,6 +101,7 @@ export const ListAdvancedComponent = ({
   };
 
   const gridOptions = {
+    rowData: rowData,
     columnDefs: [checkboxSelection, ...columnDefs, actionColumn],
     defaultColDef: {
       sortable: true,
@@ -126,62 +162,77 @@ export const ListAdvancedComponent = ({
     params.api.applyTransaction({ add: customRowData });
   };
 
-  const onGridReady = useCallback((params) => {
-    setGridApi(params.api);
-    setGridColumnApi(params.columnApi);
-    if (customRowData) {
-      useCustomRowData(params);
-    } else {
-      groflexService
-        .request(fetchUrl, { auth: true })
-        .then((res) => {
-          let rowData = responseDataMapFunc
-            ? responseDataMapFunc(res.body.data)
-            : res.body.data;
-          return rowData;
-        })
-        .then((res) => {
-          // console.log(res, "LIST ADVANCED RESPONSE");
-          if (res.length === 0) {
-            setDataIsEmptyFlag(true);
-            return;
-            console.log("Empty data list");
-          }
-          const newColumns = Object.keys(res[0]).filter(
-            (col) => !params.columnApi.getColumn(col)
-          );
-          setAdditionalColumns(newColumns);
+  const onGridReady = useCallback(
+    (params) => {
+      setGridApi(params.api);
+      setGridColumnApi(params.columnApi);
+      if (customRowData) {
+        useCustomRowData(params);
+      } else {
+        const offset =
+          (paginationInfo.currentPage - 1) * paginationInfo.entriesPerPage;
+        const newUrl = fetchUrl(offset, paginationInfo.entriesPerPage);
 
-          const visibleColumns = params.columnApi
-            .getColumns()
-            .filter((col) => !col.getColDef().hide)
-            .map((col) => col.getColId());
-          setVisibleColumns(visibleColumns);
+        groflexService
+          .request(newUrl, { auth: true })
+          .then((res) => {
+            setPaginationInfo({
+              ...paginationInfo,
+              rowCount: res.body.meta.count,
+              numberOfPages: Math.ceil(
+                (1 / paginationInfo.entriesPerPage) * res.body.meta.count
+              ),
+            });
+            let rowData = responseDataMapFunc
+              ? responseDataMapFunc(res.body.data)
+              : res.body.data;
+            return rowData;
+          })
+          .then((res) => {
+            // console.log(res, "LIST ADVANCED RESPONSE");
+            if (res.length === 0) {
+              setDataIsEmptyFlag(true);
+              return;
+              console.log("Empty data list");
+            }
+            const newColumns = Object.keys(res[0]).filter(
+              (col) => !params.columnApi.getColumn(col)
+            );
+            setAdditionalColumns(newColumns);
 
-          const initialVisibleColumnState = visibleColumns.reduce(
-            (acc, column) => ({ ...acc, [column]: true }),
-            {}
-          );
-          setVisibleColumnCheckedState(initialVisibleColumnState);
+            const visibleColumns = params.columnApi
+              .getColumns()
+              .filter((col) => !col.getColDef().hide)
+              .map((col) => col.getColId());
+            setVisibleColumns(visibleColumns);
 
-          return res;
-        })
-        .then((res) => {
-          res.forEach((row) => {
-            row.actionItems =
-              typeof actionMenuData === "function"
-                ? actionMenuData(row)
-                : actionMenuData;
-          });
+            const initialVisibleColumnState = visibleColumns.reduce(
+              (acc, column) => ({ ...acc, [column]: true }),
+              {}
+            );
+            setVisibleColumnCheckedState(initialVisibleColumnState);
 
-          return res;
-        })
-        .then((res) => {
-          params.api.applyTransaction({ add: res });
-        })
-        .catch((err) => console.log("Error fetching data:", err));
-    }
-  }, []);
+            return res;
+          })
+          .then((res) => {
+            res.forEach((row) => {
+              row.actionItems =
+                typeof actionMenuData === "function"
+                  ? actionMenuData(row)
+                  : actionMenuData;
+            });
+
+            return res;
+          })
+          .then((res) => {
+            // params.api.applyTransaction({ add: res });
+            setRowData(res);
+          })
+          .catch((err) => console.log("Error fetching data:", err));
+      }
+    },
+    [paginationInfo.currentPage, paginationInfo.entriesPerPage]
+  );
 
   const onFilterChanged = (params) => {
     setIsFiltered(params.api.isAnyFilterPresent());
@@ -232,6 +283,7 @@ export const ListAdvancedComponent = ({
             </div>
           ) : (
             <AgGridReact
+              rowData={rowData}
               onRowClicked={handleOnRowClick}
               onCellClicked={onCellClicked}
               gridOptions={gridOptions}
@@ -249,7 +301,13 @@ export const ListAdvancedComponent = ({
       </div>
 
       <div>
-        <ListPaginationComponent />
+        {/* <ListPaginationComponent /> */}
+        {pagination && (
+          <PaginationComponent
+            paginationInfo={paginationInfo}
+            setPaginationInfo={setPaginationInfo}
+          />
+        )}
       </div>
     </GridApiContext.Provider>
   );
