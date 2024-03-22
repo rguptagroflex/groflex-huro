@@ -61,19 +61,16 @@ import ExpensesList from "./app/views/accounting/expenses/ExpensesList";
 import ChartOfAccounts from "./app/views/accounting/chartOfAccounts/ChartOfAccountsList";
 import TimesheetsBilling from "./app/views/sales/timeTracking/TimesheetsBilling";
 import StockMovement from "./app/views/inventory/stockMovement/StockMovement";
-<<<<<<< HEAD
 import ProformaInvoicesListWrapper from "./app/views/sales/proformaInvoice/ProformaInvoicesListWrapper";
 import ProformaInvoiceDetailWrapper from "./app/views/sales/proformaInvoice/ProformaInvoiceDetailWrapper";
 import ProformaInvoiceEditWrapper from "./app/views/sales/proformaInvoice/ProformaInvoiceEditWrapper";
 import VendorPaymentsList from "./app/views/accounting/vendorPayments/VendorPaymentsList";
 import VendorPaymentDetailWrapper from "./app/views/accounting/vendorPayments/VendorPaymentDetailWrappet";
-=======
 import RecordTime from "./app/views/sales/timeTracking/RecordTime";
 import Gstr1List from "./app/views/accounting/reports/Gstr1List";
 import Gstr2AList from "./app/views/accounting/reports/Gstr2AList";
 import Gstr3BList from "./app/views/accounting/reports/Gstr3BList";
 import DeliveryChallan from "./app/views/accounting/deliveryChallan/DeliveryChallan";
->>>>>>> keshav/main
 
 store.subscribe(() => {
   // console.log(store.getState());
