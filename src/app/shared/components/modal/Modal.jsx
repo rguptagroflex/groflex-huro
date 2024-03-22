@@ -22,6 +22,8 @@ const Modal = ({
   otherHeaderChildren,
   otherActionButtons,
   submitDisabled,
+  className,
+  submitBtnLoading,
 }) => {
   function getActionPositionClass() {
     if (leftActions) {
@@ -60,7 +62,7 @@ const Modal = ({
     >
       <div className="modal-background  h-modal-close" onClick={closeModal} />
       <div className="modal-content">
-        <div className="modal-card">
+        <div className={`modal-card ${className ? className : ""}`}>
           <header className="modal-card-head">
             <div className="title is-5 no-margin-bottom">{title}</div>
             <div
@@ -101,6 +103,7 @@ const Modal = ({
             </a>
             {otherActionButtons}
             <Button
+              isLoading={submitBtnLoading}
               isDisabled={submitDisabled}
               isPrimary
               onClick={onSubmit}

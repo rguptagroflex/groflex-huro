@@ -28,7 +28,10 @@ import Customer from "../../../models/customer.model";
 import Payment from "../../../models/payment.model";
 import SendEmailModal from "../../../shared/components/sendEmail/SendEmailModal";
 import PdfViewer from "../../../shared/components/pdfViewer/PdfViewer";
-// import TransactionEmail from "../../../models/transaction-email.model";
+import SendEmailModalComponent from "../../../shared/components/sendEmail/SendEmailModalComponent";
+import TransactionEmail from "../../../models/transaction-email.model";
+import { format } from "util";
+import { getResource } from "../../../helpers/resource";
 
 const allowedPaymentTypesForCancel = [
   PAYMENT_TYPE_LESS_BANKCHARGE,
@@ -50,13 +53,16 @@ const InvoicesDetail = () => {
   const [customer, setCustomer] = useState();
   const [payment, setPayment] = useState();
   const [reminderModalOpen, setReminderModalOpen] = useState(false);
-  const [sendEmailForm, setSendEmailForm] = useState({
-    emails: "",
-    subject: "",
-    message: "",
-    pdf: true,
-    csv: false,
+  const [sendEmailFormData, setSendEmailFormData] = useState({
+    attachmentName: `Invoice No. ${invoiceData?.number}`,
+    attachments: [],
+    recipients: [],
+    sendCopy: false,
+    subject: `Payment reminder on account No. ${invoiceData?.number}`,
+    text: "",
+    textAdditional: "",
   });
+  const [dunningObject, setDunningObject] = useState();
 
   const { invoiceId } = useParams();
   const navigate = useNavigate();
@@ -252,11 +258,13 @@ const InvoicesDetail = () => {
 
   const handleLockInvoice = () => {
     const lockEndpoint = `${oldConfig.invoice.resourceUrl}/${invoiceData.id}/lock`;
+    closeFinalizeModal();
+    setHoveringLoading(true);
     groflexService
       .request(lockEndpoint, { auth: true, method: "PUT" })
       .then(() => {
-        closeFinalizeModal();
         // groflexService.router.reload();
+        setHoveringLoading(false);
         refreshPage();
 
         // navigate(`/sales/invoices/${invoiceId}`, { replace: true });
@@ -348,29 +356,162 @@ const InvoicesDetail = () => {
 
   const openSendReminderModal = () => {
     setReminderModalOpen(false);
-    setSendEmailModalActive(true);
+    setHoveringLoading(true);
+    const {
+      metaData: { nextDunning: nextDunningLevel },
+    } = invoiceData;
+
+    const responseDunningObjects = {
+      postResponse: null,
+      getResponse: null,
+      invoice: null,
+      customer: null,
+    };
+
+    groflexService
+      .request(`${oldConfig.resourceHost}dunning/${invoiceData.id}`, {
+        method: "POST",
+        auth: true,
+        data: { dunningLevel: nextDunningLevel.dunningLevel },
+      })
+      .then((dunningPostResponse) => {
+        responseDunningObjects.postResponse = dunningPostResponse.body.data;
+      })
+      .then(() => {
+        const { id, customerId, emailText } =
+          responseDunningObjects.postResponse;
+        const calls = [
+          groflexService.request(
+            `${oldConfig.resourceHost}dunning/${invoiceData.id}`,
+            {
+              auth: true,
+            }
+          ),
+          groflexService.request(`${config.resourceUrls.invoice}${invoiceId}`, {
+            auth: true,
+          }),
+          groflexService.request(
+            `${config.resourceUrls.contact}/${customerId}`,
+            {
+              auth: true,
+            }
+          ),
+        ];
+        multiFetchHandler(calls)
+          .then(([dunningResponseGet, invoiceResponse, customerResponse]) => {
+            responseDunningObjects.getResponse = dunningResponseGet.body.data;
+            responseDunningObjects.invoice = invoiceResponse.body.data.invoice;
+            responseDunningObjects.customer = customerResponse.body.data;
+            // console.log(emailText, "Email text after post dunning");
+            // console.log("response dunning objects", responseDunningObjects);
+
+            const recipientsList = [];
+
+            if (responseDunningObjects?.customer?.email) {
+              if (
+                responseDunningObjects?.customer?.firstName ||
+                responseDunningObjects?.customer?.lastName
+              ) {
+                recipientsList.push({
+                  label: `${responseDunningObjects.customer.firstName} ${responseDunningObjects.customer.lastName}`,
+                  value: responseDunningObjects.customer.email,
+                });
+              } else {
+                recipientsList.push({
+                  label: responseDunningObjects.customer.email,
+                  value: responseDunningObjects.customer.email,
+                });
+              }
+            }
+
+            // responseDunningObjects.customer.contactPersons?.forEach((contactPerson) => {
+            //   recipientsList.push({
+            //     label: `${responseDunningObjects.customer.firstName} ${responseDunningObjects.customer.lastName}`,
+            //     value: responseDunningObjects.customer.email,
+            //   });
+            // });
+
+            // const invoiceModel = new Invoice(invoiceResponse);
+            // const emailModel = new TransactionEmail({
+            //   type: "invoice",
+            // });
+            // emailModel.invoice = invoiceModel;
+
+            setSendEmailFormData({
+              attachmentName: `Invoice No. ${responseDunningObjects.invoice?.number}.pdf`,
+              attachments: [],
+              recipients: [...recipientsList],
+              sendCopy: false,
+              subject: `Payment reminder on account No. ${responseDunningObjects.invoice?.number}`,
+              text: emailText,
+              textAdditional: "Yours sincerely,",
+            });
+            refreshPage();
+            setReminderModalOpen(false);
+            setHoveringLoading(false);
+            setDunningObject(responseDunningObjects);
+            groflexService.toast.success(resources.dunningCreateSuccessMessage);
+          })
+          .then(() => {
+            setSendEmailModalActive(true);
+          });
+      })
+      .catch(() => {
+        groflexService.toast.error(resources.dunningCreateErrorMessage);
+      });
   };
 
-  const handleSendEmailReminder = () => {
-    // const emailContent = {
-    //   attachmentName: `Invoice No. ${invoiceData?.number}`,
-    //   attachments: [],
-    //   recipients: [sendEmailForm.emails],
-    //   sendCopy: false,
-    //   subject: sendEmailForm.subject,
-    //   text: sendEmailForm.message,
-    //   textAdditional: "",
-    // };
-    // const invoiceModel = new Invoice(invoiceData);
-    // const emailModel = new TransactionEmail({
-    //   type: "invoice",
-    // });
-    // emailModel.invoice = invoiceModel;
-    // const endpoint = `${oldConfig.resourceHost}${emailModel.type}/${
-    //   emailModel[emailModel.type].id
-    // }/send`;
-    // console.log(endpoint, "ENDPOINT FOR SENd email");
-    // // groflexService.request();
+  const handleSendEmailReminder = (formData) => {
+    console.log(dunningObject, "Dunning object in submit");
+    console.log(formData, "Formdata object in submit");
+    const emailContent = { ...formData };
+    const invoiceModel = new Invoice(invoiceData);
+    const emailModel = new TransactionEmail({
+      type: "invoice",
+    });
+    emailModel.invoice = invoiceModel;
+    const endpoint = `${oldConfig.resourceHost}${emailModel.type}/${
+      emailModel[emailModel.type].id
+    }/send`;
+    // console.log(endpoint, "ENDPOINT FOR SEND email");
+    groflexService
+      .request(endpoint, {
+        method: "POST",
+        auth: true,
+        data: emailContent,
+      })
+      .then(() => {
+        groflexService.toast.success(
+          resources.emailViewSendEmailSuccessMessage
+        );
+        setSendEmailModalActive(false);
+        refreshPage();
+        // if (emailModel.type === "dunning") {
+        //   groflexService
+        //     .request(
+        //       `${oldConfig.invoice.resourceUrl}/${oldConfig.emailModel.invoice.id}/dunning/setting`,
+        //       {
+        //         auth: true,
+        //         method: "PUT",
+        //         data: {
+        //           autoDunningEnabled: this.state.autoDunningEnabled,
+        //           dunningRecipients: emailContent.recipients,
+        //         },
+        //       }
+        //     )
+        //     .then(() => {
+        //       groflexService.toast.success(
+        //         resources.emailViewSendEmailSuccessMessage
+        //       );
+        //       // this.navigateToDetails(true);
+        //     })
+        //     .catch(() => {
+        //       groflexService.toast.error(
+        //         resources.emailViewSendEmailErrorMessage
+        //       );
+        //     });
+        // }
+      });
   };
 
   const getPageTitle = () => {
@@ -404,7 +545,7 @@ const InvoicesDetail = () => {
       title={invoiceData?.id ? pageTitle : ""}
       titleActionContent={topbarButtons}
     >
-      <div className="columns">
+      <div className="columns invoice-detail-component">
         <div className="column is-7">
           <div
             id="invoice-pdf-container"
@@ -478,16 +619,19 @@ const InvoicesDetail = () => {
           // dunning={dunning}
         />
       )}
-
-      <SendEmailModal
-        isEmailModalVisible={sendEmailModalActive}
-        setIsEmailModalVisible={setSendEmailModalActive}
-        handleSendEmail={handleSendEmailReminder}
-        title={resources.dunnningEmailSubheadline}
-        fileName={`Invoice No. ${invoiceData?.number}`}
-        sendEmailFormData={sendEmailForm}
-        setSendEmailFormData={setSendEmailForm}
-      />
+      {sendEmailModalActive && (
+        <SendEmailModalComponent
+          isActive={sendEmailModalActive}
+          title={resources.dunnningEmailSubheadline}
+          fileName={`Invoice No. ${invoiceData?.number}`}
+          formData={sendEmailFormData}
+          closeFunction={() => setSendEmailModalActive(false)}
+          onSubmit={handleSendEmailReminder}
+          submitBtnName={"Send Email"}
+          className={"send-reminder-email-modal"}
+          // setSendEmailFormData={setSendEmailForm}
+        />
+      )}
     </PageContent>
   );
 };

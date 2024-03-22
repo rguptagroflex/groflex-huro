@@ -64,6 +64,8 @@ import StockMovement from "./app/views/inventory/stockMovement/StockMovement";
 import ProformaInvoicesListWrapper from "./app/views/sales/proformaInvoice/ProformaInvoicesListWrapper";
 import ProformaInvoiceDetailWrapper from "./app/views/sales/proformaInvoice/ProformaInvoiceDetailWrapper";
 import ProformaInvoiceEditWrapper from "./app/views/sales/proformaInvoice/ProformaInvoiceEditWrapper";
+import VendorPaymentsList from "./app/views/accounting/vendorPayments/VendorPaymentsList";
+import VendorPaymentDetailWrapper from "./app/views/accounting/vendorPayments/VendorPaymentDetailWrappet";
 
 store.subscribe(() => {
   // console.log(store.getState());
@@ -105,11 +107,11 @@ function App() {
             element={<ProformaInvoicesListWrapper />}
           />
           <Route
-            path="sales/proforma-invoices/:proformaInvoiceId"
+            path="sales/proforma-invoices/:id"
             element={<ProformaInvoiceDetailWrapper />}
           />
           <Route
-            path="sales/proforma-invoices/edit/:proformaInvoiceId"
+            path="sales/proforma-invoices/edit/:id"
             element={<ProformaInvoiceEditWrapper />}
           />
           {/* Quotation */}
@@ -135,6 +137,14 @@ function App() {
           <Route path="accounting/debit-notes" element={<DebitNotesList />} />
           <Route path="accounting/credit-notes" element={<CreditNotesList />} />
           <Route path="accounting/expenses" element={<ExpensesList />} />
+          <Route
+            path="accounting/vendor-payments"
+            element={<VendorPaymentsList />}
+          />
+          <Route
+            path="accounting/vendor-payments/:id"
+            element={<VendorPaymentDetailWrapper />}
+          />
           <Route path="accounting/reports" element={<Reports />} />
           <Route
             path="accounting/chart-of-accounts"

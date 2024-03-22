@@ -7,7 +7,7 @@ import groflexService from "../../../services/groflex.service";
 import { AdvancedCard } from "../../../shared/components/cards/AdvancedCard";
 import { abbreviationDateFormat } from "../../../helpers/dateFormatters";
 import { formatCurrency } from "../../../helpers/formatCurrency";
-import InvoiceHistoryComponent from "../invoices/InvoiceHistoryComponent";
+import InvoiceHistoryComponent from "../../sales/invoices/InvoiceHistoryComponent";
 import resources from "../../../shared/resources/resources";
 import OfferState from "../../../enums/offer/offer-state.enum";
 import { multiFetchHandler } from "../../../helpers/multiFetchHandler";
@@ -15,12 +15,13 @@ import PdfViewer from "../../../shared/components/pdfViewer/PdfViewer";
 import Offer from "../../../models/offer.model";
 import { formatClientDate } from "../../../helpers/formatDate";
 
-const ProformaInvoiceDetail = ({ id }) => {
+const VendorPaymentDetail = () => {
   const [refresh, setRefresh] = useState(false);
   const [quotationData, setQuotationData] = useState();
   const [letterElements, setLetterElements] = useState();
   const [pdfLink, setPdfLink] = useState();
   const [quotationHistory, setQuotationHistory] = useState();
+  const { quotationId: id } = useParams();
   const navigate = useNavigate();
 
   const refreshPage = () => {
@@ -55,7 +56,7 @@ const ProformaInvoiceDetail = ({ id }) => {
       multiFetchHandler(calls).then(
         ([quotataionResponse, pdfDocumentResponse, history]) => {
           if (!quotataionResponse.body.data) {
-            navigate("/sales/quotations");
+            // navigate("/accounting/vendor-payments");
           }
           setQuotationData({
             ...quotataionResponse.body.data.offer,
@@ -182,9 +183,9 @@ const ProformaInvoiceDetail = ({ id }) => {
       case OfferState.ACCEPTED:
         buttonsFragment = (
           <>
-            {/* <Button className="m-r-10" isSuccess isOutlined>
+            <Button className="m-r-10" isSuccess isOutlined>
               Edit
-            </Button> */}
+            </Button>
             <Button isSuccess>Convert to Invoice</Button>
           </>
         );
@@ -193,9 +194,9 @@ const ProformaInvoiceDetail = ({ id }) => {
         buttonsFragment = (
           <>
             <Button className="m-r-10" isSuccess isOutlined>
-              Advanced Payment
+              Edit
             </Button>
-            <Button isSuccess>Send</Button>
+            <Button isSuccess>Accepted</Button>
           </>
         );
         break;
@@ -226,13 +227,13 @@ const ProformaInvoiceDetail = ({ id }) => {
 
   return (
     <PageContent
-      navigateBackTo={"/sales/proforma-invoices"}
+      navigateBackTo={"/sales/quotations"}
       loading={!quotationData?.id}
       title={
-        quotationData?.number && `Proforma Invoice No. ${quotationData?.number}`
+        quotationData?.number ? `Quotation No. ${quotationData?.number}` : ""
       }
       titleActionContent={actionButtons}
-      breadCrumbData={["Home", "Sales", "Proforma Invoices"]}
+      breadCrumbData={["Home", "Sales", "Quotations", "Quotation Detail"]}
     >
       <div className="columns">
         <div className="column is-7">
@@ -269,4 +270,4 @@ const ProformaInvoiceDetail = ({ id }) => {
   );
 };
 
-export default ProformaInvoiceDetail;
+export default VendorPaymentDetail;

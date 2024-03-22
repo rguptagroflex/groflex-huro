@@ -3,6 +3,8 @@ import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 import AsyncSelect from "react-select/async";
 import AsyncCreatableSelect from "react-select/async-creatable";
+import makeAnimated from "react-select/animated";
+const animatedComponents = makeAnimated();
 
 const SelectMultipleInput = ({
   placeholder,
@@ -14,6 +16,7 @@ const SelectMultipleInput = ({
   isCreatable,
   loadOptions,
   onInputChange,
+  isAnimated,
   isLoading = undefined,
 }) => {
   // const [selectedWholeOptions, setSelectedWholeOptions] = useState(value);
@@ -68,6 +71,7 @@ const SelectMultipleInput = ({
         onChange={onChange}
         placeholder={placeholder}
         isLoading={isLoading}
+        components={isAnimated ? animatedComponents : undefined}
         isMulti
       />
     );
@@ -86,6 +90,7 @@ const SelectMultipleInput = ({
         onInputChange={onInputChange}
         placeholder={placeholder}
         isLoading={isLoading}
+        components={isAnimated ? animatedComponents : undefined}
         isMulti
       />
     );
@@ -104,6 +109,7 @@ const SelectMultipleInput = ({
         onInputChange={onInputChange}
         placeholder={placeholder}
         isLoading={isLoading}
+        components={isAnimated ? animatedComponents : undefined}
         isMulti
       />
     );
@@ -117,6 +123,7 @@ const SelectMultipleInput = ({
       onChange={onChange}
       onInputChange={onInputChange}
       isLoading={isLoading}
+      components={isAnimated ? animatedComponents : undefined}
       isMulti
     />
   );

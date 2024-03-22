@@ -184,7 +184,7 @@ const RegisterPaymentModal = ({
 
   const handleAmountChange = (e) => {
     const value = e.target.value;
-    console.log(value, "HIIII");
+    // console.log(value, "HIIII");
     const stateCopy = { ...state };
     let {
       paymentAmount,
@@ -237,8 +237,8 @@ const RegisterPaymentModal = ({
     setState({ ...stateCopy });
   };
 
-  console.log(customer, payment, invoice, "CUSTOMER Paymert and Invoice");
-  console.log(formatCurrency(state.paymentAmount), "Amount");
+  // console.log(customer, payment, invoice, "CUSTOMER Paymert and Invoice");
+  // console.log(formatCurrency(state.paymentAmount), "Amount");
 
   return (
     <Modal

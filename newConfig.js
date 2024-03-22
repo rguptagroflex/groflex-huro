@@ -193,6 +193,7 @@ const modules = {
       { label: "Debit Notes", route: "/accounting/debit-notes" },
       { label: "Credit Notes", route: "/accounting/credit-notes" },
       { label: "Expenditure", route: "/accounting/expenses" },
+      { label: "Vendor Payments", route: "/accounting/vendor-payments" },
       { label: "Reports", route: "/accounting/reports" },
       { label: "Chart of Accounts", route: "/accounting/chart-of-accounts" },
     ],
