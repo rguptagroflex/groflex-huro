@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Modal from "../modal/Modal";
-import { Input } from "../input/Input";
-import { TextArea } from "../textArea/TextArea";
-import { Checkbox } from "../checkbox/Checkbox";
-import FontAwesomeIcon from "../../fontAwesomeIcon/FontAwesomeIcon";
 import HtmlInputComponent from "../input/HtmlInputComponent";
 import config from "../../../../../newConfig";
 import GroflexService from '../../../services/groflex.service';
 import LoaderSpinner from "../loaderSpinner/LoaderSpinner";
 import { InputAddons } from "../inputAddons/InputAddons";
+import { Switch } from "../switch/Switch";
+import resources from "../../../shared/resources/resources";
 
-const DunningModal = ({ isActive, setIsActive, handleTextModule, textModuleType, isLoading }) => {
+const DunningModal = ({ isActive, setIsActive, isLoading, setIsLoading }) => {
 
     const [dunningData, setDunningData] = useState([])
 
@@ -34,16 +32,64 @@ const DunningModal = ({ isActive, setIsActive, handleTextModule, textModuleType,
         fetchDunningData();
     }, []);
 
-    const handleSaveButton = () => {
-
-        handleTextModule()
-    }
 
     const [openModuleIndex, setOpenModuleIndex] = useState(-1);
 
     const handleToggleModule = (idx) => {
         setOpenModuleIndex(idx === openModuleIndex ? -1 : idx);
     };
+
+
+    const handleToggle = (idx, e) => {
+        const { checked } = e.target || {};
+        if (checked !== undefined) {
+            setDunningData(prevData => {
+                const newData = [...prevData];
+                newData[idx].active = checked;
+                return newData;
+            });
+        }
+    };
+
+    const handleInputChange = (idx, field, value) => {
+        setDunningData(prevData => {
+            const newData = [...prevData];
+            newData[idx][field] = value;
+            return newData;
+        });
+    };
+
+    const handleSaveButton = () => {
+
+        const updateDunning = async () => {
+            try {
+                let successCount = 0;
+                for (const data of dunningData) {
+                    await GroflexService.request(`${config.resourceUrls.dunningLevel}/${data.id}`, {
+                        auth: true,
+                        data: data,
+                        method: "PUT",
+                    });
+                    successCount++;
+                }
+                if (successCount === dunningData.length) {
+                    GroflexService.toast.success(resources.str_editSuccessMessage);
+                }
+            } catch (error) {
+                console.error("Error occurred while updating Dunning:", error);
+                GroflexService.toast.error("Something went wrong");
+            } finally {
+                setIsLoading(false)
+                setIsActive(false);
+            }
+        };
+
+        if(dunningData.length > 0){
+            updateDunning();
+            setIsLoading(true)
+        }
+
+    }
 
     return (
         <div className="send-email-modal-wrapper">
@@ -75,11 +121,26 @@ const DunningModal = ({ isActive, setIsActive, handleTextModule, textModuleType,
                         <div key={idx}>
                             {/* Propose creation*/}
                             <div className="columns is-multiline m-b-5 no-margin-left no-margin-right m-b-15">
-                                <div className="column is-12">
+                                <div className="column is-8">
                                     <div className="field">
                                         <div className="title is-5 no-margin-bottom">{`Activate dunning level for ${idx == 0 ? 'Payment' : idx} Payment reminder`}</div>
                                     </div>
                                 </div>
+                                <div className="column is-4">
+                                    <div className="field">
+                                        <div className="is-12 m-l-100">
+                                            <Switch
+                                                onChange={(e) => handleToggle(idx, e)}
+                                                checked={data.active}
+                                                isSuccess
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* <div className="column is-4">
+                                    <div className="field">
+                                    </div>
+                                </div> */}
                                 <div className="column is-4">
                                     <div className="field">
                                         <h3 className="title is-5 is-thin">Propose creation</h3>
@@ -91,9 +152,9 @@ const DunningModal = ({ isActive, setIsActive, handleTextModule, textModuleType,
                                             type="number"
                                             name="proposeCreation"
                                             placeholder=""
-                                            defaultValue={data.daysTillAlert}
-                                        // value={newNumberRange.startFrom}
-                                        // onChange={handleInputChange}
+                                            value={data.daysTillAlert}
+                                            // value={newNumberRange.startFrom}
+                                            onChange={(e) => handleInputChange(idx, 'daysTillAlert', Number(e.target.value))}
                                         />
                                         {/* <ErrorText
                                 visible={error.prefix}
@@ -127,9 +188,8 @@ const DunningModal = ({ isActive, setIsActive, handleTextModule, textModuleType,
                                             type="number"
                                             name="overDuesFines"
                                             placeholder=""
-                                            defaultValue={data.charge}
-                                        // value={newNumberRange.startFrom}
-                                        // onChange={handleInputChange}
+                                            onChange={(e) => handleInputChange(idx, 'charge', Number(e.target.value))}
+                                            value={data.charge}
                                         />
                                         {/* <ErrorText
                                 visible={error.prefix}
@@ -148,7 +208,7 @@ const DunningModal = ({ isActive, setIsActive, handleTextModule, textModuleType,
                                                 name='introductionText'
                                                 className={"textarea text-module-input"}
                                                 value={data.introduction}
-                                            // onChange={(value) => handleInvoiceChange('introduction', value)}
+                                                onChange={(e) => handleInputChange(idx, 'introduction', e)}
                                             />
                                         </div>
                                     </div>
@@ -159,7 +219,7 @@ const DunningModal = ({ isActive, setIsActive, handleTextModule, textModuleType,
                                                 name='introductionText'
                                                 className={"textarea text-module-input"}
                                                 value={data.conclusion}
-                                            // onChange={(value) => handleInvoiceChange('introduction', value)}
+                                                onChange={(e) => handleInputChange(idx, 'conclusion', e)}
                                             />
                                         </div>
                                     </div>
@@ -170,7 +230,7 @@ const DunningModal = ({ isActive, setIsActive, handleTextModule, textModuleType,
                                                 name='introductionText'
                                                 className={"textarea text-module-input"}
                                                 value={data.email}
-                                            // onChange={(value) => handleInvoiceChange('introduction', value)}
+                                                onChange={(e) => handleInputChange(idx, 'email', e)}
                                             />
                                         </div>
                                     </div>
@@ -186,17 +246,6 @@ const DunningModal = ({ isActive, setIsActive, handleTextModule, textModuleType,
                                 </div>
                                 <div className="column is-4">
                                     <div className="field">
-                                        {/* <InputAddons
-                                            type="number"
-                                            name="overDuesFines"
-                                            placeholder=""
-                                        value={newNumberRange.startFrom}
-                                        onChange={handleInputChange}
-                                        /> */}
-                                        {/* <ErrorText
-                                visible={error.prefix}
-                                text={error.prefix}
-                            /> */}
 
                                     </div>
                                 </div>
@@ -206,8 +255,6 @@ const DunningModal = ({ isActive, setIsActive, handleTextModule, textModuleType,
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                     ))
                 }

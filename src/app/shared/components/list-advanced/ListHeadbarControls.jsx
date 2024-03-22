@@ -34,25 +34,25 @@ export const ListHeadbarControls = ({ isFiltered, elements }) => {
 	return (
 		<div className="list-container__headerbar-controls">
 			<ButtonAddons>
-				<Addon>
-					<Button
-						icon={
-							<i style={{ color: '#00A353' }} className={`fas fa-gear`}></i>
-						}
-					>
-						<div style={{ display: 'flex', alignItems: 'center' }}>
-							Settings
+				{elements?.length &&
+					<Addon>
+						<Button
+							icon={
+								<i style={{ color: '#00A353' }} className={`fas fa-gear`}></i>
+							}
+						>
+							<div style={{ display: 'flex', alignItems: 'center' }}>
+								Settings
 
-							{elements ?
 								<PopOver
 									label={<FeatherIcon name={"ChevronDown"} />}
 									elements={elements}
-								/> : ''
-							}
+								/>
 
-						</div>
-					</Button>
-				</Addon>
+							</div>
+						</Button>
+					</Addon>
+				}
 
 				<Addon>
 					<Button

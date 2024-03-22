@@ -26,7 +26,7 @@ const FREQUENCY_YEAR = "yearly";
 const FREQUENCY_MONTH = "monthly";
 const FREQUENCY_DAY = "daily";
 
-const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handlePostData, isLoading }) => {
+const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, isLoading, setIsLoading }) => {
 
     const [numerationData, setNumerationData] = useState({})
 
@@ -390,29 +390,6 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
         }
     }, [numerationType]);
 
-    const handleSaveButton = () => {
-        let numerationData = {
-            counterLength: newNumberRange.serialNumber,
-            datePart: newNumberRange.datePart,
-            prefix: newNumberRange.prefix,
-            relationKind: numerationType,
-            suffix: newNumberRange.surfix,
-            placeHolder1: newNumberRange.placeholder1,
-            placeHolder2: newNumberRange.placeholder2,
-            placeHolder3: newNumberRange.placeholder3,
-            isPeriodic: newNumberRange.resetPeriodically,
-            frequency: newNumberRange.resetInterval,
-            subFrequency: newNumberRange.numberFrom,
-            currentValue: parseInt(newNumberRange.currentNumber - 1),
-            increment: newNumberRange.numberIncrement,
-            startValue: newNumberRange.startFrom
-        }
-        if (!error.prefix && !error.suffix && !error.currentNumber && !error.increment && !error.startFrom) {
-            handlePostData(numerationData)
-        } else {
-            GroflexService.toast.error(`Input error!\n ${error.prefix} \n ${error.suffix} \n ${error.currentNumber} \n ${error.increment} \n ${error.startFrom}`)
-        }
-    }
     const [error, setError] = useState({
         prefix: "",
         suffix: "",
@@ -459,7 +436,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
                 suffix: resources.numberationSuffixError,
             });
             return;
-        } else if (name == 'numberIncrement'&& !isNaN(value) && value < 1) {
+        } else if (name == 'numberIncrement' && !isNaN(value) && value < 1) {
             setError({
                 ...error,
                 increment: resources.numerationIncrementNumberError,
@@ -491,6 +468,53 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
         return
     }
 
+    const handleSaveButton = () => {
+        let numerationData = {
+            counterLength: newNumberRange.serialNumber,
+            datePart: newNumberRange.datePart,
+            prefix: newNumberRange.prefix,
+            relationKind: numerationType,
+            suffix: newNumberRange.surfix,
+            placeHolder1: newNumberRange.placeholder1,
+            placeHolder2: newNumberRange.placeholder2,
+            placeHolder3: newNumberRange.placeholder3,
+            isPeriodic: newNumberRange.resetPeriodically,
+            frequency: newNumberRange.resetInterval,
+            subFrequency: newNumberRange.numberFrom,
+            currentValue: parseInt(newNumberRange.currentNumber - 1),
+            increment: newNumberRange.numberIncrement,
+            startValue: newNumberRange.startFrom
+        }
+        if (!error.prefix && !error.suffix && !error.currentNumber && !error.increment && !error.startFrom) {
+            handlePostNumerationData(numerationData)
+        } else {
+            GroflexService.toast.error(`Input error!\n ${error.prefix} \n ${error.suffix} \n ${error.currentNumber} \n ${error.increment} \n ${error.startFrom}`)
+        }
+
+    }
+    // post data for numeration
+    const handlePostNumerationData = (numerationData) => {
+        setIsLoading(true)
+        GroflexService
+            .request(`${config.resourceUrls.changeNumeration(numerationType)}`, {
+                auth: true,
+                data: numerationData,
+                method: "POST",
+            })
+            .then((res) => {
+                if (res.body?.message) {
+                    console.log(res.body?.message)
+                    GroflexService.toast.error("Something went wrong");
+                    setIsLoading(false)
+                    setIsActive(false)
+                } else {
+                    GroflexService.toast.success(resources.numerationSaveSuccess);
+                    setIsLoading(false)
+                    setIsActive(false)
+                }
+            });
+    }
+
     return (
         <Modal
             title="Number Range"
@@ -500,7 +524,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
             isBig="is-big"
             onSubmit={handleSaveButton}
 
-            >
+        >
 
             <LoaderSpinner
                 visible={isLoading}
@@ -509,7 +533,7 @@ const NumberRangeModal = ({ isActive = false, setIsActive, numerationType, handl
                 containerStyle={{ position: "absolute" }}
 
             />
-            <div className="title is-5 no-margin-bottom">{numerationType? numerationType: ''}</div>
+            <div className="title is-5 no-margin-bottom">{numerationType && numerationType == 'offer'? 'Quotation' : numerationType || '' }</div>
             <div className="numeration-result">
                 <div className='column is-12' ref={containerRef}>
                     <div className='field m-1'>

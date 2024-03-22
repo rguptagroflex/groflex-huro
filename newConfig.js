@@ -117,7 +117,7 @@ const resourceUrls = {
 
   // numerations
   numeration: `${resourceHost}setting/numeration`,
-  numerationInvoice: `${resourceHost}setting/invoice/changeNumeration`,
+  changeNumeration: (module) => `${resourceHost}setting/${module}/changeNumeration`,
 
   // text modules
   textModule: `${resourceHost}setting/textModule`,

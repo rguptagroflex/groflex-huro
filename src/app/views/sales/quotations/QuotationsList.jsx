@@ -99,60 +99,6 @@ const QuotationsList = () => {
   // for Text Module
   const [isTextModuleModalActive, setIsTextModuleActive] = useState(false);
 
-  // post data for numeration
-  const handlePostNumerationData = (numerationData) => {
-    setIsLoading(true)
-    groflexService
-      .request(`${config.resourceUrls.numerationOffer}`, {
-        auth: true,
-        data: numerationData,
-        method: "POST",
-      })
-      .then((res) => {
-        if (res.body?.message) {
-          console.log(res.body?.message)
-          groflexService.toast.error("Something went wrong");
-          setIsLoading(false)
-          setIsModalActive(false)
-        } else {
-          groflexService.toast.success(resources.numerationSaveSuccess);
-          setIsLoading(false)
-          setIsModalActive(false)
-        }
-      });
-
-  }
-
-  // post data for text module 
-  const handleTextModule = (textModuleData) => {
-    setIsLoading(true);
-
-    const updateTextModules = async () => {
-      try {
-        let successCount = 0;
-        for (const data of textModuleData) {
-          await groflexService.request(`${config.resourceUrls.textModule}/${data.id}`, {
-            auth: true,
-            data: data,
-            method: "PUT",
-          });
-          successCount++;
-        }
-        if (successCount === textModuleData.length) {
-          groflexService.toast.success(resources.textModuleUpdateSuccessMessage);
-        }
-      } catch (error) {
-        console.error("Error occurred while updating text modules:", error);
-        groflexService.toast.error("Something went wrong");
-      } finally {
-        setIsLoading(false);
-        setIsTextModuleActive(false);
-      }
-    };
-
-    updateTextModules();
-
-  }
 
   return (
     <PageContent
@@ -170,8 +116,8 @@ const QuotationsList = () => {
             isActive={isModalActive}
             setIsActive={setIsModalActive}
             numerationType='offer'
-            handlePostData={handlePostNumerationData}
             isLoading={isLoading}
+            setIsLoading={setIsLoading}
           />
         )
       }
@@ -180,9 +126,20 @@ const QuotationsList = () => {
           <TextModuleModal
             isActive={isTextModuleModalActive}
             setIsActive={setIsTextModuleActive}
-            textModuleType='quotation'
-            handleTextModule={handleTextModule}
+            textModuleType='offer'
             isLoading={isLoading}
+            setIsLoading={setIsLoading}
+          />
+        )
+      }
+      {
+        isTextModuleModalActive && (
+          <NumberRangeModal
+            isActive={isModalActive}
+            setIsActive={setIsModalActive}
+            numerationType='invoice'
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
           />
         )
       }
