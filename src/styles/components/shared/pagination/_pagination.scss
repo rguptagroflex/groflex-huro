@@ -1,15 +1,18 @@
 .pagination-main {
   display: flex;
   justify-content: space-between;
+  margin-top: 10px;
   li:first-child {
     position: absolute;
-    right: 170px;
+    // right: 170px;
+    right: 90px;
     border: 1px solid #ddd;
     background: #ffffff;
   }
   li:last-child {
     position: absolute;
-    right: 100px;
+    // right: 100px;
+    right: 40px;
     border: 1px solid #ddd;
     background: #ffffff;
   }
