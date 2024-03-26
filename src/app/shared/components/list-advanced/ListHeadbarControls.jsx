@@ -5,8 +5,10 @@ import { Button } from '../button/Button';
 import { ListColumnSettings } from './ListColumnSettings';
 import { GridApiContext } from './ListAdvancedComponent';
 import { ListExportPopup } from './ListExportPopup';
+import PopOver from '../popOver/PopOver';
+import { FeatherIcon } from '../../featherIcon/FeatherIcon';
 
-export const ListHeadbarControls = ({ isFiltered }) => {
+export const ListHeadbarControls = ({ isFiltered, elements }) => {
 	const { gridApi } = useContext(GridApiContext);
 	const [showColumnOptions, setShowColumnOptions] = useState(false);
 	const [showExportPopup, setShowExportPopup] = useState(false);
@@ -32,15 +34,25 @@ export const ListHeadbarControls = ({ isFiltered }) => {
 	return (
 		<div className="list-container__headerbar-controls">
 			<ButtonAddons>
-				<Addon>
-					<Button
-						icon={
-							<i style={{ color: '#00A353' }} className={`fas fa-gear`}></i>
-						}
-					>
-						Settings
-					</Button>
-				</Addon>
+				{elements?.length &&
+					<Addon>
+						<Button
+							icon={
+								<i style={{ color: '#00A353' }} className={`fas fa-gear`}></i>
+							}
+						>
+							<div style={{ display: 'flex', alignItems: 'center' }}>
+								Settings
+
+								<PopOver
+									label={<FeatherIcon name={"ChevronDown"} />}
+									elements={elements}
+								/>
+
+							</div>
+						</Button>
+					</Addon>
+				}
 
 				<Addon>
 					<Button

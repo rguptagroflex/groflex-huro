@@ -156,6 +156,16 @@ const resourceUrls = {
   inviteCa: `${resourceHost}user/cadetails`,
   updateUserRole: (userId) => `${resourceHost}user/${userId}/role`,
   deleteUser: `${resourceHost}tenant/user/`,
+
+  // numerations
+  numeration: `${resourceHost}setting/numeration`,
+  changeNumeration: (module) => `${resourceHost}setting/${module}/changeNumeration`,
+
+  // text modules
+  textModule: `${resourceHost}setting/textModule`,
+  
+  // dunning
+  dunningLevel: `${resourceHost}setting/dunningLevel`,
 };
 
 const checkLoginTokenIsValid = () => {
