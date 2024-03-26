@@ -7,7 +7,7 @@ const GstrDetailHeader = ({ reportType }) => {
   const { companyAddress } = useSelector(
     (state) => state?.accountData?.tenantData || ""
   );
-  console.log(companyAddress);
+
   return (
     <div className="gstr-detail-header">
       <div style={{ display: "flex", justifyContent: "space-between" }}>

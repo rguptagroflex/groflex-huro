@@ -155,15 +155,15 @@ function App() {
             element={<GstReports />}
           />
           <Route
-            path="accounting/reports/gst-reports/gstr-1"
+            path="accounting/reports/gst-reports/gstr-1/:reportId"
             element={<Gstr1List />}
           />
           <Route
-            path="accounting/reports/gst-reports/gstr-2A"
+            path="accounting/reports/gst-reports/gstr-2A/:reportId"
             element={<Gstr2AList />}
           />
           <Route
-            path="accounting/reports/gst-reports/gstr-3B"
+            path="accounting/reports/gst-reports/gstr-3B/:reportId"
             element={<Gstr3BList />}
           />
 
