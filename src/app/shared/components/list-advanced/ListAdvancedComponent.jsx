@@ -65,6 +65,12 @@ export const ListAdvancedComponent = ({
         let rowData = responseDataMapFunc
           ? responseDataMapFunc(res.body.data)
           : res.body.data;
+        rowData.forEach((row) => {
+          row.actionItems =
+            typeof actionMenuData === "function"
+              ? actionMenuData(row)
+              : actionMenuData;
+        });
 
         setRowData(rowData);
       });
