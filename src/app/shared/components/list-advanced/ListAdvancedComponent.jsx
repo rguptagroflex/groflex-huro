@@ -36,7 +36,7 @@ export const ListAdvancedComponent = ({
   const [paginationInfo, setPaginationInfo] = useState({
     numberOfPages: 0,
     currentPage: 1,
-    entriesPerPage: 5,
+    entriesPerPage: 10,
     rowCount: 0,
   });
 

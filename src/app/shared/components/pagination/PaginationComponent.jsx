@@ -21,9 +21,9 @@ const PaginationComponent = ({ paginationInfo, setPaginationInfo }) => {
 
   return (
     <div className="pagination-main">
-      <div className="column is-2">
+      <div className="entries-per-page-drowpdown">
         <div className="field">
-          <label>Entries Per Page</label>
+          {/* <label>Entries Per Page</label> */}
           <SelectInput
             options={[
               { label: "5", value: 5 },
