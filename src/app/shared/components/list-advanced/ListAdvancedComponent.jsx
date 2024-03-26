@@ -37,7 +37,7 @@ export const ListAdvancedComponent = ({
   const [paginationInfo, setPaginationInfo] = useState({
     numberOfPages: 0,
     currentPage: 1,
-    entriesPerPage: 5,
+    entriesPerPage: 10,
     rowCount: 0,
   });
 
@@ -56,13 +56,6 @@ export const ListAdvancedComponent = ({
     groflexService
       .request(newUrl, headers ? headers : { auth: true })
       .then((res) => {
-        setPaginationInfo({
-          ...paginationInfo,
-          rowCount: res.body.meta.count,
-          numberOfPages: Math.ceil(
-            (1 / paginationInfo.entriesPerPage) * res.body.meta.count
-          ),
-        });
         let rowData = responseDataMapFunc
           ? responseDataMapFunc(res.body.data)
           : res.body.data;
