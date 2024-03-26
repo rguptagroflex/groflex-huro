@@ -27,7 +27,6 @@
 .text-right {
   text-align: right;
 }
-
 .font-italic {
   font-style: italic;
 }
@@ -36,6 +35,9 @@
 }
 .text-underline {
   text-decoration: underline;
+}
+.text-nowrap {
+  white-space: nowrap;
 }
 
 .line-height-1 {
@@ -82,6 +84,9 @@
 }
 .bg-primary {
   background-color: $primary;
+}
+.bg-white {
+  background-color: #fff !important;
 }
 
 .scrollable {
@@ -188,6 +193,13 @@
   flex-direction: column;
 }
 
+.flex-align-center- {
+  align-items: center;
+}
+.flex-justify-center- {
+  justify-content: center;
+}
+
 .content-flex-center {
   display: flex;
   justify-content: center;
@@ -200,10 +212,6 @@
 }
 
 //Other classes
-
-.bg-white {
-  background-color: #fff !important;
-}
 
 .horizontal-margin-auto {
   margin: 0 auto;
@@ -220,7 +228,7 @@
   }
 }
 
-// Override other classes
+// Note: Override other classes
 
 .ql-bubble {
   .ql-editor {
@@ -234,5 +242,15 @@
     //   transform: rotate(180deg);
     //   top: 40px !important;
     // }
+  }
+}
+
+.dropdown-menu {
+  .dropdown-content {
+    .dropdown-item {
+      &:hover {
+        background-color: darken(#f1f8fb, 5%) !important;
+      }
+    }
   }
 }
