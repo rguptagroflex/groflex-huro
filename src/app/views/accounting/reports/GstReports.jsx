@@ -329,13 +329,13 @@ const GstReports = () => {
     let url = "";
     switch (rowData.exportType) {
       case "GSTR1":
-        url = "/accounting/reports/gst-reports/gstr-1";
+        url = `/accounting/reports/gst-reports/gstr-1/${rowData.id}`;
         break;
       case "GSTR2A":
-        url = "/accounting/reports/gst-reports/gstr-2A";
+        url = `/accounting/reports/gst-reports/gstr-2A/${rowData.id}`;
         break;
       case "GSTR3B":
-        url = "/accounting/reports/gst-reports/gstr-3B";
+        url = `/accounting/reports/gst-reports/gstr-3B/${rowData.id}`;
         break;
     }
     navigate(url);

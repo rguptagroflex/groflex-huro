@@ -129,6 +129,8 @@ const resourceUrls = {
     `${resourceHost}accountingReport/sendAccountingReportEmail/${reportType}/${startDate}/${endDate}`,
   gstReportExportSummary: (offset, limit) =>
     `${resourceHost}accountantExport/?offset=${offset}&limit=${limit}&orderBy=createdAt&desc=true`,
+  getGstReport: `${resourceHost}accountantExport/`,
+  getGstDetail: `${resourceHost}accountantExport/jsonDocument`,
   exportGstReport: `${resourceHost}accountantExport/`,
   //Delivery Challan
   deliveryChallanList: `${resourceHost}deliveryChallan?offset=0&searchText=&limit=9999999&orderBy=date&desc=true&filter=all&trigger=true`,
@@ -154,6 +156,16 @@ const resourceUrls = {
   inviteCa: `${resourceHost}user/cadetails`,
   updateUserRole: (userId) => `${resourceHost}user/${userId}/role`,
   deleteUser: `${resourceHost}tenant/user/`,
+
+  // numerations
+  numeration: `${resourceHost}setting/numeration`,
+  changeNumeration: (module) => `${resourceHost}setting/${module}/changeNumeration`,
+
+  // text modules
+  textModule: `${resourceHost}setting/textModule`,
+  
+  // dunning
+  dunningLevel: `${resourceHost}setting/dunningLevel`,
 };
 
 const checkLoginTokenIsValid = () => {

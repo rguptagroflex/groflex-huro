@@ -22,6 +22,8 @@ export const ListAdvancedComponent = ({
   customRowData,
   responseDataMapFunc,
   pagination = true,
+  headers,
+  settingsElement
 }) => {
   const [dataIsEmptyFlag, setDataIsEmptyFlag] = useState(false);
   const [gridApi, setGridApi] = useState();
@@ -51,20 +53,28 @@ export const ListAdvancedComponent = ({
     const offset =
       (paginationInfo.currentPage - 1) * paginationInfo.entriesPerPage;
     const newUrl = fetchUrl(offset, paginationInfo.entriesPerPage);
-    groflexService.request(newUrl, { auth: true }).then((res) => {
-      setPaginationInfo({
-        ...paginationInfo,
-        rowCount: res.body.meta.count,
-        numberOfPages: Math.ceil(
-          (1 / paginationInfo.entriesPerPage) * res.body.meta.count
-        ),
-      });
-      let rowData = responseDataMapFunc
-        ? responseDataMapFunc(res.body.data)
-        : res.body.data;
+    groflexService
+      .request(newUrl, headers ? headers : { auth: true })
+      .then((res) => {
+        setPaginationInfo({
+          ...paginationInfo,
+          rowCount: res.body.meta.count,
+          numberOfPages: Math.ceil(
+            (1 / paginationInfo.entriesPerPage) * res.body.meta.count
+          ),
+        });
+        let rowData = responseDataMapFunc
+          ? responseDataMapFunc(res.body.data)
+          : res.body.data;
+        rowData.forEach((row) => {
+          row.actionItems =
+            typeof actionMenuData === "function"
+              ? actionMenuData(row)
+              : actionMenuData;
+        });
 
-      setRowData(rowData);
-    });
+        setRowData(rowData);
+      });
   };
   const customActionCellRenderer = (params) => {
     // console.log(params, "ON ACTION CLICK MENu CLICK");
@@ -174,18 +184,21 @@ export const ListAdvancedComponent = ({
         const newUrl = fetchUrl(offset, paginationInfo.entriesPerPage);
 
         groflexService
-          .request(newUrl, { auth: true })
+          .request(newUrl, headers ? headers : { auth: true })
           .then((res) => {
-            setPaginationInfo({
-              ...paginationInfo,
-              rowCount: res.body.meta.count,
-              numberOfPages: Math.ceil(
-                (1 / paginationInfo.entriesPerPage) * res.body.meta.count
-              ),
-            });
+            pagination &&
+              setPaginationInfo({
+                ...paginationInfo,
+                rowCount: res.body?.meta.count || 0,
+                numberOfPages: Math.ceil(
+                  (1 / paginationInfo.entriesPerPage) * res.body?.meta.count
+                ),
+              });
+
             let rowData = responseDataMapFunc
               ? responseDataMapFunc(res.body.data)
               : res.body.data;
+
             return rowData;
           })
           .then((res) => {
@@ -264,7 +277,7 @@ export const ListAdvancedComponent = ({
         <div className="list-container__sub-header">
           <ListSearchComponent />
 
-          <ListHeadbarControls isFiltered={isFiltered} />
+          <ListHeadbarControls isFiltered={isFiltered} elements={settingsElement}/>
         </div>
 
         <div className="my-grid-container ag-theme-alpine">
