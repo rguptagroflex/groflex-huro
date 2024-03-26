@@ -82,6 +82,7 @@ const TransactionEditComponent = ({
     groflexService.trigger("documentClicked", e);
   };
 
+  // Note: Fabric Canvas Functions
   const onLetterHeaderEdited = (elements) => {
     let editedLetter = transactionStates.letter;
     editedLetter.header = elements;
@@ -279,6 +280,13 @@ const TransactionEditComponent = ({
     return transaction.positions;
   };
 
+  // Note: Letter Recipient Functions
+  const handelLetterSenderChange = (value) => {
+    const transactionSatesCopy = { ...transactionStates };
+    transactionSatesCopy.letter.sender = value;
+    setTransactionStates({ ...transactionSatesCopy });
+  };
+
   const { navigateBackTo, pageTitle, breadCrumbData } = getPageInfo();
   console.log(
     transactionStates.transaction,
@@ -304,6 +312,7 @@ const TransactionEditComponent = ({
               <HtmlInputComponent
                 className={"sender-quill"}
                 value={transactionStates.letter.sender}
+                onChange={handelLetterSenderChange}
               />
               {/* Enter customer */}
             </EditableIndicatorDiv>
@@ -330,12 +339,9 @@ const TransactionEditComponent = ({
           </div>
           {/* Meta */}
           <div className="transaction-form-meta column is-4">
-            <EditableIndicatorDiv className="transaction-form-sender">
-              <LetterMetaComponent />
-            </EditableIndicatorDiv>
+            {/* <LetterMetaComponent onChange={() => {}} /> */}
           </div>
         </div>
-
         {/* Letter Footer */}
         <LetterFormFooterComponent />
         <Modal
