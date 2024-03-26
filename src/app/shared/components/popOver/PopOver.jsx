@@ -51,11 +51,11 @@ const PopOver = ({
               return (
                 <div
                   onClick={() => handleFunction(item.handleClick)}
-                  className="dropdown-item is-media m-t-5 m-b-5 cursor-pointer"
+                  className="dropdown-item is-media m-t-5 m-b-5 cursor-pointer p-5"
                   key={item?.title.toLowerCase()}
                   style={{ minHeight: "35px" }}
                 >
-                  <div className="meta m-r-10">
+                  <div className="text-nowrap meta m-r-5">
                     <span>{item?.title}</span>
                     <span>{item?.subTitle}</span>
                   </div>
